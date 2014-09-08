@@ -1,0 +1,227 @@
+from base import InterfaceObject
+from pyticketswitch.util import (
+    to_int_or_return, to_float_or_none,
+    to_float_summed, format_price_with_symbol
+)
+import performance as perf_objs
+import event as event_objs
+import availability
+
+
+class Order(InterfaceObject):
+    """Object that represents a TSW order.
+
+    Information relating to a TSW order is accessible with this
+    object, e.g. price information, seats, the event. Orders should
+    be created with the Core.create_order method, the constructor is
+    intended for internal use.
+    """
+
+    def __init__(
+        self,
+        order_id=None,
+        core_order=None,
+        core_currency=None,
+        **settings
+    ):
+        self.order_id = order_id
+        self._core_order = core_order
+        self._core_currency = core_currency
+        self._self_print_url = None
+        self._self_print_relative_url = None
+
+        super(Order, self).__init__(**settings)
+
+    @property
+    def item_number(self):
+        """Interger for identifying the order within the bundle."""
+        return to_int_or_return(
+            self._core_order.item_number
+        )
+
+    @property
+    def self_print_url(self):
+        if self._self_print_url:
+            return self._self_print_url
+        else:
+            return None
+
+    @self_print_url.setter
+    def self_print_url(self, value):
+        self._self_print_url = value
+
+    @property
+    def self_print_relative_url(self):
+        if self._self_print_relative_url:
+            return self._self_print_relative_url
+        else:
+            return None
+
+    @self_print_relative_url.setter
+    def self_print_relative_url(self, value):
+        self._self_print_relative_url = value
+
+    @property
+    def event_desc(self):
+        return self._core_order.event_desc
+
+    @property
+    def venue_desc(self):
+        return self._core_order.venue_desc
+
+    @property
+    def total_combined_float(self):
+        """Float value of the total combined price."""
+        if self._core_order.total_combined:
+            return to_float_or_none(
+                self._core_order.total_combined
+            )
+        else:
+            return to_float_summed(
+                self._core_order.total_seatprice,
+                self._core_order.total_surcharge
+            )
+
+    @property
+    def total_combined(self):
+        """Formatted string value of the total combined price with currency
+        symbol.
+        """
+        return format_price_with_symbol(
+            str(self.total_combined_float),
+            self._core_currency.currency_pre_symbol,
+            self._core_currency.currency_post_symbol
+        )
+
+    @property
+    def total_inc_despatch_float(self):
+        """Float value of the total combined price including despatch."""
+        total = self.total_combined_float
+        if self.despatch_method and self.despatch_method.cost_float:
+            total += self.despatch_method.cost_float
+
+        return total
+
+    @property
+    def total_inc_despatch(self):
+        """Formatted string value of the total combined price including
+        despatch with currency symbol.
+        """
+        return format_price_with_symbol(
+            str(self.total_inc_despatch_float),
+            self._core_currency.currency_pre_symbol,
+            self._core_currency.currency_post_symbol
+        )
+
+    @property
+    def core_currency(self):
+        return self._core_currency
+
+    @property
+    def performance(self):
+        """Performance object for this order."""
+        if not hasattr(self, '_performance'):
+
+            if self._core_order.performance:
+                self._performance = perf_objs.Performance(
+                    core_performance=self._core_order.performance,
+                    **self._internal_settings()
+                )
+
+            else:
+                self._performance = None
+
+        return self._performance
+
+    @property
+    def event(self):
+        """Event object for this order."""
+        if not hasattr(self, '_event'):
+
+            if self._core_order.event:
+
+                self._event = event_objs.Event(
+                    event_id=self._core_order.event.event_id,
+                    core_event=self._core_order.event,
+                    **self._internal_settings()
+                )
+            else:
+                self._event = None
+
+        return self._event
+
+    @property
+    def concessions(self):
+        """List of Concession objects on this order."""
+        if not hasattr(self, '_concessions'):
+
+            self._concessions = []
+
+            for discount in self._core_order.discounts:
+
+                self._concessions.append(availability.Concession(
+                    core_discount=discount,
+                    core_currency=self._core_currency,
+                    **self._internal_settings()
+                ))
+
+        return self._concessions
+
+    @property
+    def despatch_method(self):
+        """DespatchMethod object for this order."""
+        if not hasattr(self, '_despatch_method'):
+
+            if self._core_order.despatch_method:
+
+                self._despatch_method = availability.DespatchMethod(
+                    core_despatch_method=self._core_order.despatch_method,
+                    core_currency=self._core_currency,
+                    **self._internal_settings()
+                )
+
+        return self._despatch_method
+
+    @property
+    def all_seats(self):
+        """List of Seat objects on this order."""
+        seats = []
+        for con in self.concessions:
+            seats = seats + con.seats
+
+        return seats
+
+    @property
+    def all_seat_ids(self):
+        """List of Seat Ids on this order."""
+        return [s.seat_id for s in self.all_seats]
+
+    @property
+    def ticket_type_desc(self):
+        return self._core_order.ticket_type_desc
+
+    @property
+    def backend_purchase_reference(self):
+        """Supplier reference for this order."""
+        return self._core_order.backend_purchase_reference
+
+    @property
+    def has_seat_with_restricted_view(self):
+        """Boolean to indicate if any seats have restricted views."""
+        restricted = False
+        for con in self.concessions:
+            if con.has_restricted_view:
+                restricted = True
+
+        return restricted
+
+    @property
+    def unique_seat_text(self):
+        """List of unique seat text strings on this order."""
+        seat_text = []
+        for con in self.concessions:
+            for text in con.unique_seat_text:
+                if text not in seat_text:
+                    seat_text.append(text)
+
+        return seat_text
