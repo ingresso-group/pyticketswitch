@@ -19,7 +19,7 @@ And installed from the cloned directory:
 Documentation
 -------------
 
-`Read the documentation <http://www.ingresso.co.uk/docs/>`_.
+The `pyticketswitch documentation can be found here <http://www.ingresso.co.uk/pyticketswitch/>`_ and the general XML API documentation can be accessed `from this page <http://www.ingresso.co.uk/docs/>`_.
 
 Bugs, features, support and discussion
 --------------------------------------
