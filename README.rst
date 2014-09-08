@@ -14,7 +14,7 @@ Or cloned:
     git clone https://github.com/ingtechteam/pyticketswitch.git
 
 And installed from the cloned directory:
-    sudo python setup.py install
+    python setup.py install
 
 Documentation
 -------------
