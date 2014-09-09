@@ -5,7 +5,6 @@ except ImportError:
     import xml.etree.ElementTree as xml
 from datetime import datetime
 import logging
-import logging.config
 import socket
 
 from util import create_xml_from_dict, dict_ignore_nones
