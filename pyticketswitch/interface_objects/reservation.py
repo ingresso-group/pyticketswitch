@@ -273,10 +273,6 @@ class Reservation(trolley_objs.Trolley):
                 must be followed to complete the purchase.
         """
 
-        send_confirm_string = boolean_to_yes_no(
-            send_confirmation_email
-        )
-
         crypto_block = self.get_crypto_block(
             method_name='start_session',
             password_required=False
@@ -288,7 +284,7 @@ class Reservation(trolley_objs.Trolley):
             http_accept=http_accept, http_user_agent=http_user_agent,
             callback_data=callback_data, encryption_key=encryption_key,
             crypto_block=crypto_block,
-            send_confirmation_email=send_confirm_string,
+            send_confirmation_email=send_confirmation_email,
             results_url=results_url,
         )
 
