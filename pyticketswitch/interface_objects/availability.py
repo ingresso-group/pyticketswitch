@@ -61,8 +61,10 @@ class TicketType(InterfaceObject):
     ):
         """Retrieves the Concession objects for this TicketType.
 
-        Returns the list of Concession objects for this TicketType.
-        Internally it is calling the 'discount_options' API method.
+        Returns the list of Concession objects for each ticket requested,
+        so the reponse will be a list of lists that contain Concession
+        objects. Internally the 'discount_options' API method is being
+        called.
 
         Args:
             no_of_tickets (int): Number of tickets.
@@ -72,7 +74,8 @@ class TicketType(InterfaceObject):
                 order will be added to.
 
         Returns:
-            list: List of Concession objects
+            list: A list for each ticket requested of Concession objects (
+                so a list of lists of Concession objects).
         """
 
         crypto_block = self._get_crypto_block_for_object(

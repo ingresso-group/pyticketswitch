@@ -1,3 +1,5 @@
+v1.0.2, 17 Sep 2014 -- Change to get_concessions docs.
+
 v1.0.1, 10 Sep 2014 -- Fix bug with confirmation emails.
 
 v1.0.0, 8 Sep 2014 -- Initial release.
