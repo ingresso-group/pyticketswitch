@@ -341,7 +341,7 @@ class Performance(InterfaceObject, CostRangeMixin):
                     ticket_type = availability.TicketType(
                         ticket_type_id=pb.band_token, core_ticket_type=tt,
                         core_price_band=pb,
-                        core_currency=resp_dict['currency'],
+                        core_currency=resp_dict.get('currency', None),
                         **self._internal_settings()
                     )
 
@@ -378,7 +378,7 @@ class Performance(InterfaceObject, CostRangeMixin):
                 despatch_method = availability.DespatchMethod(
                     despatch_id=dm.despatch_token,
                     core_despatch_method=dm,
-                    core_currency=resp_dict['currency'],
+                    core_currency=resp_dict.get('currency', None),
                     **self._internal_settings()
                 )
 
@@ -505,7 +505,7 @@ class Performance(InterfaceObject, CostRangeMixin):
             despatch_method = availability.DespatchMethod(
                 despatch_id=dm.despatch_token,
                 core_despatch_method=dm,
-                core_currency=resp_dict['currency'],
+                core_currency=resp_dict.get('currency', None),
                 **self._internal_settings()
             )
 
