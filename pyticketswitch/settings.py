@@ -39,5 +39,9 @@ MARQUEE_IMAGE = 'marquee'
 SEATING_IMAGE = 'seating_plan'
 SUPPLIER_IMAGE = 'supplier'
 
+LARGE_IMAGE_LIST = [
+    LARGE_IMAGE, LARGE_IMAGE_TWO, LARGE_IMAGE_THREE,
+]
+
 # timeout in seconds for API requests
 API_REQUEST_TIMEOUT = 120

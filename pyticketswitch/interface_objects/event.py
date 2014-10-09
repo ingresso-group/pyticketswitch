@@ -494,16 +494,19 @@ class Event(InterfaceObject, CostRangeMixin):
 
     def get_large_images(self):
 
-        images = [
-            self._get_image(settings.LARGE_IMAGE),
-            self._get_image(settings.LARGE_IMAGE_TWO),
-            self._get_image(settings.LARGE_IMAGE_THREE),
-        ]
+        images = []
 
-        images = [{
-            'url': x,
-            'index': i,
-        } for i, x in enumerate(images) if x is not None]
+        i = 0
+
+        for name in settings.LARGE_IMAGE_LIST:
+
+            url = self._get_image(name)
+
+            if url:
+                images.append(
+                    {'url': url, 'index': i}
+                )
+                i = i + 1
 
         return images
 
