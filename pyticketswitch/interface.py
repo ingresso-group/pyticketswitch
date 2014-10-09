@@ -216,9 +216,17 @@ class CoreAPI(object):
 
     def make_core_request(self, api_call, **kwargs):
 
+        args = {
+            'user_id': self.username,
+            'remote_ip': self.remote_ip,
+            'remote_site': self.remote_site,
+        }
+
+        args.update(kwargs)
+
         return self._create_xml_and_post(
             method_name=api_call,
-            arg_dict=dict_ignore_nones(**kwargs),
+            arg_dict=dict_ignore_nones(**args),
             url=self.url
         )
 
@@ -286,7 +294,7 @@ class CoreAPI(object):
     def style_map(self, map_key):
         resp = self.make_core_request(
             'style_map',
-            user_id=self.username, user_passwd=self.password,
+            user_passwd=self.password,
             map_key=map_key
         )
 
@@ -312,8 +320,7 @@ class CoreAPI(object):
 
         resp = self.make_core_request(
             'event_search',
-            user_id=self.username, user_passwd=user_passwd,
-            remote_ip=self.remote_ip, crypto_block=crypto_block,
+            user_passwd=user_passwd, crypto_block=crypto_block,
             s_keys=s_keys, s_dates=s_dates,
             s_coco=s_coco, s_geo=s_geo, s_geo_lat=s_geo_lat,
             s_geo_long=s_geo_long, s_geo_rad_km=s_geo_rad_km, s_src=s_src,
@@ -341,7 +348,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'extra_info',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block,
             event_token=event_token, source_info=source_info,
             request_media=request_media
@@ -355,7 +361,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'date_time_options',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, event_token=event_token,
             earliest_date=earliest_date, latest_date=latest_date,
             request_cost_range=request_cost_range
@@ -368,7 +373,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'month_options',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block,
             event_token=event_token
         )
@@ -381,7 +385,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'availability_options',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, perf_token=perf_token,
             departure_date=departure_date, usage_date=usage_date,
             self_print_mode=self_print_mode, trolley_token=trolley_token
@@ -395,7 +398,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'despatch_options',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, perf_token=perf_token,
             departure_date=departure_date, usage_date=usage_date,
             self_print_mode=self_print_mode, trolley_token=trolley_token
@@ -409,7 +411,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'discount_options',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block,
             band_token=band_token, despatch_token=despatch_token,
             no_of_tickets=no_of_tickets, trolley_token=trolley_token
@@ -422,7 +423,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'create_order',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, discount_token=discount_token,
             despatch_token=despatch_token
         )
@@ -434,7 +434,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'create_order_and_reserve',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, discount_token=discount_token,
             despatch_token=despatch_token
         )
@@ -447,7 +446,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'trolley_add_order',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, order_token=order_token,
             trolley_token=trolley_token, describe_trolley=describe_trolley
         )
@@ -459,7 +457,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'trolley_describe',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, trolley_token=trolley_token
         )
 
@@ -471,7 +468,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'trolley_remove',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, trolley_token=trolley_token,
             remove_item=remove_item, describe_trolley=describe_trolley
         )
@@ -484,7 +480,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'make_reservation',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, trolley_token=trolley_token,
             self_print_mode=self_print_mode, describe_trolley=describe_trolley
         )
@@ -496,7 +491,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'get_reservation_link',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, trolley_token=trolley_token
         )
 
@@ -507,7 +501,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'release_reservation',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block
         )
 
@@ -521,7 +514,6 @@ class CoreAPI(object):
     ):
         resp = self.make_core_request(
             'purchase_reservation_part_one',
-            user_id=self.username, remote_ip=self.remote_ip,
             crypto_block=crypto_block, customer_data=customer_data,
             return_token=return_token, return_domain=return_domain,
             return_path=return_path, return_with_https=return_with_https,
@@ -547,8 +539,8 @@ class CoreAPI(object):
 
         resp = self.make_core_request(
             'purchase_reservation_part_two',
-            user_id=self.username, user_passwd=user_passwd,
-            remote_ip=self.remote_ip, crypto_block=crypto_block,
+            user_passwd=user_passwd,
+            crypto_block=crypto_block,
             returning_token=returning_token,
             new_return_token=new_return_token,
             new_return_path=new_return_path,
@@ -575,8 +567,8 @@ class CoreAPI(object):
 
         resp = self.make_core_request(
             'transaction_info',
-            user_id=self.username, user_passwd=user_passwd,
-            remote_ip=self.remote_ip, transaction_id=transaction_id,
+            user_passwd=user_passwd,
+            transaction_id=transaction_id,
             describe_trolley=describe_trolley,
             describe_customer=describe_customer,
             describe_external_sale_page=describe_external_sale_page,
@@ -596,8 +588,7 @@ class CoreAPI(object):
 
         resp = self.make_core_request(
             'save_external_sale_page',
-            user_id=self.username, user_passwd=user_passwd,
-            remote_ip=self.remote_ip,
+            user_passwd=user_passwd,
             crypto_block=crypto_block,
             transaction_id=transaction_id,
             sale_page_type=sale_page_type,
