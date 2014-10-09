@@ -363,12 +363,26 @@ def _parse_seats(seats_elem):
 
 def _parse_price_band(price_elem):
 
-    p_arg = _text_dict(price_elem)
+    objs = {}
+
+    possible_discounts = price_elem.find('possible_discounts')
+
+    if possible_discounts is not None:
+        discounts_list = []
+        for d in possible_discounts.findall('discount'):
+            discounts_list.append(_parse_discount(d))
+
+        objs['possible_discounts'] = discounts_list
+        price_elem.remove(possible_discounts)
 
     example_seats = price_elem.find('example_seats')
 
     if example_seats is not None:
-        p_arg['example_seats'] = _parse_seats(example_seats)
+        objs['example_seats'] = _parse_seats(example_seats)
+        price_elem.remove(example_seats)
+
+    p_arg = _text_dict(price_elem)
+    p_arg.update(objs)
 
     return objects.PriceBand(**p_arg)
 
@@ -400,16 +414,16 @@ def availability_options_result(root):
         'crypto_block': root.findtext('crypto_block')
     }
 
+    quantity_options = root.find('quantity_options')
+
+    if quantity_options is not None:
+        ret_dict['quantity_options'] = create_dict_from_xml_element(
+            quantity_options
+        )
+
     availability = root.find('availability')
 
     if availability is not None:
-
-        quantity_options = root.find('quantity_options')
-
-        if quantity_options is not None:
-            ret_dict['quantity_options'] = create_dict_from_xml_element(
-                quantity_options
-            )
 
         ticket_types = []
         for t in availability.findall('ticket_type'):

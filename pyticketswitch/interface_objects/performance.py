@@ -264,9 +264,33 @@ class Performance(InterfaceObject, CostRangeMixin):
         """List of valid ticket quantities for this Performance."""
         if self._valid_ticket_quantities is None:
             self.get_availability()
-            return self._valid_ticket_quantities
-        else:
-            return self._valid_ticket_quantities
+
+            crypto_block = self._get_date_time_options_crypto()
+
+            resp_dict = self.get_core_api().availability_options(
+                crypto_block=crypto_block, perf_token=self._perf_token,
+                usage_date=date_to_yyyymmdd_or_none(self.usage_date),
+                departure_date=date_to_yyyymmdd_or_none(self.departure_date),
+                quantity_options_only=True
+            )
+
+            self._set_ticket_quantities_from_dict(
+                resp_dict.get('quantity_options', None)
+            )
+
+        return self._valid_ticket_quantities
+
+    def _set_ticket_quantities_from_dict(self, quantity_options_dict):
+
+        valid_list = []
+
+        if quantity_options_dict:
+
+            valid_list = quantity_options_dict.get('valid_quantity', [])
+
+            valid_list = [int(x) for x in valid_list]
+
+        self.valid_ticket_quantities = valid_list
 
     @valid_ticket_quantities.setter
     def valid_ticket_quantities(self, value):
@@ -307,13 +331,21 @@ class Performance(InterfaceObject, CostRangeMixin):
 
         return crypto_block
 
-    def get_availability(self):
+    def get_availability(
+        self, include_possible_concessions=None, no_of_tickets=None
+    ):
         """Retrieves ticket availability information for this Performance.
 
         Returns the list of TicketType objects, called internally by several
         methods, it calls the 'availability_options' API method.
         The 'ticket_types' property should be used to get this information,
         but this method can be called explicitly if required.
+
+        Args:
+            include_possible_concessions (boolean): Optional, flag to indicate
+                whether to request possible_concession information.
+            no_of_tickets (int): Optional, set the number of tickets to
+                request, allows actual seats to be returned if possible.
 
         Returns:
             list: List of TicketType objects
@@ -325,7 +357,8 @@ class Performance(InterfaceObject, CostRangeMixin):
             crypto_block=crypto_block, perf_token=self._perf_token,
             usage_date=date_to_yyyymmdd_or_none(self.usage_date),
             departure_date=date_to_yyyymmdd_or_none(self.departure_date),
-            self_print_mode='html'
+            self_print_mode='html', add_discounts=include_possible_concessions,
+            no_of_tickets=no_of_tickets
         )
 
         self._set_crypto_block(
@@ -361,14 +394,9 @@ class Performance(InterfaceObject, CostRangeMixin):
             interface_objects=ticket_types
         )
 
-        if 'quantity_options' in resp_dict:
-
-            valid_list = resp_dict['quantity_options']['valid_quantity']
-
-            self.valid_ticket_quantities = [int(x) for x in valid_list]
-
-        else:
-            self.valid_ticket_quantities = []
+        self._set_ticket_quantities_from_dict(
+            resp_dict.get('quantity_options', None)
+        )
 
         despatch_methods = []
 

@@ -4,7 +4,7 @@ from base import InterfaceObject, Seat
 from pyticketswitch.util import (
     format_price_with_symbol,
     to_float_or_none, to_float_summed,
-    to_int_or_none
+    to_int_or_none, resolve_boolean
 )
 
 
@@ -42,6 +42,7 @@ class TicketType(InterfaceObject):
         self.blanket_discount_only = None
         self.quantity_options = None
         self._example_seats = None
+        self._possible_concessions = False
 
         super(TicketType, self).__init__(**settings)
 
@@ -280,6 +281,40 @@ class TicketType(InterfaceObject):
             ))
 
         return self._example_seats
+
+    @property
+    def example_seats_are_real(self):
+        """Boolean to indicate if the example_seats are actual seat numbers.
+
+        If True, the seats in the example_seats list will be the seats that
+        are reserved.
+        """
+        return resolve_boolean(self._core_price_band.example_seats_are_real)
+
+    @property
+    def possible_concessions(self):
+        """List of Concession objects that are expected for this TicketType.
+
+        Only available if explicitly requested when getting availability.
+        """
+
+        if self._possible_concessions is False:
+
+            if self._core_price_band.possible_discounts:
+                self._possible_concessions = []
+
+                for disc in self._core_price_band.possible_discounts:
+
+                    con = Concession(
+                        core_discount=disc,
+                        core_currency=self._core_currency
+                    )
+                    self._possible_concessions.append(con)
+
+            else:
+                self._possible_concessions = None
+
+        return self._possible_concessions
 
 
 class Concession(InterfaceObject):

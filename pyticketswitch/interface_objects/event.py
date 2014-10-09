@@ -461,7 +461,7 @@ class Event(InterfaceObject, CostRangeMixin):
 
         return self._custom_filters
 
-    def _get_image(self, name):
+    def _get_image(self, name, request_all_images=True):
 
         make_request = True
 
@@ -478,7 +478,12 @@ class Event(InterfaceObject, CostRangeMixin):
                     break
 
         if make_request:
-            self.get_details(request_media=[name])
+            if request_all_images:
+                request_media = None
+            else:
+                request_media = [name]
+
+            self.get_details(request_media=request_media)
 
         event_medias = self._get_core_event_attr('event_medias')
 

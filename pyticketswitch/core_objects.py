@@ -377,6 +377,8 @@ class PriceBand(CoreObject):
         percentage_saving=None,
         example_seats=None,
         price_band_code=None,
+        possible_discounts=None,
+        example_seats_are_real=None,
         **kwargs
     ):
         self.ticket_price = ticket_price
@@ -395,6 +397,8 @@ class PriceBand(CoreObject):
             example_seats = []
         self.example_seats = example_seats
         self.price_band_code = price_band_code
+        self.possible_discounts = possible_discounts
+        self.example_seats_are_real = example_seats_are_real
 
         vars(self).update(kwargs)
 

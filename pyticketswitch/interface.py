@@ -381,13 +381,18 @@ class CoreAPI(object):
 
     def availability_options(
         self, crypto_block, perf_token=None, departure_date=None,
-        usage_date=None, self_print_mode=None, trolley_token=None
+        usage_date=None, self_print_mode=None, trolley_token=None,
+        add_discounts=None, quantity_options_only=None,
+        no_of_tickets=None
     ):
         resp = self.make_core_request(
             'availability_options',
             crypto_block=crypto_block, perf_token=perf_token,
             departure_date=departure_date, usage_date=usage_date,
-            self_print_mode=self_print_mode, trolley_token=trolley_token
+            self_print_mode=self_print_mode, trolley_token=trolley_token,
+            add_discounts=add_discounts,
+            quantity_options_only=quantity_options_only,
+            no_of_tickets=no_of_tickets
         )
 
         return self.parse_response(parse.availability_options_result, resp)
