@@ -56,6 +56,7 @@ class Reservation(trolley_objs.Trolley):
             prefilled_customer_data = {}
         self.prefilled_customer_data = prefilled_customer_data
         self._transaction_status = None
+        self._remote_site = None
         self._customer = None
         self._confirmation_page_html = None
         self._self_print_urls = None
@@ -329,6 +330,24 @@ class Reservation(trolley_objs.Trolley):
             self._transaction_status = value
 
     @property
+    def remote_site(self):
+        """The domain that the transaction was made on."""
+        if self._remote_site is None:
+            self.get_details()
+
+        if self._remote_site:
+            return self._remote_site
+        else:
+            return None
+
+    @remote_site.setter
+    def remote_site(self, value):
+        if value is None:
+            self._remote_site = False
+        else:
+            self._remote_site = value
+
+    @property
     def customer(self):
         """Customer object representing the customer on the reservation."""
         if self._customer is None:
@@ -386,6 +405,7 @@ class Reservation(trolley_objs.Trolley):
 
         self.transaction_status = resp_dict['transaction_status']
         self._set_time_left(resp_dict['minutes_left_on_reserve'])
+        self.remote_site = resp_dict['remote_site']
 
         self._core_trolley = resp_dict['trolley']
 

@@ -1095,6 +1095,7 @@ def transaction_info_result(root):
         'transaction_status': root.findtext('transaction_status'),
         'minutes_left_on_reserve': root.findtext('minutes_left_on_reserve'),
         'language_list': root.findtext('language_list'),
+        'remote_site': root.findtext('remote_site'),
     }
 
     objs = {}

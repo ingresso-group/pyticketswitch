@@ -1,4 +1,6 @@
-v0.1.1, 13 Oct 2014 -- Added languages attribute to Customer.
+v1.1.2, 13 Oct 2014 -- Add remote_site attribute in Reservation.
+
+v1.1.1, 13 Oct 2014 -- Added languages attribute to Customer.
 
 v1.1.0, 9 Oct 2014 -- Support for actual seats, retrieving quantity options without availability, new event images.
 
