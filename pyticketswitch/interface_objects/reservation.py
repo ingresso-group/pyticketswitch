@@ -390,9 +390,15 @@ class Reservation(trolley_objs.Trolley):
         self._core_trolley = resp_dict['trolley']
 
         if 'customer' in resp_dict:
+
+            lang_str = resp_dict.get('language_list', None)
+
+            if lang_str:
+                langs = lang_str.split(',')
+
             self.customer = Customer(
                 core_customer=resp_dict['customer'],
-                languages=resp_dict.get('language_list', None),
+                languages=langs,
             )
 
         else:
