@@ -390,7 +390,11 @@ class Reservation(trolley_objs.Trolley):
         self._core_trolley = resp_dict['trolley']
 
         if 'customer' in resp_dict:
-            self.customer = Customer(core_customer=resp_dict['customer'])
+            self.customer = Customer(
+                core_customer=resp_dict['customer'],
+                languages=resp_dict.get('language_list', None),
+            )
+
         else:
             self.customer = None
 

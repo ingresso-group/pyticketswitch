@@ -545,7 +545,8 @@ class Customer(object):
         email_address=None,
         user_can_use_data=None,
         supplier_can_use_data=None,
-        world_can_use_data=None
+        world_can_use_data=None,
+        languages=None,
     ):
 
         self._core_customer = core_customer
@@ -559,6 +560,8 @@ class Customer(object):
         self._user_can_use_data = user_can_use_data
         self._supplier_can_use_data = supplier_can_use_data
         self._world_can_use_data = world_can_use_data
+
+        self.languages = languages
 
     def _get_dict(self):
         return {
