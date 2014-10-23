@@ -685,7 +685,8 @@ class Core(InterfaceObject):
             needs_agent_reference=resp_dict['needs_agent_reference'],
             prefilled_customer_data=resp_dict.get('prefilled_customer_data'),
             trolley_id=resp_dict['trolley_token'],
-            core_trolley=resp_dict['trolley']
+            core_trolley=resp_dict['trolley'],
+            **self._internal_settings()
         )
 
         self._set_crypto_for_object(

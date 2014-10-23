@@ -1,5 +1,6 @@
 # Makefile for Sphinx documentation
 #
+# call `make html` to build the html output
 
 # You can set these variables from the command line.
 SPHINXOPTS    =

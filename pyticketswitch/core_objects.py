@@ -382,6 +382,7 @@ class PriceBand(CoreObject):
         discount_code=None,
         discount_desc=None,
         discount_subdata=None,
+        free_seat_blocks=None,
         **kwargs
     ):
         self.ticket_price = ticket_price
@@ -405,6 +406,9 @@ class PriceBand(CoreObject):
         self.discount_code = discount_code
         self.discount_desc = discount_desc
         self.discount_subdata = discount_subdata
+        if free_seat_blocks is None:
+            free_seat_blocks = []
+        self.free_seat_blocks = free_seat_blocks
 
         vars(self).update(kwargs)
 
@@ -427,6 +431,24 @@ class Seat(CoreObject):
         self.separator = separator
         self.is_restricted_view = is_restricted_view
         self.seat_text = seat_text
+
+        vars(self).update(kwargs)
+
+
+class SeatBlock(CoreObject):
+
+    def __init__(
+        self,
+        seat_block_token,
+        block_length,
+        seats=None,
+        **kwargs
+    ):
+        self.seat_block_token = seat_block_token
+        self.block_length = block_length
+        if seats is None:
+            seats = []
+        self.seats = seats
 
         vars(self).update(kwargs)
 
@@ -532,6 +554,8 @@ class Order(CoreObject):
         performance=None,
         event=None,
         backend_purchase_reference=None,
+        requested_seats=None,
+        seat_request_status=None,
         **kwargs
     ):
         self.item_number = item_number
@@ -551,6 +575,10 @@ class Order(CoreObject):
         self.performance = performance
         self.event = event
         self.backend_purchase_reference = backend_purchase_reference
+        if requested_seats is None:
+            requested_seats = []
+        self.requested_seats = requested_seats
+        self.seat_request_status = seat_request_status
 
         vars(self).update(kwargs)
 

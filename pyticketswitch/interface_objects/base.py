@@ -4,7 +4,7 @@ from pyticketswitch import settings as default_settings
 from pyticketswitch.interface import CoreAPI
 from pyticketswitch.util import (
     resolve_boolean, format_price_with_symbol,
-    to_float_or_none,
+    to_float_or_none, to_int_or_none,
 )
 
 logger = logging.getLogger(__name__)
@@ -429,7 +429,15 @@ class InterfaceObject(object):
             interface_object=interface_object
         )
 
-        return self._retrieve_data(key)
+        crypto_block = self._retrieve_data(key)
+
+        if not crypto_block:
+            logger.error((
+                'Failed to retrieve crypto_block,'
+                'method_name: %s, interface_object: %s'
+            ), method_name, interface_object)
+
+        return crypto_block
 
     def _internal_settings(self):
         return {
@@ -508,6 +516,52 @@ class Seat(object):
             pass
 
         return row
+
+
+class SeatBlock(object):
+    """Represents a block of seats in TSW, used when selecting seats in the
+    booking process.
+
+    Args:
+        seat_block_id (string): Id of the SeatBlock
+    """
+
+    def __init__(
+        self,
+        seat_block_id=None,
+        core_seat_block=None,
+    ):
+        self._core_seat_block = core_seat_block
+
+        if not seat_block_id and core_seat_block:
+            seat_block_id = core_seat_block.seat_block_token
+
+        self.seat_block_id = seat_block_id
+        self._seats = False
+
+    @property
+    def block_length(self):
+        if self._core_seat_block:
+            return to_int_or_none(
+                self._core_seat_block.block_length
+            )
+        return None
+
+    @property
+    def seats(self):
+        if self._seats is False:
+            if self._core_seat_block:
+
+                self._seats = []
+
+                for seat in self._core_seat_block.seats:
+                    self._seats.append(
+                        Seat(core_seat=seat)
+                    )
+            else:
+                self._seats = None
+
+        return self._seats
 
 
 class Customer(object):

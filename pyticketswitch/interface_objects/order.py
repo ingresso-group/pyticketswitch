@@ -1,4 +1,4 @@
-from base import InterfaceObject
+from base import InterfaceObject, Seat
 from pyticketswitch.util import (
     to_int_or_return, to_float_or_none,
     to_float_summed, format_price_with_symbol
@@ -29,6 +29,7 @@ class Order(InterfaceObject):
         self._core_currency = core_currency
         self._self_print_url = None
         self._self_print_relative_url = None
+        self._requested_seats = False
 
         super(Order, self).__init__(**settings)
 
@@ -225,3 +226,25 @@ class Order(InterfaceObject):
                     seat_text.append(text)
 
         return seat_text
+
+    @property
+    def requested_seats(self):
+        """If specific seats were requested, they will be listed here."""
+        if self._requested_seats is False:
+            if self._core_order.requested_seats:
+                self._requested_seats = []
+
+                for seat in self._core_order.requested_seats:
+                    self._requested_seats.append(
+                        Seat(core_seat=seat)
+                    )
+            else:
+                self._requested_seats = None
+
+        return self._requested_seats
+
+    @property
+    def seat_request_status(self):
+        """Describes the status of the request for specific seats, i.e. were
+        the specified seats successfully selected."""
+        return self._core_order.seat_request_status

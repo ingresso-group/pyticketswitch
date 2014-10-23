@@ -383,7 +383,7 @@ class CoreAPI(object):
         self, crypto_block, perf_token=None, departure_date=None,
         usage_date=None, self_print_mode=None, trolley_token=None,
         add_discounts=None, quantity_options_only=None,
-        no_of_tickets=None
+        no_of_tickets=None, add_free_seat_blocks=None,
     ):
         resp = self.make_core_request(
             'availability_options',
@@ -392,7 +392,8 @@ class CoreAPI(object):
             self_print_mode=self_print_mode, trolley_token=trolley_token,
             add_discounts=add_discounts,
             quantity_options_only=quantity_options_only,
-            no_of_tickets=no_of_tickets
+            no_of_tickets=no_of_tickets,
+            add_free_seat_blocks=add_free_seat_blocks
         )
 
         return self.parse_response(parse.availability_options_result, resp)
@@ -412,13 +413,15 @@ class CoreAPI(object):
 
     def discount_options(
         self, crypto_block, band_token, no_of_tickets, despatch_token=None,
-        trolley_token=None
+        trolley_token=None, seat_block_token=None, seat_block_offset=None,
     ):
         resp = self.make_core_request(
             'discount_options',
             crypto_block=crypto_block,
             band_token=band_token, despatch_token=despatch_token,
-            no_of_tickets=no_of_tickets, trolley_token=trolley_token
+            no_of_tickets=no_of_tickets, trolley_token=trolley_token,
+            seat_block_token=seat_block_token,
+            seat_block_offset=seat_block_offset,
         )
 
         return self.parse_response(parse.discount_options_result, resp)

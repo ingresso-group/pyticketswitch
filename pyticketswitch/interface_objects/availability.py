@@ -1,6 +1,6 @@
 from operator import attrgetter
 
-from base import InterfaceObject, Seat
+from base import InterfaceObject, Seat, SeatBlock
 from pyticketswitch.util import (
     format_price_with_symbol,
     to_float_or_none, to_float_summed,
@@ -43,6 +43,7 @@ class TicketType(InterfaceObject):
         self.quantity_options = None
         self._example_seats = None
         self._possible_concessions = False
+        self._available_seat_blocks = False
 
         super(TicketType, self).__init__(**settings)
 
@@ -58,7 +59,8 @@ class TicketType(InterfaceObject):
         ]
 
     def get_concessions(
-        self, no_of_tickets, despatch_method=None, trolley=None
+        self, no_of_tickets, despatch_method=None, trolley=None,
+        seat_block=None, seat_block_offset=None,
     ):
         """Retrieves the Concession objects for this TicketType.
 
@@ -73,6 +75,12 @@ class TicketType(InterfaceObject):
                 object to be used.
             trolley (Trolley): Optional, an existing Trolley that this
                 order will be added to.
+            seat_block (SeatBlock): Optional, the SeatBlock to reserve seats
+                from. Can only be used if returned in the
+                'available_seat_blocks' attribute.
+            seat_block_offset (int): Optional, the offset into the seat block,
+                with 0 being the start of the block. Can only be specified if
+                a seat_block is provided.
 
         Returns:
             list: A list for each ticket requested of Concession objects (
@@ -96,11 +104,21 @@ class TicketType(InterfaceObject):
         else:
             trolley_id = None
 
+        if seat_block is not None:
+            seat_block_id = seat_block.seat_block_id
+        else:
+            seat_block_id = None
+
+        if seat_block_offset is not None:
+            seat_block_offset = str(int(seat_block_offset))
+
         resp_dict = self.get_core_api().discount_options(
             crypto_block=crypto_block, band_token=self.ticket_type_id,
             no_of_tickets=no_of_tickets,
             despatch_token=despatch_id,
-            trolley_token=trolley_id
+            trolley_token=trolley_id,
+            seat_block_token=seat_block_id,
+            seat_block_offset=seat_block_offset
         )
 
         self._set_crypto_block(
@@ -305,16 +323,41 @@ class TicketType(InterfaceObject):
 
                 for disc in self._core_price_band.possible_discounts:
 
-                    con = Concession(
-                        core_discount=disc,
-                        core_currency=self._core_currency
+                    self._possible_concessions.append(
+                        Concession(
+                            core_discount=disc,
+                            core_currency=self._core_currency
+                        )
                     )
-                    self._possible_concessions.append(con)
 
             else:
                 self._possible_concessions = None
 
         return self._possible_concessions
+
+    @property
+    def available_seat_blocks(self):
+        """List of SeatBlock objects that can be selected from for this
+        TicketType.
+
+        Only available if requested at the availability stage with the
+        include_available_seat_blocks flag.
+        """
+        if self._available_seat_blocks is False:
+
+            if self._core_price_band.free_seat_blocks:
+                self._available_seat_blocks = []
+
+                for sb in self._core_price_band.free_seat_blocks:
+
+                    self._available_seat_blocks.append(
+                        SeatBlock(core_seat_block=sb)
+                    )
+
+            else:
+                self._available_seat_blocks = None
+
+        return self._available_seat_blocks
 
 
 class Concession(InterfaceObject):

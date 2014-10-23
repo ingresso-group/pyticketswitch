@@ -361,6 +361,34 @@ def _parse_seats(seats_elem):
     return seats
 
 
+def _parse_seat_block(seat_block_elem):
+
+    sb_arg = {}
+
+    seats = []
+
+    for s in seat_block_elem.findall('id_details'):
+        seats.append(objects.Seat(**_text_dict(s)))
+        seat_block_elem.remove(s)
+
+    sb_arg = _text_dict(seat_block_elem)
+
+    if seats:
+        sb_arg['seats'] = seats
+
+    return objects.SeatBlock(**sb_arg)
+
+
+def _parse_free_seat_blocks(free_seat_blocks_elem):
+
+    seat_blocks = []
+
+    for sb in free_seat_blocks_elem.findall('seat_block'):
+        seat_blocks.append(_parse_seat_block(sb))
+
+    return seat_blocks
+
+
 def _parse_price_band(price_elem):
 
     objs = {}
@@ -380,6 +408,14 @@ def _parse_price_band(price_elem):
     if example_seats is not None:
         objs['example_seats'] = _parse_seats(example_seats)
         price_elem.remove(example_seats)
+
+    free_seat_blocks = price_elem.find('free_seat_blocks')
+
+    if free_seat_blocks is not None:
+        objs['free_seat_blocks'] = _parse_free_seat_blocks(
+            free_seat_blocks
+        )
+        price_elem.remove(free_seat_blocks)
 
     p_arg = _text_dict(price_elem)
     p_arg.update(objs)
@@ -573,6 +609,12 @@ def _parse_order(order_elem):
     if event is not None:
         objs['event'] = _parse_event(event)
         order_elem.remove(event)
+
+    requested_seats = order_elem.find('requested_seats')
+
+    if requested_seats is not None:
+        objs['requested_seats'] = _parse_seats(requested_seats)
+        order_elem.remove(requested_seats)
 
     o_arg = _text_dict(order_elem)
     o_arg.update(objs)
