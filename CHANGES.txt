@@ -1,3 +1,5 @@
+v1.2.1, 24 Oct 2014 -- Fix bug with Seat object not parsing for some unreserved seats/
+
 v1.2.0, 23 Oct 2014 -- Add support for selecting specific seats, bug fix in creating reservation.
 
 v1.1.3, 17 Oct 2014 -- Add discount attributes to core price_band object.

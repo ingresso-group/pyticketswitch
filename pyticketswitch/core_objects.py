@@ -417,10 +417,10 @@ class Seat(CoreObject):
 
     def __init__(
         self,
-        full_id,
-        col_id,
-        row_id,
-        separator,
+        full_id=None,
+        col_id=None,
+        row_id=None,
+        separator=None,
         is_restricted_view=None,
         seat_text=None,
         **kwargs
