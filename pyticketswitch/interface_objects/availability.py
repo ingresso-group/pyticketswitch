@@ -471,7 +471,7 @@ class Concession(InterfaceObject):
         This attribute will only have a value if the Concession was
         accessed through a Reservation object.
         """
-        return [s.seat_id for s in self.seats]
+        return [s.seat_id for s in self.seats if s.seat_id]
 
     @property
     def has_restricted_view(self):

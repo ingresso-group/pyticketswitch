@@ -195,7 +195,7 @@ class Order(InterfaceObject):
     @property
     def all_seat_ids(self):
         """List of Seat Ids on this order."""
-        return [s.seat_id for s in self.all_seats]
+        return [s.seat_id for s in self.all_seats if s.seat_id]
 
     @property
     def ticket_type_desc(self):
