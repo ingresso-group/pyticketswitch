@@ -499,10 +499,11 @@ class Seat(object):
     def column_sort_id(self):
         col = self._core_seat.col_id
 
-        try:
-            col = int(col)
-        except ValueError:
-            pass
+        if col:
+            try:
+                col = int(col)
+            except ValueError:
+                pass
 
         return col
 
@@ -510,10 +511,11 @@ class Seat(object):
     def row_sort_id(self):
         row = self._core_seat.row_id
 
-        try:
-            row = int(row)
-        except ValueError:
-            pass
+        if row:
+            try:
+                row = int(row)
+            except ValueError:
+                pass
 
         return row
 
