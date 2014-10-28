@@ -429,15 +429,7 @@ class InterfaceObject(object):
             interface_object=interface_object
         )
 
-        crypto_block = self._retrieve_data(key)
-
-        if not crypto_block:
-            logger.error((
-                'Failed to retrieve crypto_block,'
-                'method_name: %s, interface_object: %s'
-            ), method_name, interface_object)
-
-        return crypto_block
+        return self._retrieve_data(key)
 
     def _internal_settings(self):
         return {

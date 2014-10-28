@@ -263,7 +263,6 @@ class Performance(InterfaceObject, CostRangeMixin):
     def valid_ticket_quantities(self):
         """List of valid ticket quantities for this Performance."""
         if self._valid_ticket_quantities is None:
-            self.get_availability()
 
             crypto_block = self._get_date_time_options_crypto()
 
