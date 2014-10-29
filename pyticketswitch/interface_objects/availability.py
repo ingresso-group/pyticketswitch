@@ -220,19 +220,31 @@ class TicketType(InterfaceObject):
 
     @property
     def number_available(self):
-        """Number of tickets available for this TicketType."""
-        return self._core_price_band.number_available
+        """Number of tickets that can be booked for this TicketType."""
+        return to_int_or_none(
+            self._core_price_band.number_available
+        )
+
+    @property
+    def total_seats(self):
+        """Number of available seats for this TicketType."""
+        return to_int_or_none(
+            self._core_price_band.raw_total_seats
+        )
+
+    @property
+    def contiguous_seats(self):
+        """Number of contiguous available seats for this TicketType."""
+        return to_int_or_none(
+            self._core_price_band.raw_contiguous_seats
+        )
 
     @property
     def int_percentage_saving(self):
         """Integer value of the percentage saving."""
-        if self._core_price_band.percentage_saving:
-            try:
-                percent = int(self._core_price_band.percentage_saving)
-            except ValueError:
-                percent = None
-
-        return percent
+        return to_int_or_none(
+            self._core_price_band.percentage_saving
+        )
 
     @property
     def percentage_saving(self):
@@ -500,6 +512,27 @@ class Concession(InterfaceObject):
                 seat_text.append(s.seat_text)
 
         return seat_text
+
+    @property
+    def number_available(self):
+        """Number of tickets that can be booked for this Concession."""
+        return to_int_or_none(
+            self._core_discount.number_available
+        )
+
+    @property
+    def total_seats(self):
+        """Number of available seats for this Concession."""
+        return to_int_or_none(
+            self._core_discount.raw_total_seats
+        )
+
+    @property
+    def contiguous_seats(self):
+        """Number of contiguous available seats for this Concession."""
+        return to_int_or_none(
+            self._core_discount.raw_contiguous_seats
+        )
 
 
 class DespatchMethod(InterfaceObject):

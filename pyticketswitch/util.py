@@ -228,7 +228,7 @@ def boolean_to_yes_no(boolean):
 def to_int_or_none(int_string):
     try:
         return int(int_string)
-    except ValueError:
+    except (ValueError, TypeError):
         return None
 
 
@@ -242,7 +242,7 @@ def to_int_or_return(to_convert):
 def to_float_or_none(float_string):
     try:
         return float(float_string)
-    except ValueError:
+    except (ValueError, TypeError):
         return None
 
 

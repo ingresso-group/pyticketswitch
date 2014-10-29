@@ -1,3 +1,5 @@
+v1.3.0, 29 Oct 2014 -- Change 'number_available' attribute to be integer, add total_seats and contiguous_seats attributes to the TicketType and Concession objects.
+
 v1.2.3, 28 Oct 2014 -- Fix bug with logging and minor bug with the Performance object.
 
 v1.2.2, 27 Oct 2014 -- Fix bug with Seats that have no column/row id.

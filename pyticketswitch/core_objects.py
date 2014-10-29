@@ -377,12 +377,15 @@ class PriceBand(CoreObject):
         percentage_saving=None,
         example_seats=None,
         price_band_code=None,
+        price_band_desc=None,
         possible_discounts=None,
         example_seats_are_real=None,
         discount_code=None,
         discount_desc=None,
         discount_subdata=None,
         free_seat_blocks=None,
+        raw_contiguous_seats=None,
+        raw_total_seats=None,
         **kwargs
     ):
         self.ticket_price = ticket_price
@@ -401,6 +404,7 @@ class PriceBand(CoreObject):
             example_seats = []
         self.example_seats = example_seats
         self.price_band_code = price_band_code
+        self.price_band_desc = price_band_desc
         self.possible_discounts = possible_discounts
         self.example_seats_are_real = example_seats_are_real
         self.discount_code = discount_code
@@ -409,6 +413,8 @@ class PriceBand(CoreObject):
         if free_seat_blocks is None:
             free_seat_blocks = []
         self.free_seat_blocks = free_seat_blocks
+        self.raw_contiguous_seats = raw_contiguous_seats
+        self.raw_total_seats = raw_total_seats
 
         vars(self).update(kwargs)
 
@@ -518,6 +524,9 @@ class Discount(CoreObject):
         seatprice=None,
         no_of_tickets=None,
         seats=None,
+        number_available=None,
+        raw_contiguous_seats=None,
+        raw_total_seats=None,
         **kwargs
     ):
         self.discount_token = discount_token
@@ -531,6 +540,9 @@ class Discount(CoreObject):
         if seats is None:
             seats = []
         self.seats = seats
+        self.number_available = number_available
+        self.raw_contiguous_seats = raw_contiguous_seats
+        self.raw_total_seats = raw_total_seats
 
         vars(self).update(kwargs)
 
