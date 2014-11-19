@@ -1,3 +1,5 @@
+v1.4.1, 19 Nov 2014 -- Add support for retrieving event structured content.
+
 v1.4.0, 18 Nov 2014 -- Add Currency object and remove core_currency references, add support for retrieving user commission information and structured event information, include price band descriptions in ticket type description.
 
 v1.3.0, 29 Oct 2014 -- Change 'number_available' attribute to be integer, add total_seats and contiguous_seats attributes to the TicketType and Concession objects.

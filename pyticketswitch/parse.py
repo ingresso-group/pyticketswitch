@@ -203,6 +203,12 @@ def _parse_event(event_elem):
         objs['video_iframe'] = _parse_video_iframe(video_iframe)
         event_elem.remove(video_iframe)
 
+    structured_info = event_elem.find('structured_info')
+
+    if structured_info is not None:
+        objs['structured_info'] = _parse_structured_info(structured_info)
+        event_elem.remove(structured_info)
+
     e_arg = create_dict_from_xml_element(event_elem)
     e_arg.update(objs)
 

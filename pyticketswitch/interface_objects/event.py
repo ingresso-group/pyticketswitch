@@ -139,6 +139,27 @@ class CustomFilter(object):
         return self._core_custom_filter.custom_filter_key
 
 
+class StructuredContentItem(object):
+
+    def __init__(
+        self,
+        core_structured_info_item,
+    ):
+        self._core_structured_info_item = core_structured_info_item
+
+    @property
+    def key(self):
+        return self._core_structured_info_item.key
+
+    @property
+    def name(self):
+        return self._core_structured_info_item.name
+
+    @property
+    def value(self):
+        return self._core_structured_info_item.value
+
+
 class Event(InterfaceObject, CostRangeMixin):
     """Object that represents a TSW event.
 
@@ -168,7 +189,8 @@ class Event(InterfaceObject, CostRangeMixin):
         'cost_range': 'cost_range',
         'video_iframe': 'video_iframe',
         'custom_fields': 'custom_fields',
-        'event_medias': 'media'
+        'event_medias': 'media',
+        'structured_info': 'extra_info_only',
     }
 
     def __init__(
@@ -193,6 +215,7 @@ class Event(InterfaceObject, CostRangeMixin):
         self._perfs_have_usage_date = None
         self._perfs_have_required_info = None
         self._has_single_false_perf = None
+        self._structured_content = None
 
         if not requested_data:
             self._requested_data = {}
@@ -550,6 +573,7 @@ class Event(InterfaceObject, CostRangeMixin):
         )
 
         detailed_event = None
+        extra_info_called = False
 
         if crypto_block:
 
@@ -559,6 +583,7 @@ class Event(InterfaceObject, CostRangeMixin):
             )
 
             request_reviews = True
+            extra_info_called = True
 
         else:
             core = core_objs.Core(
@@ -601,6 +626,9 @@ class Event(InterfaceObject, CostRangeMixin):
 
         if request_reviews:
             self._requested_data['reviews'] = True
+
+        if extra_info_called:
+            self._requested_data['extra_info_only'] = True
 
     @property
     def performance_calendar(self):
@@ -1024,6 +1052,21 @@ class Event(InterfaceObject, CostRangeMixin):
                 )
 
         return performances
+
+    @property
+    def structured_content(self):
+        if self._structured_content is None:
+
+            self._structured_content = {}
+
+            si_dict = self._get_core_event_attr('structured_info')
+
+            for key, item in si_dict.items():
+                self._structured_content[key] = StructuredContentItem(
+                    core_structured_info_item=item,
+                )
+
+        return self._structured_content
 
 
 class Video(object):
