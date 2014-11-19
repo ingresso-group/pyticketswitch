@@ -123,6 +123,22 @@ def _parse_custom_filter(custom_filter_elem):
     return objects.CustomFilter(**_text_dict(custom_filter_elem))
 
 
+def _parse_structured_info(structured_info_elem):
+
+    ret_dict = {}
+
+    for elem in structured_info_elem:
+
+        si_args = _text_dict(elem)
+        si_args['key'] = elem.tag
+
+        ret_dict[elem.tag] = objects.StructuredInfoItem(
+            **si_args
+        )
+
+    return ret_dict
+
+
 def _parse_event(event_elem):
 
     objs = {}
@@ -389,6 +405,21 @@ def _parse_free_seat_blocks(free_seat_blocks_elem):
     return seat_blocks
 
 
+def _parse_user_commission(user_comm_elem):
+
+    c_args = {}
+
+    currency = user_comm_elem.find('commission_currency')
+
+    if currency is not None:
+        c_args['commission_currency'] = _parse_currency(currency)
+        user_comm_elem.remove(currency)
+
+    c_args.update(_text_dict(user_comm_elem))
+
+    return objects.UserCommission(**c_args)
+
+
 def _parse_price_band(price_elem):
 
     objs = {}
@@ -416,6 +447,14 @@ def _parse_price_band(price_elem):
             free_seat_blocks
         )
         price_elem.remove(free_seat_blocks)
+
+    user_commission = price_elem.find('user_commission')
+
+    if user_commission is not None:
+        objs['user_commission'] = _parse_user_commission(
+            user_commission
+        )
+        price_elem.remove(user_commission)
 
     p_arg = _text_dict(price_elem)
     p_arg.update(objs)
@@ -537,6 +576,13 @@ def _parse_discount(discount_elem):
 
     if seats is not None:
         d_arg['seats'] = _parse_seats(seats)
+
+    user_commission = discount_elem.find('user_commission')
+
+    if user_commission is not None:
+        d_arg['user_commission'] = _parse_user_commission(
+            user_commission
+        )
 
     return objects.Discount(**d_arg)
 

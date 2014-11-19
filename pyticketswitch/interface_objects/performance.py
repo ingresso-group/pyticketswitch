@@ -332,7 +332,7 @@ class Performance(InterfaceObject, CostRangeMixin):
 
     def get_availability(
         self, include_possible_concessions=None, no_of_tickets=None,
-        include_available_seat_blocks=None,
+        include_available_seat_blocks=None, include_user_commission=None,
     ):
         """Retrieves ticket availability information for this Performance.
 
@@ -349,6 +349,8 @@ class Performance(InterfaceObject, CostRangeMixin):
             include_available_seat_blocks (boolean): Optional, flag to indicate
                 whether to request the available seat blocks, allowing specific
                 seats to be selected.
+            include_user_commission (boolean): Optional, flag to indicate
+                whether to request the user's commission information.
 
         Returns:
             list: List of TicketType objects
@@ -362,7 +364,8 @@ class Performance(InterfaceObject, CostRangeMixin):
             departure_date=date_to_yyyymmdd_or_none(self.departure_date),
             self_print_mode='html', add_discounts=include_possible_concessions,
             no_of_tickets=no_of_tickets,
-            add_free_seat_blocks=include_available_seat_blocks
+            add_free_seat_blocks=include_available_seat_blocks,
+            add_user_commission=include_user_commission
         )
 
         self._set_crypto_block(

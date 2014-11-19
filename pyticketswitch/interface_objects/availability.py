@@ -1,6 +1,6 @@
 from operator import attrgetter
 
-from base import InterfaceObject, Seat, SeatBlock
+from base import InterfaceObject, Seat, SeatBlock, Currency
 from pyticketswitch.util import (
     format_price_with_symbol,
     to_float_or_none, to_float_summed,
@@ -61,6 +61,7 @@ class TicketType(InterfaceObject):
     def get_concessions(
         self, no_of_tickets, despatch_method=None, trolley=None,
         seat_block=None, seat_block_offset=None,
+        include_user_commission=None,
     ):
         """Retrieves the Concession objects for this TicketType.
 
@@ -81,6 +82,8 @@ class TicketType(InterfaceObject):
             seat_block_offset (int): Optional, the offset into the seat block,
                 with 0 being the start of the block. Can only be specified if
                 a seat_block is provided.
+            include_user_commission (boolean): Optional, flag to indicate
+                whether to request the user's commission information.
 
         Returns:
             list: A list for each ticket requested of Concession objects (
@@ -118,7 +121,8 @@ class TicketType(InterfaceObject):
             despatch_token=despatch_id,
             trolley_token=trolley_id,
             seat_block_token=seat_block_id,
-            seat_block_offset=seat_block_offset
+            seat_block_offset=seat_block_offset,
+            add_user_commission=include_user_commission,
         )
 
         self._set_crypto_block(
@@ -162,6 +166,12 @@ class TicketType(InterfaceObject):
 
     @property
     def description(self):
+        if self._core_price_band and self._core_price_band.price_band_desc:
+            return u"{0} - {1}".format(
+                self._core_ticket_type.ticket_type_desc,
+                self._core_price_band.price_band_desc
+            )
+
         return self._core_ticket_type.ticket_type_desc
 
     @property
@@ -371,6 +381,56 @@ class TicketType(InterfaceObject):
 
         return self._available_seat_blocks
 
+    @property
+    def commission_inc_vat(self):
+        """Float value of the user's commission including VAT for the
+        default concession on this TicketType.
+
+        Only available if requested at the availability stage with the
+        include_user_commission flag.
+        """
+        if self._core_price_band.user_commission:
+
+            return to_float_or_none(
+                self._core_price_band.user_commission.amount_ex_vat
+            )
+
+        return None
+
+    @property
+    def commission_ex_vat(self):
+        """Float value of the user's commission excluding VAT for the
+        default concession on this TicketType.
+
+        Only available if requested at the availability stage with the
+        include_user_commission flag.
+        """
+        if self._core_price_band.user_commission:
+
+            return to_float_or_none(
+                self._core_price_band.user_commission.amount_inc_vat
+            )
+
+        return None
+
+    @property
+    def commission_currency(self):
+        """Currency object representing the currency that the commission
+        values are provided in.
+
+        Only available if requested at the availability stage with the
+        include_user_commission flag.
+        """
+        if self._core_price_band.user_commission:
+
+            user_comm = self._core_price_band.user_commission
+
+            return Currency(
+                core_currency=user_comm.commission_currency
+            )
+
+        return None
+
 
 class Concession(InterfaceObject):
     """Object that represents a TSW discount.
@@ -534,6 +594,56 @@ class Concession(InterfaceObject):
             self._core_discount.raw_contiguous_seats
         )
 
+    @property
+    def commission_inc_vat(self):
+        """Float value of the user's commission including VAT for
+        this Concession.
+
+        Only available if requested in get_concessions with the
+        include_user_commission flag.
+        """
+        if self._core_discount.user_commission:
+
+            return to_float_or_none(
+                self._core_discount.user_commission.amount_ex_vat
+            )
+
+        return None
+
+    @property
+    def commission_ex_vat(self):
+        """Float value of the user's commission excluding VAT for
+        this Concession.
+
+        Only available if requested in get_concessions with the
+        include_user_commission flag.
+        """
+        if self._core_discount.user_commission:
+
+            return to_float_or_none(
+                self._core_discount.user_commission.amount_inc_vat
+            )
+
+        return None
+
+    @property
+    def commission_currency(self):
+        """Currency object representing the currency that the commission
+        values are provided in.
+
+        Only available if requested in get_concessions with the
+        include_user_commission flag.
+        """
+        if self._core_discount.user_commission:
+
+            user_comm = self._core_discount.user_commission
+
+            return Currency(
+                core_currency=user_comm.commission_currency
+            )
+
+        return None
+
 
 class DespatchMethod(InterfaceObject):
     """Object that represents a TSW despatch method.
@@ -581,5 +691,10 @@ class DespatchMethod(InterfaceObject):
         )
 
     @property
-    def core_currency(self):
-        return self._core_currency
+    def currency(self):
+        if self._core_currency:
+            return Currency(
+                core_currency=self._core_currency
+            )
+
+        return None

@@ -1,4 +1,4 @@
-from base import InterfaceObject, Seat
+from base import InterfaceObject, Seat, Currency
 from pyticketswitch.util import (
     to_int_or_return, to_float_or_none,
     to_float_summed, format_price_with_symbol
@@ -115,8 +115,13 @@ class Order(InterfaceObject):
         )
 
     @property
-    def core_currency(self):
-        return self._core_currency
+    def currency(self):
+        if self._core_currency:
+            return Currency(
+                core_currency=self._core_currency
+            )
+
+        return None
 
     @property
     def performance(self):

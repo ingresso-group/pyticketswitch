@@ -450,6 +450,45 @@ class InterfaceObject(object):
         return d
 
 
+class Currency(object):
+
+    def __init__(
+        self,
+        core_currency
+    ):
+        self._core_currency = core_currency
+
+    @property
+    def code(self):
+        return self._core_currency.currency_code
+
+    @property
+    def number(self):
+        return to_int_or_none(
+            self._core_currency.currency_number
+        )
+
+    @property
+    def pre_symbol(self):
+        return self._core_currency.currency_pre_symbol
+
+    @property
+    def post_symbol(self):
+        return self._core_currency.currency_post_symbol
+
+    @property
+    def factor(self):
+        return to_int_or_none(
+            self._core_currency.currency_factor
+        )
+
+    @property
+    def decimal_places(self):
+        return to_int_or_none(
+            self._core_currency.currency_places
+        )
+
+
 class Seat(object):
     """Represents a Seat in TSW, used in several other objects.
 
@@ -934,7 +973,9 @@ class CostRangeMixin(object):
         cost_range = self._get_core_cost_range()
 
         if cost_range:
-            currency = cost_range.currency
+            currency = Currency(
+                core_currency=cost_range.currency
+            )
 
         return currency
 

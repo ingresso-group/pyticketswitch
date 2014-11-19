@@ -82,6 +82,7 @@ class Event(CoreObject):
         need_departure_date=None,
         need_performance=None,
         need_duration=None,
+        structured_info=None,
         **kwargs
     ):
 
@@ -140,6 +141,10 @@ class Event(CoreObject):
         self.need_departure_date = need_departure_date
         self.need_performance = need_performance
         self.need_duration = need_duration
+
+        if structured_info is None:
+            structured_info = {}
+        self.structured_info = structured_info
 
         vars(self).update(kwargs)
 
@@ -386,6 +391,7 @@ class PriceBand(CoreObject):
         free_seat_blocks=None,
         raw_contiguous_seats=None,
         raw_total_seats=None,
+        user_commission=None,
         **kwargs
     ):
         self.ticket_price = ticket_price
@@ -415,6 +421,7 @@ class PriceBand(CoreObject):
         self.free_seat_blocks = free_seat_blocks
         self.raw_contiguous_seats = raw_contiguous_seats
         self.raw_total_seats = raw_total_seats
+        self.user_commission = user_commission
 
         vars(self).update(kwargs)
 
@@ -501,12 +508,16 @@ class Currency(CoreObject):
         currency_number,
         currency_pre_symbol,
         currency_post_symbol,
+        currency_factor=None,
+        currency_places=None,
         **kwargs
     ):
         self.currency_code = currency_code
         self.currency_number = currency_number
         self.currency_pre_symbol = currency_pre_symbol
         self.currency_post_symbol = currency_post_symbol
+        self.currency_factor = currency_factor
+        self.currency_places = currency_places
 
         vars(self).update(kwargs)
 
@@ -527,6 +538,7 @@ class Discount(CoreObject):
         number_available=None,
         raw_contiguous_seats=None,
         raw_total_seats=None,
+        user_commission=None,
         **kwargs
     ):
         self.discount_token = discount_token
@@ -543,6 +555,7 @@ class Discount(CoreObject):
         self.number_available = number_available
         self.raw_contiguous_seats = raw_contiguous_seats
         self.raw_total_seats = raw_total_seats
+        self.user_commission = user_commission
 
         vars(self).update(kwargs)
 
@@ -837,5 +850,39 @@ class SelfPrintHTMLPage(CoreObject):
         self.page_url = page_url
         self.item_number = item_number
         self.complete_page_url = complete_page_url
+
+        vars(self).update(kwargs)
+
+
+class UserCommission(CoreObject):
+
+    def __init__(
+        self,
+        amount_ex_vat,
+        amount_inc_vat,
+        commission_currency,
+        **kwargs
+    ):
+
+        self.amount_ex_vat = amount_ex_vat
+        self.amount_inc_vat = amount_inc_vat
+        self.commission_currency = commission_currency
+
+        vars(self).update(kwargs)
+
+
+class StructuredInfoItem(CoreObject):
+
+    def __init__(
+        self,
+        key,
+        name=None,
+        value=None,
+        **kwargs
+    ):
+
+        self.key = key
+        self.name = name
+        self.value = value
 
         vars(self).update(kwargs)
