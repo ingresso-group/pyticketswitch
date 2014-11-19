@@ -451,6 +451,10 @@ class InterfaceObject(object):
 
 
 class Currency(object):
+    """Represents a Currency in TSW, used in several other objects.
+
+    The constructor is for internal user only.
+    """
 
     def __init__(
         self,

@@ -140,6 +140,13 @@ class CustomFilter(object):
 
 
 class StructuredContentItem(object):
+    """Represents an item of Structured Content.
+
+    For example, Events may have an associated 'Overview' Structured
+    Content Item, which would have a key of 'overview'. The name would
+    then be the translated name of the item (so 'Overview' in English)
+    and the value would be the translated value of this item for the Event.
+    """
 
     def __init__(
         self,
@@ -1055,6 +1062,10 @@ class Event(InterfaceObject, CostRangeMixin):
 
     @property
     def structured_content(self):
+        """Dictionary of StructuredContentItem objects for this Event.
+
+        The dictionary keys will be the key of the StructuredContentItem.
+        """
         if self._structured_content is None:
 
             self._structured_content = {}
