@@ -959,6 +959,194 @@ class Address(object):
         self.country_code = country_code
 
 
+class SpecialOffer(object):
+    """Represents a special offer in TSW, used in objects with cost range
+    information.
+
+    The constructor is for internal user only.
+    """
+
+    def __init__(self, core_offer, core_currency, offer_type):
+
+        self._core_offer = core_offer
+        self._core_currency = core_currency
+        self.offer_type = offer_type
+        self.currency = Currency(
+            core_currency=core_currency
+        )
+
+    @property
+    def full_combined_price(self):
+        """Formatted string value of the full combined price with
+        currency symbol.
+        """
+        return format_price_with_symbol(
+            self._core_offer['full_combined'],
+            self.currency.pre_symbol,
+            self.currency.post_symbol
+        )
+
+    @property
+    def full_combined_price_float(self):
+        """Float value of the full combined price."""
+        return to_float_or_none(
+            self._core_offer['full_combined']
+        )
+
+    @property
+    def full_seatprice(self):
+        """Formatted string value of the full seatprice price with
+        currency symbol.
+        """
+        return format_price_with_symbol(
+            self._core_offer['full_seatprice'],
+            self.currency.pre_symbol,
+            self.currency.post_symbol
+        )
+
+    @property
+    def full_seatprice_float(self):
+        """Float value of the full seatprice price."""
+        return to_float_or_none(
+            self._core_offer['full_seatprice']
+        )
+
+    @property
+    def full_surcharge_price(self):
+        """Formatted string value of the full surcharge price with
+        currency symbol.
+        """
+        return format_price_with_symbol(
+            self._core_offer['full_surcharge'],
+            self.currency.pre_symbol,
+            self.currency.post_symbol
+        )
+
+    @property
+    def full_surcharge_price_float(self):
+        """Float value of the full surcharge price."""
+        return to_float_or_none(
+            self._core_offer['full_surcharge']
+        )
+
+    @property
+    def offer_combined_price(self):
+        """Formatted string value of the offer combined price with
+        currency symbol.
+        """
+        return format_price_with_symbol(
+            self._core_offer['offer_combined'],
+            self.currency.pre_symbol,
+            self.currency.post_symbol
+        )
+
+    @property
+    def offer_combined_price_float(self):
+        """Float value of the offer combined price."""
+        return to_float_or_none(
+            self._core_offer['offer_combined']
+        )
+
+    @property
+    def offer_seatprice(self):
+        """Formatted string value of the offer seatprice price with
+        currency symbol.
+        """
+        return format_price_with_symbol(
+            self._core_offer['offer_seatprice'],
+            self.currency.pre_symbol,
+            self.currency.post_symbol
+        )
+
+    @property
+    def offer_seatprice_float(self):
+        """Float value of the offer seatprice price."""
+        return to_float_or_none(
+            self._core_offer['offer_seatprice']
+        )
+
+    @property
+    def offer_surcharge_price(self):
+        """Formatted string value of the offer surcharge price with
+        currency symbol.
+        """
+        return format_price_with_symbol(
+            self._core_offer['offer_surcharge'],
+            self.currency.pre_symbol,
+            self.currency.post_symbol
+        )
+
+    @property
+    def offer_surcharge_price_float(self):
+        """Float value of the offer surcharge price."""
+        return to_float_or_none(
+            self._core_offer['offer_surcharge']
+        )
+
+    @property
+    def percentage_saving(self):
+        """Formatted string value of the percentage saving with
+        percent sign.
+        """
+        return '{0}%'.format(
+            self._core_offer['percentage_saving']
+        )
+
+    @property
+    def percentage_saving_float(self):
+        """Float value of the percentage saving."""
+        return to_float_or_none(
+            self._core_offer['percentage_saving']
+        )
+
+    @property
+    def absolute_saving_float(self):
+        """Float value of the absolute saving."""
+        ab_val = self._core_offer.get('absolute_saving', None)
+
+        if (
+            ab_val is None and
+            self.full_combined_price_float is not None and
+            self.offer_combined_price_float is not None
+        ):
+            ab_val = (
+                self.full_combined_price_float -
+                self.offer_combined_price_float
+            )
+
+        return to_float_or_none(ab_val)
+
+    @property
+    def absolute_saving(self):
+        """Formatted string value of the absolute saving value with
+        currency symbol.
+        """
+
+        ret_val = None
+
+        if self.absolute_saving_float is not None:
+
+            ret_val = format_price_with_symbol(
+                self.absolute_saving_float,
+                self.currency.pre_symbol,
+                self.currency.post_symbol
+            )
+        return ret_val
+
+    @property
+    def is_no_booking_fee_offer(self):
+        """Boolean indicating if this is a no booking fee offer."""
+        if (
+            self.full_seatprice_float == self.offer_seatprice_float and
+            self.full_combined_price_float >
+                self.offer_combined_price_float and
+            not self.offer_surcharge_price_float
+        ):
+            return True
+
+        return False
+
+
 class CostRangeMixin(object):
     """Object to provide common cost range related functionality."""
 
@@ -969,6 +1157,16 @@ class CostRangeMixin(object):
         raise NotImplementedError(
             'Subclasses must override _get_core_cost_range()'
         )
+
+    @property
+    def special_offers(self):
+        """Returns a list of SpecialOffer objects."""
+        offers = [
+            self.best_value_offer, self.max_saving_offer,
+            self.top_price_offer
+        ]
+
+        return [o for o in offers if o is not None]
 
     @property
     def currency(self):
@@ -982,6 +1180,60 @@ class CostRangeMixin(object):
             )
 
         return currency
+
+    @property
+    def best_value_offer(self):
+        """Object representing the best value offer. Returns None
+        if there is no best value offer.
+        """
+        offer = None
+        cost_range = self._get_core_cost_range()
+
+        if cost_range and cost_range.best_value_offer:
+
+            offer = SpecialOffer(
+                core_offer=cost_range.best_value_offer,
+                core_currency=cost_range.currency,
+                offer_type='best_value',
+            )
+
+        return offer
+
+    @property
+    def max_saving_offer(self):
+        """Object representing the max saving offer. Returns None
+        if there is no max saving offer.
+        """
+        offer = None
+        cost_range = self._get_core_cost_range()
+
+        if cost_range and cost_range.max_saving_offer:
+
+            offer = SpecialOffer(
+                core_offer=cost_range.max_saving_offer,
+                core_currency=cost_range.currency,
+                offer_type='max_saving',
+            )
+
+        return offer
+
+    @property
+    def top_price_offer(self):
+        """Object representing the top price offer. Returns None
+        if there is no top price offer.
+        """
+        offer = None
+        cost_range = self._get_core_cost_range()
+
+        if cost_range and cost_range.top_price_offer:
+
+            offer = SpecialOffer(
+                core_offer=cost_range.top_price_offer,
+                core_currency=cost_range.currency,
+                offer_type='top_price',
+            )
+
+        return offer
 
     @property
     def min_seatprice(self):
@@ -1061,15 +1313,8 @@ class CostRangeMixin(object):
     @property
     def is_special_offer(self):
         """Boolean indicating if the object has a special offer."""
-        cost_range = self._get_core_cost_range()
-
-        if cost_range:
-            if (
-                cost_range.best_value_offer or
-                cost_range.top_price_offer or
-                cost_range.max_saving_offer
-            ):
-                return True
+        if self.special_offers:
+            return True
 
         return False
 
@@ -1078,65 +1323,47 @@ class CostRangeMixin(object):
         """Formatted string value of the maximum saving percentage
         with a '%' symbol.
         """
-        cost_range = self._get_core_cost_range()
-        per_sav = None
+        if self.best_value_offer:
+            return self.best_value_offer.percentage_saving
 
-        if cost_range:
-            if cost_range.best_value_offer:
-                per_sav = '{0}%'.format(
-                    cost_range.best_value_offer['percentage_saving']
-                )
-
-        return per_sav
+        return None
 
     @property
     def max_saving_absolute(self):
         """Formatted string value of the maximum possible saving with
         currency symbol.
         """
-        cost_range = self._get_core_cost_range()
-        ab_sav = None
+        if self.max_saving_offer:
+            return self.max_saving_offer.absolute_saving
 
-        if cost_range:
-            if cost_range.max_saving_offer:
-                ab_sav = format_price_with_symbol(
-                    cost_range.max_saving_offer['absolute_saving'],
-                    cost_range.currency.currency_pre_symbol,
-                    cost_range.currency.currency_post_symbol
-                )
-
-        return ab_sav
+        return None
 
     @property
     def best_value_non_offer_combined_price(self):
         """Formatted string value of the original cost of the best value
-        offer price with currency symbol (i.e. if there was no offer)."""
-        price = None
-        cost_range = self._get_core_cost_range()
+        offer price with currency symbol (i.e. if there was no offer).
+        """
+        if self.best_value_offer:
+            return self.best_value_offer.full_combined_price
 
-        if cost_range:
-            if cost_range.best_value_offer:
-                price = format_price_with_symbol(
-                    cost_range.best_value_offer['full_combined'],
-                    cost_range.currency.currency_pre_symbol,
-                    cost_range.currency.currency_post_symbol
-                )
-
-        return price
+        return None
 
     @property
     def best_value_offer_combined_price(self):
         """Formatted string value of the best value offer price with
-        currency symbol."""
-        price = None
-        cost_range = self._get_core_cost_range()
+        currency symbol.
+        """
+        if self.best_value_offer:
+            return self.best_value_offer.offer_combined_price
 
-        if cost_range:
-            if cost_range.best_value_offer:
-                price = format_price_with_symbol(
-                    cost_range.best_value_offer['offer_combined'],
-                    cost_range.currency.currency_pre_symbol,
-                    cost_range.currency.currency_post_symbol
-                )
+        return None
 
-        return price
+    @property
+    def has_no_booking_fee_offer(self):
+        """Boolean to indicate if there is an offer that has no
+        booking fee."""
+        for o in self.special_offers:
+            if o.is_no_booking_fee_offer:
+                return True
+
+        return False

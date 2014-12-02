@@ -1,3 +1,5 @@
+v1.4.2, 2 Dec 2014 -- Change how special offers are handled, add functionality to check if an offer is a no booking fee offer.
+
 v1.4.1, 19 Nov 2014 -- Add support for retrieving event structured content.
 
 v1.4.0, 18 Nov 2014 -- Add Currency object and remove core_currency references, add support for retrieving user commission information and structured event information, include price band descriptions in ticket type description.
