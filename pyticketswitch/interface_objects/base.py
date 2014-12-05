@@ -33,6 +33,8 @@ class InterfaceObject(object):
         remote_ip (string): user's IP address (internal use)
         remote_site (string): domain of the user request (internal use)
         ext_start_session_url (string): URL for start_session (internal user)
+        additional_elements (dict): An optional dictionary of key/values to
+            include in the XML passed to the API.
 
     """
 
@@ -67,7 +69,8 @@ class InterfaceObject(object):
         no_time_descr=None, api_request_timeout=None,
         default_concession_descr=None, remote_ip=None,
         remote_site=None, accept_language=None,
-        ext_start_session_url=None
+        ext_start_session_url=None,
+        additional_elements=None
     ):
         return {
             'username': username,
@@ -80,6 +83,7 @@ class InterfaceObject(object):
             'api_request_timeout': api_request_timeout,
             'no_time_descr': no_time_descr,
             'default_concession_descr': default_concession_descr,
+            'additional_elements': additional_elements,
         }
 
     def _configure(
@@ -87,7 +91,8 @@ class InterfaceObject(object):
         no_time_descr=None, api_request_timeout=None,
         default_concession_descr=None, remote_ip=None,
         remote_site=None, accept_language=None,
-        ext_start_session_url=None
+        ext_start_session_url=None,
+        additional_elements=None,
     ):
 
         if (not username) and remote_ip and remote_site:
@@ -140,7 +145,8 @@ class InterfaceObject(object):
             remote_ip=remote_ip,
             remote_site=remote_site,
             accept_language=accept_language,
-            ext_start_session_url=ext_start_session_url
+            ext_start_session_url=ext_start_session_url,
+            additional_elements=additional_elements,
         )
 
         self._core_api = CoreAPI(
@@ -151,7 +157,8 @@ class InterfaceObject(object):
             remote_site=remote_site,
             accept_language=accept_language,
             ext_start_session_url=ext_start_session_url,
-            api_request_timeout=api_request_timeout
+            api_request_timeout=api_request_timeout,
+            additional_elements=additional_elements,
         )
 
     def get_core_api(self):

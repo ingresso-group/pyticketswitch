@@ -1,3 +1,5 @@
+v1.4.4, 5 Dec 2014 -- Add the ability to include additional elements in the XML passed to the API.
+
 v1.4.3, 4 Dec 2014 -- Order object changes relating to requested seats, add restricted view attributes to ticket type, changes to purchase exceptions.
 
 v1.4.2, 2 Dec 2014 -- Change how special offers are handled, add functionality to check if an offer is a no booking fee offer.

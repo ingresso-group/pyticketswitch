@@ -21,7 +21,8 @@ class CoreAPI(object):
     def __init__(
         self, username, password, url,
         remote_ip, remote_site, accept_language,
-        ext_start_session_url, api_request_timeout
+        ext_start_session_url, api_request_timeout,
+        additional_elements=None
     ):
 
         self.username = username
@@ -38,6 +39,11 @@ class CoreAPI(object):
             self.api_request_timeout = api_request_timeout
         else:
             self.api_request_timeout = settings.API_REQUEST_TIMEOUT
+
+        if not additional_elements:
+            additional_elements = {}
+
+        self.additional_elements = additional_elements
 
     def _post(self, method_name, data, url, headers=None):
 
@@ -221,6 +227,8 @@ class CoreAPI(object):
             'remote_ip': self.remote_ip,
             'remote_site': self.remote_site,
         }
+
+        args.update(self.additional_elements)
 
         args.update(kwargs)
 
