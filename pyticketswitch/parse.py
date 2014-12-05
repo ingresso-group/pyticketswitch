@@ -1089,49 +1089,73 @@ def purchase_reservation_part_two_result(root):
             description=root.findtext('fail_desc')
         )
 
+    failed_cv_two = root.findtext('failed_cv_two')
+    failed_avs = root.findtext('failed_avs')
+    failed_3d_secure = root.findtext('failed_3d_secure')
     purchase_fail_code = root.findtext('purchase_fail_code')
 
     if purchase_fail_code == '1':
         raise aex.FraudTriggered(
             call=root.tag,
             code=purchase_fail_code,
-            description=root.findtext('purchase_fail_desc')
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
         )
     elif purchase_fail_code in ('2', '3'):
         raise aex.CardAuthorisationFailed(
             call=root.tag,
             code=purchase_fail_code,
-            description=root.findtext('purchase_fail_desc')
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
         )
     elif purchase_fail_code == '4':
         raise aex.ReservationAlreadyPurchased(
             call=root.tag,
             code=purchase_fail_code,
-            description=root.findtext('purchase_fail_desc')
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
         )
     elif purchase_fail_code == '5':
         raise aex.PurchasePreviouslyAttempted(
             call=root.tag,
             code=purchase_fail_code,
-            description=root.findtext('purchase_fail_desc')
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
         )
     elif purchase_fail_code == '6':
         raise aex.PurchaseRefused(
             call=root.tag,
             code=purchase_fail_code,
-            description=root.findtext('purchase_fail_desc')
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
         )
     elif purchase_fail_code == '7':
         raise aex.PurchaseFailed(
             call=root.tag,
             code=purchase_fail_code,
-            description=root.findtext('purchase_fail_desc')
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
         )
     elif purchase_fail_code:
         raise aex.PurchaseException(
             call=root.tag,
             code=purchase_fail_code,
-            description=root.findtext('purchase_fail_desc')
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
         )
 
     objs = {}

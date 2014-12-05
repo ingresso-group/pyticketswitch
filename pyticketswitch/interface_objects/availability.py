@@ -323,6 +323,35 @@ class TicketType(InterfaceObject):
         return self._example_seats
 
     @property
+    def has_example_seat_with_restricted_view(self):
+        """Boolean to indicate if any of the example seats have restricted
+        views.
+
+        Returns True if any of the example seats are marked as having a
+        restricted view, False if all of the example seats are marked as
+        not having a restricted view and None if the information is not
+        provided.
+        """
+        ret_val = None
+        for s in self.example_seats:
+            if s.is_restricted_view:
+                return True
+            elif s.is_restricted_view is False:
+                ret_val = False
+
+        return ret_val
+
+    @property
+    def unique_example_seat_text(self):
+        """List of unique example seat text strings."""
+        seat_text = []
+        for s in self.example_seats:
+            if s.seat_text and s.seat_text not in seat_text:
+                seat_text.append(s.seat_text)
+
+        return seat_text
+
+    @property
     def example_seats_are_real(self):
         """Boolean to indicate if the example_seats are actual seat numbers.
 

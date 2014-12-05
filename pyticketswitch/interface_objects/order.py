@@ -249,7 +249,27 @@ class Order(InterfaceObject):
         return self._requested_seats
 
     @property
+    def requested_seat_ids(self):
+        """List of requested Seat Ids on this order."""
+        return [r.seat_id for r in self.requested_seats if r.seat_id]
+
+    @property
     def seat_request_status(self):
         """Describes the status of the request for specific seats, i.e. were
         the specified seats successfully selected."""
         return self._core_order.seat_request_status
+
+    @property
+    def got_all_requested_seats(self):
+        """Boolean indicating if the requested seats were successfully
+        reserved.
+
+        Returns True if all requested seats were reserved, False if some or
+        none of the requested seats were reserved and None if no seats were
+        requested.
+        """
+        if self.seat_request_status == 'not_requested':
+            return None
+        elif self.seat_request_status == 'got_all':
+            return True
+        return False

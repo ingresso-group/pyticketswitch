@@ -1,3 +1,5 @@
+from pyticketswitch.util import resolve_boolean
+
 
 class APIException(Exception):
     """General Exception object for representing an error returned by the API.
@@ -341,7 +343,35 @@ class PurchaseException(APIException):
 
     This class is sub classed by several Exception classes.
     """
-    pass
+    def __init__(
+        self, call, description, code=None, failed_cv_two=None,
+        failed_avs=None, failed_3d_secure=None
+    ):
+        self._failed_cv_two = failed_cv_two
+        self._failed_avs = failed_avs
+        self._failed_3d_secure = failed_3d_secure
+
+        super(PurchaseException, self).__init__(
+            call=call, code=code, description=description
+        )
+
+    @property
+    def failed_cv_two(self):
+        """Boolean to indicate if the purchase attempt was marked with a
+        CV2 failure."""
+        return resolve_boolean(self._failed_cv_two)
+
+    @property
+    def failed_avs(self):
+        """Boolean to indicate if the purchase attempt was marked with a
+        AVS failure."""
+        return resolve_boolean(self._failed_avs)
+
+    @property
+    def failed_3d_secure(self):
+        """Boolean to indicate if the purchase attempt was marked with a
+        3D secure failure."""
+        return resolve_boolean(self._failed_3d_secure)
 
 
 class FraudTriggered(PurchaseException):
