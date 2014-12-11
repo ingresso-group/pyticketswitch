@@ -248,6 +248,11 @@ class Performance(InterfaceObject, CostRangeMixin):
         )
 
     @property
+    def perf_type_code(self):
+        """Type code, for internal use."""
+        return self._get_core_performance_attr('perf_type_code')
+
+    @property
     def ticket_types(self):
         """List of TicketType objects for this Performance."""
         if self._ticket_types is None:

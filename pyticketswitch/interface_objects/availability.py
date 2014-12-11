@@ -179,6 +179,10 @@ class TicketType(InterfaceObject):
         return self._core_ticket_type.ticket_type_code
 
     @property
+    def price_band_code(self):
+        return self._core_price_band.price_band_code
+
+    @property
     def price_without_surcharge(self):
         """Formatted string value of the price excluding surcharge with
         currency symbol."""
@@ -505,6 +509,11 @@ class Concession(InterfaceObject):
         return discount_desc
 
     @property
+    def code(self):
+        """Code for internal use."""
+        return self._core_discount.discount_code
+
+    @property
     def ticket_price(self):
         """Formatted string value of the combined price with currency symbol.
         """
@@ -702,6 +711,11 @@ class DespatchMethod(InterfaceObject):
     @property
     def description(self):
         return self._core_despatch_method.despatch_desc
+
+    @property
+    def code(self):
+        """Code for internal use."""
+        return self._core_despatch_method.despatch_code
 
     @property
     def cost(self):
