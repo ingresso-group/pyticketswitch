@@ -1,3 +1,5 @@
+v1.4.6, 12 Dec 2014 -- Minor logging change.
+
 v1.4.5, 11 Dec 2014 -- Add code attributes to Concession and Despatch methods, add perf_type_code to Performance and add price_band_code to TicketType.
 
 v1.4.4, 5 Dec 2014 -- Add the ability to include additional elements in the XML passed to the API.

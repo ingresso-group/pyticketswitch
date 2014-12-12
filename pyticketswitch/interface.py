@@ -162,7 +162,7 @@ class CoreAPI(object):
             if after:
                 time_taken = (after - before).total_seconds()
 
-                logger.info(
+                logger.debug(
                     'url=%s, api_call=%s, time_taken=%s',
                     url, method_name, time_taken
                 )
