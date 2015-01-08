@@ -83,6 +83,7 @@ class Event(CoreObject):
         need_performance=None,
         need_duration=None,
         structured_info=None,
+        event_quantity_options=None,
         **kwargs
     ):
 
@@ -141,10 +142,11 @@ class Event(CoreObject):
         self.need_departure_date = need_departure_date
         self.need_performance = need_performance
         self.need_duration = need_duration
-
+        self.need_duration = need_duration
         if structured_info is None:
             structured_info = {}
         self.structured_info = structured_info
+        self.event_quantity_options = event_quantity_options
 
         vars(self).update(kwargs)
 
@@ -702,6 +704,7 @@ class CostRange(CoreObject):
         best_value_offer=None,
         max_saving_offer=None,
         top_price_offer=None,
+        no_singles_cost_range=None,
         **kwargs
     ):
         self.max_combined = max_combined
@@ -714,6 +717,7 @@ class CostRange(CoreObject):
         self.max_saving_offer = max_saving_offer
         self.top_price_offer = top_price_offer
         self.currency = currency
+        self.no_singles_cost_range = no_singles_cost_range
 
         vars(self).update(kwargs)
 

@@ -1,3 +1,5 @@
+v1.4.7, 8 Jan 2015 -- Add no_singles cost range object to CostRangeMixin and add valid_ticket_quantities method to Event
+
 v1.4.6, 12 Dec 2014 -- Minor logging change.
 
 v1.4.5, 11 Dec 2014 -- Add code attributes to Concession and Despatch methods, add perf_type_code to Performance and add price_band_code to TicketType.

@@ -1374,3 +1374,43 @@ class CostRangeMixin(object):
                 return True
 
         return False
+
+    @property
+    def cached_valid_ticket_quantities(self):
+        """Returns a list of the valid ticket quantities that have been
+        cached"""
+        ticket_quantities = []
+        cost_range = self._get_core_cost_range()
+
+        if cost_range:
+            if cost_range.quantity_options:
+                ticket_quantities = cost_range.quantity_options.get(
+                    'valid_quantity', []
+                )
+                ticket_quantities = [int(x) for x in ticket_quantities]
+
+        return ticket_quantities
+
+    @property
+    def no_singles(self):
+        """Returns a sub cost range object representing a cost range when
+        selecting more than one ticket."""
+
+        cost_range = self._get_core_cost_range()
+
+        if cost_range and cost_range.no_singles_cost_range:
+            return CostRange(cost_range.no_singles_cost_range)
+
+        return None
+
+
+class CostRange(CostRangeMixin):
+    """A class providing the same functionality as CostRangeMixin, for use
+    where an actual cost range object is required"""
+
+    def __init__(self, core_cost_range):
+
+        self._core_cost_range = core_cost_range
+
+    def _get_core_cost_range(self):
+        return self._core_cost_range

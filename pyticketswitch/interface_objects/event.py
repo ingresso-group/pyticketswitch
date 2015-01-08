@@ -198,6 +198,7 @@ class Event(InterfaceObject, CostRangeMixin):
         'custom_fields': 'custom_fields',
         'event_medias': 'media',
         'structured_info': 'extra_info_only',
+        'event_quantity_options': 'extra_info_only',
     }
 
     def __init__(
@@ -223,6 +224,7 @@ class Event(InterfaceObject, CostRangeMixin):
         self._perfs_have_required_info = None
         self._has_single_false_perf = None
         self._structured_content = None
+        self._valid_ticket_quantities = None
 
         if not requested_data:
             self._requested_data = {}
@@ -330,6 +332,28 @@ class Event(InterfaceObject, CostRangeMixin):
         return resolve_boolean(
             self._get_core_event_attr('need_duration')
         )
+
+    @property
+    def valid_ticket_quantities(self):
+        """Returns a list of the valid ticket quantities."""
+
+        if self._valid_ticket_quantities is None:
+
+            self._valid_ticket_quantities = []
+
+            if self.cached_valid_ticket_quantities:
+                self._valid_ticket_quantities = (
+                    self.cached_valid_ticket_quantities
+                )
+
+            else:
+                quantity_options_dict = self._get_core_event_attr(
+                    'event_quantity_options'
+                )
+                valid_list = quantity_options_dict.get('valid_quantity', [])
+                self._valid_ticket_quantities = [int(x) for x in valid_list]
+
+        return self._valid_ticket_quantities
 
     @property
     def latitude(self):

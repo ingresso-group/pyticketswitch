@@ -101,6 +101,12 @@ def _parse_cost_range(cost_range_elem):
         add_arg['currency'] = _parse_currency(currency)
         cost_range_elem.remove(currency)
 
+    no_singles = cost_range_elem.find('no_singles_cost_range')
+
+    if no_singles is not None:
+        add_arg['no_singles_cost_range'] = _parse_cost_range(no_singles)
+        cost_range_elem.remove(no_singles)
+
     cr_arg = create_dict_from_xml_element(cost_range_elem)
     cr_arg.update(add_arg)
 
