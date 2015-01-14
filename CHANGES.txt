@@ -1,3 +1,5 @@
+v1.4.8, 14 Jan 2015 -- Fix bug when no 'event_quantity_options' in extra_info
+
 v1.4.7, 8 Jan 2015 -- Add no_singles cost range object to CostRangeMixin and add valid_ticket_quantities method to Event
 
 v1.4.6, 12 Dec 2014 -- Minor logging change.

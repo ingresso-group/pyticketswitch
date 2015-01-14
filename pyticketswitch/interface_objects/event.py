@@ -350,8 +350,13 @@ class Event(InterfaceObject, CostRangeMixin):
                 quantity_options_dict = self._get_core_event_attr(
                     'event_quantity_options'
                 )
-                valid_list = quantity_options_dict.get('valid_quantity', [])
-                self._valid_ticket_quantities = [int(x) for x in valid_list]
+                if quantity_options_dict:
+                    valid_list = quantity_options_dict.get(
+                        'valid_quantity', []
+                    )
+                    self._valid_ticket_quantities = [
+                        int(x) for x in valid_list
+                    ]
 
         return self._valid_ticket_quantities
 
