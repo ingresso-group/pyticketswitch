@@ -352,13 +352,14 @@ class CoreAPI(object):
         return self.parse_response(parse.event_search_result, resp)
 
     def extra_info(
-        self, crypto_block, event_token, source_info=None, request_media=None
+        self, crypto_block, event_token, source_info=None, request_media=None,
+        mime_text_type=None
     ):
         resp = self.make_core_request(
             'extra_info',
             crypto_block=crypto_block,
             event_token=event_token, source_info=source_info,
-            request_media=request_media
+            request_media=request_media, mime_text_type=mime_text_type
         )
 
         return self.parse_response(parse.extra_info_result, resp)

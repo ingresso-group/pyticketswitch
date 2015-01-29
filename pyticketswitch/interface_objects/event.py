@@ -591,7 +591,7 @@ class Event(InterfaceObject, CostRangeMixin):
 
     def get_details(
         self, request_media=None, source_info=True,
-        request_reviews=True
+        request_reviews=True, mime_text_type='html'
     ):
         """Retrieves data for the current Event.
 
@@ -615,7 +615,8 @@ class Event(InterfaceObject, CostRangeMixin):
 
             detailed_event = self.get_core_api().extra_info(
                 crypto_block=crypto_block, event_token=self.event_id,
-                request_media=request_media, source_info=source_info
+                request_media=request_media, source_info=source_info,
+                mime_text_type=mime_text_type
             )
 
             request_reviews = True
