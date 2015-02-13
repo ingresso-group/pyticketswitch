@@ -705,6 +705,7 @@ class CostRange(CoreObject):
         max_saving_offer=None,
         top_price_offer=None,
         no_singles_cost_range=None,
+        quantity_options=None,
         **kwargs
     ):
         self.max_combined = max_combined
@@ -718,6 +719,7 @@ class CostRange(CoreObject):
         self.top_price_offer = top_price_offer
         self.currency = currency
         self.no_singles_cost_range = no_singles_cost_range
+        self.quantity_options = quantity_options
 
         vars(self).update(kwargs)
 

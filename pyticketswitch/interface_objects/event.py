@@ -1014,11 +1014,11 @@ class Event(InterfaceObject, CostRangeMixin):
 
                 for inv in usage_inv_range:
                     inv_first_date = yyyymmdd_to_date(
-                        inv['first_invalid_date_yyyymmddd']
+                        inv['first_invalid_date_yyyymmdd']
                     )
 
                     inv_last_date = yyyymmdd_to_date(
-                        inv['last_invalid_date_yyyymmddd']
+                        inv['last_invalid_date_yyyymmdd']
                     )
 
                     inv_dates.extend(dates_in_range(
@@ -1027,11 +1027,11 @@ class Event(InterfaceObject, CostRangeMixin):
 
             else:
                 inv_first_date = yyyymmdd_to_date(
-                    usage_inv_range['first_invalid_date_yyyymmddd']
+                    usage_inv_range['first_invalid_date_yyyymmdd']
                 )
 
                 inv_last_date = yyyymmdd_to_date(
-                    usage_inv_range['last_invalid_date_yyyymmddd']
+                    usage_inv_range['last_invalid_date_yyyymmdd']
                 )
 
                 inv_dates.extend(dates_in_range(inv_first_date, inv_last_date))
@@ -1052,11 +1052,11 @@ class Event(InterfaceObject, CostRangeMixin):
         performances = []
 
         first_date = yyyymmdd_to_date(
-            usage_date_dict['first_valid_date_yyyymmddd']
+            usage_date_dict['first_valid_date_yyyymmdd']
         )
 
         last_date = yyyymmdd_to_date(
-            usage_date_dict['last_valid_date_yyyymmddd']
+            usage_date_dict['last_valid_date_yyyymmdd']
         )
 
         if latest_date:
