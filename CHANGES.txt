@@ -1,3 +1,5 @@
+v1.4.11, 24 Feb 2015 -- Minor restrict_group change.
+
 v1.4.10, 13 Feb 2015 -- Spelling mistake in API output fixed.
 
 v1.4.9, 29 Jan 2015 -- Set mime_text_type to 'html' for event extra_info call

@@ -239,7 +239,7 @@ class InterfaceObject(object):
         return self.get_core_api().running_user
 
     def get_restrict_group(self):
-        return self._get_running_user().restrict_group
+        return self._get_running_user().sphinx_restrict_group
 
     def get_default_language_code(self):
         return self._get_running_user().default_lang_code
@@ -1145,8 +1145,10 @@ class SpecialOffer(object):
         """Boolean indicating if this is a no booking fee offer."""
         if (
             self.full_seatprice_float == self.offer_seatprice_float and
-            self.full_combined_price_float >
-                self.offer_combined_price_float and
+            (
+                self.full_combined_price_float >
+                self.offer_combined_price_float
+            ) and
             not self.offer_surcharge_price_float
         ):
             return True

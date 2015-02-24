@@ -21,6 +21,7 @@ class RunningUser(CoreObject):
         backend_group=None,
         content_group=None,
         restrict_group=None,
+        sphinx_restrict_group=None,
         default_country_code=None,
         default_lang_code=None,
         **kwargs
@@ -34,6 +35,7 @@ class RunningUser(CoreObject):
         self.backend_group = backend_group
         self.content_group = content_group
         self.restrict_group = restrict_group
+        self.sphinx_restrict_group = sphinx_restrict_group
         self.default_country_code = default_country_code
         self.default_lang_code = default_lang_code
 
