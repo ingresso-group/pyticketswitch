@@ -252,7 +252,8 @@ class Core(InterfaceObject):
             request_video_iframe (boolean): flag for video (default None)
             request_cost_range (boolean): flag for cost range data
                 (default True)
-            request_media (boolean): flag for images (default None)
+            request_media (list): List of strings representing the names
+                of the images to request (default None)
             request_custom_fields (boolean): flag for custom fields
                 (default True)
             custom_filter_list (list): custom filters to apply (default None)
@@ -294,7 +295,7 @@ class Core(InterfaceObject):
         else:
             s_auto_range = None
 
-        if not request_media:
+        if request_media is None:
             request_media = settings.REQUEST_MEDIA
 
         if custom_filter_list:
@@ -383,10 +384,10 @@ class Core(InterfaceObject):
             if event.categories:
                 self._add_categories(event.categories)
 
-            if event.min_seatprice_float:
+            if request_cost_range and event.min_seatprice_float:
                 self._min_seatprice_range.append(event.min_seatprice_float)
 
-            if event.custom_fields:
+            if request_custom_fields and event.custom_fields:
                 self._add_custom_fields(event.custom_fields)
 
             if event.custom_filters:

@@ -933,7 +933,9 @@ def make_reservation_result(root):
     ret_dict.update(objs)
 
     avail_test = [
-        x for x in ret_dict.keys() if x != 'subdomain_user_is_bad'
+        x for x in ret_dict.keys() if x not in (
+            'subdomain_user_is_bad', 'currency'
+        )
     ]
 
     if not avail_test:
