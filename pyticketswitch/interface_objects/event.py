@@ -447,7 +447,7 @@ class Event(InterfaceObject, CostRangeMixin):
             self._categories = []
 
             for c in self._get_core_event_attr('classes'):
-                #self._categories[c.class_code] = c.class_desc
+                #  self._categories[c.class_code] = c.class_desc
 
                 self._categories.append(Category(core_class=c))
 
@@ -656,7 +656,7 @@ class Event(InterfaceObject, CostRangeMixin):
             self._requested_data['source_info'] = True
 
         if request_media:
-            if not 'media' in self._requested_data:
+            if 'media' not in self._requested_data:
                 self._requested_data['media'] = {}
             for m in request_media:
                 self._requested_data['media'][m] = True
