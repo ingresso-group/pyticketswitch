@@ -550,7 +550,7 @@ class TicketTypeTests(InterfaceObjectTestCase):
     def test_string_properties(self):
 
         for prop_name in (
-            'description', 'number_available', 'ticket_type_id',
+            'description', 'ticket_type_id',
         ):
             self.assertIsInstance(getattr(self.ticket_type, prop_name), str)
 
@@ -574,7 +574,7 @@ class TicketTypeTests(InterfaceObjectTestCase):
     def test_int_properties(self):
 
         for prop_name in (
-            'int_percentage_saving',
+            'int_percentage_saving', 'number_available',
         ):
             self.assertIsInstance(getattr(self.ticket_type, prop_name), int)
 

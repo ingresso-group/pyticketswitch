@@ -937,6 +937,6 @@ class AvailDetail(InterfaceObject):
         """
 
         if self._core_avail_detail.percentage_saving:
-            return '{0}%'.format(self._core_avail_detail.percentage_saving)
+            return u'{0}%'.format(self._core_avail_detail.percentage_saving)
 
         return None
