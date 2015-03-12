@@ -269,3 +269,17 @@ def to_float_or_zero(float_string):
         return float(float_string)
     except ValueError:
         return float(0)
+
+
+def day_mask_to_bool_list(day_mask):
+    """Converts a day bit mask (used in TSW to represent a boolean value for
+    days of the week) into a list of 7 booleans. The first item in the list
+    represents the first day of the week.
+    """
+    bit_str = '{0:07b}'.format(int(day_mask))
+    bit_str_list = list(bit_str)
+    # Convert each element to a binary integer then convert to bool
+    # List is reversed so that the lowest significant bit represents the first
+    # day of the week
+    bool_list = [bool(int(x)) for x in reversed(bit_str_list)]
+    return bool_list

@@ -145,6 +145,51 @@ def _parse_structured_info(structured_info_elem):
     return ret_dict
 
 
+def _parse_avail_detail(avail_detail_elem):
+
+    ad_args = {}
+
+    currency = avail_detail_elem.find('avail_currency')
+
+    if currency is not None:
+        ad_args['avail_currency'] = _parse_currency(currency)
+        avail_detail_elem.remove(currency)
+
+    ad_args.update(create_dict_from_xml_element(avail_detail_elem))
+    return objects.AvailDetail(**ad_args)
+
+
+def _parse_avail_details(avail_details_elem):
+    """Parse the avail_details element. Does not make use of core TicketType
+    or PriceBand since we only use a very limited subset of their data
+    """
+
+    ticket_types = []
+
+    for tt in avail_details_elem.findall('ticket_type'):
+        price_bands = []
+
+        for pb in tt.findall('price_band'):
+            avail_detail_list = []
+
+            for ad in pb.findall('avail_detail'):
+                avail_detail_list.append(_parse_avail_detail(ad))
+
+            price_bands.append({
+                'price_band_code': pb.findtext('price_band_code'),
+                'price_band_desc': pb.findtext('price_band_desc'),
+                'avail_details': avail_detail_list,
+            })
+
+        ticket_types.append({
+            'ticket_type_code': tt.findtext('ticket_type_code'),
+            'ticket_type_desc': tt.findtext('ticket_type_desc'),
+            'price_bands': price_bands,
+        })
+
+    return {'ticket_types': ticket_types}
+
+
 def _parse_event(event_elem):
 
     objs = {}
@@ -214,6 +259,12 @@ def _parse_event(event_elem):
     if structured_info is not None:
         objs['structured_info'] = _parse_structured_info(structured_info)
         event_elem.remove(structured_info)
+
+    avail_details = event_elem.find('avail_details')
+
+    if avail_details is not None:
+        objs['avail_details'] = _parse_avail_details(avail_details)
+        event_elem.remove(avail_details)
 
     e_arg = create_dict_from_xml_element(event_elem)
     e_arg.update(objs)

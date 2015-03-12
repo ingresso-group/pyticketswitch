@@ -86,6 +86,7 @@ class Event(CoreObject):
         need_duration=None,
         structured_info=None,
         event_quantity_options=None,
+        avail_details=None,
         **kwargs
     ):
 
@@ -149,6 +150,7 @@ class Event(CoreObject):
             structured_info = {}
         self.structured_info = structured_info
         self.event_quantity_options = event_quantity_options
+        self.avail_details = avail_details
 
         vars(self).update(kwargs)
 
@@ -892,5 +894,34 @@ class StructuredInfoItem(CoreObject):
         self.key = key
         self.name = name
         self.value = value
+
+        vars(self).update(kwargs)
+
+
+class AvailDetail(CoreObject):
+
+    def __init__(
+        self,
+        avail_currency,
+        seatprice,
+        surcharge,
+        full_seatprice=None,
+        full_surcharge=None,
+        absolute_saving=None,
+        percentage_saving=None,
+        day_mask=None,
+        available_dates=None,
+        **kwargs
+    ):
+
+        self.currency = avail_currency
+        self.seatprice = seatprice
+        self.surcharge = surcharge
+        self.full_seatprice = full_seatprice
+        self.full_surcharge = full_surcharge
+        self.absolute_saving = absolute_saving
+        self.percentage_saving = percentage_saving
+        self.day_mask = day_mask
+        self.available_dates = available_dates
 
         vars(self).update(kwargs)

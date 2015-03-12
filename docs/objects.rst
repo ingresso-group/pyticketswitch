@@ -75,6 +75,10 @@ This file describes the set of objects that define the API.
         :members:
         :undoc-members:
 
+    .. autoclass:: AvailDetail
+        :members:
+        :undoc-members:
+
 .. autoclass:: pyticketswitch.interface_objects.base.CostRangeMixin
     :members:
     :undoc-members:

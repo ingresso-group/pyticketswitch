@@ -51,12 +51,12 @@ class Core(InterfaceObject):
         s_src, s_area, s_ven, s_eve,
         s_class, event_token_list,
         request_source_info, request_extra_info, request_video_iframe,
-        request_cost_range, request_media,
+        request_cost_range, request_media, request_custom_fields,
+        request_reviews, request_avail_details,
         s_top, s_user_rating, s_critic_rating,
         s_auto_range, page_length, page_number,
-        request_custom_fields, s_cust_fltr,
-        request_reviews, s_airport,
-        special_offer_only, events=None, iter_index=0
+        s_cust_fltr, s_airport, mime_text_type,
+        special_offer_only, events=None, iter_index=0,
     ):
 
         # There is no filter in the core for special offers, so if only
@@ -102,16 +102,15 @@ class Core(InterfaceObject):
                 request_extra_info=request_extra_info,
                 request_video_iframe=request_video_iframe,
                 request_cost_range=request_cost_range,
-                request_media=request_media, s_top=s_top,
-                s_user_rating=s_user_rating,
-                s_critic_rating=s_critic_rating,
-                s_auto_range=s_auto_range,
-                page_length=num_to_request,
-                page_number=iter_index,
+                request_media=request_media,
                 request_custom_fields=request_custom_fields,
-                s_cust_fltr=s_cust_fltr,
                 request_reviews=request_reviews,
-                s_airport=s_airport,
+                request_avail_details=request_avail_details,
+                s_top=s_top, s_user_rating=s_user_rating,
+                s_critic_rating=s_critic_rating, s_auto_range=s_auto_range,
+                page_length=num_to_request, page_number=iter_index,
+                s_cust_fltr=s_cust_fltr, s_airport=s_airport,
+                mime_text_type=mime_text_type,
             )
 
             # If the event has a special offer, then add it to the list
@@ -165,16 +164,17 @@ class Core(InterfaceObject):
                     request_video_iframe=request_video_iframe,
                     request_cost_range=request_cost_range,
                     request_media=request_media,
+                    request_custom_fields=request_custom_fields,
+                    request_reviews=request_reviews,
+                    request_avail_details=request_avail_details,
                     s_top=s_top, s_user_rating=s_user_rating,
                     s_critic_rating=s_critic_rating,
                     s_auto_range=s_auto_range, page_length=page_length,
                     page_number=page_number,
-                    request_custom_fields=request_custom_fields,
-                    s_cust_fltr=s_cust_fltr,
-                    request_reviews=request_reviews,
-                    s_airport=s_airport,
+                    s_cust_fltr=s_cust_fltr, s_airport=s_airport,
                     special_offer_only=special_offer_only,
                     events=events, iter_index=iter_index,
+                    mime_text_type=mime_text_type,
                 )
 
         else:
@@ -189,16 +189,15 @@ class Core(InterfaceObject):
                 request_extra_info=request_extra_info,
                 request_video_iframe=request_video_iframe,
                 request_cost_range=request_cost_range,
-                request_media=request_media, s_top=s_top,
-                s_user_rating=s_user_rating,
-                s_critic_rating=s_critic_rating,
-                s_auto_range=s_auto_range,
-                page_length=page_length,
-                page_number=page_number,
+                request_media=request_media,
                 request_custom_fields=request_custom_fields,
-                s_cust_fltr=s_cust_fltr,
                 request_reviews=request_reviews,
-                s_airport=s_airport,
+                request_avail_details=request_avail_details,
+                s_top=s_top, s_user_rating=s_user_rating,
+                s_critic_rating=s_critic_rating, s_auto_range=s_auto_range,
+                page_length=page_length, page_number=page_number,
+                s_cust_fltr=s_cust_fltr, s_airport=s_airport,
+                mime_text_type=mime_text_type,
             )
 
     def search_events(
@@ -213,8 +212,9 @@ class Core(InterfaceObject):
         request_source_info=None, request_extra_info=None,
         request_video_iframe=None, request_cost_range=True,
         request_media=None, request_custom_fields=True,
-        custom_filter_list=None, request_reviews=None,
-        airport=None, special_offer_only=False,
+        request_reviews=None, request_avail_details=None,
+        custom_filter_list=None, airport=None, special_offer_only=False,
+        mime_text_type=None,
     ):
         """Perform event search, returns list of Event objects.
 
@@ -256,11 +256,15 @@ class Core(InterfaceObject):
                 of the images to request (default None)
             request_custom_fields (boolean): flag for custom fields
                 (default True)
-            custom_filter_list (list): custom filters to apply (default None)
             request_reviews (boolean): flag for reviews (default None)
+            request_avail_details (boolean): flag for avail_details
+                (default None)
+            custom_filter_list (list): custom filters to apply (default None)
             airport (string): airport code (default None)
             special_offer_only (boolean): flag for only returning events with
                 special offers (default False)
+            mime_text_type (string): desired text format for certain fields
+                (most common options are 'html' and 'plain') (default None)
 
         Returns:
             list: List of Event objects
@@ -327,14 +331,16 @@ class Core(InterfaceObject):
             request_extra_info=request_extra_info,
             request_video_iframe=request_video_iframe,
             request_cost_range=request_cost_range,
-            request_media=request_media, s_top=s_top,
-            s_user_rating=s_user_rating, s_critic_rating=s_critic_rating,
-            s_auto_range=s_auto_range, page_length=page_length,
-            page_number=page_number,
+            request_media=request_media,
             request_custom_fields=request_custom_fields,
-            s_cust_fltr=s_cust_fltr,
             request_reviews=request_reviews,
-            s_airport=airport, special_offer_only=special_offer_only,
+            request_avail_details=request_avail_details,
+            s_top=s_top, s_user_rating=s_user_rating,
+            s_critic_rating=s_critic_rating, s_auto_range=s_auto_range,
+            page_length=page_length, page_number=page_number,
+            s_cust_fltr=s_cust_fltr, s_airport=airport,
+            special_offer_only=special_offer_only,
+            mime_text_type=mime_text_type,
         )
 
         requested_data = {}
@@ -356,6 +362,9 @@ class Core(InterfaceObject):
 
         if request_reviews:
             requested_data['reviews'] = True
+
+        if request_avail_details:
+            requested_data['avail_details'] = True
 
         if request_media:
             requested_data['media'] = {}

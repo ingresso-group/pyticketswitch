@@ -2,9 +2,8 @@ from operator import attrgetter
 
 from base import InterfaceObject, Seat, SeatBlock, Currency
 from pyticketswitch.util import (
-    format_price_with_symbol,
-    to_float_or_none, to_float_summed,
-    to_int_or_none, resolve_boolean
+    format_price_with_symbol, to_float_or_none, to_float_summed,
+    to_int_or_none, resolve_boolean, day_mask_to_bool_list, yyyymmdd_to_date,
 )
 
 
@@ -739,5 +738,205 @@ class DespatchMethod(InterfaceObject):
             return Currency(
                 core_currency=self._core_currency
             )
+
+        return None
+
+
+class AvailDetail(InterfaceObject):
+    """Object that represents an individual availability detail for an event.
+
+    An availability detail represents pricing information for a given offer,
+    including ticket type, price band, which days of the week that price is
+    available and for what date range.
+
+    In fact, this AvailDetail object combines the TSW AvailDetail object with
+    the related ticket type code+desc and price band code+desc since it is
+    more convenient to represent it this way.
+
+    This object does not make use of the TicketType object since we don't have
+    access to the real TSW ticket type and therefore have no use for nearly
+    all of its functionality.
+    """
+
+    def __init__(
+        self,
+        core_avail_detail,
+        ticket_type_code=None,
+        ticket_type_desc=None,
+        price_band_code=None,
+        price_band_desc=None,
+        **settings
+    ):
+
+        self._core_avail_detail = core_avail_detail
+        self._ticket_type_code = ticket_type_code
+        self._ticket_type_desc = ticket_type_desc
+        self._price_band_code = price_band_code
+        self._price_band_desc = price_band_desc
+
+        self._core_currency = core_avail_detail.currency
+
+        super(AvailDetail, self).__init__(**settings)
+
+    @property
+    def ticket_type_code(self):
+        return self._ticket_type_code or None
+
+    @property
+    def ticket_type_desc(self):
+        return self._ticket_type_desc or None
+
+    @property
+    def price_band_code(self):
+        return self._price_band_code or None
+
+    @property
+    def price_band_desc(self):
+        return self._price_band_desc or None
+
+    @property
+    def available_from_date(self):
+
+        avail_dates = self._core_avail_detail.available_dates
+        if avail_dates:
+            from_date = avail_dates.get('first_yyyymmdd')
+            if from_date:
+                return yyyymmdd_to_date(from_date)
+
+        return None
+
+    @property
+    def available_until_date(self):
+
+        avail_dates = self._core_avail_detail.available_dates
+        if avail_dates:
+            until_date = avail_dates.get('last_yyyymmdd')
+            if until_date:
+                return yyyymmdd_to_date(until_date)
+
+        return None
+
+    @property
+    def weekdays_available(self):
+        """Returns a list of booleans of length 7, one for each day of the
+        week (starting with Sunday). Each boolean represents whether this
+        ticket is available for that day of the week.
+        """
+
+        # This data comes back from TSW in the form of a bitmask, so we first
+        # need to convert this into a binary representation
+        return day_mask_to_bool_list(self._core_avail_detail.day_mask)
+
+    @property
+    def seatprice(self):
+        """Formatted string value of the seatprice with currency symbol."""
+
+        return format_price_with_symbol(
+            self._core_avail_detail.seatprice,
+            self._core_currency.currency_pre_symbol,
+            self._core_currency.currency_post_symbol
+        )
+
+    @property
+    def surcharge(self):
+        """Formatted string value of the surcharge with currency symbol."""
+
+        return format_price_with_symbol(
+            self._core_avail_detail.surcharge,
+            self._core_currency.currency_pre_symbol,
+            self._core_currency.currency_post_symbol
+        )
+
+    @property
+    def price_combined(self):
+        """Formatted string value of the combined seatprice + surcharge with
+        currency symbol.
+        """
+
+        combined_price = str(
+            float(self._core_avail_detail.seatprice) +
+            float(self._core_avail_detail.surcharge)
+        )
+
+        return format_price_with_symbol(
+            combined_price,
+            self._core_currency.currency_pre_symbol,
+            self._core_currency.currency_post_symbol
+        )
+
+    @property
+    def non_offer_seatprice(self):
+        """Formatted string value of the full_seatprice with currency symbol.
+        Returns None if doesn't exist.
+        """
+
+        if self._core_avail_detail.full_seatprice:
+            return format_price_with_symbol(
+                self._core_avail_detail.full_seatprice,
+                self._core_currency.currency_pre_symbol,
+                self._core_currency.currency_post_symbol
+            )
+
+        return None
+
+    @property
+    def non_offer_surcharge(self):
+        """Formatted string value of the full_surcharge with currency symbol.
+        Returns None if doesn't exist.
+        """
+
+        if self._core_avail_detail.full_surcharge:
+            return format_price_with_symbol(
+                self._core_avail_detail.full_surcharge,
+                self._core_currency.currency_pre_symbol,
+                self._core_currency.currency_post_symbol
+            )
+
+        return None
+
+    @property
+    def non_offer_combined(self):
+        """Formatted string value of the combined full_seatprice +
+        full_surcharge with currency symbol. Returns None if doesn't exist.
+        """
+
+        if (self._core_avail_detail.full_seatprice and
+                self._core_avail_detail.full_surcharge):
+
+            combined_price = str(
+                float(self._core_avail_detail.full_seatprice) +
+                float(self._core_avail_detail.full_surcharge)
+            )
+            return format_price_with_symbol(
+                combined_price,
+                self._core_currency.currency_pre_symbol,
+                self._core_currency.currency_post_symbol
+            )
+
+        return None
+
+    @property
+    def absolute_saving(self):
+        """Formatted string value of the absolute_saving with currency symbol.
+        Returns None if doesn't exist.
+        """
+
+        if self._core_avail_detail.absolute_saving:
+            return format_price_with_symbol(
+                self._core_avail_detail.absolute_saving,
+                self._core_currency.currency_pre_symbol,
+                self._core_currency.currency_post_symbol
+            )
+
+        return None
+
+    @property
+    def percentage_saving(self):
+        """Formatted string value of the percentage_saving with currency symbol.
+        Returns None if doesn't exist.
+        """
+
+        if self._core_avail_detail.percentage_saving:
+            return '{0}%'.format(self._core_avail_detail.percentage_saving)
 
         return None

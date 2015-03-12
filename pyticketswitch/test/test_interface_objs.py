@@ -323,6 +323,51 @@ class ReviewTests(InterfaceObjectTestCase):
         self.assertIsInstance(self.review.time, datetime.time)
 
 
+class AvailDetailTests(InterfaceObjectTestCase):
+
+    def setUp(self):
+        session = {}
+        event = Event(event_id='6IF', session=session, **self.settings)
+
+        self.avail_detail = event.avail_details[0]
+
+    def test_avail_detail_string_properties(self):
+
+        for prop_name in (
+            'ticket_type_code', 'ticket_type_desc',
+            'price_band_code', 'price_band_desc',
+        ):
+            prop = getattr(self.avail_detail, prop_name)
+            if prop is not None:
+                self.assertIsInstance(prop, str)
+
+    def test_avail_detail_unicode_properties(self):
+
+        for prop_name in (
+            'seatprice', 'surcharge', 'price_combined', 'non_offer_seatprice',
+            'non_offer_surcharge', 'non_offer_combined', 'absolute_saving',
+            'percentage_saving',
+        ):
+            prop = getattr(self.avail_detail, prop_name)
+            if prop is not None:
+                self.assertIsInstance(prop, unicode)
+
+    def test_avail_detail_weekday_available(self):
+        self.assertIsInstance(self.avail_detail.weekdays_available, list)
+        self.assertEqual(len(self.avail_detail.weekdays_available), 7)
+        for day in self.avail_detail.weekdays_available:
+            self.assertIsInstance(day, bool)
+
+    def test_avail_detail_date_properties(self):
+
+        for prop_name in (
+            'available_from_date', 'available_until_date'
+        ):
+            prop = getattr(self.avail_detail, prop_name)
+            if prop is not None:
+                self.assertIsInstance(prop, datetime.date)
+
+
 class PerformanceTests(InterfaceObjectTestCase):
 
     def setUp(self):

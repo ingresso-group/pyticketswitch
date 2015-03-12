@@ -1,7 +1,7 @@
 from core import Core
 from event import Category, Event, Review, Video
 from performance import Performance
-from availability import TicketType, Concession, DespatchMethod
+from availability import TicketType, Concession, DespatchMethod, AvailDetail
 from trolley import Trolley
 from reservation import Reservation
 from base import Customer, Seat, Card, Address
@@ -10,7 +10,7 @@ from order import Order
 
 __all__ = (
     'Core', 'Category', 'Event', 'Review', 'Performance',
-    'TicketType', 'Concession', 'DespatchMethod',
+    'TicketType', 'Concession', 'DespatchMethod', 'AvailDetail',
     'Order', 'Trolley', 'Reservation', 'Customer',
     'Card', 'Address', 'Seat', 'Video', 'Bundle',
 )

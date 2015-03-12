@@ -11,6 +11,7 @@ from pyticketswitch.api_exceptions import InvalidId
 from pyticketswitch import settings
 import core as core_objs
 import performance as perf_objs
+import availability as avail_objs
 
 
 class Category(object):
@@ -199,6 +200,7 @@ class Event(InterfaceObject, CostRangeMixin):
         'event_medias': 'media',
         'structured_info': 'extra_info_only',
         'event_quantity_options': 'extra_info_only',
+        'avail_details': 'avail_details',
     }
 
     def __init__(
@@ -225,6 +227,7 @@ class Event(InterfaceObject, CostRangeMixin):
         self._has_single_false_perf = None
         self._structured_content = None
         self._valid_ticket_quantities = None
+        self._avail_details = None
 
         if not requested_data:
             self._requested_data = {}
@@ -591,7 +594,8 @@ class Event(InterfaceObject, CostRangeMixin):
 
     def get_details(
         self, request_media=None, source_info=True,
-        request_reviews=True, mime_text_type='html'
+        request_reviews=True, request_avail_details=None,
+        mime_text_type='html',
     ):
         """Retrieves data for the current Event.
 
@@ -616,7 +620,8 @@ class Event(InterfaceObject, CostRangeMixin):
             detailed_event = self.get_core_api().extra_info(
                 crypto_block=crypto_block, event_token=self.event_id,
                 request_media=request_media, source_info=source_info,
-                mime_text_type=mime_text_type
+                request_avail_details=request_avail_details,
+                mime_text_type=mime_text_type,
             )
 
             request_reviews = True
@@ -631,6 +636,8 @@ class Event(InterfaceObject, CostRangeMixin):
                 request_source_info=source_info, request_extra_info=True,
                 request_video_iframe=True, request_cost_range=True,
                 request_custom_fields=True, request_reviews=request_reviews,
+                request_avail_details=request_avail_details,
+                mime_text_type=mime_text_type,
             )
             if events:
                 detailed_event = events[0]._core_event
@@ -663,6 +670,9 @@ class Event(InterfaceObject, CostRangeMixin):
 
         if request_reviews:
             self._requested_data['reviews'] = True
+
+        if request_avail_details:
+            self._requested_data['avail_details'] = True
 
         if extra_info_called:
             self._requested_data['extra_info_only'] = True
@@ -1108,6 +1118,42 @@ class Event(InterfaceObject, CostRangeMixin):
                 )
 
         return self._structured_content
+
+    def _build_avail_details(self):
+        """Builds a list of AvailDetail objects
+        """
+
+        self._avail_details = []
+
+        ad_attr = self._get_core_event_attr('avail_details')
+        if ad_attr:
+            for tt in ad_attr.get('ticket_types', []):
+                for pb in tt.get('price_bands', []):
+                    for ad in pb.get('avail_details', []):
+                        self._avail_details.append(
+                            avail_objs.AvailDetail(
+                                core_avail_detail=ad,
+                                ticket_type_code=tt['ticket_type_code'],
+                                ticket_type_desc=tt['ticket_type_desc'],
+                                price_band_code=pb['price_band_code'],
+                                price_band_desc=pb['price_band_desc'],
+                            )
+                        )
+
+    @property
+    def avail_details(self):
+
+        if self._avail_details is None:
+
+            if (
+                self._attr_request_map['avail_details'] not in
+                self._requested_data
+            ):
+                self.get_details(request_avail_details=True)
+
+            self._build_avail_details()
+
+        return self._avail_details
 
 
 class Video(object):
