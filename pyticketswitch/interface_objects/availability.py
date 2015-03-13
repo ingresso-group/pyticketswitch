@@ -828,6 +828,16 @@ class AvailDetail(InterfaceObject):
         return day_mask_to_bool_list(self._core_avail_detail.day_mask)
 
     @property
+    def weekdays_available_iso(self):
+        """Same as weekdays_available but has week starting on Monday
+        """
+
+        weekdays_avail = self.weekdays_available
+        # Shift list
+        weekdays_avail_iso = weekdays_avail[1:] + weekdays_avail[:1]
+        return weekdays_avail_iso
+
+    @property
     def seatprice(self):
         """Formatted string value of the seatprice with currency symbol."""
 
@@ -853,15 +863,22 @@ class AvailDetail(InterfaceObject):
         currency symbol.
         """
 
-        combined_price = str(
-            float(self._core_avail_detail.seatprice) +
-            float(self._core_avail_detail.surcharge)
-        )
+        combined_price = str(self.price_combined_float)
 
         return format_price_with_symbol(
             combined_price,
             self._core_currency.currency_pre_symbol,
             self._core_currency.currency_post_symbol
+        )
+
+    @property
+    def price_combined_float(self):
+        """Float value of the combined seatprice + surcharge
+        """
+
+        return to_float_summed(
+            self._core_avail_detail.seatprice,
+            self._core_avail_detail.surcharge
         )
 
     @property

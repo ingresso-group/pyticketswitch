@@ -1,4 +1,4 @@
-from operator import itemgetter
+from operator import itemgetter, attrgetter
 import datetime
 from copy import deepcopy
 
@@ -1142,6 +1142,8 @@ class Event(InterfaceObject, CostRangeMixin):
 
     @property
     def avail_details(self):
+        """Get detailed availability and pricing information for this event.
+        """
 
         if self._avail_details is None:
 
@@ -1154,6 +1156,16 @@ class Event(InterfaceObject, CostRangeMixin):
             self._build_avail_details()
 
         return self._avail_details
+
+    @property
+    def avail_details_by_price(self):
+        """Avail details sorted by combined price
+        """
+
+        return sorted(
+            self.avail_details,
+            key=attrgetter('price_combined_float')
+        )
 
 
 class Video(object):

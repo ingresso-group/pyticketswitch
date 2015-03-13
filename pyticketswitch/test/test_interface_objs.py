@@ -331,7 +331,7 @@ class AvailDetailTests(InterfaceObjectTestCase):
 
         self.avail_detail = event.avail_details[0]
 
-    def test_avail_detail_string_properties(self):
+    def test_string_properties(self):
 
         for prop_name in (
             'ticket_type_code', 'ticket_type_desc',
@@ -341,7 +341,7 @@ class AvailDetailTests(InterfaceObjectTestCase):
             if prop is not None:
                 self.assertIsInstance(prop, str)
 
-    def test_avail_detail_unicode_properties(self):
+    def test_unicode_properties(self):
 
         for prop_name in (
             'seatprice', 'surcharge', 'price_combined', 'non_offer_seatprice',
@@ -352,13 +352,13 @@ class AvailDetailTests(InterfaceObjectTestCase):
             if prop is not None:
                 self.assertIsInstance(prop, unicode)
 
-    def test_avail_detail_weekday_available(self):
+    def test_weekday_available(self):
         self.assertIsInstance(self.avail_detail.weekdays_available, list)
         self.assertEqual(len(self.avail_detail.weekdays_available), 7)
         for day in self.avail_detail.weekdays_available:
             self.assertIsInstance(day, bool)
 
-    def test_avail_detail_date_properties(self):
+    def test_date_properties(self):
 
         for prop_name in (
             'available_from_date', 'available_until_date'
@@ -366,6 +366,15 @@ class AvailDetailTests(InterfaceObjectTestCase):
             prop = getattr(self.avail_detail, prop_name)
             if prop is not None:
                 self.assertIsInstance(prop, datetime.date)
+
+    def test_float_properties(self):
+
+        for prop_name in (
+            'price_combined_float',
+        ):
+            prop = getattr(self.avail_detail, prop_name)
+            if prop is not None:
+                self.assertIsInstance(prop, float)
 
 
 class PerformanceTests(InterfaceObjectTestCase):
