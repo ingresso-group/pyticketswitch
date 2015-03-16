@@ -236,6 +236,24 @@ class Event(InterfaceObject, CostRangeMixin):
 
         super(Event, self).__init__(**settings)
 
+    def __getstate__(self):
+        """This method determines what data will be pickled, and therefore,
+        what data will be stored in the event cache.
+        Any attributes that should not be stored in the cache should be
+        set to None in the returned dictionary.
+        """
+
+        d = super(Event, self).__getstate__()
+
+        # Don't cache avail details
+        d['_avail_details'] = None
+        # Remove avail details from requested data to make sure it is
+        # requested again next time
+        if self._attr_request_map['avail_details'] in self._requested_data:
+            del self._requested_data[self._attr_request_map['avail_details']]
+
+        return d
+
     def _get_cache_key(self):
         return self.event_id
 
