@@ -1,5 +1,6 @@
 import unittest
 import datetime
+from copy import deepcopy
 
 from pyticketswitch.interface_objects import (
     Core, Event, Concession, DespatchMethod, TicketType, Performance,
@@ -375,6 +376,27 @@ class AvailDetailTests(InterfaceObjectTestCase):
             prop = getattr(self.avail_detail, prop_name)
             if prop is not None:
                 self.assertIsInstance(prop, float)
+
+    def test_int_properties(self):
+
+        for prop_name in (
+            'int_percentage_saving',
+        ):
+            prop = getattr(self.avail_detail, prop_name)
+            if prop is not None:
+                self.assertIsInstance(prop, int)
+
+    def test_comparison(self):
+
+        avail_detail_dup = deepcopy(self.avail_detail)
+
+        self.assertTrue(
+            self.avail_detail.is_same_ticket_and_price(avail_detail_dup)
+        )
+        avail_detail_dup._ticket_type_desc = 'Test'
+        self.assertFalse(
+            self.avail_detail.is_same_ticket_and_price(avail_detail_dup)
+        )
 
 
 class PerformanceTests(InterfaceObjectTestCase):

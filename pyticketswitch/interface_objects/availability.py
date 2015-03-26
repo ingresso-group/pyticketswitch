@@ -1,4 +1,5 @@
 from operator import attrgetter
+from copy import deepcopy
 
 from base import InterfaceObject, Seat, SeatBlock, Currency
 from pyticketswitch.util import (
@@ -776,7 +777,53 @@ class AvailDetail(InterfaceObject):
 
         self._core_currency = core_avail_detail.currency
 
+        self._available_from_date = None
+        self._available_until_date = None
+        self._weekdays_available = None
+
         super(AvailDetail, self).__init__(**settings)
+
+    def is_same_ticket_and_price(self, other):
+        """Compares avail details with another. Returns True if
+        ticket_type_desc, seatprice, surcharge and int_percentage_saving
+        are the same.
+        """
+
+        result = False
+
+        if isinstance(other, self.__class__):
+            if (
+                self.ticket_type_desc == other.ticket_type_desc and
+                self.seatprice == other.seatprice and
+                self.surcharge == other.surcharge and
+                self.int_percentage_saving == other.int_percentage_saving
+            ):
+                result = True
+
+        return result
+
+    def combine(self, other):
+        """Combines avail detail with another. Does no checking to make sure
+        avail details are actually equal (i.e. is_same_ticket_and_price should
+        be called prior to this). Combining is done by 'OR'ing the
+        weekdays_available and taking the widest available date range.
+        """
+
+        new_ad = deepcopy(self)
+
+        # Do a union of weekdays available and date range
+        if other.available_from_date < self.available_from_date:
+            new_ad._available_from_date = other.available_from_date
+        if other.available_until_date > self.available_until_date:
+            new_ad._available_until_date = other.available_until_date
+
+        new_ad._weekdays_available = [
+            a | b for a, b in zip(
+                self.weekdays_available, other.weekdays_available
+            )
+        ]
+
+        return new_ad
 
     @property
     def ticket_type_code(self):
@@ -797,24 +844,28 @@ class AvailDetail(InterfaceObject):
     @property
     def available_from_date(self):
 
-        avail_dates = self._core_avail_detail.available_dates
-        if avail_dates:
-            from_date = avail_dates.get('first_yyyymmdd')
-            if from_date:
-                return yyyymmdd_to_date(from_date)
+        if self._available_from_date is None:
 
-        return None
+            avail_dates = self._core_avail_detail.available_dates
+            if avail_dates:
+                from_date = avail_dates.get('first_yyyymmdd')
+                if from_date:
+                    self._available_from_date = yyyymmdd_to_date(from_date)
+
+        return self._available_from_date
 
     @property
     def available_until_date(self):
 
-        avail_dates = self._core_avail_detail.available_dates
-        if avail_dates:
-            until_date = avail_dates.get('last_yyyymmdd')
-            if until_date:
-                return yyyymmdd_to_date(until_date)
+        if self._available_until_date is None:
 
-        return None
+            avail_dates = self._core_avail_detail.available_dates
+            if avail_dates:
+                until_date = avail_dates.get('last_yyyymmdd')
+                if until_date:
+                    self._available_until_date = yyyymmdd_to_date(until_date)
+
+        return self._available_until_date
 
     @property
     def weekdays_available(self):
@@ -823,9 +874,15 @@ class AvailDetail(InterfaceObject):
         ticket is available for that day of the week.
         """
 
-        # This data comes back from TSW in the form of a bitmask, so we first
-        # need to convert this into a binary representation
-        return day_mask_to_bool_list(self._core_avail_detail.day_mask)
+        if self._weekdays_available is None:
+
+            # This data comes back from TSW in the form of a bitmask, so we
+            # first need to convert this into a binary representation
+            self._weekdays_available = day_mask_to_bool_list(
+                self._core_avail_detail.day_mask
+            )
+
+        return self._weekdays_available
 
     @property
     def weekdays_available_iso(self):
@@ -946,6 +1003,13 @@ class AvailDetail(InterfaceObject):
             )
 
         return None
+
+    @property
+    def int_percentage_saving(self):
+        """Integer value of the percentage saving."""
+        return to_int_or_none(
+            self._core_avail_detail.percentage_saving
+        )
 
     @property
     def percentage_saving(self):

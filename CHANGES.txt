@@ -1,3 +1,5 @@
+v1.4.15, 26 Mar 2015 -- Add avail_details_by_cheapest_ticket_type method to AvailDetail.
+
 v1.4.14, 16 Mar 2015 -- Prevent event avail details being cached.
 
 v1.4.13, 13 Mar 2015 -- Add AvailDetail object to event (represents detailed pricing information).

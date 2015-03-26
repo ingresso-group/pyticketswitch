@@ -1185,6 +1185,37 @@ class Event(InterfaceObject, CostRangeMixin):
             key=attrgetter('price_combined_float')
         )
 
+    @property
+    def avail_details_by_cheapest_ticket_type(self):
+        """Avail details sorted by cheapest ticket type then price. Avail
+        details with the same ticket type and pricing will be combined to
+        reduce duplicates.
+        """
+        order_dict = {}
+
+        i = 0
+        for ad in self.avail_details_by_price:
+            if ad.ticket_type_desc not in order_dict:
+                order_dict[ad.ticket_type_desc] = i
+                i += 1
+
+        ad_sorted = sorted(
+            self.avail_details, key=lambda x: (
+                order_dict[x.ticket_type_desc],
+                x.price_combined_float
+            )
+        )
+
+        # Combine rows for which the ticket type and pricing info is the same
+        ad_final = []
+        for ad in ad_sorted:
+            if ad_final and ad.is_same_ticket_and_price(ad_final[-1]):
+                ad_final[-1] = ad.combine(ad_final[-1])
+            else:
+                ad_final.append(ad)
+
+        return ad_final
+
 
 class Video(object):
     """Object representing a TSW video iframe element."""
