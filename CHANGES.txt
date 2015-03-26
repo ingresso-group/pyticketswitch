@@ -1,4 +1,6 @@
-v1.4.15, 26 Mar 2015 -- Add avail_details_by_cheapest_ticket_type method to AvailDetail.
+v1.4.16, 26 Mar 2015 -- Add has_no_booking_fee property to AvailDetail.
+
+v1.4.15, 26 Mar 2015 -- Add avail_details_by_cheapest_ticket_type method to Event.
 
 v1.4.14, 16 Mar 2015 -- Prevent event avail details being cached.
 

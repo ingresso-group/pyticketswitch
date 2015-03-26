@@ -386,6 +386,14 @@ class AvailDetailTests(InterfaceObjectTestCase):
             if prop is not None:
                 self.assertIsInstance(prop, int)
 
+    def test_bool_properties(self):
+
+        for prop_name in (
+            'has_no_booking_fee',
+        ):
+            prop = getattr(self.avail_detail, prop_name)
+            self.assertIsInstance(prop, bool)
+
     def test_comparison(self):
 
         avail_detail_dup = deepcopy(self.avail_detail)

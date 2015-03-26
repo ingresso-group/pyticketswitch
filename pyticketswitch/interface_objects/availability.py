@@ -915,6 +915,13 @@ class AvailDetail(InterfaceObject):
         )
 
     @property
+    def has_no_booking_fee(self):
+        """Returns true if the surcharge is zero, false otherwise."""
+
+        surcharge = to_float_or_none(self._core_avail_detail.surcharge)
+        return (not bool(surcharge))
+
+    @property
     def price_combined(self):
         """Formatted string value of the combined seatprice + surcharge with
         currency symbol.
