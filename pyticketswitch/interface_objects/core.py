@@ -56,13 +56,15 @@ class Core(InterfaceObject):
         s_top, s_user_rating, s_critic_rating,
         s_auto_range, page_length, page_number,
         s_cust_fltr, s_airport, mime_text_type,
-        special_offer_only, events=None, iter_index=0,
+        special_offer_only, events=None, iter_index=0, max_iterations=None,
     ):
 
         # There is no filter in the core for special offers, so if only
         # the special offers are requested, then we need to recursively
         # call the event search until we have enough special offer events
-        # (or there aren't any more events returned)
+        # (or there aren't any more events returned). By default, we do 3 small
+        # searches followed by a full search. If max_iterations is provided, we
+        # do that many small searches only.
         #
         # If the special_offer_only flag is False, then we can do a search
         # as normal
@@ -84,7 +86,7 @@ class Core(InterfaceObject):
 
                 # if the event search has been called multiple times
                 # already, then do a full search
-                if iter_index > 2:
+                if not max_iterations and iter_index > 2:
                     num_to_request = None
                 else:
                     # arbitrarily choose to request twice as many events
@@ -125,12 +127,14 @@ class Core(InterfaceObject):
                         events[e.event_id] = e
 
             # Return the list of special offer events if we've retrieved the
-            # number required or there aren't any more
+            # number required or there aren't any more or if max_iterations
+            # has been reached
             if (
                 not resp_dict['event'] or
                 len(events) >= num_required or
                 num_to_request is None or
-                len(resp_dict['event']) < num_to_request
+                len(resp_dict['event']) < num_to_request or
+                (max_iterations and (iter_index + 1) == max_iterations)
             ):
 
                 if page_length is None:
@@ -175,6 +179,7 @@ class Core(InterfaceObject):
                     special_offer_only=special_offer_only,
                     events=events, iter_index=iter_index,
                     mime_text_type=mime_text_type,
+                    max_iterations=max_iterations,
                 )
 
         else:
@@ -214,7 +219,7 @@ class Core(InterfaceObject):
         request_media=None, request_custom_fields=True,
         request_reviews=None, request_avail_details=None,
         custom_filter_list=None, airport=None, special_offer_only=False,
-        mime_text_type=None,
+        mime_text_type=None, max_iterations=None,
     ):
         """Perform event search, returns list of Event objects.
 
@@ -265,6 +270,10 @@ class Core(InterfaceObject):
                 special offers (default False)
             mime_text_type (string): desired text format for certain fields
                 (most common options are 'html' and 'plain') (default None)
+            max_iterations (int): used only in conjunction with
+                special_offer_only. Sets the maximum number of iterations
+                when retrieving special offers to prevent a full product search
+                being performed.
 
         Returns:
             list: List of Event objects
@@ -340,7 +349,7 @@ class Core(InterfaceObject):
             page_length=page_length, page_number=page_number,
             s_cust_fltr=s_cust_fltr, s_airport=airport,
             special_offer_only=special_offer_only,
-            mime_text_type=mime_text_type,
+            mime_text_type=mime_text_type, max_iterations=max_iterations
         )
 
         requested_data = {}
