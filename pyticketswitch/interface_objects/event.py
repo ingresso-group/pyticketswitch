@@ -210,6 +210,7 @@ class Event(InterfaceObject, CostRangeMixin):
         requested_data=None,
         **settings
     ):
+
         self.event_id = event_id
         self._core_event = core_event
         self._performance_calendar = {}
@@ -636,7 +637,9 @@ class Event(InterfaceObject, CostRangeMixin):
         if crypto_block:
 
             detailed_event = self.get_core_api().extra_info(
-                crypto_block=crypto_block, event_token=self.event_id,
+                crypto_block=crypto_block,
+                upfront_data_token=self.settings['upfront_data_token'],
+                event_token=self.event_id,
                 request_media=request_media, source_info=source_info,
                 request_avail_details=request_avail_details,
                 mime_text_type=mime_text_type,
@@ -797,7 +800,9 @@ class Event(InterfaceObject, CostRangeMixin):
         crypto_block = self._get_search_crypto()
 
         resp_dict = self.get_core_api().month_options(
-            crypto_block=crypto_block, event_token=self.event_id
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            event_token=self.event_id
         )
 
         months = []
@@ -959,7 +964,9 @@ class Event(InterfaceObject, CostRangeMixin):
         crypto_block = self._get_search_crypto()
 
         resp_dict = self.get_core_api().date_time_options(
-            crypto_block=crypto_block, event_token=self.event_id,
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            event_token=self.event_id,
             earliest_date=date_to_yyyymmdd_or_none(earliest_date),
             latest_date=date_to_yyyymmdd_or_none(latest_date),
             request_cost_range=True

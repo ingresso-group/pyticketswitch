@@ -272,7 +272,9 @@ class Performance(InterfaceObject, CostRangeMixin):
             crypto_block = self._get_date_time_options_crypto()
 
             resp_dict = self.get_core_api().availability_options(
-                crypto_block=crypto_block, perf_token=self._perf_token,
+                crypto_block=crypto_block,
+                upfront_data_token=self.settings['upfront_data_token'],
+                perf_token=self._perf_token,
                 usage_date=date_to_yyyymmdd_or_none(self.usage_date),
                 departure_date=date_to_yyyymmdd_or_none(self.departure_date),
                 quantity_options_only=True
@@ -364,7 +366,9 @@ class Performance(InterfaceObject, CostRangeMixin):
         crypto_block = self._get_date_time_options_crypto()
 
         resp_dict = self.get_core_api().availability_options(
-            crypto_block=crypto_block, perf_token=self._perf_token,
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            perf_token=self._perf_token,
             usage_date=date_to_yyyymmdd_or_none(self.usage_date),
             departure_date=date_to_yyyymmdd_or_none(self.departure_date),
             self_print_mode='html', add_discounts=include_possible_concessions,
@@ -533,7 +537,9 @@ class Performance(InterfaceObject, CostRangeMixin):
         crypto_block = self._get_date_time_options_crypto()
 
         resp_dict = self.get_core_api().despatch_options(
-            crypto_block=crypto_block, perf_token=self._perf_token,
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            perf_token=self._perf_token,
             usage_date=date_to_yyyymmdd_or_none(self.usage_date),
             departure_date=date_to_yyyymmdd_or_none(self.departure_date),
             self_print_mode='html'

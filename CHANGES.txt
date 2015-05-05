@@ -1,3 +1,5 @@
+v1.5.0, 5 May 2015 -- Add support for upfront data. This is required by the core for redeem users.
+
 v1.4.17, 1 Apr 2015 -- For special offer event searches add max_iterations argument to improve performance with the trade-off of not guaranteeing returning all results.
 
 v1.4.16, 26 Mar 2015 -- Add has_no_booking_fee property to AvailDetail.

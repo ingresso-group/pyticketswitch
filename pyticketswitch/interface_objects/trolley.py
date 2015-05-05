@@ -46,6 +46,7 @@ class Trolley(InterfaceObject):
 
         resp_dict = self.get_core_api().trolley_add_order(
             crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
             order_token=order.order_id,
             describe_trolley=True,
             trolley_token=self.trolley_id
@@ -137,6 +138,7 @@ class Trolley(InterfaceObject):
 
         resp_dict = self.get_core_api().trolley_describe(
             crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
             trolley_token=self.trolley_id
         )
 
@@ -154,6 +156,7 @@ class Trolley(InterfaceObject):
 
         resp_dict = self.get_core_api().trolley_remove(
             crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
             trolley_token=self.trolley_id,
             remove_item=order_item_number,
             describe_trolley=True
@@ -181,6 +184,7 @@ class Trolley(InterfaceObject):
 
         resp_dict = self.get_core_api().make_reservation(
             crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
             trolley_token=self.trolley_id,
             self_print_mode='html',
             describe_trolley=True

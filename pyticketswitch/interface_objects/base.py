@@ -35,6 +35,8 @@ class InterfaceObject(object):
         ext_start_session_url (string): URL for start_session (internal user)
         additional_elements (dict): An optional dictionary of key/values to
             include in the XML passed to the API.
+        upfront_data_token (string): upfront data token is required by the API
+            in certain cases, such as for redeem
 
     """
 
@@ -70,7 +72,7 @@ class InterfaceObject(object):
         default_concession_descr=None, remote_ip=None,
         remote_site=None, accept_language=None,
         ext_start_session_url=None,
-        additional_elements=None
+        additional_elements=None, upfront_data_token=None
     ):
         return {
             'username': username,
@@ -84,15 +86,15 @@ class InterfaceObject(object):
             'no_time_descr': no_time_descr,
             'default_concession_descr': default_concession_descr,
             'additional_elements': additional_elements,
+            'upfront_data_token': upfront_data_token,
         }
 
     def _configure(
         self, username=None, password=None, url=None,
         no_time_descr=None, api_request_timeout=None,
         default_concession_descr=None, remote_ip=None,
-        remote_site=None, accept_language=None,
-        ext_start_session_url=None,
-        additional_elements=None,
+        remote_site=None, accept_language=None, ext_start_session_url=None,
+        additional_elements=None, upfront_data_token=None,
     ):
 
         if (not username) and remote_ip and remote_site:
@@ -147,6 +149,7 @@ class InterfaceObject(object):
             accept_language=accept_language,
             ext_start_session_url=ext_start_session_url,
             additional_elements=additional_elements,
+            upfront_data_token=upfront_data_token,
         )
 
         self._core_api = CoreAPI(

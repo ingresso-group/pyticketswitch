@@ -46,7 +46,7 @@ class Core(InterfaceObject):
         self._min_seatprice_range = []
 
     def _do_core_event_search(
-        self, crypto_block, s_keys, s_dates, s_coco,
+        self, crypto_block, upfront_data_token, s_keys, s_dates, s_coco,
         s_city, s_geo_lat, s_geo_long, s_geo_rad_km,
         s_src, s_area, s_ven, s_eve,
         s_class, event_token_list,
@@ -94,7 +94,9 @@ class Core(InterfaceObject):
                     num_to_request = num_required * 2
 
             resp_dict = self.get_core_api().event_search(
-                crypto_block=crypto_block, s_keys=s_keys, s_dates=s_dates,
+                crypto_block=crypto_block,
+                upfront_data_token=upfront_data_token,
+                s_keys=s_keys, s_dates=s_dates,
                 s_coco=s_coco, s_city=s_city,
                 s_geo_lat=s_geo_lat, s_geo_long=s_geo_long,
                 s_geo_rad_km=s_geo_rad_km, s_src=s_src, s_area=s_area,
@@ -157,6 +159,7 @@ class Core(InterfaceObject):
 
                 return self._do_core_event_search(
                     crypto_block=crypto_block,
+                    upfront_data_token=upfront_data_token,
                     s_keys=s_keys, s_dates=s_dates, s_coco=s_coco,
                     s_city=s_city, s_geo_lat=s_geo_lat,
                     s_geo_long=s_geo_long, s_geo_rad_km=s_geo_rad_km,
@@ -184,7 +187,9 @@ class Core(InterfaceObject):
 
         else:
             return self.get_core_api().event_search(
-                crypto_block=crypto_block, s_keys=s_keys, s_dates=s_dates,
+                crypto_block=crypto_block,
+                upfront_data_token=upfront_data_token,
+                s_keys=s_keys, s_dates=s_dates,
                 s_coco=s_coco, s_city=s_city,
                 s_geo_lat=s_geo_lat, s_geo_long=s_geo_long,
                 s_geo_rad_km=s_geo_rad_km, s_src=s_src, s_area=s_area,
@@ -330,7 +335,9 @@ class Core(InterfaceObject):
             self._setup_instance_variables()
 
         resp_dict = self._do_core_event_search(
-            crypto_block=crypto_block, s_keys=keyword, s_dates=date_range,
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            s_keys=keyword, s_dates=date_range,
             s_coco=country, s_city=city,
             s_geo_lat=latitude, s_geo_long=longitude,
             s_geo_rad_km=radius, s_src=source, s_area=area_code,
@@ -609,8 +616,9 @@ class Core(InterfaceObject):
             despatch_id = None
 
         resp_dict = self.get_core_api().create_order(
-            crypto_block, discount_token=concession_ids,
-            despatch_token=despatch_id
+            crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            discount_token=concession_ids, despatch_token=despatch_id
         )
 
         order = order_objs.Order(
@@ -674,8 +682,9 @@ class Core(InterfaceObject):
             despatch_id = None
 
         resp_dict = self.get_core_api().create_order_and_reserve(
-            crypto_block, discount_token=concession_ids,
-            despatch_token=despatch_id
+            crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            discount_token=concession_ids, despatch_token=despatch_id
         )
 
         if resp_dict['failed_orders']:

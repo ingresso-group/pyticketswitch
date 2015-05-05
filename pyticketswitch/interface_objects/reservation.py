@@ -65,8 +65,8 @@ class Reservation(trolley_objs.Trolley):
 
         if acceptable_cards is not None:
             if isinstance(acceptable_cards, dict):
-                ## The can be changed if _get_acceptable_cards in
-                ## booking.views is removed
+                # The can be changed if _get_acceptable_cards in
+                # booking.views is removed
                 if isinstance(acceptable_cards['card'], list):
                     # Dealing with acceptable cards created by
                     # _get_acceptable_cards
@@ -180,7 +180,8 @@ class Reservation(trolley_objs.Trolley):
         )
 
         resp_dict = self.get_core_api().release_reservation(
-            crypto_block=crypto_block
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
         )
 
         return resolve_boolean(
@@ -236,7 +237,9 @@ class Reservation(trolley_objs.Trolley):
         )
 
         resp_dict = self.get_core_api().purchase_reservation_part_one(
-            crypto_block=crypto_block, customer_data=customer_data,
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            customer_data=customer_data,
             return_token=return_token, return_domain=return_domain,
             return_path=return_path, return_with_https=https_string,
             encryption_key=encryption_key, card_data=card_data,
@@ -269,9 +272,10 @@ class Reservation(trolley_objs.Trolley):
 
         Returns:
             Dictionary: If an additional redirect is required, then the
-                dictionary will contain an item called 'redirect_html_page_data'
-                which is the same as described in part one. This redirect
-                must be followed to complete the purchase.
+                dictionary will contain an item called
+                'redirect_html_page_data' which is the same as described in
+                part one. This redirect must be followed to complete the
+                purchase.
         """
 
         crypto_block = self.get_crypto_block(
@@ -285,6 +289,7 @@ class Reservation(trolley_objs.Trolley):
             http_accept=http_accept, http_user_agent=http_user_agent,
             callback_data=callback_data, encryption_key=encryption_key,
             crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
             send_confirmation_email=send_confirmation_email,
             results_url=results_url,
         )
@@ -400,7 +405,8 @@ class Reservation(trolley_objs.Trolley):
         resp_dict = self.get_core_api().transaction_info(
             transaction_id=self.transaction_id, describe_trolley=True,
             describe_customer=True, describe_external_sale_page=True,
-            crypto_block=crypto_block
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
         )
 
         self.transaction_status = resp_dict['transaction_status']
@@ -463,9 +469,9 @@ class Reservation(trolley_objs.Trolley):
 
         resp_dict = self.get_core_api().save_external_sale_page(
             crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
             transaction_id=self.transaction_id,
-            sale_page_type='text', sale_page_subtype='html',
-            sale_page=html
+            sale_page_type='text', sale_page_subtype='html', sale_page=html,
         )
 
         if resp_dict['saved_this_page'] == 'yes':

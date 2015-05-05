@@ -116,7 +116,9 @@ class TicketType(InterfaceObject):
             seat_block_offset = str(int(seat_block_offset))
 
         resp_dict = self.get_core_api().discount_options(
-            crypto_block=crypto_block, band_token=self.ticket_type_id,
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            band_token=self.ticket_type_id,
             no_of_tickets=no_of_tickets,
             despatch_token=despatch_id,
             trolley_token=trolley_id,
