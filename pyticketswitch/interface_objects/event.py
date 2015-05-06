@@ -362,6 +362,10 @@ class Event(InterfaceObject, CostRangeMixin):
         if self._valid_ticket_quantities is None:
 
             self._valid_ticket_quantities = []
+            # Call extra_info to make sure we get latest data
+            # (Important for redeem users for example, since we don't want
+            # to get old cached data)
+            self.get_details()
 
             if self.cached_valid_ticket_quantities:
                 self._valid_ticket_quantities = (
