@@ -1,5 +1,5 @@
 API_URL = 'https://www.tsd-aff.com/cgi-bin/xml_core.exe'
-EXT_START_SESSION_URL = 'http://www.tsd-aff.com/cgi-bin/xml_start_session.exe'
+EXT_START_SESSION_URL = 'https://www.tsd-aff.com/cgi-bin/xml_start_session.exe'
 
 TEST_USERNAME = 'internaluser'
 TEST_PASSWORD = ''

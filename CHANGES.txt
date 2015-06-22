@@ -1,3 +1,5 @@
+v1.5.2, 22 June 2015 -- Change default start session URL to use HTTPS
+
 v1.5.1, 6 May 2015 -- Fix a potential caching issue when getting valid ticket quantities from an event
 
 v1.5.0, 5 May 2015 -- Add support for upfront data. This is required by the core for redeem users.
