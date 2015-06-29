@@ -372,13 +372,15 @@ class CoreAPI(object):
 
     def date_time_options(
         self, crypto_block, event_token, upfront_data_token=None,
-        earliest_date=None, latest_date=None, request_cost_range=None
+        earliest_date=None, latest_date=None, request_cost_range=None,
+        page_length=None, page_number=None
     ):
         resp = self.make_core_request(
             'date_time_options',
             crypto_block=crypto_block, event_token=event_token,
             upfront_data_token=upfront_data_token, earliest_date=earliest_date,
             latest_date=latest_date, request_cost_range=request_cost_range,
+            page_length=page_length, page_number=page_number,
         )
 
         return self.parse_response(parse.date_time_options_result, resp)

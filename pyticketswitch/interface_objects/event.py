@@ -946,9 +946,7 @@ class Event(InterfaceObject, CostRangeMixin):
 
         return True
 
-    def get_performances(
-        self, earliest_date=None, latest_date=None
-    ):
+    def get_performances(self, earliest_date=None, latest_date=None, **kwargs):
         """Retrieves the Performances for this Event.
 
         Returns the list of Performances for the Event, called internally
@@ -973,7 +971,8 @@ class Event(InterfaceObject, CostRangeMixin):
             event_token=self.event_id,
             earliest_date=date_to_yyyymmdd_or_none(earliest_date),
             latest_date=date_to_yyyymmdd_or_none(latest_date),
-            request_cost_range=True
+            request_cost_range=True,
+            **kwargs
         )
 
         performances = []
