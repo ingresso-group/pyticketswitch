@@ -167,6 +167,8 @@ class CoreAPI(object):
                     url, method_name, time_taken
                 )
             else:
+                if response:
+                    logger.debug('Response info: %s', response.info())
                 logger.error(
                     (
                         'Response time unknown, url=%s, ' +
