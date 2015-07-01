@@ -1,7 +1,7 @@
 # EXAMPLE USAGE
 
 from pyticketswitch import (
-    Core, Event, Performance, Trolley, Customer, Address, Card
+    Core, Trolley, Customer, Address, Card
 )
 
 session = {}

@@ -56,7 +56,8 @@ class Core(InterfaceObject):
         s_top, s_user_rating, s_critic_rating,
         s_auto_range, page_length, page_number,
         s_cust_fltr, s_airport, mime_text_type,
-        special_offer_only, events=None, iter_index=0, max_iterations=None):
+        special_offer_only, events=None, iter_index=0, max_iterations=None
+    ):
 
         # There is no filter in the core for special offers, so if only
         # the special offers are requested, then we need to recursively
