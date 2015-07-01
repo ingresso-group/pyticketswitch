@@ -13,3 +13,7 @@ docs/_build
 
 # virtualenvs
 .venv/
+
+# coverage
+.coverage
+htmlcov/
