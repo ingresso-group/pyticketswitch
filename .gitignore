@@ -10,3 +10,6 @@
 
 # Docs output
 docs/_build
+
+# virtualenvs
+.venv/
