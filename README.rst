@@ -7,14 +7,9 @@ A Python interface for Ingresso's TicketSwitch XML API.
 Installation
 ------------
 
-Can be installed with pip:
-    pip install git+https://github.com/ingresso-group/pyticketswitch.git
+Can be installed with pip::
 
-Or cloned:
-    git clone https://github.com/ingresso-group/pyticketswitch.git
-
-And installed from the cloned directory:
-    python setup.py install
+        pip install pyticketswitch
 
 Documentation
 -------------
