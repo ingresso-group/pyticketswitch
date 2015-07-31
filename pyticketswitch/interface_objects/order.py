@@ -124,6 +124,14 @@ class Order(InterfaceObject):
         return None
 
     @property
+    def price_band(self):
+        return self._core_order.price_band_code
+
+    @property
+    def price_per_seat(self):
+        return self.total_combined_float / float(self._core_order.no_of_tickets)
+
+    @property
     def performance(self):
         """Performance object for this order."""
         if not hasattr(self, '_performance'):
@@ -205,6 +213,10 @@ class Order(InterfaceObject):
     @property
     def ticket_type_desc(self):
         return self._core_order.ticket_type_desc
+
+    @property
+    def ticket_type(self):
+        return self._core_order.ticket_type_code
 
     @property
     def backend_purchase_reference(self):
