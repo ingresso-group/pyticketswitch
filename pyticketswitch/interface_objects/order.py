@@ -129,7 +129,10 @@ class Order(InterfaceObject):
 
     @property
     def average_price_per_ticket_float(self):
-        return self.total_combined_float / float(self._core_order.no_of_tickets)
+        return (
+            self.total_combined_float /
+            float(self._core_order.total_no_of_tickets)
+        )
 
     @property
     def performance(self):
