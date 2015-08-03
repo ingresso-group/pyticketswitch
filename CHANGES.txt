@@ -1,3 +1,9 @@
+v1.6.1, 3 Aug 2015 -- Add additional order information attributes
+
+v1.6.0, 3 July 2015 -- Modify how seat blocks are passed into get_concessions()
+
+v1.5.3, 30 Jun 2015 -- Add page_length and page_number to datetime search
+
 v1.5.2, 22 June 2015 -- Change default start session URL to use HTTPS
 
 v1.5.1, 6 May 2015 -- Fix a potential caching issue when getting valid ticket quantities from an event
