@@ -124,11 +124,11 @@ class Order(InterfaceObject):
         return None
 
     @property
-    def price_band(self):
+    def price_band_code(self):
         return self._core_order.price_band_code
 
     @property
-    def price_per_seat(self):
+    def average_price_per_ticket_float(self):
         return self.total_combined_float / float(self._core_order.no_of_tickets)
 
     @property
@@ -215,7 +215,7 @@ class Order(InterfaceObject):
         return self._core_order.ticket_type_desc
 
     @property
-    def ticket_type(self):
+    def ticket_type_code(self):
         return self._core_order.ticket_type_code
 
     @property
