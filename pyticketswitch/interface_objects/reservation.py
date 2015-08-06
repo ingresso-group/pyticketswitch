@@ -316,6 +316,47 @@ class Reservation(trolley_objs.Trolley):
 
         return resp_dict
 
+    def purchase_reservation(
+        self, customer=None, send_confirmation_email=None,
+    ):
+        """A one stage purchase process that should only be used for purchases
+        made on credit.
+
+        See the XML API documentation for more information about the
+        purchase process. Note the absence of a 'card_data' element
+        in the input - this is intentional since the 2-stage purchase process
+        (calling purchase_part_one & purchase_part_two) should always be used
+        whenever a payment method is required.
+
+        Args:
+            customer (Customer): Optional, Customer object representing the
+                customer making the purchase.
+            send_confirmation_email (boolean): Optional, boolean indicating
+                whether TSW should send a confirmation email or not.
+
+        Returns:
+            Dictionary: The result of the attempted purchase
+        """
+
+        if customer:
+            customer_data = dict_ignore_nones(**customer._get_dict())
+        else:
+            customer_data = None
+
+        crypto_block = self._get_crypto_block_for_object(
+            method_name='make_reservation',
+            interface_object=self
+        )
+
+        resp_dict = self.get_core_api().purchase_reservation(
+            crypto_block=crypto_block,
+            upfront_data_token=self.settings['upfront_data_token'],
+            customer_data=customer_data,
+            send_confirmation_email=send_confirmation_email,
+        )
+
+        return resp_dict
+
     @property
     def transaction_status(self):
         """Status of the reservation."""

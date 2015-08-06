@@ -1248,6 +1248,218 @@ def purchase_reservation_part_two_result(root):
     return ret_dict
 
 
+def purchase_reservation(root):
+    fail_code = root.findtext('fail_code')
+
+    if fail_code == '1101':
+        raise aex.ReservationExpired(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1106':
+        raise aex.InvalidCountryForDespatch(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1107':
+        raise aex.InvalidEmailAddress(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1108':
+        raise aex.IncompleteCustomerDetails(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1109':
+        raise aex.NoCardNumberProvided(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1110':
+        raise aex.UnknownCardType(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1111':
+        raise aex.InvalidCardType(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1112':
+        raise aex.InvalidCardNumber(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1113':
+        raise aex.NoExpiryDateProvided(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1114':
+        raise aex.InvalidExpiryDate(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1115':
+        raise aex.NoCV2Provided(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1116':
+        raise aex.InvalidCV2(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1117':
+        raise aex.NoIssueNumberProvided(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1119':
+        raise aex.InvalidIssueNumber(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1121':
+        raise aex.IncompleteAltBillingAddress(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1122':
+        raise aex.NoStartDateProvided(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code == '1123':
+        raise aex.InvalidStartDate(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+    elif fail_code:
+        raise aex.APIException(
+            call=root.tag,
+            code=fail_code,
+            description=root.findtext('fail_desc')
+        )
+
+    failed_cv_two = root.findtext('failed_cv_two')
+    failed_avs = root.findtext('failed_avs')
+    failed_3d_secure = root.findtext('failed_3d_secure')
+    purchase_fail_code = root.findtext('purchase_fail_code')
+
+    if purchase_fail_code == '1':
+        raise aex.FraudTriggered(
+            call=root.tag,
+            code=purchase_fail_code,
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
+        )
+    elif purchase_fail_code in ('2', '3'):
+        raise aex.CardAuthorisationFailed(
+            call=root.tag,
+            code=purchase_fail_code,
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
+        )
+    elif purchase_fail_code == '4':
+        raise aex.ReservationAlreadyPurchased(
+            call=root.tag,
+            code=purchase_fail_code,
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
+        )
+    elif purchase_fail_code == '5':
+        raise aex.PurchasePreviouslyAttempted(
+            call=root.tag,
+            code=purchase_fail_code,
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
+        )
+    elif purchase_fail_code == '6':
+        raise aex.PurchaseRefused(
+            call=root.tag,
+            code=purchase_fail_code,
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
+        )
+    elif purchase_fail_code == '7':
+        raise aex.PurchaseFailed(
+            call=root.tag,
+            code=purchase_fail_code,
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
+        )
+    elif purchase_fail_code:
+        raise aex.PurchaseException(
+            call=root.tag,
+            code=purchase_fail_code,
+            description=root.findtext('purchase_fail_desc'),
+            failed_cv_two=failed_cv_two,
+            failed_avs=failed_avs,
+            failed_3d_secure=failed_3d_secure,
+        )
+
+    objs = {}
+
+    self_print_html_pages = []
+
+    for self_print_html_page in root.findall('self_print_html_page'):
+
+        self_print_html_pages.append(
+            _parse_self_print_html_page(self_print_html_page)
+        )
+        root.remove(self_print_html_page)
+
+    objs['self_print_html_pages'] = self_print_html_pages
+
+    trolley = root.find('trolley')
+
+    if trolley is not None:
+        objs['trolley'] = _parse_trolley(trolley)
+        root.remove(trolley)
+
+    customer = root.find('customer')
+
+    if customer is not None:
+        objs['customer'] = _parse_customer(customer)
+        root.remove(customer)
+
+    ret_dict = create_dict_from_xml_element(root)
+    ret_dict.update(objs)
+
+    return ret_dict
+
+
 def _parse_sale_page(sale_page_elem):
     return objects.SalePage(**_text_dict(sale_page_elem))
 

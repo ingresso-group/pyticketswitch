@@ -599,6 +599,23 @@ class CoreAPI(object):
             parse.purchase_reservation_part_two_result, resp
         )
 
+    def purchase_reservation(
+        self, crypto_block, customer_data, card_data=None,
+        send_confirmation_email=None,
+        upfront_data_token=None,
+    ):
+        resp = self.make_core_request(
+            'purchase_reservation',
+            crypto_block=crypto_block, customer_data=customer_data,
+            card_data=card_data,
+            send_confirmation_email=send_confirmation_email,
+            upfront_data_token=upfront_data_token,
+        )
+
+        return self.parse_response(
+            parse.purchase_reservation, resp
+        )
+
     def transaction_info(
         self, transaction_id, describe_trolley=None, describe_customer=None,
         describe_external_sale_page=None, crypto_block=None,
