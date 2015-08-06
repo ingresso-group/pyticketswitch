@@ -156,7 +156,7 @@ card = Card(
 # 'redirect_html_page_data' which consists of a string of
 # HTML to pass to the user's browser. It contains a javascript
 # redirect to an external page.
-reponse_one_dictionary = reservation.purchase_part_one(
+response_one_dictionary = reservation.purchase_part_one(
     return_token='<unique token to identify request>',
     return_domain='<return domain>',
     return_path='<return path>',
@@ -170,7 +170,7 @@ reponse_one_dictionary = reservation.purchase_part_one(
 # 'self_print_html_pages' if there were any self print orders.
 # Other than that the response will contain 'trolley' and
 # 'customer' elements.
-reponse_two_dictionary = reservation.purchase_part_two(
+response_two_dictionary = reservation.purchase_part_two(
     returning_token='<token returned by part_one_redirect>',
     new_return_token='<unique token to identify request>',
     new_return_path='<return path>',
