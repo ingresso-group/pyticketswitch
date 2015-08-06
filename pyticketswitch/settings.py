@@ -1,9 +1,6 @@
 API_URL = 'https://www.tsd-aff.com/cgi-bin/xml_core.exe'
 EXT_START_SESSION_URL = 'https://www.tsd-aff.com/cgi-bin/xml_start_session.exe'
 
-TEST_USERNAME = 'whitelabel-testuser'
-TEST_PASSWORD = ''
-
 DATE_SLUG_MAP = (
     {
         'slug': 'today',

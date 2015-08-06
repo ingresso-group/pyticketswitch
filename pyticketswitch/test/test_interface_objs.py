@@ -7,15 +7,15 @@ from pyticketswitch.interface_objects import (
     Trolley, Order, Reservation, Review, Seat, Bundle
 )
 from pyticketswitch.api_exceptions import InvalidId
-from pyticketswitch import settings
+from pyticketswitch import settings_test as settings
 
 
 class InterfaceObjectTestCase(unittest.TestCase):
-
-    settings = {
+    api_settings = {
         'username': settings.TEST_USERNAME,
         'password': settings.TEST_PASSWORD,
         'url': settings.API_URL,
+        'ext_start_session_url': settings.EXT_START_SESSION_URL
     }
 
 
@@ -23,7 +23,7 @@ class CoreTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        self.core = Core(session=session, **self.settings)
+        self.core = Core(session=session, **self.api_settings)
 
     def test_search_events_keyword(self):
 
@@ -106,7 +106,7 @@ class CoreTests(InterfaceObjectTestCase):
 
         self.assertIsInstance(self.core.event_categories, dict)
 
-        self.assertIn('arts/', self.core.event_categories)
+        self.assertIn('theatre/', self.core.event_categories)
 
         for cat, info in self.core.event_categories.items():
             self.assertIsInstance(cat, str)
@@ -148,7 +148,7 @@ class InvalidEventTests(InterfaceObjectTestCase):
     def setUp(self):
         session = {}
         self.event = Event(
-            event_id='invalid', session=session, **self.settings
+            event_id='invalid', session=session, **self.api_settings
         )
 
     def test_get_details(self):
@@ -168,7 +168,7 @@ class ValidEventTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        self.event = Event(event_id='6IF', session=session, **self.settings)
+        self.event = Event(event_id='6IF', session=session, **self.api_settings)
 
     def test_string_properties(self):
 
@@ -186,12 +186,12 @@ class ValidEventTests(InterfaceObjectTestCase):
         found = False
 
         for c in self.event.categories:
-            if c.code == 'arts':
+            if c.code == 'theatre':
                 found = True
 
         self.assertTrue(
             found,
-            msg="'Arts' category not found in event category list"
+            msg="'Theatre' category not found in event category list"
         )
 
     def test_float_properties(self):
@@ -278,7 +278,7 @@ class EventReviewsTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        self.event = Event(event_id='6IF', session=session, **self.settings)
+        self.event = Event(event_id='6IF', session=session, **self.api_settings)
 
     def test_user_review_percent(self):
         self.assertIsInstance(self.event.user_review_percent, str)
@@ -295,7 +295,7 @@ class ReviewTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         self.review = event.user_reviews[0]
 
@@ -328,7 +328,7 @@ class AvailDetailTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         self.avail_detail = event.avail_details[0]
 
@@ -411,7 +411,7 @@ class PerformanceTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -440,7 +440,7 @@ class PerformanceTests(InterfaceObjectTestCase):
     def test_required_info(self):
 
         for perf in self.performances:
-            if perf.date.weekday() == 1:
+            if perf.date.weekday() == 2:
                 self.assertIsInstance(perf.required_info, str)
 
 
@@ -448,7 +448,7 @@ class PerformanceAvailabilityTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -511,14 +511,14 @@ class PerformanceAvailabilityTests(InterfaceObjectTestCase):
             self.assertNotIn(unique_value, values)
             values.append(unique_value)
 
-## Need tests for usage date/departure date somewhere
+# Need tests for usage date/departure date somewhere
 
 
 class PerformanceDespatchTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -557,7 +557,7 @@ class TicketTypeTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -628,7 +628,7 @@ class TicketTypeConcessionTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -670,7 +670,7 @@ class ConcessionTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -725,7 +725,7 @@ class DespatchMethodTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -768,7 +768,7 @@ class OrderTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -801,7 +801,7 @@ class OrderTests(InterfaceObjectTestCase):
 
         concession_list = [concession]
 
-        core = Core(session=session, **self.settings)
+        core = Core(session=session, **self.api_settings)
 
         self.order = core.create_order(
             concessions=concession_list,
@@ -853,7 +853,7 @@ class TrolleyTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -886,14 +886,14 @@ class TrolleyTests(InterfaceObjectTestCase):
 
         concession_list = [concession]
 
-        core = Core(session=session, **self.settings)
+        core = Core(session=session, **self.api_settings)
 
         order = core.create_order(
             concessions=concession_list,
             despatch_method=despatch_method,
         )
 
-        self.trolley = Trolley(session=session, **self.settings)
+        self.trolley = Trolley(session=session, **self.api_settings)
 
         self.trolley.add_order(order)
 
@@ -920,7 +920,7 @@ class TrolleyTests(InterfaceObjectTestCase):
         new_trolley = Trolley(
             trolley_id=self.trolley.trolley_id,
             session=session,
-            **self.settings
+            **self.api_settings
         )
 
         new_trolley.update()
@@ -946,7 +946,7 @@ class BundleTests(InterfaceObjectTestCase):
 
     def get_order(self, event_id):
         session = {}
-        event = Event(event_id=event_id, session=session, **self.settings)
+        event = Event(event_id=event_id, session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -973,7 +973,7 @@ class BundleTests(InterfaceObjectTestCase):
 
         concession_list = [concession]
 
-        core = Core(session=session, **self.settings)
+        core = Core(session=session, **self.api_settings)
 
         return core.create_order(
             concessions=concession_list,
@@ -986,7 +986,7 @@ class BundleTests(InterfaceObjectTestCase):
         order2 = self.get_order('6L9')
 
         session = {}
-        self.trolley = Trolley(session=session, **self.settings)
+        self.trolley = Trolley(session=session, **self.api_settings)
 
         self.trolley.add_order(order1)
         self.trolley.add_order(order2)
@@ -1067,7 +1067,7 @@ class ReservationTests(object):
         new_reservation = Reservation(
             transaction_id=self.reservation.transaction_id,
             session=session,
-            **self.settings
+            **self.api_settings
         )
 
         trolley = new_reservation.get_details()
@@ -1079,7 +1079,7 @@ class MakeReservationTests(InterfaceObjectTestCase, ReservationTests):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -1112,14 +1112,14 @@ class MakeReservationTests(InterfaceObjectTestCase, ReservationTests):
 
         concession_list = [concession]
 
-        core = Core(session=session, **self.settings)
+        core = Core(session=session, **self.api_settings)
 
         order = core.create_order(
             concessions=concession_list,
             despatch_method=despatch_method,
         )
 
-        self.trolley = Trolley(session=session, **self.settings)
+        self.trolley = Trolley(session=session, **self.api_settings)
 
         self.trolley.add_order(order)
 
@@ -1130,7 +1130,7 @@ class CombinedOrderReservationTests(InterfaceObjectTestCase, ReservationTests):
 
     def setUp(self):
         session = {}
-        event = Event(event_id='6IF', session=session, **self.settings)
+        event = Event(event_id='6IF', session=session, **self.api_settings)
 
         latest_date = (
             datetime.date.today() +
@@ -1163,7 +1163,7 @@ class CombinedOrderReservationTests(InterfaceObjectTestCase, ReservationTests):
 
         concession_list = [concession]
 
-        core = Core(session=session, **self.settings)
+        core = Core(session=session, **self.api_settings)
 
         self.reservation = core.create_reservation(
             concessions=concession_list,
