@@ -4,7 +4,7 @@ from copy import deepcopy
 
 from pyticketswitch.interface_objects import (
     Core, Event, Concession, DespatchMethod, TicketType, Performance,
-    Trolley, Order, Reservation, Review, Seat, Bundle
+    Trolley, Order, Reservation, Review, Seat, Bundle, Address, Customer
 )
 from pyticketswitch.api_exceptions import InvalidId
 from pyticketswitch import settings_test as settings
@@ -168,7 +168,8 @@ class ValidEventTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        self.event = Event(event_id='6IF', session=session, **self.api_settings)
+        self.event = Event(
+            event_id='6IF', session=session, **self.api_settings)
 
     def test_string_properties(self):
 
@@ -278,7 +279,8 @@ class EventReviewsTests(InterfaceObjectTestCase):
 
     def setUp(self):
         session = {}
-        self.event = Event(event_id='6IF', session=session, **self.api_settings)
+        self.event = Event(
+            event_id='6IF', session=session, **self.api_settings)
 
     def test_user_review_percent(self):
         self.assertIsInstance(self.event.user_review_percent, str)
@@ -1169,3 +1171,92 @@ class CombinedOrderReservationTests(InterfaceObjectTestCase, ReservationTests):
             concessions=concession_list,
             despatch_method=despatch_method,
         )
+
+
+class InterfaceObjectCreditUserTestCase(unittest.TestCase):
+    api_settings = {
+        'username': settings.TEST_CREDIT_USERNAME,
+        'password': settings.TEST_CREDIT_PASSWORD,
+        'url': settings.API_URL,
+        'ext_start_session_url': settings.EXT_START_SESSION_URL
+    }
+
+
+class PurchaseReservationOnCreditTests(InterfaceObjectCreditUserTestCase):
+
+    def setUp(self):
+        session = {}
+        event = Event(event_id='6IF', session=session, **self.api_settings)
+
+        latest_date = (
+            datetime.date.today() +
+            datetime.timedelta(days=7)
+        )
+
+        performances = event.get_performances(
+            latest_date=latest_date
+        )
+
+        for p in reversed(performances):
+            if p.date.weekday() != 5:
+                performance = p
+                break
+
+        ticket_types = performance.get_availability()
+
+        ticket_type = ticket_types[0]
+
+        despatch_method = performance.despatch_methods[0]
+
+        ticket_concessions = ticket_type.get_concessions(
+            no_of_tickets=1,
+            despatch_method=despatch_method
+        )
+
+        concessions = ticket_concessions[0]
+
+        concession = concessions[0]
+
+        concession_list = [concession]
+
+        core = Core(session=session, **self.api_settings)
+
+        order = core.create_order(
+            concessions=concession_list,
+            despatch_method=despatch_method,
+        )
+
+        self.trolley = Trolley(session=session, **self.api_settings)
+
+        self.trolley.add_order(order)
+
+        self.reservation = self.trolley.get_reservation()
+
+        customer_address = Address(
+            address_line_one='1 Test Lane',
+            address_line_two=None,
+            town='Test Town',
+            county='County',
+            postcode='AB12 3CD',
+            country_code='GB'
+        )
+
+        customer = Customer(
+            title='Mr',
+            first_name='Test',
+            last_name='User',
+            email_address='test@test.com',
+            home_phone='01234567890',
+            work_phone='01234567890',
+            address=customer_address,
+            user_can_use_data=True,
+            supplier_can_use_data=False,
+            world_can_use_data=False
+        )
+
+        self.purchase_response = self.reservation.purchase_reservation(
+            customer=customer,
+        )
+
+    def test_purchase_succeeded(self):
+        self.assertTrue(self.reservation.is_purchased)
