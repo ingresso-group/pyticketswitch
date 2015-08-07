@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='pyticketswitch',
-    version='1.6.1',
+    version='1.6.2',
     author='Ingresso',
     author_email='systems@ingresso.co.uk',
     packages=[
