@@ -3,8 +3,8 @@ from distutils.core import setup
 setup(
     name='pyticketswitch',
     version='1.6.1',
-    author='Matt Jared',
-    author_email='mattjared@ingresso.co.uk',
+    author='Ingresso',
+    author_email='systems@ingresso.co.uk',
     packages=[
         'pyticketswitch',
         'pyticketswitch.test',
