@@ -8,10 +8,10 @@ Installation
 ------------
 
 Can be installed with pip:
-    pip install git+https://github.com/ingtechteam/pyticketswitch.git
+    pip install git+https://github.com/ingresso-group/pyticketswitch.git
 
 Or cloned:
-    git clone https://github.com/ingtechteam/pyticketswitch.git
+    git clone https://github.com/ingresso-group/pyticketswitch.git
 
 And installed from the cloned directory:
     python setup.py install
@@ -24,7 +24,7 @@ The `pyticketswitch documentation can be found here <http://www.ingresso.co.uk/p
 Bugs, features, support and discussion
 --------------------------------------
 
-Please use the `Github Issues <https://github.com/ingtechteam/pyticketswitch/issues>`_ or contact Ingresso at systems@ingresso.co.uk
+Please use the `Github Issues <https://github.com/ingresso-group/pyticketswitch/issues>`_ or contact Ingresso at systems@ingresso.co.uk
 
 License
 -------
