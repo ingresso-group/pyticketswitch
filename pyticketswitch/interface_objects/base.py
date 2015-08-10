@@ -541,6 +541,13 @@ class Seat(object):
         return self._core_seat.row_id
 
     @property
+    def separator(self):
+        """The seat id is made up of row_id + separator + column_id.
+        Returns empty string if there is no separator.
+        """
+        return self._core_seat.separator or ''
+
+    @property
     def column_sort_id(self):
         col = self._core_seat.col_id
 
