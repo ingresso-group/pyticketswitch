@@ -5,6 +5,7 @@ setup(
     version='1.6.4',
     author='Ingresso',
     author_email='systems@ingresso.co.uk',
+    url='https://github.com/ingresso-group/pyticketswitch/',
     packages=[
         'pyticketswitch',
         'pyticketswitch.interface_objects'
