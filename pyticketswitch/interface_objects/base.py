@@ -860,12 +860,12 @@ class Card(object):
             'expiry_date': self.expiry_date_mmyy,
             'cv_two': self.cv_two,
             'issue_number': self.issue_number,
-            'billing_address_line_one': self.billing_address_line_one,
-            'billing_address_line_two': self.billing_address_line_two,
-            'billing_town': self.billing_town,
-            'billing_county': self.billing_county,
-            'billing_postcode': self.billing_postcode,
-            'billing_country_code': self.billing_country_code
+            'address_line_one': self.billing_address_line_one,
+            'address_line_two': self.billing_address_line_two,
+            'town': self.billing_town,
+            'county': self.billing_county,
+            'postcode': self.billing_postcode,
+            'country_code': self.billing_country_code
         }
 
     @property
