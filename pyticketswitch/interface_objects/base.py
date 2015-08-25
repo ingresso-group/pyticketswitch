@@ -1426,3 +1426,41 @@ class CostRange(CostRangeMixin):
 
     def _get_core_cost_range(self):
         return self._core_cost_range
+
+
+class Commission(object):
+    """Object that represents a commission (either user comission or gross
+    commission)
+    """
+
+    def __init__(self, core_commission):
+        self._core_commission = core_commission
+
+    @property
+    def amount_ex_vat(self):
+        """Float value of the commission excluding VAT"""
+        if self._core_commission.amount_ex_vat:
+            return to_float_or_none(
+                self._core_commission.amount_ex_vat
+            )
+        return None
+
+    @property
+    def amount_inc_vat(self):
+        """Float value of the commission including VAT"""
+        if self._core_commission.amount_inc_vat:
+            return to_float_or_none(
+                self._core_commission.amount_inc_vat
+            )
+        return None
+
+    @property
+    def commission_currency(self):
+        """Returns Currency object representing the currency that the
+        commission values are provided in
+        """
+        if self._core_commission.commission_currency:
+            return Currency(
+                core_currency=self._core_commission.commission_currency
+            )
+        return None

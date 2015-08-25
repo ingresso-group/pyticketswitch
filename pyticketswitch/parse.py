@@ -468,19 +468,19 @@ def _parse_free_seat_blocks(free_seat_blocks_elem):
     return seat_blocks
 
 
-def _parse_user_commission(user_comm_elem):
+def _parse_commission(commission_elem):
 
     c_args = {}
 
-    currency = user_comm_elem.find('commission_currency')
+    currency = commission_elem.find('commission_currency')
 
     if currency is not None:
         c_args['commission_currency'] = _parse_currency(currency)
-        user_comm_elem.remove(currency)
+        commission_elem.remove(currency)
 
-    c_args.update(_text_dict(user_comm_elem))
+    c_args.update(_text_dict(commission_elem))
 
-    return objects.UserCommission(**c_args)
+    return objects.Commission(**c_args)
 
 
 def _parse_price_band(price_elem):
@@ -512,12 +512,18 @@ def _parse_price_band(price_elem):
         price_elem.remove(free_seat_blocks)
 
     user_commission = price_elem.find('user_commission')
-
     if user_commission is not None:
-        objs['user_commission'] = _parse_user_commission(
+        objs['user_commission'] = _parse_commission(
             user_commission
         )
         price_elem.remove(user_commission)
+
+    gross_commission = price_elem.find('gross_commission')
+    if gross_commission is not None:
+        objs['gross_commission'] = _parse_commission(
+            gross_commission
+        )
+        price_elem.remove(gross_commission)
 
     p_arg = _text_dict(price_elem)
     p_arg.update(objs)
@@ -641,10 +647,15 @@ def _parse_discount(discount_elem):
         d_arg['seats'] = _parse_seats(seats)
 
     user_commission = discount_elem.find('user_commission')
-
     if user_commission is not None:
-        d_arg['user_commission'] = _parse_user_commission(
+        d_arg['user_commission'] = _parse_commission(
             user_commission
+        )
+
+    gross_commission = discount_elem.find('gross_commission')
+    if gross_commission is not None:
+        d_arg['gross_commission'] = _parse_commission(
+            gross_commission
         )
 
     return objects.Discount(**d_arg)

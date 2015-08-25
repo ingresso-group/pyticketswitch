@@ -1,7 +1,7 @@
 from operator import attrgetter
 from copy import deepcopy
 
-from base import InterfaceObject, Seat, SeatBlock, Currency
+from base import InterfaceObject, Seat, SeatBlock, Currency, Commission
 from pyticketswitch.util import (
     format_price_with_symbol, to_float_or_none, to_float_summed,
     to_int_or_none, resolve_boolean, day_mask_to_bool_list, yyyymmdd_to_date,
@@ -412,53 +412,32 @@ class TicketType(InterfaceObject):
         return self._available_seat_blocks
 
     @property
-    def commission_inc_vat(self):
-        """Float value of the user's commission including VAT for the
+    def user_commission(self):
+        """Returns Commission object representing the user commission for the
         default concession on this TicketType.
 
         Only available if requested at the availability stage with the
         include_user_commission flag.
         """
         if self._core_price_band.user_commission:
-
-            return to_float_or_none(
-                self._core_price_band.user_commission.amount_ex_vat
+            return Commission(
+                core_commission=self._core_price_band.user_commission
             )
-
         return None
 
     @property
-    def commission_ex_vat(self):
-        """Float value of the user's commission excluding VAT for the
+    def gross_commission(self):
+        """Returns Commission object representing the gross commission for the
         default concession on this TicketType.
 
         Only available if requested at the availability stage with the
-        include_user_commission flag.
+        include_user_commission flag and the gross commission is visible to the
+        user.
         """
-        if self._core_price_band.user_commission:
-
-            return to_float_or_none(
-                self._core_price_band.user_commission.amount_inc_vat
+        if self._core_price_band.gross_commission:
+            return Commission(
+                core_commission=self._core_price_band.gross_commission
             )
-
-        return None
-
-    @property
-    def commission_currency(self):
-        """Currency object representing the currency that the commission
-        values are provided in.
-
-        Only available if requested at the availability stage with the
-        include_user_commission flag.
-        """
-        if self._core_price_band.user_commission:
-
-            user_comm = self._core_price_band.user_commission
-
-            return Currency(
-                core_currency=user_comm.commission_currency
-            )
-
         return None
 
 
@@ -630,53 +609,32 @@ class Concession(InterfaceObject):
         )
 
     @property
-    def commission_inc_vat(self):
-        """Float value of the user's commission including VAT for
-        this Concession.
+    def user_commission(self):
+        """Returns Commission object representing the user commission for this
+        Concession.
 
         Only available if requested in get_concessions with the
         include_user_commission flag.
         """
         if self._core_discount.user_commission:
-
-            return to_float_or_none(
-                self._core_discount.user_commission.amount_ex_vat
+            return Commission(
+                core_commission=self._core_discount.user_commission
             )
-
         return None
 
     @property
-    def commission_ex_vat(self):
-        """Float value of the user's commission excluding VAT for
-        this Concession.
+    def gross_commission(self):
+        """Returns Commission object representing the gross commission for this
+        Concession.
 
         Only available if requested in get_concessions with the
-        include_user_commission flag.
+        include_user_commission flag and the gross commission is visible to the
+        user.
         """
-        if self._core_discount.user_commission:
-
-            return to_float_or_none(
-                self._core_discount.user_commission.amount_inc_vat
+        if self._core_discount.gross_commission:
+            return Commission(
+                core_commission=self._core_discount.gross_commission
             )
-
-        return None
-
-    @property
-    def commission_currency(self):
-        """Currency object representing the currency that the commission
-        values are provided in.
-
-        Only available if requested in get_concessions with the
-        include_user_commission flag.
-        """
-        if self._core_discount.user_commission:
-
-            user_comm = self._core_discount.user_commission
-
-            return Currency(
-                core_currency=user_comm.commission_currency
-            )
-
         return None
 
 

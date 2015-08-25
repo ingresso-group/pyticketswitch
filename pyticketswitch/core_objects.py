@@ -398,6 +398,7 @@ class PriceBand(CoreObject):
         raw_contiguous_seats=None,
         raw_total_seats=None,
         user_commission=None,
+        gross_commission=None,
         **kwargs
     ):
         self.ticket_price = ticket_price
@@ -428,6 +429,7 @@ class PriceBand(CoreObject):
         self.raw_contiguous_seats = raw_contiguous_seats
         self.raw_total_seats = raw_total_seats
         self.user_commission = user_commission
+        self.gross_commission = gross_commission
 
         vars(self).update(kwargs)
 
@@ -545,6 +547,7 @@ class Discount(CoreObject):
         raw_contiguous_seats=None,
         raw_total_seats=None,
         user_commission=None,
+        gross_commission=None,
         **kwargs
     ):
         self.discount_token = discount_token
@@ -562,6 +565,7 @@ class Discount(CoreObject):
         self.raw_contiguous_seats = raw_contiguous_seats
         self.raw_total_seats = raw_total_seats
         self.user_commission = user_commission
+        self.gross_commission = gross_commission
 
         vars(self).update(kwargs)
 
@@ -864,7 +868,7 @@ class SelfPrintHTMLPage(CoreObject):
         vars(self).update(kwargs)
 
 
-class UserCommission(CoreObject):
+class Commission(CoreObject):
 
     def __init__(
         self,
