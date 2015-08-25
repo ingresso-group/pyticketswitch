@@ -736,6 +736,20 @@ def _parse_order(order_elem):
         objs['requested_seats'] = _parse_seats(requested_seats)
         order_elem.remove(requested_seats)
 
+    user_commission = order_elem.find('user_commission')
+    if user_commission is not None:
+        objs['user_commission'] = _parse_commission(
+            user_commission
+        )
+        order_elem.remove(user_commission)
+
+    gross_commission = order_elem.find('gross_commission')
+    if gross_commission is not None:
+        objs['gross_commission'] = _parse_commission(
+            gross_commission
+        )
+        order_elem.remove(gross_commission)
+
     o_arg = _text_dict(order_elem)
     o_arg.update(objs)
 

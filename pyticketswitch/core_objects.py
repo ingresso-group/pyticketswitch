@@ -591,6 +591,8 @@ class Order(CoreObject):
         backend_purchase_reference=None,
         requested_seats=None,
         seat_request_status=None,
+        user_commission=None,
+        gross_commission=None,
         **kwargs
     ):
         self.item_number = item_number
@@ -614,6 +616,8 @@ class Order(CoreObject):
             requested_seats = []
         self.requested_seats = requested_seats
         self.seat_request_status = seat_request_status
+        self.user_commission = user_commission
+        self.gross_commission = gross_commission
 
         vars(self).update(kwargs)
 
@@ -872,14 +876,14 @@ class Commission(CoreObject):
 
     def __init__(
         self,
-        amount_ex_vat,
-        amount_inc_vat,
+        amount_excluding_vat,
+        amount_including_vat,
         commission_currency,
         **kwargs
     ):
 
-        self.amount_ex_vat = amount_ex_vat
-        self.amount_inc_vat = amount_inc_vat
+        self.amount_excluding_vat = amount_excluding_vat
+        self.amount_including_vat = amount_including_vat
         self.commission_currency = commission_currency
 
         vars(self).update(kwargs)

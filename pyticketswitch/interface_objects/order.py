@@ -1,4 +1,4 @@
-from base import InterfaceObject, Seat, Currency
+from base import InterfaceObject, Seat, Currency, Commission
 from pyticketswitch.util import (
     to_int_or_return, to_float_or_none,
     to_float_summed, format_price_with_symbol
@@ -288,3 +288,25 @@ class Order(InterfaceObject):
         elif self.seat_request_status == 'got_all':
             return True
         return False
+
+    @property
+    def user_commission(self):
+        """Returns Commission object representing the user commission for this
+        order.
+        """
+        if self._core_order.user_commission:
+            return Commission(
+                core_commission=self._core_order.user_commission
+            )
+        return None
+
+    @property
+    def gross_commission(self):
+        """Returns Commission object representing the gross commission for this
+        order.
+        """
+        if self._core_order.gross_commission:
+            return Commission(
+                core_commission=self._core_order.gross_commission
+            )
+        return None

@@ -4,7 +4,8 @@ from copy import deepcopy
 
 from pyticketswitch.interface_objects import (
     Core, Event, Concession, DespatchMethod, TicketType, Performance,
-    Trolley, Order, Reservation, Review, Seat, Bundle, Address, Customer
+    Trolley, Order, Reservation, Review, Seat, Bundle, Address, Customer,
+    Commission, Currency
 )
 from pyticketswitch.api_exceptions import InvalidId
 from pyticketswitch import settings_test as settings
@@ -575,7 +576,9 @@ class TicketTypeTests(InterfaceObjectTestCase):
                 performance = p
                 break
 
-        ticket_types = performance.get_availability()
+        ticket_types = performance.get_availability(
+            include_user_commission=True
+        )
 
         self.ticket_type = ticket_types[0]
 
@@ -624,6 +627,13 @@ class TicketTypeTests(InterfaceObjectTestCase):
 
         for ex in self.ticket_type.example_seats:
             self.assertIsInstance(ex, Seat)
+
+    # def test_user_commission(self):
+    #     user_commission = self.ticket_type.user_commission
+    #     self.assertIsInstance(user_commission, Commission)
+    #     self.assertIsInstance(user_commission.amount_excluding_vat, float)
+    #     self.assertIsInstance(user_commission.amount_including_vat, float)
+    #     self.assertIsInstance(user_commission.commission_currency, Currency)
 
 
 class TicketTypeConcessionTests(InterfaceObjectTestCase):

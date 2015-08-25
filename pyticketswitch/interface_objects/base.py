@@ -1437,20 +1437,20 @@ class Commission(object):
         self._core_commission = core_commission
 
     @property
-    def amount_ex_vat(self):
+    def amount_excluding_vat(self):
         """Float value of the commission excluding VAT"""
-        if self._core_commission.amount_ex_vat:
+        if self._core_commission.amount_excluding_vat:
             return to_float_or_none(
-                self._core_commission.amount_ex_vat
+                self._core_commission.amount_excluding_vat
             )
         return None
 
     @property
-    def amount_inc_vat(self):
+    def amount_including_vat(self):
         """Float value of the commission including VAT"""
-        if self._core_commission.amount_inc_vat:
+        if self._core_commission.amount_including_vat:
             return to_float_or_none(
-                self._core_commission.amount_inc_vat
+                self._core_commission.amount_including_vat
             )
         return None
 
