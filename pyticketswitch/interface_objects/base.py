@@ -67,16 +67,17 @@ class InterfaceObject(object):
             self._configure(**kwargs)
 
     def _get_settings(
-        self, username=None, password=None, url=None,
-        no_time_descr=None, api_request_timeout=None,
-        default_concession_descr=None, remote_ip=None,
-        remote_site=None, accept_language=None,
-        ext_start_session_url=None,
-        additional_elements=None, upfront_data_token=None
-    ):
+            self, username=None, password=None, sub_id=None, url=None,
+            no_time_descr=None, api_request_timeout=None,
+            default_concession_descr=None, remote_ip=None,
+            remote_site=None, accept_language=None,
+            ext_start_session_url=None,
+            additional_elements=None, upfront_data_token=None):
+
         return {
             'username': username,
             'password': password,
+            'sub_id': sub_id,
             'remote_ip': remote_ip,
             'remote_site': remote_site,
             'accept_language': accept_language,
@@ -90,12 +91,11 @@ class InterfaceObject(object):
         }
 
     def _configure(
-        self, username=None, password=None, url=None,
-        no_time_descr=None, api_request_timeout=None,
-        default_concession_descr=None, remote_ip=None,
-        remote_site=None, accept_language=None, ext_start_session_url=None,
-        additional_elements=None, upfront_data_token=None,
-    ):
+            self, username=None, password=None, sub_id=None, url=None,
+            no_time_descr=None, api_request_timeout=None,
+            default_concession_descr=None, remote_ip=None,
+            remote_site=None, accept_language=None, ext_start_session_url=None,
+            additional_elements=None, upfront_data_token=None):
 
         if (not username) and remote_ip and remote_site:
             username = self._get_cached_username(
@@ -140,7 +140,7 @@ class InterfaceObject(object):
             )
 
         self.settings = self._get_settings(
-            username=username, password=password,
+            username=username, password=password, sub_id=sub_id,
             url=url, no_time_descr=no_time_descr,
             api_request_timeout=api_request_timeout,
             default_concession_descr=default_concession_descr,
@@ -155,6 +155,7 @@ class InterfaceObject(object):
         self._core_api = CoreAPI(
             username=username,
             password=password,
+            sub_id=sub_id,
             url=url,
             remote_ip=remote_ip,
             remote_site=remote_site,
@@ -245,7 +246,9 @@ class InterfaceObject(object):
         return self._get_running_user().sphinx_restrict_group
 
     def get_default_language_code(self):
-        return self._get_running_user().default_lang_code
+        running_user = self._get_running_user()
+        if running_user:
+            return running_user.default_lang_code
 
     def get_content_language(self):
         return self.get_core_api().content_language
@@ -279,8 +282,7 @@ class InterfaceObject(object):
         )
 
     def _get_cached_username(
-        self, remote_ip, remote_site
-    ):
+            self, remote_ip, remote_site):
         key = self._get_username_session_key(
             remote_ip=remote_ip,
             remote_site=remote_site
@@ -289,8 +291,7 @@ class InterfaceObject(object):
         return self._retrieve_data(key)
 
     def _set_cached_username(
-        self, username, remote_ip, remote_site
-    ):
+            self, username, remote_ip, remote_site):
         key = self._get_username_session_key(
             remote_ip=remote_ip,
             remote_site=remote_site
@@ -342,8 +343,7 @@ class InterfaceObject(object):
                         del self._session[key]
 
     def get_crypto_block(
-        self, method_name, password_required=True
-    ):
+            self, method_name, password_required=True):
 
         crypto_block = None
 
@@ -382,8 +382,7 @@ class InterfaceObject(object):
         self._store_data(key=session_key, data=crypto_block)
 
     def _get_crypto_object_key(
-        self, username, method_name, interface_object
-    ):
+            self, username, method_name, interface_object):
 
         return '{0}_{1}'.format(
             self._get_crypto_session_key(
@@ -392,8 +391,7 @@ class InterfaceObject(object):
         )
 
     def _set_crypto_for_objects(
-        self, crypto_block, method_name, interface_objects
-    ):
+            self, crypto_block, method_name, interface_objects):
 
         for i, obj in enumerate(interface_objects):
             key = self._get_crypto_object_key(
@@ -413,8 +411,7 @@ class InterfaceObject(object):
             )
 
     def _set_crypto_for_object(
-        self, crypto_block, method_name, interface_object
-    ):
+            self, crypto_block, method_name, interface_object):
 
         key = self._get_crypto_object_key(
             username=self.settings['username'],
@@ -426,9 +423,7 @@ class InterfaceObject(object):
             key=key, data=crypto_block,
         )
 
-    def _get_crypto_block_for_object(
-        self, method_name, interface_object
-    ):
+    def _get_crypto_block_for_object(self, method_name, interface_object):
 
         if not self.settings.get('username', False):
             self._start_session()

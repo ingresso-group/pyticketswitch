@@ -46,18 +46,17 @@ class Core(InterfaceObject):
         self._min_seatprice_range = []
 
     def _do_core_event_search(
-        self, crypto_block, upfront_data_token, s_keys, s_dates, s_coco,
-        s_city, s_geo_lat, s_geo_long, s_geo_rad_km,
-        s_src, s_area, s_ven, s_eve,
-        s_class, event_token_list,
-        request_source_info, request_extra_info, request_video_iframe,
-        request_cost_range, request_media, request_custom_fields,
-        request_reviews, request_avail_details,
-        s_top, s_user_rating, s_critic_rating,
-        s_auto_range, page_length, page_number,
-        s_cust_fltr, s_airport, mime_text_type,
-        special_offer_only, events=None, iter_index=0, max_iterations=None
-    ):
+            self, crypto_block, upfront_data_token, s_keys, s_dates, s_coco,
+            s_city, s_geo_lat, s_geo_long, s_geo_rad_km,
+            s_src, s_area, s_ven, s_eve,
+            s_class, event_token_list,
+            request_source_info, request_extra_info, request_video_iframe,
+            request_cost_range, request_media, request_custom_fields,
+            request_reviews, request_avail_details,
+            s_top, s_user_rating, s_critic_rating,
+            s_auto_range, page_length, page_number,
+            s_cust_fltr, s_airport, mime_text_type,
+            special_offer_only, events=None, iter_index=0, max_iterations=None):
 
         # There is no filter in the core for special offers, so if only
         # the special offers are requested, then we need to recursively
@@ -211,21 +210,20 @@ class Core(InterfaceObject):
             )
 
     def search_events(
-        self, keyword=None,
-        earliest_date=None, latest_date=None,
-        country=None, city=None,
-        latitude=None, longitude=None, radius=None,
-        source=None, area_code=None, venue_code=None,
-        event_code=None, category=None, event_id_list=None,
-        page_length=None, page_number=None,
-        sort_by=None, auto_date_range=None,
-        request_source_info=None, request_extra_info=None,
-        request_video_iframe=None, request_cost_range=True,
-        request_media=None, request_custom_fields=True,
-        request_reviews=None, request_avail_details=None,
-        custom_filter_list=None, airport=None, special_offer_only=False,
-        mime_text_type=None, max_iterations=None,
-    ):
+            self, keyword=None,
+            earliest_date=None, latest_date=None,
+            country=None, city=None,
+            latitude=None, longitude=None, radius=None,
+            source=None, area_code=None, venue_code=None,
+            event_code=None, category=None, event_id_list=None,
+            page_length=None, page_number=None,
+            sort_by=None, auto_date_range=None,
+            request_source_info=None, request_extra_info=None,
+            request_video_iframe=None, request_cost_range=True,
+            request_media=None, request_custom_fields=True,
+            request_reviews=None, request_avail_details=None,
+            custom_filter_list=None, airport=None, special_offer_only=False,
+            mime_text_type=None, max_iterations=None):
         """Perform event search, returns list of Event objects.
 
         If no arguments are provided, then the full list of Events
@@ -572,8 +570,7 @@ class Core(InterfaceObject):
         return self._custom_filters
 
     def create_order(
-        self, concessions=None, despatch_method=None
-    ):
+            self, concessions=None, despatch_method=None):
         """Create a new Order.
 
         Order objects can be added to a Trolley, allowing multiple
@@ -636,8 +633,7 @@ class Core(InterfaceObject):
         return order
 
     def create_reservation(
-        self, concessions=None, despatch_method=None
-    ):
+            self, concessions=None, despatch_method=None):
         """Create a new Reservation object.
 
         Creates a Reservation object that contains only a single
