@@ -860,6 +860,12 @@ class AvailDetail(InterfaceObject):
         )
 
     @property
+    def seatprice_float(self):
+        """Float value of the seatprice."""
+
+        return to_float_or_none(self._core_avail_detail.seatprice)
+
+    @property
     def surcharge(self):
         """Formatted string value of the surcharge with currency symbol."""
 
@@ -868,6 +874,12 @@ class AvailDetail(InterfaceObject):
             self._core_currency.currency_pre_symbol,
             self._core_currency.currency_post_symbol
         )
+
+    @property
+    def surcharge_float(self):
+        """Float value of the surcharge"""
+
+        return to_float_or_none(self._core_avail_detail.surcharge)
 
     @property
     def has_no_booking_fee(self):
@@ -916,6 +928,17 @@ class AvailDetail(InterfaceObject):
         return None
 
     @property
+    def non_offer_seatprice_float(self):
+        """Float value of the full_seatprice.
+        Returns None if doesn't exist.
+        """
+
+        if self._core_avail_detail.full_seatprice:
+            return to_float_or_none(self._core_avail_detail.full_seatprice)
+
+        return None
+
+    @property
     def non_offer_surcharge(self):
         """Formatted string value of the full_surcharge with currency symbol.
         Returns None if doesn't exist.
@@ -927,6 +950,17 @@ class AvailDetail(InterfaceObject):
                 self._core_currency.currency_pre_symbol,
                 self._core_currency.currency_post_symbol
             )
+
+        return None
+
+    @property
+    def non_offer_surcharge_float(self):
+        """Float value of the full_surcharge.
+        Returns None if doesn't exist.
+        """
+
+        if self._core_avail_detail.full_surcharge:
+            return to_float_or_none(self._core_avail_detail.full_surcharge)
 
         return None
 
@@ -952,6 +986,22 @@ class AvailDetail(InterfaceObject):
         return None
 
     @property
+    def non_offer_combined_float(self):
+        """Float value of the combined full_seatprice + full_surcharge.
+        Returns None if doesn't exist.
+        """
+
+        if (self._core_avail_detail.full_seatprice and
+                self._core_avail_detail.full_surcharge):
+
+            return to_float_summed(
+                self._core_avail_detail.full_seatprice,
+                self._core_avail_detail.full_surcharge
+            )
+
+        return None
+
+    @property
     def absolute_saving(self):
         """Formatted string value of the absolute_saving with currency symbol.
         Returns None if doesn't exist.
@@ -963,6 +1013,17 @@ class AvailDetail(InterfaceObject):
                 self._core_currency.currency_pre_symbol,
                 self._core_currency.currency_post_symbol
             )
+
+        return None
+
+    @property
+    def absolute_saving_float(self):
+        """Float value of the absolute_saving.
+        Returns None if doesn't exist.
+        """
+
+        if self._core_avail_detail.absolute_saving:
+            return to_float_or_none(self._core_avail_detail.absolute_saving)
 
         return None
 

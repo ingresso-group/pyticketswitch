@@ -365,7 +365,7 @@ class AvailDetailTests(InterfaceObjectTestCase):
     def test_date_properties(self):
 
         for prop_name in (
-            'available_from_date', 'available_until_date'
+            'available_from_date', 'available_until_date',
         ):
             prop = getattr(self.avail_detail, prop_name)
             if prop is not None:
@@ -374,7 +374,10 @@ class AvailDetailTests(InterfaceObjectTestCase):
     def test_float_properties(self):
 
         for prop_name in (
-            'price_combined_float',
+            'price_combined_float', 'non_offer_combined_float',
+            'seatprice_float', 'non_offer_seatprice_float',
+            'surcharge_float', 'non_offer_surcharge_float',
+            'absolute_saving_float',
         ):
             prop = getattr(self.avail_detail, prop_name)
             if prop is not None:
