@@ -571,6 +571,10 @@ class Seat(object):
 
         return row
 
+    @property
+    def barcode(self):
+        return self._core_seat.barcode
+
 
 class SeatBlock(object):
     """Represents a block of seats in TSW, used when selecting seats in the

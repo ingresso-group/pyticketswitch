@@ -444,6 +444,7 @@ class Seat(CoreObject):
         separator=None,
         is_restricted_view=None,
         seat_text=None,
+        barcode=None,
         **kwargs
     ):
         self.full_id = full_id
@@ -452,6 +453,7 @@ class Seat(CoreObject):
         self.separator = separator
         self.is_restricted_view = is_restricted_view
         self.seat_text = seat_text
+        self.barcode = barcode
 
         vars(self).update(kwargs)
 
