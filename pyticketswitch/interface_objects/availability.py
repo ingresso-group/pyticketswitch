@@ -191,6 +191,11 @@ class TicketType(InterfaceObject):
         )
 
     @property
+    def price_without_surcharge_float(self):
+        """Float value of the price excluding surcharge."""
+        return to_float_or_none(self._core_price_band.ticket_price)
+
+    @property
     def surcharge(self):
         """Formatted string value of the surcharge with currency symbol."""
 
@@ -199,6 +204,11 @@ class TicketType(InterfaceObject):
             self._core_currency.currency_pre_symbol,
             self._core_currency.currency_post_symbol
         )
+
+    @property
+    def surcharge_float(self):
+        """Float value of the surcharge."""
+        return to_float_or_none(self._core_price_band.surcharge)
 
     @property
     def price_combined_float(self):
@@ -412,6 +422,11 @@ class TicketType(InterfaceObject):
         return self._available_seat_blocks
 
     @property
+    def default_concession_code(self):
+        """The concession code for the default concession of this TicketType"""
+        return self._core_price_band.discount_code
+
+    @property
     def user_commission(self):
         """Returns Commission object representing the user commission for the
         default concession on this TicketType.
@@ -523,6 +538,11 @@ class Concession(InterfaceObject):
         )
 
     @property
+    def surcharge_float(self):
+        """Float value of the surcharge."""
+        return to_float_or_none(self._core_discount.surcharge)
+
+    @property
     def seatprice(self):
         """Formatted string value of the seat price (i.e. without surcharge)
         with currency symbol.
@@ -532,6 +552,11 @@ class Concession(InterfaceObject):
             self._core_currency.currency_pre_symbol,
             self._core_currency.currency_post_symbol
         )
+
+    @property
+    def seatprice_float(self):
+        """Float value of the seat price (i.e. without surcharge)."""
+        return to_float_or_none(self._core_discount.seatprice)
 
     @property
     def seats(self):

@@ -597,7 +597,7 @@ class TicketTypeTests(InterfaceObjectTestCase):
     def test_string_properties(self):
 
         for prop_name in (
-            'description', 'ticket_type_id',
+            'description', 'ticket_type_id', 'default_concession_code',
         ):
             self.assertIsInstance(getattr(self.ticket_type, prop_name), str)
 
@@ -605,6 +605,7 @@ class TicketTypeTests(InterfaceObjectTestCase):
 
         for prop_name in (
             'non_offer_combined_float', 'price_combined_float',
+            'surcharge_float', 'price_without_surcharge_float',
         ):
             self.assertIsInstance(getattr(self.ticket_type, prop_name), float)
 
@@ -727,6 +728,13 @@ class ConcessionTests(InterfaceObjectTestCase):
             'ticket_price', 'surcharge', 'seatprice'
         ):
             self.assertIsInstance(getattr(self.concession, prop_name), unicode)
+
+    def test_float_properties(self):
+
+        for prop_name in (
+            'ticket_price_float', 'surcharge_float', 'seatprice_float'
+        ):
+            self.assertIsInstance(getattr(self.concession, prop_name), float)
 
     # def test_seat_codes(self):
 
