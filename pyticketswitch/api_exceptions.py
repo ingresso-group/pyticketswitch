@@ -52,7 +52,7 @@ class BackendCallFailure(APIException):
         code = "N/A"
         description = "The call to the backend system failed."
 
-        super(InvalidToken, self).__init__(
+        super(BackendCallFailure, self).__init__(
             call=call, code=code, description=description
         )
 
