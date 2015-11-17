@@ -5,7 +5,6 @@ from copy import deepcopy
 from pyticketswitch.interface_objects import (
     Core, Event, Concession, DespatchMethod, TicketType, Performance,
     Trolley, Order, Reservation, Review, Seat, Bundle, Address, Customer,
-    Commission, Currency
 )
 from pyticketswitch.api_exceptions import InvalidId
 from pyticketswitch import settings_test as settings
@@ -42,7 +41,7 @@ class CoreTests(InterfaceObjectTestCase):
     def test_search_events_keyword_paging(self):
 
         events = self.core.search_events(
-            keyword='test', page_length='5', page_number='1'
+            keyword='test', page_length='2', page_number='1'
         )
 
         self.assertTrue(events)
@@ -283,14 +282,14 @@ class EventReviewsTests(InterfaceObjectTestCase):
         self.event = Event(
             event_id='6IF', session=session, **self.api_settings)
 
-    def test_user_review_percent(self):
-        self.assertIsInstance(self.event.user_review_percent, str)
+    def test_critic_review_percent(self):
+        self.assertIsInstance(self.event.critic_review_percent, str)
 
-    def test_user_reviews(self):
-        self.assertTrue(self.event.user_reviews)
+    def test_critic_reviews(self):
+        self.assertTrue(self.event.critic_reviews)
 
     def test_reviews_contains_review(self):
-        for r in self.event.user_reviews:
+        for r in self.event.critic_reviews:
             self.assertIsInstance(r, Review)
 
 
@@ -300,25 +299,17 @@ class ReviewTests(InterfaceObjectTestCase):
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 
-        self.review = event.user_reviews[0]
+        self.review = event.critic_reviews[0]
 
     def test_review_is_user_review(self):
-        self.assertTrue(self.review.is_user_review)
+        self.assertFalse(self.review.is_user_review)
 
     def test_review_string_properties(self):
 
         for prop_name in (
-            'title', 'author',
-            'date_desc', 'time_desc',
+            'title', 'author', 'date_desc', 'time_desc', 'body',
         ):
             self.assertIsInstance(getattr(self.review, prop_name), str)
-
-    def test_review_unicode_properties(self):
-
-        for prop_name in (
-            'body',
-        ):
-            self.assertIsInstance(getattr(self.review, prop_name), unicode)
 
     def test_date_is_datetime_date(self):
         self.assertIsInstance(self.review.date, datetime.date)
@@ -446,7 +437,7 @@ class PerformanceTests(InterfaceObjectTestCase):
     def test_required_info(self):
 
         for perf in self.performances:
-            if perf.date.weekday() == 2:
+            if perf.date.weekday() == 1:
                 self.assertIsInstance(perf.required_info, str)
 
 
@@ -597,7 +588,7 @@ class TicketTypeTests(InterfaceObjectTestCase):
     def test_string_properties(self):
 
         for prop_name in (
-            'description', 'ticket_type_id', 'default_concession_code',
+            'description', 'ticket_type_id',
         ):
             self.assertIsInstance(getattr(self.ticket_type, prop_name), str)
 
