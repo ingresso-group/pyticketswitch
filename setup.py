@@ -13,6 +13,9 @@ setup(
     license='MIT',
     description='A Python interface for the Ingresso XML Core API',
     long_description=open('README.rst').read(),
+    install_requires=[
+        'requests>=2.0.0',
+    ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: 2.7',
