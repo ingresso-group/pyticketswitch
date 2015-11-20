@@ -1,11 +1,10 @@
-import urllib2
+import requests
 try:
     import xml.etree.cElementTree as xml
 except ImportError:
     import xml.etree.ElementTree as xml
 from datetime import datetime
 import logging
-import socket
 
 from util import create_xml_from_dict, dict_ignore_nones
 from api_exceptions import CommsException, InvalidResponse
@@ -23,7 +22,8 @@ class CoreAPI(object):
             remote_ip, remote_site, accept_language,
             ext_start_session_url, api_request_timeout,
             sub_id=None,
-            additional_elements=None):
+            additional_elements=None,
+            requests_session=None):
 
         self.username = username
         self.password = password
@@ -44,8 +44,12 @@ class CoreAPI(object):
 
         if not additional_elements:
             additional_elements = {}
-
         self.additional_elements = additional_elements
+
+        # If no Requests session create a new one
+        if not requests_session:
+            requests_session = requests.Session()
+        self.requests_session = requests_session
 
     def _post(self, method_name, data, url, headers=None):
 
@@ -54,105 +58,67 @@ class CoreAPI(object):
             url, unicode(data, 'UTF-8')
         )
 
-        request = urllib2.Request(
-            url=url, data=data, headers=headers
-        )
-
         response_string = None
 
         before = datetime.now()
         after = None
 
         try:
-            response = urllib2.urlopen(
-                request, timeout=self.api_request_timeout
+            response = self.requests_session.post(
+                url=url, data=data, headers=headers,
+                timeout=self.api_request_timeout,
             )
-        except urllib2.HTTPError as e:
+            response.raise_for_status()
+
+        except requests.exceptions.HTTPError as e:
             after = datetime.now()
             raise CommsException(
                 underlying_exception=e,
                 description=(
-                    'HTTPError, error_code={0}'.format(
-                        getattr(e, 'code', None),
+                    'HTTPError, message={0}'.format(
+                        getattr(e, 'message', None),
                     )
                 )
             )
-        except urllib2.URLError as e:
-            after = datetime.now()
 
+        except requests.exceptions.Timeout as e:
+            after = datetime.now()
             raise CommsException(
                 underlying_exception=e,
                 description=(
-                    'URLError, reason={0}'.format(
-                        getattr(e, 'reason', None),
+                    'Timeout, message={0}'.format(
+                        getattr(e, 'message', None),
                     )
                 )
             )
-        except socket.timeout as e:
+
+        except requests.exceptions.ConnectionError as e:
             after = datetime.now()
-
-            err_string = 'Socket timeout'
-            details = False
-
-            if getattr(e, 'message', None):
-                err_string = '{0} - {1}'.format(
-                    err_string, e.message
-                )
-                details = True
-
-            if (
-                getattr(e, 'errno', None) and
-                getattr(e, 'strerror', None)
-            ):
-                err_string = '{0} - Errno={0}, strerror={1}.'.format(
-                    e.errno, e.strerror
-                )
-                details = True
-
-            if not details:
-                err_string = '{0} - {1}'.format(
-                    err_string, str(e)
-                )
-
             raise CommsException(
                 underlying_exception=e,
-                description=err_string,
+                description=(
+                    'ConnectionError, message={0}'.format(
+                        getattr(e, 'message', None),
+                    )
+                )
             )
-        except socket.error as e:
+
+        except requests.exceptions.RequestException as e:
             after = datetime.now()
-
-            err_string = 'Socket error'
-            details = False
-
-            if getattr(e, 'message', None):
-                err_string = '{0} - {1}'.format(
-                    err_string, e.message
-                )
-                details = True
-
-            if (
-                getattr(e, 'errno', None) and
-                getattr(e, 'strerror', None)
-            ):
-                err_string = '{0} - Errno={0}, strerror={1}.'.format(
-                    e.errno, e.strerror
-                )
-                details = True
-
-            if not details:
-                err_string = '{0} - {1}'.format(
-                    err_string, str(e)
-                )
-
             raise CommsException(
                 underlying_exception=e,
-                description=err_string,
+                description=(
+                    'RequestException, message={0}'.format(
+                        getattr(e, 'message', None),
+                    )
+                )
             )
+
         else:
             after = datetime.now()
-            response_string = response.read()
-            self.content_language = response.info(
-            ).getheader('Content-Language')
+            response_string = response.content
+            self.content_language = response.headers.get(
+                'Content-Language')
 
             filelog.debug(
                 u'API_RESPONSE=%s',
@@ -162,7 +128,6 @@ class CoreAPI(object):
         finally:
             if after:
                 time_taken = (after - before).total_seconds()
-
                 logger.debug(
                     'url=%s, api_call=%s, time_taken=%s',
                     url, method_name, time_taken
