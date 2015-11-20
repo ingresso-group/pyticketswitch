@@ -22,7 +22,8 @@ class CoreAPI(object):
             remote_ip, remote_site, accept_language,
             ext_start_session_url, api_request_timeout,
             sub_id=None,
-            additional_elements=None):
+            additional_elements=None,
+            requests_session=None):
 
         self.username = username
         self.password = password
@@ -43,8 +44,12 @@ class CoreAPI(object):
 
         if not additional_elements:
             additional_elements = {}
-
         self.additional_elements = additional_elements
+
+        # If no Requests session create a new one
+        if not requests_session:
+            requests_session = requests.Session()
+        self.requests_session = requests_session
 
     def _post(self, method_name, data, url, headers=None):
 
@@ -59,7 +64,7 @@ class CoreAPI(object):
         after = None
 
         try:
-            response = requests.post(
+            response = self.requests_session.post(
                 url=url, data=data, headers=headers,
                 timeout=self.api_request_timeout,
             )

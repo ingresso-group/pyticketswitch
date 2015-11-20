@@ -37,7 +37,8 @@ class InterfaceObject(object):
             include in the XML passed to the API.
         upfront_data_token (string): upfront data token is required by the API
             in certain cases, such as for redeem
-
+        requests_session (requests.Session object): optional Requests session
+            to use for making HTTP requests
     """
 
     CRYPTO_PREFIX = 'CRYPTO_BLOCK'
@@ -72,7 +73,8 @@ class InterfaceObject(object):
             default_concession_descr=None, remote_ip=None,
             remote_site=None, accept_language=None,
             ext_start_session_url=None,
-            additional_elements=None, upfront_data_token=None):
+            additional_elements=None, upfront_data_token=None,
+            requests_session=None):
 
         return {
             'username': username,
@@ -88,6 +90,7 @@ class InterfaceObject(object):
             'default_concession_descr': default_concession_descr,
             'additional_elements': additional_elements,
             'upfront_data_token': upfront_data_token,
+            'requests_session': requests_session,
         }
 
     def _configure(
@@ -95,7 +98,8 @@ class InterfaceObject(object):
             no_time_descr=None, api_request_timeout=None,
             default_concession_descr=None, remote_ip=None,
             remote_site=None, accept_language=None, ext_start_session_url=None,
-            additional_elements=None, upfront_data_token=None):
+            additional_elements=None, upfront_data_token=None,
+            requests_session=None):
 
         if (not username) and remote_ip and remote_site:
             username = self._get_cached_username(
@@ -150,6 +154,7 @@ class InterfaceObject(object):
             ext_start_session_url=ext_start_session_url,
             additional_elements=additional_elements,
             upfront_data_token=upfront_data_token,
+            requests_session=requests_session,
         )
 
         self._core_api = CoreAPI(
@@ -163,6 +168,7 @@ class InterfaceObject(object):
             ext_start_session_url=ext_start_session_url,
             api_request_timeout=api_request_timeout,
             additional_elements=additional_elements,
+            requests_session=requests_session,
         )
 
     def get_core_api(self):
