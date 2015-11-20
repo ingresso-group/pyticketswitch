@@ -11,6 +11,12 @@ Can be installed with pip::
 
         pip install pyticketswitch
 
+
+Requirements
+------------
+
+As of version 1.8.0, this package requires the `Requests <http://docs.python-requests.org/>`_ library.
+
 Documentation
 -------------
 

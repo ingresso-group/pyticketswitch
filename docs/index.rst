@@ -78,6 +78,8 @@ To run tests, run the following command from the root of the project:
 Run an individual test with:
     python -m unittest pyticketswitch.test.test_interface_objs.<TestCase>.<test_method>
 
+Tests can also be run from the root of the project using `pytest`:
+    py.test
 
 Indices and tables
 ==================
@@ -85,5 +87,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-

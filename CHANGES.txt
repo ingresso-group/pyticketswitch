@@ -1,3 +1,5 @@
+v1.8.0, 20 Nov 2015 -- Switch to using Requests instead of urllib2.
+
 v1.7.4, 22 Oct 2015 -- Add properties to TicketType and Concession objects.
 
 v1.7.2, 15 Oct 2015 -- Add 'barcode' to Seat object.
