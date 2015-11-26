@@ -1,3 +1,5 @@
+v1.8.1, 26 Nov 2015 -- Bugfix - passing in sub_id of None to start_session.
+
 v1.8.0, 20 Nov 2015 -- Switch to using Requests instead of urllib2.
 
 v1.7.4, 22 Oct 2015 -- Add properties to TicketType and Concession objects.

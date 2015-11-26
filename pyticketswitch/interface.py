@@ -255,7 +255,6 @@ class CoreAPI(object):
         else:
             arg_dict={
                 'user_id': self.username,
-                'sub_id': self.sub_id,
                 'user_passwd': self.password,
             }
 
