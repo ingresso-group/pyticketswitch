@@ -551,7 +551,7 @@ def availability_options_result(root):
 
     backend_call_failed = root.find('backend_call_failed')
 
-    if backend_call_failed is not None:
+    if backend_call_failed:
         raise aex.BackendCallFailure(call=root.tag)
 
     ret_dict = {
@@ -666,7 +666,7 @@ def discount_options_result(root):
 
     backend_call_failed = root.find('backend_call_failed')
 
-    if backend_call_failed is not None:
+    if backend_call_failed:
         raise aex.BackendCallFailure(call=root.tag)
 
     ret_dict = {
