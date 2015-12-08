@@ -78,6 +78,7 @@ class Event(CoreObject):
         custom_fields=None,
         custom_filters=None,
         is_seated=None,
+        has_no_perfs=None,
         date_range_start=None,
         date_range_end=None,
         show_perf_time=None,
@@ -139,6 +140,7 @@ class Event(CoreObject):
             custom_filters = []
         self.custom_filters = custom_filters
         self.is_seated = is_seated
+        self.has_no_perfs = has_no_perfs
         self.date_range_start = date_range_start
         self.date_range_end = date_range_end
         self.show_perf_time = show_perf_time

@@ -338,6 +338,12 @@ class Event(InterfaceObject, CostRangeMixin):
         )
 
     @property
+    def has_no_perfs(self):
+        return resolve_boolean(
+            self._get_core_event_attr('has_no_perfs')
+        )
+
+    @property
     def show_perf_time(self):
         return resolve_boolean(
             self._get_core_event_attr('show_perf_time')

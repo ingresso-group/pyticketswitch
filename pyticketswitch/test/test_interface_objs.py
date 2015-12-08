@@ -209,6 +209,13 @@ class ValidEventTests(InterfaceObjectTestCase):
         ):
             self.assertIsInstance(getattr(self.event, prop_name), unicode)
 
+    def test_boolean_properties(self):
+
+        for prop_name in (
+            'has_no_perfs',
+        ):
+            self.assertIsInstance(getattr(self.event, prop_name), bool)
+
     def test_images(self):
 
         for img in (

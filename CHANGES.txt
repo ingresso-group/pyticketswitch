@@ -1,3 +1,5 @@
+v1.8.3, 8 Dec 2015 -- Add 'has_no_perfs' flag to Event object.
+
 v1.8.2, 2 Dec 2015 -- Revert changes to raise BackendCallFailure until better solution.
 
 v1.8.1, 26 Nov 2015 -- Bugfix - passing in sub_id of None to start_session.
