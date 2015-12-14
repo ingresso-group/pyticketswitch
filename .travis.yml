@@ -3,5 +3,6 @@ python: 2.7
 env:
   - TOX_ENV=py27
   - TOX_ENV=lint
-install: pip install tox
+install:
+  - pip install -r requirements/test.txt
 script: tox -e $TOX_ENV
