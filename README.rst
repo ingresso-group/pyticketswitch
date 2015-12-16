@@ -2,6 +2,12 @@
 pyticketswitch
 **************
 
+.. image:: https://img.shields.io/pypi/v/pyticketswitch.svg
+    :target: https://pypi.python.org/pypi/pyticketswitch
+
+.. image:: https://travis-ci.org/ingresso-group/pyticketswitch.svg?branch=master
+    :target: https://travis-ci.org/ingresso-group/pyticketswitch
+
 A Python interface for Ingresso's TicketSwitch XML API.
 
 Installation
