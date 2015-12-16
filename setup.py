@@ -1,8 +1,17 @@
 from setuptools import setup
+import re
+
+version = ''
+with open('pyticketswitch/__init__.py', 'r') as fd:
+    version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
+                        fd.read(), re.MULTILINE).group(1)
+
+if not version:
+    raise RuntimeError('Cannot find version information')
 
 setup(
     name='pyticketswitch',
-    version='1.8.3',
+    version=version,
     author='Ingresso',
     author_email='systems@ingresso.co.uk',
     url='https://github.com/ingresso-group/pyticketswitch/',
