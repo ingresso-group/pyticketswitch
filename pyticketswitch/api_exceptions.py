@@ -92,7 +92,7 @@ class InvalidResponse(Exception):
         return self.description
 
 
-########## TROLLEY ADD ERRORS
+# TROLLEY ADD ERRORS
 class TrolleyAddErrors(Exception):
     """Thrown when an attempt to add an Order to a Trolley fails.
 
@@ -203,10 +203,10 @@ class TrolleyAddBadSend(Exception):
 
     def __str__(self):
         return "Incompatible despatch methods"
-########## END TROLLEY ADD ERRORS
+# END TROLLEY ADD ERRORS
 
 
-########## TROLLEY ERRORS
+# TROLLEY ERRORS
 class TrolleyPurchased(APIException):
     """Thrown when the operation attempted is not possible as the trolley has
     already been purchased."""
@@ -233,10 +233,10 @@ class NoAvailability(APIException):
         super(NoAvailability, self).__init__(
             call=call, code=code, description=description
         )
-########## END TROLLEY ERRORS
+# END TROLLEY ERRORS
 
 
-########## PURCHASE ERRORS
+# PURCHASE ERRORS
 class PurchaseValidationError(APIException):
     """Super class for purchase validation errors."""
     pass
@@ -415,4 +415,4 @@ class PurchaseFailed(PurchaseException):
     """An unspecified systems error has occurred during purchase
     (XML API purchase_fail_code 7)."""
     pass
-########## END PURCHASE ERRORS
+# END PURCHASE ERRORS

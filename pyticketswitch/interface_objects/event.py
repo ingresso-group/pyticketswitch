@@ -1118,8 +1118,8 @@ class Event(InterfaceObject, CostRangeMixin):
             perf_date = first_date + datetime.timedelta(days=i)
 
             if (
-                perf_date.isoweekday() not in inv_weekdays
-                and perf_date not in inv_dates
+                perf_date.isoweekday() not in inv_weekdays and
+                perf_date not in inv_dates
             ):
 
                 if need_departure_date:

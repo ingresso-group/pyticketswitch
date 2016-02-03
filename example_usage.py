@@ -4,6 +4,8 @@ from pyticketswitch import (
     Core, Trolley, Customer, Address, Card
 )
 
+import datetime
+
 session = {}
 
 settings = {
@@ -33,8 +35,8 @@ performances = event.performances
 for p in performances:
     print p.date_desc, p.time_desc
     if (
-        p.date_desc == 'Mon, 6th October 2014'
-        and p.time_desc == '7.30 PM'
+        p.date_desc == 'Mon, 6th October 2014' and
+        p.time_desc == '7.30 PM'
     ):
         performance = p
 
@@ -47,8 +49,8 @@ ticket_types = performance.ticket_types
 for tt in ticket_types:
     print tt.description, tt.price_combined_float, tt.number_available
     if (
-        tt.description == 'Upper circle'
-        and tt.price_combined_float == 34.0
+        tt.description == 'Upper circle'and
+        tt.price_combined_float == 34.0
     ):
         ticket_type = tt
 
@@ -140,7 +142,6 @@ customer = Customer(
     world_can_use_data=False
 )
 
-import datetime
 
 # create a card object
 card = Card(
