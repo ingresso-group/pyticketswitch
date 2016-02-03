@@ -342,7 +342,7 @@ class Event(InterfaceObject, CostRangeMixin):
         return resolve_boolean(
             self._get_core_event_attr('has_no_perfs')
         )
-    
+
     @property
     def upsell_list(self):
         return self._get_core_event_attr('event_upsell_list')
