@@ -261,6 +261,13 @@ class TicketType(InterfaceObject):
         )
 
     @property
+    def is_offer(self):
+        """Boolean to indicate if the default concession for this ticket
+        type is a special offer.
+        """
+        return resolve_boolean(self._core_price_band.is_offer)
+
+    @property
     def int_percentage_saving(self):
         """Integer value of the percentage saving."""
         return to_int_or_none(
@@ -309,6 +316,50 @@ class TicketType(InterfaceObject):
 
         formatted_price = format_price_with_symbol(
             combined_price,
+            self._core_currency.currency_pre_symbol,
+            self._core_currency.currency_post_symbol
+        )
+
+        return formatted_price
+
+    @property
+    def non_offer_seatprice_float(self):
+        """Float value of the original seatprice (i.e. if there was no
+        offer).
+        """
+        return to_float_or_none(self._core_price_band.non_offer_seatprice)
+
+    @property
+    def non_offer_seatprice(self):
+        """Formatted string value of the original seatprice with
+        currency symbol (i.e. if there was no offer).
+        """
+        seatprice = str(self.non_offer_seatprice_float)
+
+        formatted_price = format_price_with_symbol(
+            seatprice,
+            self._core_currency.currency_pre_symbol,
+            self._core_currency.currency_post_symbol
+        )
+
+        return formatted_price
+
+    @property
+    def non_offer_surcharge_float(self):
+        """Float value of the original surcharge (i.e. if there was no
+        offer).
+        """
+        return to_float_or_none(self._core_price_band.non_offer_surcharge)
+
+    @property
+    def non_offer_surcharge(self):
+        """Formatted string value of the original surcharge with
+        currency symbol (i.e. if there was no offer).
+        """
+        surcharge = str(self.non_offer_surcharge_float)
+
+        formatted_price = format_price_with_symbol(
+            surcharge,
             self._core_currency.currency_pre_symbol,
             self._core_currency.currency_post_symbol
         )

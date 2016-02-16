@@ -1,3 +1,5 @@
+v1.8.7, 16 Feb 2016 -- Add properties to TicketType object.
+
 v1.8.4, 16 Dec 2015 -- Add project to Travis and add code coverage
 
 v1.8.3, 8 Dec 2015 -- Add 'has_no_perfs' flag to Event object.

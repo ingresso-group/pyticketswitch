@@ -604,6 +604,7 @@ class TicketTypeTests(InterfaceObjectTestCase):
         for prop_name in (
             'non_offer_combined_float', 'price_combined_float',
             'surcharge_float', 'price_without_surcharge_float',
+            'non_offer_surcharge_float', 'non_offer_seatprice_float',
         ):
             self.assertIsInstance(getattr(self.ticket_type, prop_name), float)
 
@@ -611,7 +612,7 @@ class TicketTypeTests(InterfaceObjectTestCase):
 
         for prop_name in (
             'price_without_surcharge', 'surcharge', 'price_combined',
-            'non_offer_combined'
+            'non_offer_combined', 'non_offer_surcharge', 'non_offer_seatprice',
         ):
             self.assertIsInstance(
                 getattr(self.ticket_type, prop_name), unicode
@@ -623,6 +624,13 @@ class TicketTypeTests(InterfaceObjectTestCase):
             'int_percentage_saving', 'number_available',
         ):
             self.assertIsInstance(getattr(self.ticket_type, prop_name), int)
+
+    def test_bool_properties(self):
+
+        for prop_name in (
+            'is_offer',
+        ):
+            self.assertIsInstance(getattr(self.ticket_type, prop_name), bool)
 
     def test_example_seats(self):
         self.assertIsInstance(self.ticket_type.example_seats, list)
