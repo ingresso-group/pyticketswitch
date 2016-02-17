@@ -5,6 +5,7 @@ from __future__ import (
 
 import datetime
 import random
+import six
 import string
 
 import six
