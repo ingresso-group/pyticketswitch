@@ -7,7 +7,7 @@ from pyticketswitch.interface_objects import (
     Trolley, Order, Reservation, Review, Seat, Bundle, Address, Customer,
 )
 from pyticketswitch.api_exceptions import InvalidId
-from pyticketswitch import settings_test as settings
+from . import settings_test as settings
 
 
 class InterfaceObjectTestCase(unittest.TestCase):
