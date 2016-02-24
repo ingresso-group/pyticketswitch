@@ -4,4 +4,4 @@ pytest
 pytest-cov
 tox
 vcrpy
-vcrpy-unittest
+git+https://github.com/agriffis/vcrpy-unittest.git@master

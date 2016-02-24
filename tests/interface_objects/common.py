@@ -1,6 +1,18 @@
+try:
+    import xml.etree.cElementTree as xml
+except ImportError:
+    import xml.etree.ElementTree as xml
+
 from vcr_unittest import VCRTestCase
 
 from .. import settings_test as settings
+
+
+def xml_matcher(r1, r2):
+    """ Match requests by Core XML API method name """
+    r1_xml = xml.fromstring(r1.body)
+    r2_xml = xml.fromstring(r2.body)
+    return r1_xml.tag == r2_xml.tag
 
 
 class InterfaceObjectTestCase(VCRTestCase):
@@ -11,12 +23,11 @@ class InterfaceObjectTestCase(VCRTestCase):
         'ext_start_session_url': settings.EXT_START_SESSION_URL
     }
 
-    def _get_vcr_kwargs(self):
-        kwargs = super(InterfaceObjectTestCase, self)._get_vcr_kwargs()
-        # We need to match queries based on the request body since all
-        # specifics of the call are in the body
-        kwargs['match_on'] = ['uri', 'query', 'headers', 'raw_body']
-        return kwargs
+    def _get_vcr(self):
+        myvcr = super(InterfaceObjectTestCase, self)._get_vcr()
+        myvcr.register_matcher('xml_matcher', xml_matcher)
+        myvcr.match_on = ['xml_matcher']
+        return myvcr
 
 
 class InterfaceObjectCreditUserTestCase(InterfaceObjectTestCase):
