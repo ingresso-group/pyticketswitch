@@ -7,6 +7,9 @@ from .common import InterfaceObjectTestCase
 class CoreTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(CoreTests, self).setUp()
+
         session = {}
         self.core = Core(session=session, **self.api_settings)
 

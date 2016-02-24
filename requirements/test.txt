@@ -3,3 +3,5 @@
 pytest
 pytest-cov
 tox
+vcrpy
+vcrpy-unittest

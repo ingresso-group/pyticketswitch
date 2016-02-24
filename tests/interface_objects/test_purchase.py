@@ -10,6 +10,9 @@ from .common import InterfaceObjectCreditUserTestCase
 class PurchaseReservationOnCreditTests(InterfaceObjectCreditUserTestCase):
 
     def setUp(self):
+
+        super(PurchaseReservationOnCreditTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 

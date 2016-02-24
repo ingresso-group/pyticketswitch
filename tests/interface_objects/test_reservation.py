@@ -47,6 +47,9 @@ class ReservationTests(object):
 class MakeReservationTests(InterfaceObjectTestCase, ReservationTests):
 
     def setUp(self):
+
+        super(MakeReservationTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 
@@ -98,6 +101,9 @@ class MakeReservationTests(InterfaceObjectTestCase, ReservationTests):
 class CombinedOrderReservationTests(InterfaceObjectTestCase, ReservationTests):
 
     def setUp(self):
+
+        super(CombinedOrderReservationTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 

@@ -8,6 +8,9 @@ from .common import InterfaceObjectTestCase
 class ConcessionTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(ConcessionTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 

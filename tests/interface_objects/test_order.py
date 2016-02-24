@@ -10,6 +10,9 @@ from .common import InterfaceObjectTestCase
 class OrderTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(OrderTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 

@@ -8,6 +8,9 @@ from .common import InterfaceObjectTestCase
 class PerformanceTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(PerformanceTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 
@@ -45,6 +48,9 @@ class PerformanceTests(InterfaceObjectTestCase):
 class PerformanceAvailabilityTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(PerformanceAvailabilityTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 
@@ -115,6 +121,9 @@ class PerformanceAvailabilityTests(InterfaceObjectTestCase):
 class DespatchMethodTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(DespatchMethodTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 

@@ -10,6 +10,9 @@ from .common import InterfaceObjectTestCase
 class TrolleyTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(TrolleyTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 
@@ -139,6 +142,8 @@ class BundleTests(InterfaceObjectTestCase):
         )
 
     def setUp(self):
+
+        super(BundleTests, self).setUp()
 
         order1 = self.get_order('6IF')
         order2 = self.get_order('6L9')

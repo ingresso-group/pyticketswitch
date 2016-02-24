@@ -10,6 +10,9 @@ from .common import InterfaceObjectTestCase
 class InvalidEventTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(InvalidEventTests, self).setUp()
+
         session = {}
         self.event = Event(
             event_id='invalid', session=session, **self.api_settings
@@ -31,6 +34,9 @@ class InvalidEventTests(InterfaceObjectTestCase):
 class ValidEventTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(ValidEventTests, self).setUp()
+
         session = {}
         self.event = Event(
             event_id='6IF', session=session, **self.api_settings)
@@ -149,6 +155,9 @@ class ValidEventTests(InterfaceObjectTestCase):
 class EventReviewsTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(EventReviewsTests, self).setUp()
+
         session = {}
         self.event = Event(
             event_id='6IF', session=session, **self.api_settings)
@@ -167,6 +176,9 @@ class EventReviewsTests(InterfaceObjectTestCase):
 class ReviewTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(ReviewTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 
@@ -192,6 +204,9 @@ class ReviewTests(InterfaceObjectTestCase):
 class AvailDetailTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(AvailDetailTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 

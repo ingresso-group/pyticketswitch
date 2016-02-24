@@ -8,6 +8,9 @@ from .common import InterfaceObjectTestCase
 class TicketTypeTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(TicketTypeTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 
@@ -97,6 +100,9 @@ class TicketTypeTests(InterfaceObjectTestCase):
 class TicketTypeConcessionTests(InterfaceObjectTestCase):
 
     def setUp(self):
+
+        super(TicketTypeConcessionTests, self).setUp()
+
         session = {}
         event = Event(event_id='6IF', session=session, **self.api_settings)
 
