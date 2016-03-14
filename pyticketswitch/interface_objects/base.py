@@ -660,6 +660,7 @@ class Customer(object):
         supplier_can_use_data=None,
         world_can_use_data=None,
         languages=None,
+        agent_ref=None,
     ):
 
         self._core_customer = core_customer
@@ -673,6 +674,7 @@ class Customer(object):
         self._user_can_use_data = user_can_use_data
         self._supplier_can_use_data = supplier_can_use_data
         self._world_can_use_data = world_can_use_data
+        self._agent_ref = agent_ref
 
         self.languages = languages
 
@@ -693,6 +695,7 @@ class Customer(object):
             'user_can_use_data': self.user_can_use_data,
             'supplier_can_use_data': self.supplier_can_use_data,
             'world_can_use_data': self.world_can_use_data,
+            'agent_reference': self.agent_ref,
         }
 
     @property
@@ -827,6 +830,13 @@ class Customer(object):
                 return resolve_boolean(
                     self._world_can_use_data
                 )
+
+    @property
+    def agent_ref(self):
+        if self._core_customer:
+            return self._core_customer.agent_ref
+        else:
+            return self._agent_ref
 
 
 class Card(object):
