@@ -60,3 +60,6 @@ target/
 
 # Sample scripts
 sample_scripts.py
+
+# virtualenvs
+.venv

@@ -277,3 +277,14 @@ class Trolley(InterfaceObject):
     @bundles.setter
     def bundles(self, value):
         self._bundles = value
+
+    @property
+    def debitor_choices(self):
+
+        debitor_choices = {
+            debitor['debitor_name']: debitor
+            for bundle in self.bundles
+            for debitor in bundle._core_bundle.debitor_choices
+        }
+
+        return debitor_choices

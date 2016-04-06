@@ -886,6 +886,11 @@ def _parse_purchase_result(purchase_result_elem):
     return objects.PurchaseResult(**_text_dict(purchase_result_elem))
 
 
+def _parse_debitor_choices(elem):
+    debitor_elems = elem.findall('debitor')
+    return [create_dict_from_xml_element(choice) for choice in debitor_elems]
+
+
 def _parse_bundle(bundle_elem):
 
     objs = {}
@@ -909,6 +914,12 @@ def _parse_bundle(bundle_elem):
         bundle_elem.remove(order)
 
     objs['orders'] = orders
+
+    objs['debitor_choices'] = []
+
+    debitor_choices = bundle_elem.find('debitor_choices')
+    if debitor_choices:
+        objs['debitor_choices'] = _parse_debitor_choices(debitor_choices)
 
     b_arg = _text_dict(bundle_elem)
     b_arg.update(objs)

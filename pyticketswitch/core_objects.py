@@ -664,6 +664,7 @@ class Bundle(CoreObject):
         orders=None,
         currency=None,
         purchase_result=None,
+        debitor_choices=None,
         **kwargs
     ):
         self.bundle_source_desc = bundle_source_desc
@@ -678,6 +679,7 @@ class Bundle(CoreObject):
         self.orders = orders
         self.currency = currency
         self.purchase_result = purchase_result
+        self.debitor_choices = debitor_choices
 
         vars(self).update(kwargs)
 
