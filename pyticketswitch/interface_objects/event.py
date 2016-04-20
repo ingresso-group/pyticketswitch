@@ -201,6 +201,7 @@ class Event(InterfaceObject, CostRangeMixin):
         'structured_info': 'extra_info_only',
         'event_quantity_options': 'extra_info_only',
         'avail_details': 'avail_details',
+        'component_events': 'extra_info',
     }
 
     def __init__(
@@ -229,6 +230,7 @@ class Event(InterfaceObject, CostRangeMixin):
         self._structured_content = None
         self._valid_ticket_quantities = None
         self._avail_details = None
+        self._component_events = None
 
         if not requested_data:
             self._requested_data = {}
@@ -342,6 +344,10 @@ class Event(InterfaceObject, CostRangeMixin):
         return resolve_boolean(
             self._get_core_event_attr('has_no_perfs')
         )
+
+    @property
+    def event_type(self):
+        return self._get_core_event_attr('event_type')
 
     @property
     def upsell_list(self):
@@ -672,7 +678,7 @@ class Event(InterfaceObject, CostRangeMixin):
                 request_video_iframe=True, request_cost_range=True,
                 request_custom_fields=True, request_reviews=request_reviews,
                 request_avail_details=request_avail_details,
-                mime_text_type=mime_text_type,
+                request_meta_components=True, mime_text_type=mime_text_type,
             )
             if events:
                 detailed_event = events[0]._core_event
@@ -1235,6 +1241,29 @@ class Event(InterfaceObject, CostRangeMixin):
                 ad_final.append(ad)
 
         return ad_final
+
+    @property
+    def is_meta_event(self):
+        if self.event_type == 'meta_event':
+            return True
+        return False
+
+    @property
+    def component_events(self):
+        if self._component_events is None:
+
+            self._component_events = []
+
+            for sub_event in self._get_core_event_attr('component_events'):
+                self._component_events.append(
+                    Event(
+                        event_id=sub_event.event_token,
+                        core_event=sub_event,
+                        **self._internal_settings()
+                    )
+                )
+
+        return self._component_events
 
 
 class Video(object):

@@ -266,6 +266,14 @@ def _parse_event(event_elem):
         objs['avail_details'] = _parse_avail_details(avail_details)
         event_elem.remove(avail_details)
 
+    component_events = event_elem.find('meta_event_component_events')
+    if component_events is not None:
+        component_events_list = []
+        for event in component_events.findall('event'):
+            component_events_list.append(_parse_event(event))
+            component_events.remove(event)
+        objs['component_events'] = component_events_list
+
     e_arg = create_dict_from_xml_element(event_elem)
     e_arg.update(objs)
 

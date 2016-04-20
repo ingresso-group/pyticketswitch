@@ -294,13 +294,13 @@ class CoreAPI(object):
             s_ven=None, s_eve=None, s_class=None, event_token_list=None,
             request_source_info=None, request_extra_info=None,
             request_video_iframe=None, request_cost_range=None,
-            request_media=None, request_custom_fields=None, request_reviews=None,
-            request_avail_details=None,
-            s_top=None, s_user_rating=None,
-            s_critic_rating=None, s_auto_range=None, page_length=None,
-            page_number=None,
-            s_cust_fltr=None, s_airport=None,
-            mime_text_type=None):
+            request_media=None, request_custom_fields=None,
+            request_reviews=None, request_avail_details=None,
+            s_top=None, s_user_rating=None, s_critic_rating=None,
+            s_auto_range=None, page_length=None, page_number=None,
+            s_cust_fltr=None, s_airport=None, mime_text_type=None,
+            request_meta_components=None,
+    ):
         if crypto_block is None:
             user_passwd = self.password
         else:
@@ -329,6 +329,7 @@ class CoreAPI(object):
             request_reviews=request_reviews,
             s_airport=s_airport,
             mime_text_type=mime_text_type,
+            request_meta_components=request_meta_components,
         )
 
         return self.parse_response(parse.event_search_result, resp)

@@ -1,3 +1,5 @@
+v1.9.1, 21 Apr 2016 -- Add meta_event (e.g. touring shows) support.
+
 v1.9.0, 20 Apr 2016 -- Mock API calls in tests using VCR.py.
 
 v1.8.7, 16 Feb 2016 -- Add properties to TicketType object.

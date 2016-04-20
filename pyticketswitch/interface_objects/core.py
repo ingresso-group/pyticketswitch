@@ -52,7 +52,7 @@ class Core(InterfaceObject):
             s_class, event_token_list,
             request_source_info, request_extra_info, request_video_iframe,
             request_cost_range, request_media, request_custom_fields,
-            request_reviews, request_avail_details,
+            request_reviews, request_avail_details, request_meta_components,
             s_top, s_user_rating, s_critic_rating,
             s_auto_range, page_length, page_number,
             s_cust_fltr, s_airport, mime_text_type,
@@ -109,6 +109,7 @@ class Core(InterfaceObject):
                 request_custom_fields=request_custom_fields,
                 request_reviews=request_reviews,
                 request_avail_details=request_avail_details,
+                request_meta_components=request_meta_components,
                 s_top=s_top, s_user_rating=s_user_rating,
                 s_critic_rating=s_critic_rating, s_auto_range=s_auto_range,
                 page_length=num_to_request, page_number=iter_index,
@@ -173,6 +174,7 @@ class Core(InterfaceObject):
                     request_custom_fields=request_custom_fields,
                     request_reviews=request_reviews,
                     request_avail_details=request_avail_details,
+                    request_meta_components=request_meta_components,
                     s_top=s_top, s_user_rating=s_user_rating,
                     s_critic_rating=s_critic_rating,
                     s_auto_range=s_auto_range, page_length=page_length,
@@ -202,6 +204,7 @@ class Core(InterfaceObject):
                 request_custom_fields=request_custom_fields,
                 request_reviews=request_reviews,
                 request_avail_details=request_avail_details,
+                request_meta_components=request_meta_components,
                 s_top=s_top, s_user_rating=s_user_rating,
                 s_critic_rating=s_critic_rating, s_auto_range=s_auto_range,
                 page_length=page_length, page_number=page_number,
@@ -223,7 +226,9 @@ class Core(InterfaceObject):
             request_media=None, request_custom_fields=True,
             request_reviews=None, request_avail_details=None,
             custom_filter_list=None, airport=None, special_offer_only=False,
-            mime_text_type=None, max_iterations=None):
+            mime_text_type=None, max_iterations=None,
+            request_meta_components=None,
+    ):
         """Perform event search, returns list of Event objects.
 
         If no arguments are provided, then the full list of Events
@@ -277,6 +282,9 @@ class Core(InterfaceObject):
                 special_offer_only. Sets the maximum number of iterations
                 when retrieving special offers to prevent a full product search
                 being performed.
+            request_meta_components (boolean): flag for including an event's
+                composite events (default False)
+
 
         Returns:
             list: List of Event objects
@@ -354,7 +362,8 @@ class Core(InterfaceObject):
             page_length=page_length, page_number=page_number,
             s_cust_fltr=s_cust_fltr, s_airport=airport,
             special_offer_only=special_offer_only,
-            mime_text_type=mime_text_type, max_iterations=max_iterations
+            mime_text_type=mime_text_type, max_iterations=max_iterations,
+            request_meta_components=request_meta_components,
         )
 
         requested_data = {}
@@ -385,6 +394,9 @@ class Core(InterfaceObject):
 
             for m in request_media:
                 requested_data['media'][m] = True
+
+        if request_meta_components:
+            requested_data['meta_components'] = True
 
         events = []
 

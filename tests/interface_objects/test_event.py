@@ -48,7 +48,7 @@ class ValidEventTests(InterfaceObjectTestCase):
             'venue_info', 'venue_addr', 'supplier_desc',
             'city_code', 'city_desc', 'country_code',
             'country_desc', 'latitude', 'longitude',
-            'event_id',
+            'event_id', 'event_type'
         ):
             self.assertIsInstance(getattr(self.event, prop_name), str)
 
@@ -82,7 +82,7 @@ class ValidEventTests(InterfaceObjectTestCase):
     def test_boolean_properties(self):
 
         for prop_name in (
-            'has_no_perfs',
+            'has_no_perfs', 'is_meta_event'
         ):
             self.assertIsInstance(getattr(self.event, prop_name), bool)
 

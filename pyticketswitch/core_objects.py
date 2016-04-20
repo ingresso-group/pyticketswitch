@@ -88,6 +88,7 @@ class Event(CoreObject):
         structured_info=None,
         event_quantity_options=None,
         avail_details=None,
+        component_events=None,
         **kwargs
     ):
 
@@ -153,6 +154,9 @@ class Event(CoreObject):
         self.structured_info = structured_info
         self.event_quantity_options = event_quantity_options
         self.avail_details = avail_details
+        if component_events is None:
+            component_events = []
+        self.component_events = component_events
 
         vars(self).update(kwargs)
 
