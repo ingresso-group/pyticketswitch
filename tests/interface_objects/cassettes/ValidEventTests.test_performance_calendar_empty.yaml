@@ -1,0 +1,166 @@
+interactions:
+- request:
+    body: '<?xml version=''1.0'' encoding=''UTF-8''?>
+
+      <start_session><user_id>whitelabel-testuser</user_id></start_session>'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['108']
+      Content-Type: [text/xml]
+      User-Agent: [python-requests/2.8.1]
+    method: POST
+    uri: https://dogbex.ingresso.co.uk/cgi-bin/xml_start_session.exe
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA21S21LbMBB971d48u6aTtOWzggxxG0TiiExxATzopGsjWssy44uJM7XVzIwTNo8
+        aW/aPWfPovNdI4JnULpq5dno08eTUQCyaHkly7NRtvwVno7O8QekDVWGaNC+jijQVhiMtGW8bWgl
+        idWgSKUJoxz3oFF0PIUK1XemJUy0RY0LEoarcbcvVw/P9u4xLdPPMJnnbHoNWTKOd3m6KRZpk/dS
+        TO+vNs3yYdzsXAd9Wadddc1Wi7az5b5fi5vp/tsu+x2vbuf8PqbfTyZfO5GTLyz/+XTa3PXbqU3m
+        T0kyi+vZcvOjMhNGF5ez9ELNJ0zp9UWiszh8RNEBPqSslG4RAwWMGC1qkJyUqrUdNnqLosMQKlpp
+        QJoXN8KIw5q6RZGitdKo3r0csK1RdDSBFFBBJG0AL0GbYPWnMhAklIEIMocARe8FXhADjR/GQReq
+        cqhV5MO9ANxZBU6CwfYikcGMXu1/fE/OmS8ycbz1U4UfGhqHwg6D35IOwsFK/iN2SOjN8xBxJl1j
+        Hly53+4y3kuHpEd75ML+Aoj0jp+fAgAA
+    headers:
+      cache-control: ['max-age=30, must-revalidate']
+      connection: [close]
+      content-encoding: [gzip]
+      content-length: ['423']
+      content-type: [text/xml; charset=UTF-8]
+      date: ['Wed, 20 Apr 2016 11:18:23 GMT']
+      p3p: ['policyref="/w3c/p3p.xml", CP="NOI DSP COR LAW CURa ADMa DEVa OUR NOR
+          IND PHY ONL UNI PUR COM NAV DEM STA"']
+      server: [Apache]
+      vary: ['Accept-Encoding,Cookie,User-Agent']
+      x-clacks-overhead: [GNU Terry Pratchett]
+      x-robots-tag: [noindex]
+      x-ua-compatible: [IE=edge]
+    status: {code: 200, message: OK}
+- request:
+    body: '<?xml version=''1.0'' encoding=''UTF-8''?>
+
+      <event_search><request_media>square</request_media><request_media>landscape</request_media><request_media>triplet_one</request_media><request_media>triplet_two</request_media><request_media>triplet_three</request_media><request_media>triplet_four</request_media><request_media>triplet_five</request_media><request_media>marquee</request_media><request_media>seating_plan</request_media><request_media>supplier</request_media><user_id>whitelabel-testuser</user_id><event_token_list>6IF</event_token_list><request_cost_range
+      /><request_custom_fields /><crypto_block>c_--W4pzgWXvuSZQgQ3eBOYbGMeUL4CxYQqcPQmYynlGVKqmTX4mxcrysIkQpiMbWPopugzyflNGz7xUJCWROdVCa90B6plY_5bYEj8mSywGuLOjLLHCkHTqDitBbaPIHQArOBbrsfALsUC-Z</crypto_block></event_search>'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['778']
+      Content-Type: [text/xml]
+      User-Agent: [python-requests/2.8.1]
+    method: POST
+    uri: https://dogbex.ingresso.co.uk/cgi-bin/xml_core.exe
+  response:
+    body:
+      string: !!binary |
+        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
+        y80zdC0AAA==
+    headers:
+      cache-control: ['max-age=30, must-revalidate']
+      connection: [close]
+      content-encoding: [gzip]
+      content-length: ['1945']
+      content-type: [text/xml; charset=UTF-8]
+      date: ['Wed, 20 Apr 2016 11:18:23 GMT']
+      p3p: ['policyref="/w3c/p3p.xml", CP="NOI DSP COR LAW CURa ADMa DEVa OUR NOR
+          IND PHY ONL UNI PUR COM NAV DEM STA"']
+      server: [Apache]
+      vary: ['Accept-Encoding,Cookie,User-Agent']
+      x-clacks-overhead: [GNU Terry Pratchett]
+      x-robots-tag: [noindex]
+      x-ua-compatible: [IE=edge]
+    status: {code: 200, message: OK}
+- request:
+    body: '<?xml version=''1.0'' encoding=''UTF-8''?>
+
+      <date_time_options><request_cost_range /><latest_date>20160419</latest_date><user_id>whitelabel-testuser</user_id><event_token>6IF</event_token><crypto_block>U_--vkpf9kC9pU5Ob-grofd1tGwcNPYj3ecsj3DY16jQkO0YWnDvmTKhsA3p_xUq7RLFyDc5-Rd1f6KqfuYIqgAFsORnwyqa0T16O4r_Dm3LIEQyqrEjq89lr2PIn93DkwglY</crypto_block></date_time_options>'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['365']
+      Content-Type: [text/xml]
+      User-Agent: [python-requests/2.8.1]
+    method: POST
+    uri: https://dogbex.ingresso.co.uk/cgi-bin/xml_core.exe
+  response:
+    body:
+      string: !!binary |
+        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
+        wRksSi2Jb86xd5lkP/nT2z+wPEdXvBsAAA==
+    headers:
+      cache-control: ['max-age=30, must-revalidate']
+      connection: [close]
+      content-encoding: [gzip]
+      content-length: ['1507']
+      content-type: [text/xml; charset=UTF-8]
+      date: ['Wed, 20 Apr 2016 11:18:23 GMT']
+      p3p: ['policyref="/w3c/p3p.xml", CP="NOI DSP COR LAW CURa ADMa DEVa OUR NOR
+          IND PHY ONL UNI PUR COM NAV DEM STA"']
+      server: [Apache]
+      vary: ['Accept-Encoding,Cookie,User-Agent']
+      x-clacks-overhead: [GNU Terry Pratchett]
+      x-robots-tag: [noindex]
+      x-ua-compatible: [IE=edge]
+    status: {code: 200, message: OK}
+version: 1
