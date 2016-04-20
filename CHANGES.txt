@@ -1,3 +1,5 @@
+v1.9.0, 20 Apr 2016 -- Mock API calls in tests using VCR.py.
+
 v1.8.7, 16 Feb 2016 -- Add properties to TicketType object.
 
 v1.8.4, 16 Dec 2015 -- Add project to Travis and add code coverage
