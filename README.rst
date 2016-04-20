@@ -33,6 +33,15 @@ Bugs, features, support and discussion
 
 Please use the `Github Issues <https://github.com/ingresso-group/pyticketswitch/issues>`_ or contact Ingresso at systems@ingresso.co.uk
 
+Development
+-----------
+
+**Running tests**
+
+We are using the `VCR.py <https://github.com/kevin1024/vcrpy`_ library for
+capturing and replaying API calls made to the TicketSwitch XML API. These
+'cassette' files are stored in `tests/interface_objects/cassettes`.
+
 License
 -------
 
