@@ -38,7 +38,7 @@ Development
 
 **Running tests**
 
-We are using the `VCR.py <https://github.com/kevin1024/vcrpy`_ library for
+We are using the `VCR.py <https://github.com/kevin1024/vcrpy>`_ library for
 capturing and replaying API calls made to the TicketSwitch XML API. These
 'cassette' files are stored in `tests/interface_objects/cassettes`.
 
