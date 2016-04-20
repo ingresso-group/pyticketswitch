@@ -1,4 +1,4 @@
-from settings import *
+from pyticketswitch.settings import *
 
 API_URL = 'https://dogbex.ingresso.co.uk/cgi-bin/xml_core.exe'
 EXT_START_SESSION_URL = 'https://dogbex.ingresso.co.uk/cgi-bin/xml_start_session.exe'

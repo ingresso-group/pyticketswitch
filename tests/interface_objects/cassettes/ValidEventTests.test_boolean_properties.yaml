@@ -1,0 +1,137 @@
+interactions:
+- request:
+    body: '<?xml version=''1.0'' encoding=''UTF-8''?>
+
+      <start_session><user_id>whitelabel-testuser</user_id></start_session>'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['108']
+      Content-Type: [text/xml]
+      User-Agent: [python-requests/2.8.1]
+    method: POST
+    uri: https://dogbex.ingresso.co.uk/cgi-bin/xml_start_session.exe
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA21S21LbMBB971d48u6aTtOWzggxxG0TiiExxATzopGsjWssy44uJM7XVzIwTNo8
+        aW/aPWfPovNdI4JnULpq5dno08eTUQCyaHkly7NRtvwVno7O8QekDVWGaNC+jijQVhiMtGW8bWgl
+        idWgSKUJoxz3oFF0PIUK1XemJUy0RY0LEoarcbcvVw/P9u4xLdPPMJnnbHoNWTKOd3m6KRZpk/dS
+        TO+vNs3yYdzsXAd9Wadddc1Wi7az5b5fi5vp/tsu+x2vbuf8PqbfTyZfO5GTLyz/+XTa3PXbqU3m
+        T0kyi+vZcvOjMhNGF5ez9ELNJ0zp9UWiszh8RNEBPqSslG4RAwWMGC1qkJyUqrUdNnqLosMQKlpp
+        QJoXN8KIw5q6RZGitdKo3r0csK1RdDSBFFBBJG0AL0GbYPWnMhAklIEIMocARe8FXhADjR/GQReq
+        cqhV5MO9ANxZBU6CwfYikcGMXu1/fE/OmS8ycbz1U4UfGhqHwg6D35IOwsFK/iN2SOjN8xBxJl1j
+        Hly53+4y3kuHpEd75ML+Aoj0jp+fAgAA
+    headers:
+      cache-control: ['max-age=30, must-revalidate']
+      connection: [close]
+      content-encoding: [gzip]
+      content-length: ['423']
+      content-type: [text/xml; charset=UTF-8]
+      date: ['Wed, 20 Apr 2016 11:18:18 GMT']
+      p3p: ['policyref="/w3c/p3p.xml", CP="NOI DSP COR LAW CURa ADMa DEVa OUR NOR
+          IND PHY ONL UNI PUR COM NAV DEM STA"']
+      server: [Apache]
+      vary: ['Accept-Encoding,Cookie,User-Agent']
+      x-clacks-overhead: [GNU Terry Pratchett]
+      x-robots-tag: [noindex]
+      x-ua-compatible: [IE=edge]
+    status: {code: 200, message: OK}
+- request:
+    body: '<?xml version=''1.0'' encoding=''UTF-8''?>
+
+      <event_search><request_extra_info /><request_media>square</request_media><request_media>landscape</request_media><request_media>triplet_one</request_media><request_media>triplet_two</request_media><request_media>triplet_three</request_media><request_media>triplet_four</request_media><request_media>triplet_five</request_media><request_media>marquee</request_media><request_media>seating_plan</request_media><request_media>supplier</request_media><user_id>whitelabel-testuser</user_id><event_token_list>6IF</event_token_list><request_video_iframe
+      /><request_reviews /><request_cost_range /><request_custom_fields /><crypto_block>c_--W4pzgWXvuSZQgQ3eBOYbGMeUL4CxYQqcPQmYynlGVKqmTX4mxcrysIkQpiMbWPopugzyflNGz7xUJCWROdVCa90B6plY_5bYEj8mSywGuLOjLLHCkHTqDitBbaPIHQArOBbrsfALsUC-Z</crypto_block><request_source_info
+      /><mime_text_type>html</mime_text_type></event_search>'
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Length: ['903']
+      Content-Type: [text/xml]
+      User-Agent: [python-requests/2.8.1]
+    method: POST
+    uri: https://dogbex.ingresso.co.uk/cgi-bin/xml_core.exe
+  response:
+    body:
+      string: !!binary |
+        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
+        F5UfhalyPgAA
+    headers:
+      cache-control: ['max-age=30, must-revalidate']
+      connection: [close]
+      content-encoding: [gzip]
+      content-length: ['3543']
+      content-type: [text/xml; charset=UTF-8]
+      date: ['Wed, 20 Apr 2016 11:18:18 GMT']
+      p3p: ['policyref="/w3c/p3p.xml", CP="NOI DSP COR LAW CURa ADMa DEVa OUR NOR
+          IND PHY ONL UNI PUR COM NAV DEM STA"']
+      server: [Apache]
+      vary: ['Accept-Encoding,Cookie,User-Agent']
+      x-clacks-overhead: [GNU Terry Pratchett]
+      x-robots-tag: [noindex]
+      x-ua-compatible: [IE=edge]
+    status: {code: 200, message: OK}
+version: 1
