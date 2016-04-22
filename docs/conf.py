@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 #
 # pyticketswitch documentation build configuration file, created by
 # sphinx-quickstart on Tue Sep  2 16:32:25 2014.

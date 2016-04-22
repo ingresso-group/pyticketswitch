@@ -1,10 +1,13 @@
-import order as order_objs
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
+from . import order as order_objs
 from pyticketswitch.util import (
     to_int_or_none, format_price_with_symbol,
     to_float_or_none, resolve_boolean,
     to_int_or_return
 )
-from base import InterfaceObject
+from .base import InterfaceObject
 
 
 class Bundle(InterfaceObject):
