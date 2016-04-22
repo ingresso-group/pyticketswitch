@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 
 import datetime
 
-from pyticketswitch.interface_objects import Event, Seat, Concession
+from pyticketswitch.interface_objects import Concession, Event, Seat
 
 from .common import InterfaceObjectTestCase
 

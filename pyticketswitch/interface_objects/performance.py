@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
-from operator import attrgetter
 import datetime
+from operator import attrgetter
 
-from .base import InterfaceObject, CostRangeMixin
 from pyticketswitch.util import (
-    yyyymmdd_to_date, hhmmss_to_time,
-    date_to_yyyymmdd_or_none, time_to_hhmmss,
-    date_to_yyyymmdd, resolve_boolean, to_int_or_none
+    date_to_yyyymmdd, date_to_yyyymmdd_or_none, hhmmss_to_time,
+    resolve_boolean, time_to_hhmmss, to_int_or_none, yyyymmdd_to_date
 )
-from . import event as event_objs
+
 from . import availability as availability
+from . import event as event_objs
+from .base import CostRangeMixin, InterfaceObject
 
 
 class Performance(InterfaceObject, CostRangeMixin):

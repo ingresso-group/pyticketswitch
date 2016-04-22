@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
+from . import api_exceptions as aex
 from . import core_objects as objects
 from .util import create_dict_from_xml_element
-from . import api_exceptions as aex
 
 
 def script_error(root):

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
-from .base import InterfaceObject
-from pyticketswitch.util import (
-    to_int_or_none, resolve_boolean
-)
-from . import order as order_objs
+from pyticketswitch.util import resolve_boolean, to_int_or_none
+
 from . import bundle as bundle_objs
+from . import order as order_objs
+from .base import InterfaceObject
 
 
 class Trolley(InterfaceObject):

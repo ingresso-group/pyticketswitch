@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
+from .availability import AvailDetail, Concession, DespatchMethod, TicketType
+from .base import Address, Card, Commission, Currency, Customer, Seat
+from .bundle import Bundle
 from .core import Core
 from .event import Category, Event, Review, Video
-from .performance import Performance
-from .availability import TicketType, Concession, DespatchMethod, AvailDetail
-from .trolley import Trolley
-from .reservation import Reservation
-from .base import Customer, Seat, Card, Address, Commission, Currency
-from .bundle import Bundle
 from .order import Order
+from .performance import Performance
+from .reservation import Reservation
+from .trolley import Trolley
 
 __all__ = (
     'Core', 'Category', 'Event', 'Review', 'Performance',

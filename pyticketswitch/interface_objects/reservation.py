@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
-from . import trolley as trolley_objs
 from pyticketswitch.util import (
-    to_float_or_zero, resolve_boolean, dict_ignore_nones,
-    boolean_to_yes_no
+    boolean_to_yes_no, dict_ignore_nones, resolve_boolean, to_float_or_zero
 )
-from .base import Customer
+
 from . import bundle as bundle_objs
+from . import trolley as trolley_objs
+from .base import Customer
 
 
 class Reservation(trolley_objs.Trolley):

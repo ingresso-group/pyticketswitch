@@ -4,7 +4,7 @@ from __future__ import absolute_import, division, print_function
 import datetime
 
 from pyticketswitch.interface_objects import (
-    Core, Event, Trolley, Address, Customer,
+    Address, Core, Customer, Event, Trolley
 )
 
 from .common import InterfaceObjectCreditUserTestCase
