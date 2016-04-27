@@ -5,6 +5,7 @@ import logging
 from datetime import datetime
 
 import requests
+import six
 
 from . import parse, settings
 from .api_exceptions import CommsException, InvalidResponse
@@ -60,7 +61,7 @@ class CoreAPI(object):
 
         filelog.debug(
             u'URL=%s; API_REQUEST=%s',
-            url, unicode(data, 'UTF-8')
+            url, six.text_type(data, 'UTF-8')
         )
 
         response_string = None
@@ -127,7 +128,7 @@ class CoreAPI(object):
 
             filelog.debug(
                 u'API_RESPONSE=%s',
-                unicode(response_string, 'UTF-8')
+                six.text_type(response_string, 'UTF-8')
             )
 
         finally:

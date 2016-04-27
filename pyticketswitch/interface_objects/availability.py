@@ -8,6 +8,7 @@ from pyticketswitch.util import (
     day_mask_to_bool_list, format_price_with_symbol, resolve_boolean,
     to_float_or_none, to_float_summed, to_int_or_none, yyyymmdd_to_date
 )
+from six.moves import zip
 
 from .base import Commission, Currency, InterfaceObject, Seat, SeatBlock
 
