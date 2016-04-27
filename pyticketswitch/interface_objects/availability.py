@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
-from operator import attrgetter
 from copy import deepcopy
+from operator import attrgetter
 
-from .base import InterfaceObject, Seat, SeatBlock, Currency, Commission
 from pyticketswitch.util import (
-    format_price_with_symbol, to_float_or_none, to_float_summed,
-    to_int_or_none, resolve_boolean, day_mask_to_bool_list, yyyymmdd_to_date,
+    day_mask_to_bool_list, format_price_with_symbol, resolve_boolean,
+    to_float_or_none, to_float_summed, to_int_or_none, yyyymmdd_to_date
 )
+
+from .base import Commission, Currency, InterfaceObject, Seat, SeatBlock
 
 
 class TicketType(InterfaceObject):

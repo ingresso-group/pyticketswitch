@@ -6,8 +6,8 @@ import logging
 from pyticketswitch import settings as default_settings
 from pyticketswitch.interface import CoreAPI
 from pyticketswitch.util import (
-    resolve_boolean, format_price_with_symbol,
-    to_float_or_none, to_int_or_none,
+    format_price_with_symbol, resolve_boolean, to_float_or_none,
+    to_int_or_none
 )
 
 logger = logging.getLogger(__name__)

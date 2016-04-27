@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
-from operator import itemgetter, attrgetter
 import datetime
 from copy import deepcopy
+from operator import attrgetter, itemgetter
 
-from pyticketswitch.util import (
-    resolve_boolean, to_int_or_none, yyyymmdd_to_date,
-    dates_in_range, hhmmss_to_time, date_to_yyyymmdd_or_none
-)
-from .base import InterfaceObject, CostRangeMixin
-from pyticketswitch.api_exceptions import InvalidId
 from pyticketswitch import settings
+from pyticketswitch.api_exceptions import InvalidId
+from pyticketswitch.util import (
+    date_to_yyyymmdd_or_none, dates_in_range, hhmmss_to_time, resolve_boolean,
+    to_int_or_none, yyyymmdd_to_date
+)
+
 from . import availability as avail_objs
+from .base import CostRangeMixin, InterfaceObject
 
 
 class Category(object):

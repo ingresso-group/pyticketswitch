@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
+from vcr_unittest import VCRTestCase
+
+from .. import settings_test as settings
+
 try:
     import xml.etree.cElementTree as xml
 except ImportError:
     import xml.etree.ElementTree as xml
 
-from vcr_unittest import VCRTestCase
 
-from .. import settings_test as settings
 
 
 def xml_matcher(r1, r2):

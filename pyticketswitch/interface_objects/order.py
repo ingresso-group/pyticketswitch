@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
-from .base import InterfaceObject, Seat, Currency, Commission
 from pyticketswitch.util import (
-    to_int_or_return, to_float_or_none,
-    to_float_summed, format_price_with_symbol
+    format_price_with_symbol, to_float_or_none, to_float_summed,
+    to_int_or_return
 )
-from . import performance as perf_objs
-from . import event as event_objs
+
 from . import availability as availability
+from . import event as event_objs
+from . import performance as perf_objs
+from .base import Commission, Currency, InterfaceObject, Seat
 
 
 class Order(InterfaceObject):

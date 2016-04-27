@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function
 
 import datetime
 
-from pyticketswitch.interface_objects import Event, TicketType, DespatchMethod
+from pyticketswitch.interface_objects import DespatchMethod, Event, TicketType
 
 from .common import InterfaceObjectTestCase
 
