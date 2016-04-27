@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
-__version__ = '1.9.1'
+__version__ = '1.10.0'
 
 from .interface_objects import *  # NOQA
 
