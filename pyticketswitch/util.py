@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 try:
     import xml.etree.cElementTree as xml
 except ImportError:
@@ -6,7 +9,7 @@ import random
 import string
 import datetime
 
-import settings
+from . import settings
 
 __all__ = (
     'create_xml_from_dict', 'create_dict_from_xml',

@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 from operator import itemgetter, attrgetter
 import datetime
 from copy import deepcopy
@@ -6,12 +9,10 @@ from pyticketswitch.util import (
     resolve_boolean, to_int_or_none, yyyymmdd_to_date,
     dates_in_range, hhmmss_to_time, date_to_yyyymmdd_or_none
 )
-from base import InterfaceObject, CostRangeMixin
+from .base import InterfaceObject, CostRangeMixin
 from pyticketswitch.api_exceptions import InvalidId
 from pyticketswitch import settings
-import core as core_objs
-import performance as perf_objs
-import availability as avail_objs
+from . import availability as avail_objs
 
 
 class Category(object):
@@ -643,6 +644,7 @@ class Event(InterfaceObject, CostRangeMixin):
         if required (could reduce the number of API calls
         in some circumstances).
         """
+        from . import core as core_objs
 
         if request_media is None:
             request_media = settings.REQUEST_MEDIA
@@ -766,6 +768,7 @@ class Event(InterfaceObject, CostRangeMixin):
         return self._performance_calendar
 
     def _get_search_crypto(self):
+        from . import core as core_objs
 
         crypto_block = self.get_crypto_block(
             method_name='event_search',
@@ -979,6 +982,8 @@ class Event(InterfaceObject, CostRangeMixin):
         Returns:
             list: List of Performance objects
         """
+        from . import performance as perf_objs
+
         crypto_block = self._get_search_crypto()
 
         resp_dict = self.get_core_api().date_time_options(
@@ -1059,6 +1064,7 @@ class Event(InterfaceObject, CostRangeMixin):
     def _build_performances_from_usage(
         self, usage_date_dict, need_departure_date, latest_date
     ):
+        from . import performance as perf_objs
 
         inv_dates = []
 

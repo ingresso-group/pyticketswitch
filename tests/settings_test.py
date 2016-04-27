@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 from pyticketswitch.settings import *
 
 API_URL = 'https://dogbex.ingresso.co.uk/cgi-bin/xml_core.exe'

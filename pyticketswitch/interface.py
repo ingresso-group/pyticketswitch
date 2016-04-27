@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 import requests
 try:
     import xml.etree.cElementTree as xml
@@ -6,10 +9,10 @@ except ImportError:
 from datetime import datetime
 import logging
 
-from util import create_xml_from_dict, dict_ignore_nones
-from api_exceptions import CommsException, InvalidResponse
-import parse
-import settings
+from .util import create_xml_from_dict, dict_ignore_nones
+from .api_exceptions import CommsException, InvalidResponse
+from . import parse
+from . import settings
 
 logger = logging.getLogger(__name__)
 filelog = logging.getLogger('filelog.' + __name__)

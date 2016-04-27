@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function
+
 # EXAMPLE USAGE
 
 from pyticketswitch import (
@@ -22,7 +25,7 @@ events = core.search_events(keyword='nutcracker')
 
 # select an Event object from the list
 for e in events:
-    print e.event_id, e.description
+    print(e.event_id, e.description)
     if e.event_id == '6IF':
         event = e
 
@@ -33,7 +36,7 @@ performances = event.performances
 
 # select a performance
 for p in performances:
-    print p.date_desc, p.time_desc
+    print(p.date_desc, p.time_desc)
     if (
         p.date_desc == 'Mon, 6th October 2014' and
         p.time_desc == '7.30 PM'
@@ -47,7 +50,7 @@ ticket_types = performance.ticket_types
 
 # select a TicketType
 for tt in ticket_types:
-    print tt.description, tt.price_combined_float, tt.number_available
+    print(tt.description, tt.price_combined_float, tt.number_available)
     if (
         tt.description == 'Upper circle'and
         tt.price_combined_float == 34.0
@@ -62,7 +65,7 @@ concession_sets = ticket_type.get_concessions(no_of_tickets=2)
 selected_concessions = []
 for concession_list in concession_sets:
     for c in concession_list:
-        print c.description, c.ticket_price_float
+        print(c.description, c.ticket_price_float)
         if c.description == 'Adult standard':
             selected_concessions.append(c)
 
@@ -70,7 +73,7 @@ for concession_list in concession_sets:
 despatch_methods = performance.despatch_methods
 
 for dm in despatch_methods:
-    print dm.description, dm.cost_float
+    print(dm.description, dm.cost_float)
 
 # select a despatch method
 despatch_method = despatch_methods[0]
