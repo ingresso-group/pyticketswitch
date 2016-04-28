@@ -3,8 +3,8 @@ from __future__ import absolute_import, division, print_function
 
 import datetime
 import random
-import six
 import string
+import six
 
 from six.moves import range
 

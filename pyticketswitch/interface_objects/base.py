@@ -2,7 +2,6 @@
 from __future__ import absolute_import, division, print_function
 
 import logging
-import six
 
 import six
 
@@ -12,6 +11,8 @@ from pyticketswitch.util import (
     format_price_with_symbol, resolve_boolean, to_float_or_none,
     to_int_or_none
 )
+
+import six
 
 logger = logging.getLogger(__name__)
 

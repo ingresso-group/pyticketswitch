@@ -2,13 +2,14 @@
 from __future__ import absolute_import, division, print_function
 
 import datetime
-import six
 
 import six
 
 from pyticketswitch.interface_objects import (
     Bundle, Core, Event, Order, Trolley
 )
+
+import six
 
 from .common import InterfaceObjectTestCase
 

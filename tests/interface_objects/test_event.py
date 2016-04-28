@@ -2,13 +2,14 @@
 from __future__ import absolute_import, division, print_function
 
 import datetime
-import six
 from copy import deepcopy
 
 import six
 
 from pyticketswitch.api_exceptions import InvalidId
 from pyticketswitch.interface_objects import Event, Performance, Review
+
+import six
 
 from .common import InterfaceObjectTestCase
 
