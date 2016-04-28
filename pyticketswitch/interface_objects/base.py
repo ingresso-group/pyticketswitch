@@ -4,7 +4,6 @@ from __future__ import (
 )
 
 import logging
-import six
 
 import six
 from pyticketswitch import settings as default_settings
@@ -13,6 +12,8 @@ from pyticketswitch.util import (
     format_price_with_symbol, resolve_boolean, to_float_or_none,
     to_int_or_none
 )
+
+import six
 
 logger = logging.getLogger(__name__)
 
