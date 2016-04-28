@@ -6,8 +6,6 @@ import random
 import six
 import string
 
-import six
-
 from six.moves import range
 
 from . import settings
