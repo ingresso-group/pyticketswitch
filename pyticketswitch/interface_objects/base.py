@@ -4,6 +4,7 @@ from __future__ import (
 )
 
 import logging
+import six
 
 import six
 from pyticketswitch import settings as default_settings
