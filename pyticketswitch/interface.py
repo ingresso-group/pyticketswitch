@@ -211,20 +211,12 @@ class CoreAPI(object):
         )
 
     def parse_response(self, parse_function, xml_elem):
-        """ Calls the specified parse function
-
-        Calls the specified parse function and logs
-        any errors that are raised.
-
         """
-        try:
-            result = parse_function(
-                parse.script_error(xml_elem)
-            )
-        except Exception as e:
-            logger.error(e)
-            raise e
-
+        Calls the specified parse function
+        """
+        result = parse_function(
+            parse.script_error(xml_elem)
+        )
         return result
 
     def start_session_resolve_user(
