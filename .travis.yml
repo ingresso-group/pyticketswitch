@@ -2,7 +2,7 @@ language: python
 python: 2.7
 env:
   - TOX_ENV=py27,coveralls
-  - TOX_ENV=lint
+  - TOX_ENV=py27-lint
 install:
   - pip install -r requirements/test.txt
   - pip install coveralls
