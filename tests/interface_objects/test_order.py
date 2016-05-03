@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 
 import datetime
 
+import six
+
 from pyticketswitch.interface_objects import (
     Concession, Core, DespatchMethod, Event, Performance
 )
@@ -82,7 +84,7 @@ class OrderTests(InterfaceObjectTestCase):
             'total_combined',
         ):
             self.assertIsInstance(
-                getattr(self.order, prop_name), unicode
+                getattr(self.order, prop_name), six.text_type
             )
 
     def test_performance(self):

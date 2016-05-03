@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 
 import datetime
 
+import six
+
 from pyticketswitch.interface_objects import (
     Bundle, Core, Event, Order, Trolley
 )
@@ -173,7 +175,7 @@ class BundleTests(InterfaceObjectTestCase):
             'total_despatch', 'total_cost',
         ):
             self.assertIsInstance(
-                getattr(self.trolley.bundles[0], prop_name), unicode
+                getattr(self.trolley.bundles[0], prop_name), six.text_type
             )
 
     def test_int_properties(self):

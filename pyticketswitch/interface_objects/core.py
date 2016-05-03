@@ -144,14 +144,14 @@ class Core(InterfaceObject):
             ):
 
                 if page_length is None:
-                    resp_dict['event'] = events.values()
+                    resp_dict['event'] = list(events.values())
 
                 else:
 
                     start = (page_number or 0) * page_length
                     end = ((page_number or 0) + 1) * page_length
 
-                    resp_dict['event'] = events.values()[start:end]
+                    resp_dict['event'] = list(events.values())[start:end]
 
                 return resp_dict
 

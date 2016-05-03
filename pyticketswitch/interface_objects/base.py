@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 
 import logging
 
+import six
+
 from pyticketswitch import settings as default_settings
 from pyticketswitch.interface import CoreAPI
 from pyticketswitch.util import (
@@ -801,7 +803,7 @@ class Customer(object):
         else:
             if isinstance(self._user_can_use_data, bool):
                 return self._user_can_use_data
-            elif isinstance(self._user_can_use_data, basestring):
+            elif isinstance(self._user_can_use_data, six.string_types):
                 return resolve_boolean(
                     self._user_can_use_data
                 )
@@ -815,7 +817,7 @@ class Customer(object):
         else:
             if isinstance(self._supplier_can_use_data, bool):
                 return self._supplier_can_use_data
-            elif isinstance(self._supplier_can_use_data, basestring):
+            elif isinstance(self._supplier_can_use_data, six.string_types):
                 return resolve_boolean(
                     self._supplier_can_use_data
                 )
@@ -829,7 +831,7 @@ class Customer(object):
         else:
             if isinstance(self._world_can_use_data, bool):
                 return self._world_can_use_data
-            elif isinstance(self._world_can_use_data, basestring):
+            elif isinstance(self._world_can_use_data, six.string_types):
                 return resolve_boolean(
                     self._world_can_use_data
                 )

@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 
 import datetime
 
+import six
+
 from pyticketswitch.interface_objects import DespatchMethod, Event, TicketType
 
 from .common import InterfaceObjectTestCase
@@ -178,5 +180,5 @@ class DespatchMethodTests(InterfaceObjectTestCase):
             'cost',
         ):
             self.assertIsInstance(
-                getattr(self.despatch_method, prop_name), unicode
+                getattr(self.despatch_method, prop_name), six.text_type
             )

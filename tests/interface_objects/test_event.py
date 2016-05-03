@@ -4,6 +4,8 @@ from __future__ import absolute_import, division, print_function
 import datetime
 from copy import deepcopy
 
+import six
+
 from pyticketswitch.api_exceptions import InvalidId
 from pyticketswitch.interface_objects import Event, Performance, Review
 
@@ -80,7 +82,7 @@ class ValidEventTests(InterfaceObjectTestCase):
         for prop_name in (
             'min_seatprice', 'min_combined_price',
         ):
-            self.assertIsInstance(getattr(self.event, prop_name), unicode)
+            self.assertIsInstance(getattr(self.event, prop_name), six.text_type)
 
     def test_boolean_properties(self):
 
@@ -234,7 +236,7 @@ class AvailDetailTests(InterfaceObjectTestCase):
         ):
             prop = getattr(self.avail_detail, prop_name)
             if prop is not None:
-                self.assertIsInstance(prop, unicode)
+                self.assertIsInstance(prop, six.text_type)
 
     def test_weekday_available(self):
         self.assertIsInstance(self.avail_detail.weekdays_available, list)

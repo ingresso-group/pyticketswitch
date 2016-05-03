@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 
 import datetime
 
+import six
+
 from pyticketswitch.interface_objects import Event
 
 from .common import InterfaceObjectTestCase
@@ -56,7 +58,7 @@ class ConcessionTests(InterfaceObjectTestCase):
         for prop_name in (
             'ticket_price', 'surcharge', 'seatprice'
         ):
-            self.assertIsInstance(getattr(self.concession, prop_name), unicode)
+            self.assertIsInstance(getattr(self.concession, prop_name), six.text_type)
 
     def test_float_properties(self):
 

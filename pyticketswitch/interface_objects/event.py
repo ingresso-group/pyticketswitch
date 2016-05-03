@@ -11,6 +11,7 @@ from pyticketswitch.util import (
     date_to_yyyymmdd_or_none, dates_in_range, hhmmss_to_time, resolve_boolean,
     to_int_or_none, yyyymmdd_to_date
 )
+from six.moves import range
 
 from . import availability as avail_objs
 from .base import CostRangeMixin, InterfaceObject
