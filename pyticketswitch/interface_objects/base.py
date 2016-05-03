@@ -13,8 +13,6 @@ from pyticketswitch.util import (
     to_int_or_none
 )
 
-import six
-
 logger = logging.getLogger(__name__)
 
 
