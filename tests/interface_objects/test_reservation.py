@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function
 
 import datetime
 
+import six
+
 from pyticketswitch.interface_objects import Core, Event, Reservation, Trolley
 
 from .common import InterfaceObjectTestCase
@@ -19,7 +21,7 @@ class ReservationTests(object):
             'transaction_id',
         ):
             self.assertIsInstance(
-                getattr(self.reservation, prop_name), str
+                getattr(self.reservation, prop_name), six.string_types
             )
 
     def test_bool_properties(self):

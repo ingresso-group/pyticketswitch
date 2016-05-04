@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals
+)
 
 import datetime
 import random
@@ -18,17 +20,17 @@ except ImportError:
 
 
 __all__ = (
-    'create_xml_from_dict', 'create_dict_from_xml',
-    'create_dict_from_xml_element',
-    'random_string_generator',
-    'format_price', 'format_price_with_symbol',
-    'yyyymmdd_to_date', 'hhmmss_to_time',
-    'date_to_yyyymmdd', 'time_to_hhmmss',
-    'dates_in_range', 'auto_date_to_slug',
-    'slug_to_auto_date', 'resolve_boolean',
-    'to_int_or_none', 'to_int_or_return',
-    'to_float_or_none', 'to_float_summed',
-    'to_float_or_zero'
+    b'create_xml_from_dict', b'create_dict_from_xml',
+    b'create_dict_from_xml_element',
+    b'random_string_generator',
+    b'format_price', b'format_price_with_symbol',
+    b'yyyymmdd_to_date', b'hhmmss_to_time',
+    b'date_to_yyyymmdd', b'time_to_hhmmss',
+    b'dates_in_range', b'auto_date_to_slug',
+    b'slug_to_auto_date', b'resolve_boolean',
+    b'to_int_or_none', b'to_int_or_return',
+    b'to_float_or_none', b'to_float_summed',
+    b'to_float_or_zero'
 )
 
 

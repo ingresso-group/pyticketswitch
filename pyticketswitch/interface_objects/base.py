@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals
+)
 
 import logging
 
 import six
-
 from pyticketswitch import settings as default_settings
 from pyticketswitch.interface import CoreAPI
 from pyticketswitch.util import (
