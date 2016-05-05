@@ -199,7 +199,6 @@ class CoreAPI(object):
             'sub_id': self.sub_id,
             'remote_ip': self.remote_ip,
             'remote_site': self.remote_site,
-            'puzzled': 'yes',
         }
 
         args.update(self.additional_elements)
