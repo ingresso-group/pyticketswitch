@@ -226,8 +226,8 @@ class CoreAPI(object):
         Attempts to start a new user session with the creditials provided.
         If a custom start session method is provided then it will use that
         instead.
-        the expected result from a custom_start_session method is a dictionary
-        containing a crypto_block, user_id, and running_user
+        The expected result from a custom_start_session method is a dictionary
+        containing a crypto_block, and a running_user
         (pyticketswitch.core_objects.RunningUser)
         """
 
@@ -237,8 +237,8 @@ class CoreAPI(object):
                 remote_site=self.remote_site,
             )
             crypto_block = resp['crypto_block']
-            self.username = resp['user_id']
             self.running_user = resp['running_user']
+            self.username = resp['running_user'].user_id
         else:
             arg_dict={
                 'user_id': self.username,
