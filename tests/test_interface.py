@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import pytest
 from pyticketswitch.interface import CoreAPI
 from pyticketswitch.core_objects import RunningUser
