@@ -2,7 +2,6 @@
 from __future__ import absolute_import, division, print_function
 
 API_URL = 'https://www.tsd-aff.com/cgi-bin/xml_core.exe'
-EXT_START_SESSION_URL = 'https://www.tsd-aff.com/cgi-bin/xml_start_session.exe'
 
 DATE_SLUG_MAP = (
     {

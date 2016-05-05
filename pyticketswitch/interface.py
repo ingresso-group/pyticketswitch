@@ -26,10 +26,10 @@ class CoreAPI(object):
     def __init__(
             self, username, password, url,
             remote_ip, remote_site, accept_language,
-            ext_start_session_url, api_request_timeout,
+            api_request_timeout,
             sub_id=None,
             additional_elements=None,
-            requests_session=None):
+            requests_session=None, custom_start_session=None):
 
         self.username = username
         self.password = password
@@ -39,9 +39,9 @@ class CoreAPI(object):
         self.remote_ip = remote_ip
         self.remote_site = remote_site
         self.accept_language = accept_language
-        self.ext_start_session_url = ext_start_session_url
         self.content_language = None
         self.running_user = None
+        self.custom_start_session = custom_start_session
 
         if api_request_timeout:
             self.api_request_timeout = api_request_timeout
@@ -199,6 +199,7 @@ class CoreAPI(object):
             'sub_id': self.sub_id,
             'remote_ip': self.remote_ip,
             'remote_site': self.remote_site,
+            'puzzled': 'yes',
         }
 
         args.update(self.additional_elements)
@@ -220,36 +221,24 @@ class CoreAPI(object):
         )
         return result
 
-    def start_session_resolve_user(
-            self, user_id=None, remote_site=None, remote_ip=None):
-
-        resp = self._create_xml_and_post(
-            method_name='start_session',
-            arg_dict=dict_ignore_nones(
-                user_id=user_id,
-                remote_site=remote_site,
-                remote_ip=remote_ip
-            ),
-            url=self.ext_start_session_url
-        )
-
-        return self.parse_response(
-            parse.start_session_resolve_user_result, resp
-        )
-
     def start_session(self):
+        """
+        Attempts to start a new user session with the creditials provided.
+        If a custom start session method is provided then it will use that
+        instead.
+        the expected result from a custom_start_session method is a dictionary
+        containing a crypto_block, user_id, and running_user
+        (pyticketswitch.core_objects.RunningUser)
+        """
 
-        if not self.password or not self.username:
-            resp = self.start_session_resolve_user(
-                user_id=self.username,
+        if self.custom_start_session:
+            resp = self.custom_start_session(
                 remote_ip=self.remote_ip,
                 remote_site=self.remote_site,
             )
-
             crypto_block = resp['crypto_block']
-            self.username = resp['running_user'].user_id
+            self.username = resp['user_id']
             self.running_user = resp['running_user']
-
         else:
             arg_dict={
                 'user_id': self.username,

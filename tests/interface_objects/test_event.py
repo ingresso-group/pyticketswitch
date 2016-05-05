@@ -62,12 +62,12 @@ class ValidEventTests(InterfaceObjectTestCase):
         found = False
 
         for c in self.event.categories:
-            if c.code == 'theatre':
+            if c.code == 'arts':
                 found = True
 
         self.assertTrue(
             found,
-            msg="'Theatre' category not found in event category list"
+            msg="'arts' category not found in event category list"
         )
 
     def test_float_properties(self):
