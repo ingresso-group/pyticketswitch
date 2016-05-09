@@ -1,3 +1,7 @@
+v1.10.1, 29 Apr 2016 -- Removed logging of exceptions on API errors
+
+v1.10.0, 27 Apr 2016 -- Added all __future__ imports to files as a step towards Python 3 compatibility.
+
 v1.9.1, 21 Apr 2016 -- Add meta_event (e.g. touring shows) support.
 
 v1.9.0, 20 Apr 2016 -- Mock API calls in tests using VCR.py.
