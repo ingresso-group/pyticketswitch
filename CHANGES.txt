@@ -1,3 +1,5 @@
+v1.11.0, 12 May 2016 -- Removed internal api call, add custom start session method
+
 v1.10.1, 29 Apr 2016 -- Removed logging of exceptions on API errors
 
 v1.10.0, 27 Apr 2016 -- Added all __future__ imports to files as a step towards Python 3 compatibility.
