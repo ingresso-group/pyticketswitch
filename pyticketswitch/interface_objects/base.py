@@ -37,7 +37,6 @@ class InterfaceObject(object):
             is returned by the API for a concession
         remote_ip (string): user's IP address (internal use)
         remote_site (string): domain of the user request (internal use)
-        ext_start_session_url (string): URL for start_session (internal user)
         additional_elements (dict): An optional dictionary of key/values to
             include in the XML passed to the API.
         upfront_data_token (string): upfront data token is required by the API
@@ -77,9 +76,8 @@ class InterfaceObject(object):
             no_time_descr=None, api_request_timeout=None,
             default_concession_descr=None, remote_ip=None,
             remote_site=None, accept_language=None,
-            ext_start_session_url=None,
             additional_elements=None, upfront_data_token=None,
-            requests_session=None):
+            requests_session=None, custom_start_session=None):
 
         return {
             'username': username,
@@ -89,22 +87,22 @@ class InterfaceObject(object):
             'remote_site': remote_site,
             'accept_language': accept_language,
             'url': url,
-            'ext_start_session_url': ext_start_session_url,
             'api_request_timeout': api_request_timeout,
             'no_time_descr': no_time_descr,
             'default_concession_descr': default_concession_descr,
             'additional_elements': additional_elements,
             'upfront_data_token': upfront_data_token,
             'requests_session': requests_session,
+            'custom_start_session': custom_start_session,
         }
 
     def _configure(
             self, username=None, password=None, sub_id=None, url=None,
             no_time_descr=None, api_request_timeout=None,
             default_concession_descr=None, remote_ip=None,
-            remote_site=None, accept_language=None, ext_start_session_url=None,
+            remote_site=None, accept_language=None,
             additional_elements=None, upfront_data_token=None,
-            requests_session=None):
+            requests_session=None, custom_start_session=None):
 
         if (not username) and remote_ip and remote_site:
             username = self._get_cached_username(
@@ -134,9 +132,6 @@ class InterfaceObject(object):
         if not url:
             url = default_settings.API_URL
 
-        if not ext_start_session_url:
-            ext_start_session_url = default_settings.EXT_START_SESSION_URL
-
         if not api_request_timeout:
             api_request_timeout = default_settings.API_REQUEST_TIMEOUT
 
@@ -156,10 +151,10 @@ class InterfaceObject(object):
             remote_ip=remote_ip,
             remote_site=remote_site,
             accept_language=accept_language,
-            ext_start_session_url=ext_start_session_url,
             additional_elements=additional_elements,
             upfront_data_token=upfront_data_token,
             requests_session=requests_session,
+            custom_start_session=custom_start_session,
         )
 
         self._core_api = CoreAPI(
@@ -170,10 +165,10 @@ class InterfaceObject(object):
             remote_ip=remote_ip,
             remote_site=remote_site,
             accept_language=accept_language,
-            ext_start_session_url=ext_start_session_url,
             api_request_timeout=api_request_timeout,
             additional_elements=additional_elements,
             requests_session=requests_session,
+            custom_start_session=custom_start_session,
         )
 
     def get_core_api(self):

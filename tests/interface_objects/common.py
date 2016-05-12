@@ -11,8 +11,6 @@ except ImportError:
     import xml.etree.ElementTree as xml
 
 
-
-
 def xml_matcher(r1, r2):
     """ Match requests by Core XML API method name """
     r1_xml = xml.fromstring(r1.body)
@@ -25,7 +23,6 @@ class InterfaceObjectTestCase(VCRTestCase):
         'username': settings.TEST_USERNAME,
         'password': settings.TEST_PASSWORD,
         'url': settings.API_URL,
-        'ext_start_session_url': settings.EXT_START_SESSION_URL
     }
 
     def _get_vcr(self):
@@ -40,5 +37,4 @@ class InterfaceObjectCreditUserTestCase(InterfaceObjectTestCase):
         'username': settings.TEST_CREDIT_USERNAME,
         'password': settings.TEST_CREDIT_PASSWORD,
         'url': settings.API_URL,
-        'ext_start_session_url': settings.EXT_START_SESSION_URL
     }
