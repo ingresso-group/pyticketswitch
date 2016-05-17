@@ -51,7 +51,7 @@ class ConcessionTests(InterfaceObjectTestCase):
         for prop_name in (
             'concession_id', 'description',
         ):
-            self.assertIsInstance(getattr(self.concession, prop_name), str)
+            self.assertIsInstance(getattr(self.concession, prop_name), six.string_types)
 
     def test_unicode_properties(self):
 

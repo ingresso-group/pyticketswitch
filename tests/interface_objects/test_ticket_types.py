@@ -46,14 +46,14 @@ class TicketTypeTests(InterfaceObjectTestCase):
             self.assertIsInstance(option, tuple)
 
             for item in option:
-                self.assertIsInstance(item, str)
+                self.assertIsInstance(item, six.string_types)
 
     def test_string_properties(self):
 
         for prop_name in (
             'description', 'ticket_type_id',
         ):
-            self.assertIsInstance(getattr(self.ticket_type, prop_name), str)
+            self.assertIsInstance(getattr(self.ticket_type, prop_name), six.string_types)
 
     def test_float_properties(self):
 
@@ -135,7 +135,7 @@ class TicketTypeConcessionTests(InterfaceObjectTestCase):
         )
 
     def test_blanket_discount_only(self):
-        self.assertIsInstance(self.ticket_type.blanket_discount_only, str)
+        self.assertIsInstance(self.ticket_type.blanket_discount_only, six.string_types)
 
     def test_ticket_concessions(self):
         self.assertIsInstance(self.ticket_type.ticket_concessions, list)

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals
+)
 
 import logging
 from datetime import datetime
@@ -150,10 +152,9 @@ class CoreAPI(object):
         return response_string
 
     def _create_xml_and_post(self, method_name, arg_dict, url=None):
-
         data = xml.tostring(
             create_xml_from_dict(method_name, arg_dict),
-            encoding='UTF-8'
+            encoding=b'UTF-8'
         )
 
         if not url:
