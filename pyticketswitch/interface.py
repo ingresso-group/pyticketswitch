@@ -154,7 +154,7 @@ class CoreAPI(object):
     def _create_xml_and_post(self, method_name, arg_dict, url=None):
         data = xml.tostring(
             create_xml_from_dict(method_name, arg_dict),
-            encoding=b'UTF-8'
+            encoding=str('UTF-8')
         )
 
         if not url:
