@@ -9,6 +9,8 @@ import six
 from pyticketswitch.api_exceptions import InvalidId
 from pyticketswitch.interface_objects import Event, Performance, Review
 
+import six
+
 from .common import InterfaceObjectTestCase
 
 

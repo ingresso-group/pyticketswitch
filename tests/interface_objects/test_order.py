@@ -9,6 +9,8 @@ from pyticketswitch.interface_objects import (
     Concession, Core, DespatchMethod, Event, Performance
 )
 
+import six
+
 from .common import InterfaceObjectTestCase
 
 

@@ -27,7 +27,7 @@ setup(
     long_description=open('README.rst').read(),
     install_requires=[
         'requests>=2.0.0',
-        'six',
+        'six>=1.10.0',
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',

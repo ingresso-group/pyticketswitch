@@ -7,6 +7,8 @@ import six
 
 from pyticketswitch.interface_objects import Event
 
+import six
+
 from .common import InterfaceObjectTestCase
 
 

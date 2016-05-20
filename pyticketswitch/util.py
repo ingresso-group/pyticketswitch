@@ -6,7 +6,6 @@ from __future__ import (
 import datetime
 import random
 import string
-
 import six
 
 from six.moves import range

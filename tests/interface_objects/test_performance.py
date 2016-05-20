@@ -7,6 +7,8 @@ import six
 
 from pyticketswitch.interface_objects import DespatchMethod, Event, TicketType
 
+import six
+
 from .common import InterfaceObjectTestCase
 
 
