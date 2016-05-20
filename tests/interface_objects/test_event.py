@@ -57,19 +57,19 @@ class ValidEventTests(InterfaceObjectTestCase):
             'country_desc', 'latitude', 'longitude',
             'event_id', 'event_type'
         ):
-            self.assertIsInstance(getattr(self.event, prop_name), str)
+            self.assertIsInstance(getattr(self.event, prop_name), six.string_types)
 
     def test_categories(self):
 
         found = False
 
         for c in self.event.categories:
-            if c.code == 'theatre':
+            if c.code == 'arts':
                 found = True
 
         self.assertTrue(
             found,
-            msg="'Theatre' category not found in event category list"
+            msg="'arts' category not found in event category list"
         )
 
     def test_float_properties(self):
@@ -170,7 +170,7 @@ class EventReviewsTests(InterfaceObjectTestCase):
             event_id='6IF', session=session, **self.api_settings)
 
     def test_critic_review_percent(self):
-        self.assertIsInstance(self.event.critic_review_percent, str)
+        self.assertIsInstance(self.event.critic_review_percent, six.string_types)
 
     def test_critic_reviews(self):
         self.assertTrue(self.event.critic_reviews)
@@ -199,7 +199,7 @@ class ReviewTests(InterfaceObjectTestCase):
         for prop_name in (
             'title', 'author', 'date_desc', 'time_desc', 'body',
         ):
-            self.assertIsInstance(getattr(self.review, prop_name), str)
+            self.assertIsInstance(getattr(self.review, prop_name), six.string_types)
 
     def test_date_is_datetime_date(self):
         self.assertIsInstance(self.review.date, datetime.date)
@@ -227,7 +227,7 @@ class AvailDetailTests(InterfaceObjectTestCase):
         ):
             prop = getattr(self.avail_detail, prop_name)
             if prop is not None:
-                self.assertIsInstance(prop, str)
+                self.assertIsInstance(prop, six.string_types)
 
     def test_unicode_properties(self):
 

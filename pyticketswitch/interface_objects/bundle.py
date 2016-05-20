@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals
+)
 
 from pyticketswitch.util import (
     format_price_with_symbol, resolve_boolean, to_float_or_none,

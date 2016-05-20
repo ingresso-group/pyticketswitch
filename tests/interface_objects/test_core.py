@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, division, print_function
 
+import six
+
 from pyticketswitch.interface_objects import Core, Event
 
 from .. import settings_test as settings
@@ -83,7 +85,7 @@ class CoreTests(InterfaceObjectTestCase):
         self.assertIsInstance(self.core.event_cities, dict)
         self.assertIn('london-uk', self.core.event_cities)
         for city, info in self.core.event_cities.items():
-            self.assertIsInstance(city, str)
+            self.assertIsInstance(city, six.string_types)
             self.assertIsInstance(info, dict)
 
             self.assertIn('count', info)
@@ -96,7 +98,7 @@ class CoreTests(InterfaceObjectTestCase):
         self.assertIsInstance(self.core.event_categories, dict)
         self.assertIn('theatre/', self.core.event_categories)
         for cat, info in self.core.event_categories.items():
-            self.assertIsInstance(cat, str)
+            self.assertIsInstance(cat, six.string_types)
             self.assertIsInstance(info, dict)
             self.assertIn('count', info)
             self.assertIn('category', info)
@@ -109,7 +111,7 @@ class CoreTests(InterfaceObjectTestCase):
         self.assertIsInstance(self.core.event_countries, dict)
         self.assertIn('uk', self.core.event_countries)
         for country, info in self.core.event_countries.items():
-            self.assertIsInstance(country, str)
+            self.assertIsInstance(country, six.string_types)
             self.assertIsInstance(info, dict)
 
             self.assertIn('count', info)

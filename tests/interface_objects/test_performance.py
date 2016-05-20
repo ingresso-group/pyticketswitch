@@ -37,7 +37,7 @@ class PerformanceTests(InterfaceObjectTestCase):
         for prop_name in (
             'date_desc', 'time_desc', 'perf_id'
         ):
-            self.assertIsInstance(getattr(self.performance, prop_name), str)
+            self.assertIsInstance(getattr(self.performance, prop_name), six.string_types)
 
     def test_date_is_datetime_date(self):
         self.assertIsInstance(self.performance.date, datetime.date)
@@ -49,7 +49,7 @@ class PerformanceTests(InterfaceObjectTestCase):
 
         for perf in self.performances:
             if perf.date.weekday() == 1:
-                self.assertIsInstance(perf.required_info, str)
+                self.assertIsInstance(perf.required_info, six.string_types)
 
 
 class PerformanceAvailabilityTests(InterfaceObjectTestCase):
@@ -173,7 +173,7 @@ class DespatchMethodTests(InterfaceObjectTestCase):
             'description', 'despatch_id',
         ):
             self.assertIsInstance(
-                getattr(self.despatch_method, prop_name), str
+                getattr(self.despatch_method, prop_name), six.string_types
             )
 
     def test_unicode_properties(self):

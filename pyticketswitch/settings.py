@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals
+)
 
 API_URL = 'https://www.tsd-aff.com/cgi-bin/xml_core.exe'
-EXT_START_SESSION_URL = 'https://www.tsd-aff.com/cgi-bin/xml_start_session.exe'
 
 DATE_SLUG_MAP = (
     {

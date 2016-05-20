@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals
+)
 
 from .availability import AvailDetail, Concession, DespatchMethod, TicketType
 from .base import Address, Card, Commission, Currency, Customer, Seat
@@ -11,9 +13,9 @@ from .performance import Performance
 from .reservation import Reservation
 from .trolley import Trolley
 
-__all__ = (
+__all__ = [str(x) for x in (
     'Core', 'Category', 'Event', 'Review', 'Performance',
     'TicketType', 'Concession', 'DespatchMethod', 'AvailDetail',
     'Order', 'Trolley', 'Reservation', 'Customer', 'Commission',
     'Card', 'Address', 'Seat', 'Video', 'Bundle', 'Currency',
-)
+)]

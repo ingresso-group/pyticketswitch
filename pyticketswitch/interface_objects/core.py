@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals
+)
 
 from pyticketswitch import settings
 from pyticketswitch.util import date_to_yyyymmdd

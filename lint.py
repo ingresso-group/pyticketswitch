@@ -67,7 +67,7 @@ def run_isort():
     print('Running isort check')
     return subprocess.call([
         'isort', '--recursive', '--check-only', '--diff',
-        '-a', 'from __future__ import absolute_import, print_function, division',
+        '-a', 'from __future__ import absolute_import, print_function, division, unicode_literals',
     ] + [x for x in CODE_PATHS if x != 'tests'])
 
 

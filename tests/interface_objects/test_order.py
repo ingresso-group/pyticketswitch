@@ -68,7 +68,7 @@ class OrderTests(InterfaceObjectTestCase):
             'ticket_type_desc', 'order_id',
         ):
             self.assertIsInstance(
-                getattr(self.order, prop_name), str
+                getattr(self.order, prop_name), six.string_types
             )
 
     def test_int_properties(self):

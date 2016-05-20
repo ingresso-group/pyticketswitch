@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from __future__ import (
+    absolute_import, division, print_function, unicode_literals
+)
 
 from pyticketswitch.util import (
     boolean_to_yes_no, dict_ignore_nones, resolve_boolean, to_float_or_zero

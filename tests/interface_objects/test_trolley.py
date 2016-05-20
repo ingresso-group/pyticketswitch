@@ -71,7 +71,7 @@ class TrolleyTests(InterfaceObjectTestCase):
             'trolley_id',
         ):
             self.assertIsInstance(
-                getattr(self.trolley, prop_name), str
+                getattr(self.trolley, prop_name), six.string_types
             )
 
     def test_int_properties(self):
@@ -167,7 +167,7 @@ class BundleTests(InterfaceObjectTestCase):
             'source_description', 'source_code',
         ):
             self.assertIsInstance(
-                getattr(self.trolley.bundles[0], prop_name), str
+                getattr(self.trolley.bundles[0], prop_name), six.string_types
             )
 
     def test_unicode_properties(self):
