@@ -286,7 +286,7 @@ class CoreAPI(object):
             s_top=None, s_user_rating=None, s_critic_rating=None,
             s_auto_range=None, page_length=None, page_number=None,
             s_cust_fltr=None, s_airport=None, mime_text_type=None,
-            request_meta_components=None,
+            request_meta_components=None, s_excluded_events=None,
     ):
         if crypto_block is None:
             user_passwd = self.password
@@ -317,6 +317,7 @@ class CoreAPI(object):
             s_airport=s_airport,
             mime_text_type=mime_text_type,
             request_meta_components=request_meta_components,
+            s_excluded_events=s_excluded_events,
         )
 
         return self.parse_response(parse.event_search_result, resp)

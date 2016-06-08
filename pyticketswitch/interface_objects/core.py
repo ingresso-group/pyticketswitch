@@ -61,8 +61,9 @@ class Core(InterfaceObject):
             request_reviews, request_avail_details, request_meta_components,
             s_top, s_user_rating, s_critic_rating,
             s_auto_range, page_length, page_number,
-            s_cust_fltr, s_airport, mime_text_type,
-            special_offer_only, events=None, iter_index=0, max_iterations=None):
+            s_cust_fltr, s_airport, mime_text_type, s_excluded_events,
+            special_offer_only, events=None, iter_index=0, max_iterations=None
+    ):
 
         # There is no filter in the core for special offers, so if only
         # the special offers are requested, then we need to recursively
@@ -121,6 +122,7 @@ class Core(InterfaceObject):
                 page_length=num_to_request, page_number=iter_index,
                 s_cust_fltr=s_cust_fltr, s_airport=s_airport,
                 mime_text_type=mime_text_type,
+                s_excluded_events=s_excluded_events,
             )
 
             # If the event has a special offer, then add it to the list
@@ -187,6 +189,7 @@ class Core(InterfaceObject):
                     page_number=page_number,
                     s_cust_fltr=s_cust_fltr, s_airport=s_airport,
                     special_offer_only=special_offer_only,
+                    s_excluded_events=s_excluded_events,
                     events=events, iter_index=iter_index,
                     mime_text_type=mime_text_type,
                     max_iterations=max_iterations,
@@ -216,6 +219,7 @@ class Core(InterfaceObject):
                 page_length=page_length, page_number=page_number,
                 s_cust_fltr=s_cust_fltr, s_airport=s_airport,
                 mime_text_type=mime_text_type,
+                s_excluded_events=s_excluded_events,
             )
 
     def search_events(
@@ -233,7 +237,7 @@ class Core(InterfaceObject):
             request_reviews=None, request_avail_details=None,
             custom_filter_list=None, airport=None, special_offer_only=False,
             mime_text_type=None, max_iterations=None,
-            request_meta_components=None,
+            request_meta_components=None, excluded_events_list=None,
     ):
         """Perform event search, returns list of Event objects.
 
@@ -290,6 +294,8 @@ class Core(InterfaceObject):
                 being performed.
             request_meta_components (boolean): flag for including an event's
                 composite events (default False)
+            excluded_events_list (list): List of event IDs to exclude in
+                search results
 
 
         Returns:
@@ -338,6 +344,11 @@ class Core(InterfaceObject):
         else:
             event_token_list = None
 
+        if excluded_events_list:
+            s_excluded_events = ','.join(excluded_events_list)
+        else:
+            s_excluded_events = None
+
         crypto_block = self.get_crypto_block(
             method_name='start_session',
             password_required=False
@@ -370,6 +381,7 @@ class Core(InterfaceObject):
             special_offer_only=special_offer_only,
             mime_text_type=mime_text_type, max_iterations=max_iterations,
             request_meta_components=request_meta_components,
+            s_excluded_events=s_excluded_events,
         )
 
         requested_data = {}
