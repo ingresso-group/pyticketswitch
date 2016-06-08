@@ -3,6 +3,7 @@ from __future__ import (
     absolute_import, division, print_function, unicode_literals
 )
 
+from collections import OrderedDict
 from pyticketswitch import settings
 from pyticketswitch.util import date_to_yyyymmdd
 
@@ -53,16 +54,88 @@ class Core(InterfaceObject):
 
     def _do_core_event_search(
             self, crypto_block, upfront_data_token, s_keys, s_dates, s_coco,
-            s_city, s_geo_lat, s_geo_long, s_geo_rad_km,
-            s_src, s_area, s_ven, s_eve,
-            s_class, event_token_list,
-            request_source_info, request_extra_info, request_video_iframe,
-            request_cost_range, request_media, request_custom_fields,
-            request_reviews, request_avail_details, request_meta_components,
-            s_top, s_user_rating, s_critic_rating,
-            s_auto_range, page_length, page_number,
-            s_cust_fltr, s_airport, mime_text_type, s_excluded_events,
-            special_offer_only, events=None, iter_index=0, max_iterations=None
+            s_city, s_geo_lat, s_geo_long, s_geo_rad_km, s_src, s_area, s_ven,
+            s_eve, s_class, event_token_list, request_source_info,
+            request_extra_info, request_video_iframe, request_cost_range,
+            request_media, request_custom_fields, request_reviews,
+            request_avail_details, request_meta_components, s_top,
+            s_user_rating, s_critic_rating, s_auto_range, page_length,
+            page_number, s_cust_fltr, s_airport, mime_text_type,
+            s_excluded_events, special_offer_only, events=None, iter_index=0,
+            max_iterations=None
+    ):
+
+        # If the special_offer_only flag is False, then we can do a search
+        # as normal
+
+        if special_offer_only:
+            return self._do_special_offer_search(
+                crypto_block=crypto_block,
+                upfront_data_token=upfront_data_token,
+                s_keys=s_keys, s_dates=s_dates, s_coco=s_coco,
+                s_city=s_city, s_geo_lat=s_geo_lat,
+                s_geo_long=s_geo_long, s_geo_rad_km=s_geo_rad_km,
+                s_src=s_src, s_area=s_area, s_ven=s_ven,
+                s_eve=s_eve, s_class=s_class,
+                event_token_list=event_token_list,
+                request_source_info=request_source_info,
+                request_extra_info=request_extra_info,
+                request_video_iframe=request_video_iframe,
+                request_cost_range=request_cost_range,
+                request_media=request_media,
+                request_custom_fields=request_custom_fields,
+                request_reviews=request_reviews,
+                request_avail_details=request_avail_details,
+                request_meta_components=request_meta_components,
+                s_top=s_top, s_user_rating=s_user_rating,
+                s_critic_rating=s_critic_rating,
+                s_auto_range=s_auto_range, page_length=page_length,
+                page_number=page_number,
+                s_cust_fltr=s_cust_fltr, s_airport=s_airport,
+                special_offer_only=special_offer_only,
+                s_excluded_events=s_excluded_events,
+                events=events, iter_index=iter_index,
+                mime_text_type=mime_text_type,
+                max_iterations=max_iterations,
+            )
+
+        return self.get_core_api().event_search(
+            crypto_block=crypto_block,
+            upfront_data_token=upfront_data_token,
+            s_keys=s_keys, s_dates=s_dates,
+            s_coco=s_coco, s_city=s_city,
+            s_geo_lat=s_geo_lat, s_geo_long=s_geo_long,
+            s_geo_rad_km=s_geo_rad_km, s_src=s_src, s_area=s_area,
+            s_ven=s_ven, s_eve=s_eve, s_class=s_class,
+            event_token_list=event_token_list,
+            request_source_info=request_source_info,
+            request_extra_info=request_extra_info,
+            request_video_iframe=request_video_iframe,
+            request_cost_range=request_cost_range,
+            request_media=request_media,
+            request_custom_fields=request_custom_fields,
+            request_reviews=request_reviews,
+            request_avail_details=request_avail_details,
+            request_meta_components=request_meta_components,
+            s_top=s_top, s_user_rating=s_user_rating,
+            s_critic_rating=s_critic_rating, s_auto_range=s_auto_range,
+            page_length=page_length, page_number=page_number,
+            s_cust_fltr=s_cust_fltr, s_airport=s_airport,
+            mime_text_type=mime_text_type,
+            s_excluded_events=s_excluded_events,
+        )
+
+    def _do_special_offer_search(
+            self, crypto_block, upfront_data_token, s_keys, s_dates, s_coco,
+            s_city, s_geo_lat, s_geo_long, s_geo_rad_km, s_src, s_area, s_ven,
+            s_eve, s_class, event_token_list, request_source_info,
+            request_extra_info, request_video_iframe, request_cost_range,
+            request_media, request_custom_fields, request_reviews,
+            request_avail_details, request_meta_components, s_top,
+            s_user_rating, s_critic_rating, s_auto_range, page_length,
+            page_number, s_cust_fltr, s_airport, mime_text_type,
+            s_excluded_events, special_offer_only, events=None, iter_index=0,
+            max_iterations=None,
     ):
 
         # There is no filter in the core for special offers, so if only
@@ -71,139 +144,112 @@ class Core(InterfaceObject):
         # (or there aren't any more events returned). By default, we do 3 small
         # searches followed by a full search. If max_iterations is provided, we
         # do that many small searches only.
-        #
-        # If the special_offer_only flag is False, then we can do a search
-        # as normal
-        if special_offer_only:
 
-            if events is None:
-                events = {}
-
-            if not page_length:
-
-                num_required = 0
-                num_to_request = None
+        if events is None:
+            # Use OrderedDict so we preserve order of search results
+            events = OrderedDict()
+        else:
+            # add events already found to excluded events param
+            if s_excluded_events:
+                excluded_events_list = s_excluded_events.split(',')
+                for event_id in events.keys():
+                    if event_id not in excluded_events_list:
+                        excluded_events_list.append(event_id)
+                s_excluded_events = ','.join(excluded_events_list)
             else:
+                s_excluded_events = ','.join(list(events.keys()))
 
-                if page_number:
-                    num_required = page_length * (page_number + 1)
-                else:
-                    num_required = page_length
-
-                # if the event search has been called multiple times
-                # already, then do a full search
-                if not max_iterations and iter_index > 2:
-                    num_to_request = None
-                else:
-                    # arbitrarily choose to request twice as many events
-                    # as required looking for special offers
-                    num_to_request = num_required * 2
-
-            resp_dict = self.get_core_api().event_search(
-                crypto_block=crypto_block,
-                upfront_data_token=upfront_data_token,
-                s_keys=s_keys, s_dates=s_dates,
-                s_coco=s_coco, s_city=s_city,
-                s_geo_lat=s_geo_lat, s_geo_long=s_geo_long,
-                s_geo_rad_km=s_geo_rad_km, s_src=s_src, s_area=s_area,
-                s_ven=s_ven, s_eve=s_eve, s_class=s_class,
-                event_token_list=event_token_list,
-                request_source_info=request_source_info,
-                request_extra_info=request_extra_info,
-                request_video_iframe=request_video_iframe,
-                request_cost_range=request_cost_range,
-                request_media=request_media,
-                request_custom_fields=request_custom_fields,
-                request_reviews=request_reviews,
-                request_avail_details=request_avail_details,
-                request_meta_components=request_meta_components,
-                s_top=s_top, s_user_rating=s_user_rating,
-                s_critic_rating=s_critic_rating, s_auto_range=s_auto_range,
-                page_length=num_to_request, page_number=iter_index,
-                s_cust_fltr=s_cust_fltr, s_airport=s_airport,
-                mime_text_type=mime_text_type,
-                s_excluded_events=s_excluded_events,
-            )
-
-            # If the event has a special offer, then add it to the list
-            for e in resp_dict['event']:
-                if e.cost_range and (
-                    e.cost_range.best_value_offer or
-                    e.cost_range.max_saving_offer or
-                    e.cost_range.top_price_offer
-                ):
-
-                    if e.event_id not in events:
-                        events[e.event_id] = e
-
-            # Return the list of special offer events if we've retrieved the
-            # number required or there aren't any more or if max_iterations
-            # has been reached
-            if (
-                not resp_dict['event'] or
-                len(events) >= num_required or
-                num_to_request is None or
-                len(resp_dict['event']) < num_to_request or
-                (max_iterations and (iter_index + 1) == max_iterations)
-            ):
-
-                if page_length is None:
-                    resp_dict['event'] = list(events.values())
-
-                else:
-
-                    start = (page_number or 0) * page_length
-                    end = ((page_number or 0) + 1) * page_length
-
-                    resp_dict['event'] = list(events.values())[start:end]
-
-                return resp_dict
-
-            # Call recursively if we haven't found enough special offer
-            # events yet
-            else:
-
-                iter_index = iter_index + 1
-
-                return self._do_core_event_search(
-                    crypto_block=crypto_block,
-                    upfront_data_token=upfront_data_token,
-                    s_keys=s_keys, s_dates=s_dates, s_coco=s_coco,
-                    s_city=s_city, s_geo_lat=s_geo_lat,
-                    s_geo_long=s_geo_long, s_geo_rad_km=s_geo_rad_km,
-                    s_src=s_src, s_area=s_area, s_ven=s_ven,
-                    s_eve=s_eve, s_class=s_class,
-                    event_token_list=event_token_list,
-                    request_source_info=request_source_info,
-                    request_extra_info=request_extra_info,
-                    request_video_iframe=request_video_iframe,
-                    request_cost_range=request_cost_range,
-                    request_media=request_media,
-                    request_custom_fields=request_custom_fields,
-                    request_reviews=request_reviews,
-                    request_avail_details=request_avail_details,
-                    request_meta_components=request_meta_components,
-                    s_top=s_top, s_user_rating=s_user_rating,
-                    s_critic_rating=s_critic_rating,
-                    s_auto_range=s_auto_range, page_length=page_length,
-                    page_number=page_number,
-                    s_cust_fltr=s_cust_fltr, s_airport=s_airport,
-                    special_offer_only=special_offer_only,
-                    s_excluded_events=s_excluded_events,
-                    events=events, iter_index=iter_index,
-                    mime_text_type=mime_text_type,
-                    max_iterations=max_iterations,
-                )
+        if not page_length:
+            num_required = 0
+            num_to_request = None
 
         else:
-            return self.get_core_api().event_search(
+            if page_number:
+                num_required = page_length * (page_number + 1)
+            else:
+                num_required = page_length
+
+            # if the event search has been called multiple times
+            # already, then do a full search
+            if not max_iterations and iter_index > 2:
+                num_to_request = None
+            else:
+                # arbitrarily choose to request twice as many events
+                # as required looking for special offers
+                num_to_request = num_required * 2
+
+        resp_dict = self.get_core_api().event_search(
+            crypto_block=crypto_block,
+            upfront_data_token=upfront_data_token,
+            s_keys=s_keys, s_dates=s_dates,
+            s_coco=s_coco, s_city=s_city,
+            s_geo_lat=s_geo_lat, s_geo_long=s_geo_long,
+            s_geo_rad_km=s_geo_rad_km, s_src=s_src, s_area=s_area,
+            s_ven=s_ven, s_eve=s_eve, s_class=s_class,
+            event_token_list=event_token_list,
+            request_source_info=request_source_info,
+            request_extra_info=request_extra_info,
+            request_video_iframe=request_video_iframe,
+            request_cost_range=request_cost_range,
+            request_media=request_media,
+            request_custom_fields=request_custom_fields,
+            request_reviews=request_reviews,
+            request_avail_details=request_avail_details,
+            request_meta_components=request_meta_components,
+            s_top=s_top, s_user_rating=s_user_rating,
+            s_critic_rating=s_critic_rating, s_auto_range=s_auto_range,
+            page_length=num_to_request, page_number=iter_index,
+            s_cust_fltr=s_cust_fltr, s_airport=s_airport,
+            mime_text_type=mime_text_type,
+            s_excluded_events=s_excluded_events,
+        )
+
+        # If the event has a special offer, then add it to the list
+        for e in resp_dict['event']:
+            if e.cost_range and (
+                e.cost_range.best_value_offer or
+                e.cost_range.max_saving_offer or
+                e.cost_range.top_price_offer
+            ):
+                events[e.event_id] = e
+
+        # Return the list of special offer events if we've retrieved the
+        # number required or there aren't any more or if max_iterations
+        # has been reached
+        if (
+            not resp_dict['event'] or
+            len(events) >= num_required or
+            num_to_request is None or
+            len(resp_dict['event']) < num_to_request or
+            (max_iterations and (iter_index + 1) == max_iterations)
+        ):
+
+            if page_length is None:
+                resp_dict['event'] = list(events.values())
+
+            else:
+
+                start = (page_number or 0) * page_length
+                end = ((page_number or 0) + 1) * page_length
+
+                resp_dict['event'] = list(events.values())[start:end]
+
+            return resp_dict
+
+        # Call recursively if we haven't found enough special offer
+        # events yet
+        else:
+
+            iter_index = iter_index + 1
+
+            return self._do_core_event_search(
                 crypto_block=crypto_block,
                 upfront_data_token=upfront_data_token,
-                s_keys=s_keys, s_dates=s_dates,
-                s_coco=s_coco, s_city=s_city,
-                s_geo_lat=s_geo_lat, s_geo_long=s_geo_long,
-                s_geo_rad_km=s_geo_rad_km, s_src=s_src, s_area=s_area,
-                s_ven=s_ven, s_eve=s_eve, s_class=s_class,
+                s_keys=s_keys, s_dates=s_dates, s_coco=s_coco,
+                s_city=s_city, s_geo_lat=s_geo_lat,
+                s_geo_long=s_geo_long, s_geo_rad_km=s_geo_rad_km,
+                s_src=s_src, s_area=s_area, s_ven=s_ven,
+                s_eve=s_eve, s_class=s_class,
                 event_token_list=event_token_list,
                 request_source_info=request_source_info,
                 request_extra_info=request_extra_info,
@@ -215,11 +261,15 @@ class Core(InterfaceObject):
                 request_avail_details=request_avail_details,
                 request_meta_components=request_meta_components,
                 s_top=s_top, s_user_rating=s_user_rating,
-                s_critic_rating=s_critic_rating, s_auto_range=s_auto_range,
-                page_length=page_length, page_number=page_number,
+                s_critic_rating=s_critic_rating,
+                s_auto_range=s_auto_range, page_length=page_length,
+                page_number=page_number,
                 s_cust_fltr=s_cust_fltr, s_airport=s_airport,
-                mime_text_type=mime_text_type,
+                special_offer_only=special_offer_only,
                 s_excluded_events=s_excluded_events,
+                events=events, iter_index=iter_index,
+                mime_text_type=mime_text_type,
+                max_iterations=max_iterations,
             )
 
     def search_events(
