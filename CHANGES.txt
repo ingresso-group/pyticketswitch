@@ -1,3 +1,5 @@
+v1.11.2, 10 June 2016 -- Fix special offer search ordering and add 'excluded_events_list' param to event_search
+
 v1.11.1, 17 May 2016 -- Use unicode literals everywhere
 
 v1.11.0, 12 May 2016 -- Removed internal api call, add custom start session method
