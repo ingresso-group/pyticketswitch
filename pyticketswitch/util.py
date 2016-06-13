@@ -6,7 +6,6 @@ from __future__ import (
 import datetime
 import random
 import string
-
 import six
 
 from six.moves import range
@@ -18,8 +17,7 @@ try:
 except ImportError:
     import xml.etree.ElementTree as xml
 
-
-__all__ = (
+__all__ = [str(x) for x in (
     b'create_xml_from_dict', b'create_dict_from_xml',
     b'create_dict_from_xml_element',
     b'random_string_generator',
@@ -31,7 +29,7 @@ __all__ = (
     b'to_int_or_none', b'to_int_or_return',
     b'to_float_or_none', b'to_float_summed',
     b'to_float_or_zero'
-)
+)]
 
 
 def create_xml_from_dict(root_name, arg_dict):

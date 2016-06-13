@@ -9,6 +9,8 @@ from pyticketswitch.interface_objects import (
     Bundle, Core, Event, Order, Trolley
 )
 
+import six
+
 from .common import InterfaceObjectTestCase
 
 
