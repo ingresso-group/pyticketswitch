@@ -5,3 +5,4 @@ pytest-cov
 tox
 vcrpy
 vcrpy-unittest
+mock
