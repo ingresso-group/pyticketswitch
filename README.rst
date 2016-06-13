@@ -23,6 +23,8 @@ Requirements
 
 As of version 1.8.0, this package requires the `Requests <http://docs.python-requests.org/>`_ library.
 
+As of version 1.12.0 this package is python3 compatible.
+
 Documentation
 -------------
 
@@ -42,9 +44,12 @@ We are using the `VCR.py <https://github.com/kevin1024/vcrpy>`_ library for
 capturing and replaying API calls made to the TicketSwitch XML API. These
 'cassette' files are stored in `tests/interface_objects/cassettes`.
 
+If your are experiencing slow tests then you may need to install/link an python-development headers package.
+
+
 License
 -------
 
-Copyright (c) 2014 Ingresso Group
+Copyright (c) 2016 Ingresso Group
 
 Licensed under the The MIT License.
