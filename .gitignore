@@ -44,6 +44,7 @@ nosetests.xml
 coverage.xml
 *,cover
 .hypothesis/
+fixtures/cassettes
 
 # Translations
 *.mo
@@ -63,3 +64,5 @@ sample_scripts.py
 
 # virtualenvs
 .venv
+venv
+venv-master
