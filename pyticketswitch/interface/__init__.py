@@ -1,1 +1,1 @@
-from pyticketswitch.interface.events import Event
+from pyticketswitch.interface.events import Event  # NOQA

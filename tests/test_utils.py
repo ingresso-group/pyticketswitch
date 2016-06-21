@@ -45,11 +45,11 @@ class TestDateRangeStr:
         start_date = date(2016, 6, 21)
         end_date = 'FOOBAR!'
 
-        with pytest.raises(exceptions.InvalidParameters):
+        with pytest.raises(exceptions.InvalidParametersError):
             utils.date_range_str(start_date, end_date)
 
     def test_date_range_str_with_invalid_start_date(self):
         start_date = 'SAUSAGES!'
         end_date = date(2017, 1, 1)
-        with pytest.raises(exceptions.InvalidParameters):
+        with pytest.raises(exceptions.InvalidParametersError):
             utils.date_range_str(start_date, end_date)

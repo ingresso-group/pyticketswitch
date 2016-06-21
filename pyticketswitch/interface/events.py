@@ -1,4 +1,3 @@
-from datetime import datetime
 from pyticketswitch.exceptions import IntegrityError
 
 
@@ -47,22 +46,22 @@ class Event(object):
         self.upsell_list = upsell_list
 
     @classmethod
-    def from_json(cls, data):
+    def from_data(cls, data):
 
         event_id = data.get('event_id')
 
         if not event_id:
             raise IntegrityError("event_id not found in event data", data=data)
 
-        args = {
+        kwargs = {
             'event_id': event_id,
             'status': data.get('event_status'),
             'event_type': data.get('event_type'),
             'source': data.get('source_desc'),
             'venue': data.get('venue_desc'),
 
-            'classes': data.get('class', [])
-            'filters': data.get('custom_filer', [])
+            'classes': data.get('class', []),
+            'filters': data.get('custom_filer', []),
         }
 
-        return cls(data)
+        return cls(**kwargs)

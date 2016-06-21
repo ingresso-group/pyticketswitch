@@ -10,6 +10,7 @@ setup(
     url='https://github.com/ingresso-group/pyticketswitch/',
     packages=[
         'pyticketswitch',
+        'pyticketswitch.interface',
     ],
     license='MIT',
     description='A Python interface for the Ingresso XML Core API',

@@ -1,1 +1,1 @@
-from pyticketswitch.client import TicketSwitch
+from pyticketswitch.client import TicketSwitch  # NOQA
