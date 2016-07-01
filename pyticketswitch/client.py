@@ -100,7 +100,7 @@ class TicketSwitch(object):
         raw_events = result.get('event', [])
 
         events = [
-            interface.Event.from_data(data)
+            interface.Event.from_api_data(data)
             for data in raw_events
         ]
 

@@ -46,7 +46,7 @@ class Event(object):
         self.upsell_list = upsell_list
 
     @classmethod
-    def from_data(cls, data):
+    def from_api_data(cls, data):
 
         event_id = data.get('event_id')
 
