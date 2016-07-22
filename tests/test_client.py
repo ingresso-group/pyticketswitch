@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime
 from mock import Mock
 from pyticketswitch.client import TicketSwitch
 from pyticketswitch import exceptions
@@ -10,11 +11,24 @@ def client():
     return client
 
 
+@pytest.fixture
+def fake_func():
+    def wrapper(return_value):
+        def fake(*args, **kwargs):
+            return return_value
+        return fake
+
+    return wrapper
+
+
 class FakeResponse(object):
 
-    def __init__(self):
-        self.json = None
-        self.status_code = 200
+    def __init__(self, status_code=200, json=None):
+        self.status_code = status_code
+        self._json = json
+
+    def json(self):
+        return self._json
 
 
 class TestTicketSwitch:
@@ -77,6 +91,87 @@ class TestTicketSwitch:
             }
         )
 
-    def test_search_events(self, client):
-        response = client.search_events()
-        assert response is None
+    def test_search_events(self, client, monkeypatch):
+        response = {
+            'results': {
+                'event': [
+                    {'event_id': 'ABC123'},
+                    {'event_id': 'DEF456'},
+                ],
+            },
+        }
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        events = client.search_events()
+
+        mock_make_request.assert_called_with('events', {})
+
+        assert len(events) == 2
+        event_one, event_two = events
+
+        assert event_one.event_id =='ABC123'
+        assert event_two.event_id == 'DEF456'
+
+    def test_search_events_with_keywords(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(keywords=['awesome', 'stuff'])
+
+        mock_make_request.assert_called_with('events', {
+            's_keys': 'awesome,stuff'
+        })
+
+    def test_search_events_with_start_date(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(start_date=datetime(2016, 7, 23, 0, 7, 25))
+
+        mock_make_request.assert_called_with('events', {
+            's_dates': '20160723:'
+        })
+
+    def test_search_events_with_end_date(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(end_date=datetime(2016, 7, 23, 0, 7, 25))
+
+        mock_make_request.assert_called_with('events', {
+            's_dates': ':20160723'
+        })
+
+    def test_search_events_country_code(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(country_code='fj')
+
+        mock_make_request.assert_called_with('events', {'s_coco': 'fj'})
+
+    def test_search_events_invalid_response_code(self, client, monkeypatch, fake_func):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=404, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.search_events()
+
+    def test_search_events_no_results(self, client, monkeypatch, fake_func):
+        response = {}
+        fake_response = FakeResponse(status_code=200, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.search_events()

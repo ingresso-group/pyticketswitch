@@ -39,7 +39,8 @@ class TicketSwitch(object):
     def get_end_point(self, method):
         if method not in self.END_POINTS:
             raise exceptions.EndPointMissingError(
-                'no endpoint for method `{}`'.format(method)
+                'no endpoint for method `{}`'.format(method),
+                method,
             )
 
         end_point = '/{}'.format(self.END_POINTS[method])
@@ -74,7 +75,7 @@ class TicketSwitch(object):
         params = {}
 
         if keywords:
-            params.update(s_keys=keywords)
+            params.update(s_keys=','.join(keywords))
 
         if start_date or end_date:
             params.update(s_dates=utils.date_range_str(start_date, end_date))
