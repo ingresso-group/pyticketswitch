@@ -76,3 +76,7 @@ class TestTicketSwitch:
                 'user_passwd': 'baggins',
             }
         )
+
+    def test_search_events(self, client):
+        response = client.search_events()
+        assert response is None

@@ -1,3 +1,5 @@
+import pytest
+from pyticketswitch import exceptions
 from pyticketswitch.interface.events import Event
 from datetime import datetime
 from dateutil.tz import tzoffset
@@ -31,6 +33,29 @@ class TestEvent:
                 'iso8601_date_and_time': '2017-09-03T11:30:40+02:00',
             },
 
+            'postcode': 'W6 8DL',
+            'city_desc': 'London',
+            'country_desc': 'United Kingdom',
+            'country_code': 'uk',
+
+            'geo_data': {
+                'latitude': 51.49691253,
+                'longditude': -0.17223274,
+            },
+
+            'max_running_time': 120,
+            'min_running_time': 90,
+
+            'has_no_perfs': True,
+            'show_perf_time': True,
+            'is_seated': True,
+            'needs_departure_date': True,
+            'needs_duration': True,
+            'needs_performance': True,
+
+            'event_upsell_list': {
+                'event_id': ['DEF2', 'GHI3', 'JKL4'],
+            },
 
         }
 
@@ -49,22 +74,40 @@ class TestEvent:
 
         assert event.start_date == datetime(2016, 7, 21, 23, 57, 15, tzinfo=self.BST)
         assert event.end_date == datetime(2017, 9, 3, 11, 30, 40, tzinfo=self.DRC)
-        assert event.performance_time is None
 
-        assert event.postcode is None
-        assert event.city is None
-        assert event.country is None
-        assert event.country_code is None
-        assert event.latitude is None
-        assert event.longditude is None
+        assert event.postcode == 'W6 8DL'
+        assert event.city == 'London'
+        assert event.country == 'United Kingdom'
+        assert event.country_code == 'uk'
+        assert event.latitude == 51.49691253
+        assert event.longditude == -0.17223274
 
-        assert event.max_running_time is None
-        assert event.min_running_time is None
+        assert event.max_running_time == 120
+        assert event.min_running_time == 90
+
+        assert event.show_performance_time is True
+        assert event.has_performances is False
+        assert event.is_seated is True
+        assert event.needs_departure_date is True
+        assert event.needs_duration is True
+        assert event.needs_performance is True
+
+        assert event.upsell_list == ['DEF2', 'GHI3', 'JKL4']
+
+    def test_from_api_data_with_no_event_id(self):
+        data = {
+            'foo': 'bar',
+        }
+
+        with pytest.raises(exceptions.IntegrityError):
+            Event.from_api_data(data)
+
+    def test_from_api_data_with_has_no_perfs(self):
+        data = {
+            'event_id': 'ABC1',
+            'has_no_perfs': True,
+        }
+
+        event = Event.from_api_data(data)
 
         assert event.has_performances is False
-        assert event.is_seated is False
-        assert event.needs_departure_date is False
-        assert event.needs_duration is False
-        assert event.needs_performance is False
-
-        assert event.upsell_list is None

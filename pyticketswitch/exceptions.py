@@ -16,13 +16,13 @@ class InvalidResponseError(PyTicketSwitchError):
 
 class IntegrityError(PyTicketSwitchError):
 
-    def __init__(self, data=None, *args):
+    def __init__(self, *args, data=None):
         super(IntegrityError, self).__init__(*args)
         self.data = data
 
 
 class EndPointMissingError(PyTicketSwitchError):
 
-    def __init__(self, method=None, *args):
+    def __init__(self, *args, method=None):
         super(EndPointMissingError, self).__init__(*args)
         self.method = method

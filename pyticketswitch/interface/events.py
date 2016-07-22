@@ -11,7 +11,7 @@ class Event(object):
                  latitude=None, longditude=None, needs_departure_date=False,
                  needs_duration=False, needs_performance=False,
                  has_performances=False, is_seated=False,
-                 performance_time=None, min_running_time=None,
+                 show_performance_time=False, min_running_time=None,
                  max_running_time=None):
 
         self.event_id = event_id
@@ -26,7 +26,6 @@ class Event(object):
 
         self.start_date = start_date
         self.end_date = end_date
-        self.performance_time = performance_time
 
         self.postcode = postcode
         self.city = city
@@ -38,6 +37,7 @@ class Event(object):
         self.max_running_time = max_running_time
         self.min_running_time = min_running_time
 
+        self.show_performance_time = show_performance_time
         self.has_performances = has_performances
         self.is_seated = is_seated
         self.needs_departure_date = needs_departure_date
@@ -69,6 +69,11 @@ class Event(object):
                 if 'class_desc' in c
             ]
 
+        geo_data = data.get('geo_data', {})
+
+        # the raw field 'has_no_perfs' is a negative flag, so I'm inverting it
+        has_performances = not data.get('has_no_perfs', False)
+
         kwargs = {
             'event_id': event_id,
             'status': data.get('event_status'),
@@ -82,6 +87,27 @@ class Event(object):
 
             'start_date': start_date,
             'end_date': end_date,
+
+            'postcode': data.get('postcode'),
+            'city': data.get('city_desc'),
+            'country': data.get('country_desc'),
+            'country_code': data.get('country_code'),
+
+            'latitude': geo_data.get('latitude'),
+            'longditude': geo_data.get('longditude'),
+
+            'max_running_time': data.get('max_running_time'),
+            'min_running_time': data.get('min_running_time'),
+
+            'has_performances': has_performances,
+            'show_performance_time': data.get('show_perf_time', False),
+            'is_seated': data.get('is_seated', False),
+            'needs_departure_date': data.get('needs_departure_date', False),
+            'needs_duration': data.get('needs_duration', False),
+            'needs_performance': data.get('needs_performance', False),
+
+            'upsell_list': data.get('event_upsell_list', {}).get('event_id', []),
+
         }
 
         return cls(**kwargs)
