@@ -1,5 +1,7 @@
 import pytest
-from datetime import date, datetime
+import datetime
+from datetime import date
+from dateutil.tz import tzoffset
 from pyticketswitch import utils
 from pyticketswitch import exceptions
 
@@ -14,8 +16,8 @@ class TestDateRangeStr:
         assert date_range_str == '20160621:20170101'
 
     def test_date_range_str_with_datetimes(self):
-        start_date = datetime(2016, 6, 21, 19, 30, 15)
-        end_date = datetime(2017, 1, 1, 13, 45, 30)
+        start_date = datetime.datetime(2016, 6, 21, 19, 30, 15)
+        end_date = datetime.datetime(2017, 1, 1, 13, 45, 30)
 
         date_range_str = utils.date_range_str(start_date, end_date)
         assert date_range_str == '20160621:20170101'
@@ -53,3 +55,42 @@ class TestDateRangeStr:
         end_date = date(2017, 1, 1)
         with pytest.raises(exceptions.InvalidParametersError):
             utils.date_range_str(start_date, end_date)
+
+
+class TestIsoStrToDatetime:
+
+    BST = tzoffset('BST', 3600)
+    ZULU = tzoffset('ZULU', 0)
+
+    def test_with_core_iso(self):
+        date_str = '2016-09-16T19:30:00+01:00'
+        dt = utils.isostr_to_datetime(date_str)
+
+        assert dt == datetime.datetime(2016, 9, 16, 19, 30, 0, tzinfo=self.BST)
+
+    def test_with_core_zulu(self):
+        date_str = '2016-09-16T19:30:00Z'
+        dt = utils.isostr_to_datetime(date_str)
+
+        assert dt == datetime.datetime(2016, 9, 16, 19, 30, 0, tzinfo=self.ZULU)
+
+    def test_with_python_iso(self):
+        date_str = '2016-09-16T19:30:00+0100'
+        dt = utils.isostr_to_datetime(date_str)
+
+        assert dt == datetime.datetime(2016, 9, 16, 19, 30, 0, tzinfo=self.BST)
+
+    def test_with_not_datetime(self):
+        date_str = 'When the moon is in the forth corner of the jelly bean'
+        with pytest.raises(ValueError):
+            utils.isostr_to_datetime(date_str)
+
+    def test_with_none(self):
+        date_str = None
+        with pytest.raises(ValueError):
+            utils.isostr_to_datetime(date_str)
+
+    def test_with_empty(self):
+        date_str = ''
+        with pytest.raises(ValueError):
+            utils.isostr_to_datetime(date_str)

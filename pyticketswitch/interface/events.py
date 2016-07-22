@@ -1,4 +1,5 @@
 from pyticketswitch.exceptions import IntegrityError
+from pyticketswitch import utils
 
 
 class Event(object):
@@ -10,7 +11,7 @@ class Event(object):
                  latitude=None, longditude=None, needs_departure_date=False,
                  needs_duration=False, needs_performance=False,
                  has_performances=False, is_seated=False,
-                 performance_time=False, min_running_time=None,
+                 performance_time=None, min_running_time=None,
                  max_running_time=None):
 
         self.event_id = event_id
@@ -53,6 +54,21 @@ class Event(object):
         if not event_id:
             raise IntegrityError("event_id not found in event data", data=data)
 
+        start_date = data.get('date_range_start', {}).get('iso8601_date_and_time')
+        if start_date:
+            start_date = utils.isostr_to_datetime(start_date)
+
+        end_date = data.get('date_range_end', {}).get('iso8601_date_and_time')
+        if end_date:
+            end_date = utils.isostr_to_datetime(end_date)
+
+        classes = data.get('class', [])
+        if classes:
+            classes = [
+                c.get('class_desc') for c in classes
+                if 'class_desc' in c
+            ]
+
         kwargs = {
             'event_id': event_id,
             'status': data.get('event_status'),
@@ -60,8 +76,12 @@ class Event(object):
             'source': data.get('source_desc'),
             'venue': data.get('venue_desc'),
 
-            'classes': data.get('class', []),
-            'filters': data.get('custom_filer', []),
+            'classes': classes,
+            #TODO: don't actually know what filters look like yet...
+            'filters': data.get('custom_filter', []),
+
+            'start_date': start_date,
+            'end_date': end_date,
         }
 
         return cls(**kwargs)

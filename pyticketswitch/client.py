@@ -1,5 +1,8 @@
 import requests
+import logging
 from pyticketswitch import exceptions, utils, interface
+
+logger = logging.getLogger(__name__)
 
 
 class TicketSwitch(object):

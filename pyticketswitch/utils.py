@@ -1,4 +1,5 @@
 from datetime import date
+from dateutil import parser
 from pyticketswitch.exceptions import InvalidParametersError
 
 
@@ -24,3 +25,11 @@ def date_range_str(start_date, end_date):
         date_range = ''
 
     return date_range
+
+
+def isostr_to_datetime(date_str):
+    if not date_str:
+        raise ValueError('{} is not a valid datetime string'.format(date_str))
+
+    dt = parser.parse(date_str)
+    return dt
