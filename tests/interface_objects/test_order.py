@@ -2,14 +2,11 @@
 from __future__ import absolute_import, division, print_function
 
 import datetime
-
 import six
 
 from pyticketswitch.interface_objects import (
     Concession, Core, DespatchMethod, Event, Performance
 )
-
-import six
 
 from .common import InterfaceObjectTestCase
 
@@ -64,8 +61,8 @@ class OrderTests(InterfaceObjectTestCase):
     def test_string_properties(self):
 
         for prop_name in (
-            'event_desc', 'venue_desc',
-            'ticket_type_desc', 'order_id',
+            'event_desc', 'venue_desc', 'ticket_type_desc', 'order_id',
+            'ticket_type_desc_full'
         ):
             self.assertIsInstance(
                 getattr(self.order, prop_name), six.string_types

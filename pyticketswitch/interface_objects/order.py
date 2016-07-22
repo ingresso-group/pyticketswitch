@@ -228,6 +228,15 @@ class Order(InterfaceObject):
         return self._core_order.ticket_type_code
 
     @property
+    def ticket_type_desc_full(self):
+        if self._core_order.price_band_desc:
+            return u"{0} - {1}".format(
+                self._core_order.ticket_type_desc,
+                self._core_order.price_band_desc
+            )
+        return self._core_order.ticket_type_desc
+
+    @property
     def backend_purchase_reference(self):
         """Supplier reference for this order."""
         return self._core_order.backend_purchase_reference
