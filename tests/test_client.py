@@ -106,7 +106,10 @@ class TestTicketSwitch:
 
         events = client.search_events()
 
-        mock_make_request.assert_called_with('events', {})
+        mock_make_request.assert_called_with('events', {
+            'page_no': 0,
+            'page_len': 50
+        })
 
         assert len(events) == 2
         event_one, event_two = events
@@ -123,7 +126,9 @@ class TestTicketSwitch:
         client.search_events(keywords=['awesome', 'stuff'])
 
         mock_make_request.assert_called_with('events', {
-            's_keys': 'awesome,stuff'
+            's_keys': 'awesome,stuff',
+            'page_no': 0,
+            'page_len': 50
         })
 
     def test_search_events_with_start_date(self, client, monkeypatch):
@@ -135,7 +140,9 @@ class TestTicketSwitch:
         client.search_events(start_date=datetime(2016, 7, 23, 0, 7, 25))
 
         mock_make_request.assert_called_with('events', {
-            's_dates': '20160723:'
+            's_dates': '20160723:',
+            'page_no': 0,
+            'page_len': 50
         })
 
     def test_search_events_with_end_date(self, client, monkeypatch):
@@ -147,7 +154,9 @@ class TestTicketSwitch:
         client.search_events(end_date=datetime(2016, 7, 23, 0, 7, 25))
 
         mock_make_request.assert_called_with('events', {
-            's_dates': ':20160723'
+            's_dates': ':20160723',
+            'page_no': 0,
+            'page_len': 50
         })
 
     def test_search_events_country_code(self, client, monkeypatch):
@@ -158,7 +167,229 @@ class TestTicketSwitch:
 
         client.search_events(country_code='fj')
 
-        mock_make_request.assert_called_with('events', {'s_coco': 'fj'})
+        mock_make_request.assert_called_with('events', {
+            's_coco': 'fj',
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_city_code(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(city_code='ldn')
+
+        mock_make_request.assert_called_with('events', {
+            's_city': 'ldn',
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_geolocation(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(geolocation='51.52961137:-0.10601562:10')
+
+        mock_make_request.assert_called_with('events', {
+            's_geo': '51.52961137:-0.10601562:10',
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_include_dead(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(include_dead=True)
+
+        mock_make_request.assert_called_with('events', {
+            'include_dead': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_include_non_live(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(include_non_live=True)
+
+        mock_make_request.assert_called_with('events', {
+            'include_non_live': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_order_by_popular(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(order_by_popular=True)
+
+        mock_make_request.assert_called_with('events', {
+            's_top': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_extra_info(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_extra_info=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_extra_info': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_reviews(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_reviews=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_reviews': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_media(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_media=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_media_triplet_one': True,
+            'req_media_triplet_two': True,
+            'req_media_triplet_three': True,
+            'req_media_triplet_four': True,
+            'req_media_triplet_five': True,
+            'req_media_seating_plan': True,
+            'req_media_square': True,
+            'req_media_landscape': True,
+            'req_media_marquee': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_cost_range(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_cost_range=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_cost_range': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_cost_range_details(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_cost_range_details=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_cost_range_details': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_avail_details(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_avail_details=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_avail_details': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_avail_details_with_perfs(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_avail_details_with_perfs=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_avail_details_with_perfs': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_meta_components(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_meta_components=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_meta_components': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_custom_fields(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_custom_fields=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_custom_fields': True,
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_event_list(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(event_ids=['6IF', '6IE'])
+
+        mock_make_request.assert_called_with('events', {
+            'event_token_list': ['6IF', '6IE'],
+            'page_no': 0,
+            'page_len': 50
+        })
 
     def test_search_events_invalid_response_code(self, client, monkeypatch, fake_func):
         response = {'results': {}}

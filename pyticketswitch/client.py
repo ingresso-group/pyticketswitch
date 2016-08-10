@@ -29,7 +29,8 @@ class TicketSwitch(object):
             user_path = '/{}/{}'.format(self.user, self.sub_user)
 
         if self.sub_user and self.language:
-            user_path = '/{}/{}/{}'.format(self.user, self.sub_user, self.language)
+            user_path = '/{}/{}/{}'.format(
+                self.user, self.sub_user, self.language)
 
         if self.language and not self.sub_user:
             user_path = '/{}/-/{}'.format(self.user, self.language)
@@ -68,11 +69,21 @@ class TicketSwitch(object):
         response = requests.get(url, params=params)
         return response
 
-    def search_events(self, keywords=None, start_date=None, end_date=None,
-                      country_code=None, page=0, page_length=50,
-                      dead_events=False, non_live=False):
+    def search_events(self, event_ids=None, keywords=None, start_date=None,
+                      end_date=None, country_code=None, city_code=None,
+                      geolocation=None, include_dead=False,
+                      include_non_live=False, order_by_popular=False,
+                      req_extra_info=False, req_reviews=False, req_media=False,
+                      req_cost_range=False, req_cost_range_details=False,
+                      req_avail_details=False,
+                      req_avail_details_with_perfs=False,
+                      req_meta_components=False, req_custom_fields=False,
+                      page=0, page_length=50):
 
         params = {}
+
+        if event_ids:
+            params.update(event_token_list=event_ids)
 
         if keywords:
             params.update(s_keys=','.join(keywords))
@@ -82,6 +93,63 @@ class TicketSwitch(object):
 
         if country_code:
             params.update(s_coco=country_code)
+
+        if city_code:
+            params.update(s_city=city_code)
+
+        if geolocation:
+            params.update(s_geo=geolocation)
+
+        if include_dead:
+            params.update(include_dead=True)
+
+        if include_non_live:
+            params.update(include_non_live=True)
+
+        if order_by_popular:
+            params.update(s_top=True)
+
+        if req_extra_info:
+            params.update(req_extra_info=True)
+
+        if req_reviews:
+            params.update(req_reviews=True)
+
+        if req_media:
+            params.update({
+                'req_media_triplet_one': True,
+                'req_media_triplet_two': True,
+                'req_media_triplet_three': True,
+                'req_media_triplet_four': True,
+                'req_media_triplet_five': True,
+                'req_media_seating_plan': True,
+                'req_media_square': True,
+                'req_media_landscape': True,
+                'req_media_marquee': True,
+            })
+
+        if req_cost_range:
+            params.update(req_cost_range=True)
+
+        if req_cost_range_details:
+            params.update(req_cost_range_details=True)
+
+        if req_avail_details:
+            params.update(req_avail_details=True)
+
+        if req_avail_details_with_perfs:
+            params.update(req_avail_details_with_perfs=True)
+
+        if req_meta_components:
+            params.update(req_meta_components=True)
+
+        if req_custom_fields:
+            params.update(req_custom_fields=True)
+
+        params.update({
+            'page_no': page,
+            'page_len': page_length,
+        })
 
         response = self.make_request('events', params)
 
