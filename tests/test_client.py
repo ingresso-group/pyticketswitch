@@ -386,7 +386,21 @@ class TestTicketSwitch:
         client.search_events(event_ids=['6IF', '6IE'])
 
         mock_make_request.assert_called_with('events', {
-            'event_token_list': ['6IF', '6IE'],
+            'event_id_list': ['6IF', '6IE'],
+            'page_no': 0,
+            'page_len': 50
+        })
+
+    def test_search_events_req_cost_range(self, client, monkeypatch):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        client.search_events(req_cost_range=True)
+
+        mock_make_request.assert_called_with('events', {
+            'req_cost_range': True,
             'page_no': 0,
             'page_len': 50
         })

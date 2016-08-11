@@ -1,6 +1,6 @@
 import pytest
 from pyticketswitch import exceptions
-from pyticketswitch.interface.events import Event
+from pyticketswitch.interface.event import Event
 from datetime import datetime
 from dateutil.tz import tzoffset
 
@@ -55,6 +55,40 @@ class TestEvent:
 
             'event_upsell_list': {
                 'event_id': ['DEF2', 'GHI3', 'JKL4'],
+            },
+            'cost_range': {
+                'quantity_options': {
+                    'valid_quantity_mask': '2046'
+                },
+                'max_surcharge': 29.65,
+                'max_seatprice': 149.5,
+                'range_currency': {
+                    'currency_factor': 100,
+                    'currency_places': 2,
+                    'currency_post_symbol': '',
+                    'currency_number': 826,
+                    'currency_pre_symbol': '\xa3',
+                    'currency_code': 'gbp'
+                },
+                'min_surcharge': 7.25,
+                'no_singles_cost_range': {
+                    'quantity_options': {
+                        'valid_quantity_mask': '2046'
+                    },
+                    'max_surcharge': 29.65,
+                    'max_seatprice': 149.5,
+                    'range_currency': {
+                        'currency_factor': 100,
+                        'currency_places': 2,
+                        'currency_post_symbol': '',
+                        'currency_number': 826,
+                        'currency_pre_symbol': '\xa3',
+                        'currency_code': 'gbp'
+                    },
+                    'min_surcharge': 7.25,
+                    'min_seatprice': 37.5
+                },
+                'min_seatprice': 37.5
             },
 
         }

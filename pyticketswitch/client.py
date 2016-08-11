@@ -169,14 +169,12 @@ class TicketSwitch(object):
             )
 
         result = contents.get('results', {})
-        print result
         raw_events = result.get('event', [])
 
         events = [
             Event.from_api_data(data)
             for data in raw_events
         ]
-        print events
         return events
 
     def get_performances(self, event_id):
