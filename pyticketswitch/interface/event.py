@@ -1,5 +1,6 @@
 from pyticketswitch.exceptions import IntegrityError
 from pyticketswitch.interface.cost_range import CostRange
+from pyticketswitch.interface.ticket_type import TicketType
 from pyticketswitch import utils
 
 
@@ -14,7 +15,7 @@ class Event(object):
                  has_performances=False, is_seated=False,
                  show_performance_time=False, min_running_time=None,
                  max_running_time=None, cost_range=None,
-                 no_singles_cost_range=None):
+                 no_singles_cost_range=None, cost_range_details=None):
 
         self.event_id = event_id
         self.status = status
@@ -50,6 +51,7 @@ class Event(object):
 
         self.cost_range = cost_range
         self.no_singles_cost_range = no_singles_cost_range
+        self.cost_range_details = cost_range_details
 
     @classmethod
     def from_api_data(cls, data):
@@ -83,14 +85,22 @@ class Event(object):
         api_no_singles_cost_range = api_cost_range.get('no_singles_cost_range', {})
         cost_range = None
         no_singles_cost_range = None
+        cost_range_details = []
 
         if api_cost_range:
             api_cost_range['singles'] = True
             cost_range = CostRange.from_api_data(api_cost_range)
+
         if api_no_singles_cost_range:
             api_no_singles_cost_range['singles'] = False
             no_singles_cost_range = CostRange.from_api_data(
                 api_no_singles_cost_range)
+
+        api_cost_range_details = data.get('cost_range_details', {})
+        if api_cost_range_details:
+            ticket_type_list = api_cost_range_details.get('ticket_type', [])
+            for ticket_type in ticket_type_list:
+                cost_range_details.append(TicketType.from_api_data(ticket_type))
 
         kwargs = {
             'event_id': event_id,
@@ -128,6 +138,7 @@ class Event(object):
 
             'cost_range': cost_range,
             'no_singles_cost_range': no_singles_cost_range,
+            'cost_range_details': cost_range_details,
         }
 
         return cls(**kwargs)
