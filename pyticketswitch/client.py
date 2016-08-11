@@ -1,6 +1,7 @@
 import requests
 import logging
-from pyticketswitch import exceptions, utils, interface
+from pyticketswitch import exceptions, utils
+from pyticketswitch.interface.event import Event
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +84,7 @@ class TicketSwitch(object):
         params = {}
 
         if event_ids:
-            params.update(event_token_list=event_ids)
+            params.update(event_id_list=event_ids)
 
         if keywords:
             params.update(s_keys=','.join(keywords))
@@ -168,12 +169,15 @@ class TicketSwitch(object):
             )
 
         result = contents.get('results', {})
-
+        print result
         raw_events = result.get('event', [])
 
         events = [
-            interface.Event.from_api_data(data)
+            Event.from_api_data(data)
             for data in raw_events
         ]
-
+        print events
         return events
+
+    def get_performances(self, event_id):
+        pass

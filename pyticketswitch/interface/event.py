@@ -1,4 +1,5 @@
 from pyticketswitch.exceptions import IntegrityError
+from pyticketswitch.interface.cost_range import CostRange
 from pyticketswitch import utils
 
 
@@ -12,7 +13,8 @@ class Event(object):
                  needs_duration=False, needs_performance=False,
                  has_performances=False, is_seated=False,
                  show_performance_time=False, min_running_time=None,
-                 max_running_time=None):
+                 max_running_time=None, cost_range=None,
+                 no_singles_cost_range=None):
 
         self.event_id = event_id
         self.status = status
@@ -46,6 +48,9 @@ class Event(object):
 
         self.upsell_list = upsell_list
 
+        self.cost_range = cost_range
+        self.no_singles_cost_range = no_singles_cost_range
+
     @classmethod
     def from_api_data(cls, data):
 
@@ -73,6 +78,19 @@ class Event(object):
 
         # the raw field 'has_no_perfs' is a negative flag, so I'm inverting it
         has_performances = not data.get('has_no_perfs', False)
+
+        api_cost_range = data.get('cost_range', {})
+        api_no_singles_cost_range = api_cost_range.get('no_singles_cost_range', {})
+        cost_range = None
+        no_singles_cost_range = None
+
+        if api_cost_range:
+            api_cost_range['singles'] = True
+            cost_range = CostRange.from_api_data(api_cost_range)
+        if api_no_singles_cost_range:
+            api_no_singles_cost_range['singles'] = False
+            no_singles_cost_range = CostRange.from_api_data(
+                api_no_singles_cost_range)
 
         kwargs = {
             'event_id': event_id,
@@ -108,6 +126,8 @@ class Event(object):
 
             'upsell_list': data.get('event_upsell_list', {}).get('event_id', []),
 
+            'cost_range': cost_range,
+            'no_singles_cost_range': no_singles_cost_range,
         }
 
         return cls(**kwargs)
