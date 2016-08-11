@@ -90,7 +90,53 @@ class TestEvent:
                 },
                 'min_seatprice': 37.5
             },
-
+            u'cost_range_details': {
+                u'ticket_type': [
+                    {
+                        u'ticket_type_desc': u'Grand Circle',
+                        u'price_band': [
+                            {
+                                u'price_band_desc': u'',
+                                u'cost_range': {
+                                    u'quantity_options': {
+                                        u'valid_quantity_mask': u'2046'
+                                    },
+                                    u'max_surcharge': 11.65,
+                                    u'max_seatprice': 59.5,
+                                    u'range_currency': {
+                                        u'currency_factor': 100,
+                                        u'currency_places': 2,
+                                        u'currency_post_symbol': u'',
+                                        u'currency_number': 826,
+                                        u'currency_pre_symbol': u'\xa3',
+                                        u'currency_code': u'gbp'
+                                    },
+                                    u'min_surcharge': 11.25,
+                                    u'no_singles_cost_range': {
+                                        u'quantity_options': {
+                                            u'valid_quantity_mask': u'2046'
+                                        },
+                                        u'max_surcharge': 11.65,
+                                        u'max_seatprice': 59.5,
+                                        u'range_currency': {
+                                            u'currency_factor': 100,
+                                            u'currency_places': 2,
+                                            u'currency_post_symbol': u'',
+                                            u'currency_number': 826,
+                                            u'currency_pre_symbol': u'\xa3',
+                                            u'currency_code': u'gbp'
+                                        },
+                                        u'min_surcharge': 11.25,
+                                        u'min_seatprice': 57.5
+                                    },
+                                    u'min_seatprice': 57.5
+                                },
+                                u'price_band_code': u'B'
+                            },
+                        ],
+                    },
+                ],
+            }
         }
 
         event = Event.from_api_data(data)

@@ -29,8 +29,8 @@ class PriceBand(object):
                 api_no_singles_cost_range)
 
         kwargs = {
-            'code': data.get('ticket_type_code', None),
-            'description': data.get('ticket_type_desc', None),
+            'code': data.get('price_band_code', None),
+            'description': data.get('price_band_desc', None),
             'cost_range': cost_range,
             'no_singles_cost_range': no_singles_cost_range,
         }

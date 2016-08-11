@@ -169,7 +169,6 @@ class TicketSwitch(object):
             )
 
         result = contents.get('results', {})
-        print result
         raw_events = result.get('event', [])
 
         events = [
