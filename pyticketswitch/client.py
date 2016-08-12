@@ -2,6 +2,7 @@ import requests
 import logging
 from pyticketswitch import exceptions, utils
 from pyticketswitch.interface.event import Event
+from pyticketswitch.interface.performance import Performance
 
 logger = logging.getLogger(__name__)
 
@@ -10,6 +11,7 @@ class TicketSwitch(object):
     DEFAULT_ROOT_URL = "https://api.ticketswitch.com/cgi-bin"
     END_POINTS = {
         'events': 'json_events.exe',
+        'performances': 'json_performances.exe',
     }
 
     def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
@@ -80,6 +82,10 @@ class TicketSwitch(object):
                       req_avail_details_with_perfs=False,
                       req_meta_components=False, req_custom_fields=False,
                       page=0, page_length=50):
+
+        """
+        Search for events with the given parameters
+        """
 
         params = {}
 
@@ -156,8 +162,9 @@ class TicketSwitch(object):
 
         if not response.status_code == 200:
             raise exceptions.InvalidResponseError(
-                "got status code `{}` from event search".format(
-                    response.status_code
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    self.END_POINTS['events'],
                 )
             )
 
@@ -195,4 +202,56 @@ class TicketSwitch(object):
         return None
 
     def get_performances(self, event_id):
-        pass
+        """
+        Get performances for a specified event
+
+
+        json_performances returns a list of performances and a list of events
+        that they belong to. This is due to meta events, where an event is a
+        composite of a collection of other events. As such this method parses
+        both the performance and event list, and maps each performance to it's
+        relevant event
+
+        TODO: Workout if we should be returning the event list as well.
+        """
+        params = {
+            'event_id': event_id,
+        }
+
+        response = self.make_request('performances', params)
+
+        if not response.status_code == 200:
+            raise exceptions.InvalidResponseError(
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    self.END_POINTS['performances'],
+                )
+            )
+
+        contents = response.json()
+
+        if 'results' not in contents:
+            raise exceptions.InvalidResponseError(
+                "got no results key in json response"
+            )
+
+        result = contents.get('results', {})
+
+        raw_events = result.get('events_by_id', {})
+        events = {
+            event_id: Event.from_api_data(event.get('event'))
+            for event_id, event in raw_events.items()
+            if event.get('event')
+        }
+
+        raw_performances = result.get('performance', [])
+
+        performances = [
+            Performance.from_api_data(
+                data,
+                events.get(data.get('event_id'))
+            )
+            for data in raw_performances
+        ]
+
+        return performances

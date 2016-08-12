@@ -455,3 +455,40 @@ class TestTicketSwitch:
         result = client.get_event('', req_media=True, req_cost_range=True)
 
         assert result is None
+
+    def test_get_performances_with_meta_event(self, client, monkeypatch):
+        response = {
+            'results': {
+                'events_by_id': {
+                    'ABC123': {'event': {'event_id': 'ABC123'}},
+                    'DEF456': {'event': {'event_id': 'DEF456'}},
+                },
+                'performance': [
+                    {'perf_id': 'ABC123-1', 'event_id': 'ABC123'},
+                    {'perf_id': 'DEF456-1', 'event_id': 'DEF456'},
+                    {'perf_id': 'ABC123-2', 'event_id': 'ABC123'},
+                ]
+            },
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        performances = client.get_performances('GHI789')
+
+        mock_make_request.assert_called_with('performances', {'event_id': 'GHI789'})
+
+        assert len(performances) == 3
+
+        performance_one, performance_two, performance_three = performances
+
+        assert performance_one.performance_id == 'ABC123-1'
+        assert performance_two.performance_id == 'DEF456-1'
+        assert performance_three.performance_id == 'ABC123-2'
+
+        assert performance_one.event.event_id == 'ABC123'
+        assert performance_two.event.event_id == 'DEF456'
+        assert performance_three.event.event_id == 'ABC123'
+
+        assert performance_one.event is performance_three.event
