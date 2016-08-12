@@ -1,6 +1,7 @@
 from pyticketswitch.exceptions import IntegrityError
 from pyticketswitch.interface.cost_range import CostRange
 from pyticketswitch.interface.ticket_type import TicketType
+from pyticketswitch.interface.content import Content
 from pyticketswitch import utils
 
 
@@ -15,7 +16,10 @@ class Event(object):
                  has_performances=False, is_seated=False,
                  show_performance_time=False, min_running_time=None,
                  max_running_time=None, cost_range=None,
-                 no_singles_cost_range=None, cost_range_details=None):
+                 no_singles_cost_range=None, cost_range_details=None,
+                 content=None, event_info_html=None, event_info=None,
+                 venue_addr_html=None, venue_addr=None, venue_info=None,
+                 venue_info_html=None):
 
         self.event_id = event_id
         self.status = status
@@ -52,6 +56,14 @@ class Event(object):
         self.cost_range = cost_range
         self.no_singles_cost_range = no_singles_cost_range
         self.cost_range_details = cost_range_details
+
+        self.content = content
+        self.event_info = event_info
+        self.event_info_html = event_info_html
+        self.venue_addr = venue_addr
+        self.venue_addr_html = venue_addr_html
+        self.venue_info = venue_info
+        self.venue_info_html = venue_info_html
 
     @classmethod
     def from_api_data(cls, data):
@@ -102,6 +114,12 @@ class Event(object):
             for ticket_type in ticket_type_list:
                 cost_range_details.append(TicketType.from_api_data(ticket_type))
 
+        api_content = data.get('structured_info', {})
+        content = {}
+        if api_content:
+            for key, value in api_content.items():
+                content[key] = Content.from_api_data(value)
+
         kwargs = {
             'event_id': event_id,
             'status': data.get('event_status'),
@@ -139,6 +157,15 @@ class Event(object):
             'cost_range': cost_range,
             'no_singles_cost_range': no_singles_cost_range,
             'cost_range_details': cost_range_details,
+
+            # extra info
+            'event_info_html': data.get('event_info_html', None),
+            'event_info': data.get('event_info', None),
+            'venue_addr_html': data.get('venue_addr_html', None),
+            'venue_addr': data.get('venue_addr', None),
+            'venue_info': data.get('venue_info', None),
+            'venue_info_html': data.get('venue_info_html', None),
+            'content': content,
         }
 
         return cls(**kwargs)

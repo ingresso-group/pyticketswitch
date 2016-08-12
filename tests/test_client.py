@@ -290,6 +290,7 @@ class TestTicketSwitch:
             'req_media_square': True,
             'req_media_landscape': True,
             'req_media_marquee': True,
+            'req_video_iframe': True,
             'page_no': 0,
             'page_len': 50
         })
@@ -378,20 +379,6 @@ class TestTicketSwitch:
             'page_len': 50
         })
 
-    def test_search_events_event_list(self, client, monkeypatch):
-        response = {'results': {}}
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
-        monkeypatch.setattr(client, 'make_request', mock_make_request)
-
-        client.search_events(event_ids=['6IF', '6IE'])
-
-        mock_make_request.assert_called_with('events', {
-            'event_id_list': ['6IF', '6IE'],
-            'page_no': 0,
-            'page_len': 50
-        })
-
     def test_search_events_req_cost_range(self, client, monkeypatch):
         response = {'results': {}}
         fake_response = FakeResponse(status_code=200, json=response)
@@ -421,40 +408,6 @@ class TestTicketSwitch:
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.search_events()
-
-    def test_get_event(self, client, monkeypatch):
-        event = Event('ABC1')
-        search_events = Mock(return_value=[event])
-        monkeypatch.setattr(client, 'search_events', search_events)
-
-        result = client.get_event('ABC1', req_media=True, req_cost_range=True)
-
-        search_events.assert_called_with(
-            event_ids=['ABC1'],
-            req_media=True,
-            req_cost_range=True
-        )
-
-        assert result is event
-
-    def test_get_event_with_no_events_returned(self, client, monkeypatch):
-        search_events = Mock(return_value=[])
-        monkeypatch.setattr(client, 'search_events', search_events)
-
-        result = client.get_event('ABC1', req_media=True, req_cost_range=True)
-
-        search_events.assert_called_with(
-            event_ids=['ABC1'],
-            req_media=True,
-            req_cost_range=True
-        )
-
-        assert result is None
-
-    def test_get_event_with_no_event_id(self, client):
-        result = client.get_event('', req_media=True, req_cost_range=True)
-
-        assert result is None
 
     def test_get_performances_with_meta_event(self, client, monkeypatch):
         response = {

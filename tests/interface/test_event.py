@@ -136,6 +136,13 @@ class TestEvent:
                         ],
                     },
                 ],
+            },
+            'structured_info': {
+                'content': {
+                    'name': 'name',
+                    'value': 'value',
+                    'value_html': '<p>value</p>',
+                }
             }
         }
 

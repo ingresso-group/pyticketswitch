@@ -72,7 +72,7 @@ class TicketSwitch(object):
         response = requests.get(url, params=params)
         return response
 
-    def search_events(self, event_ids=None, keywords=None, start_date=None,
+    def search_events(self, keywords=None, start_date=None,
                       end_date=None, country_code=None, city_code=None,
                       geolocation=None, include_dead=False,
                       include_non_live=False, order_by_popular=False,
@@ -88,9 +88,6 @@ class TicketSwitch(object):
         """
 
         params = {}
-
-        if event_ids:
-            params.update(event_id_list=event_ids)
 
         if keywords:
             params.update(s_keys=','.join(keywords))
@@ -133,6 +130,7 @@ class TicketSwitch(object):
                 'req_media_square': True,
                 'req_media_landscape': True,
                 'req_media_marquee': True,
+                'req_video_iframe': True,
             })
 
         if req_cost_range:
@@ -177,29 +175,11 @@ class TicketSwitch(object):
 
         result = contents.get('results', {})
         raw_events = result.get('event', [])
-
         events = [
             Event.from_api_data(data)
             for data in raw_events
         ]
         return events
-
-    def get_event(self, event_id, **kwargs):
-        """
-        Shortcut to fetch a single event
-        """
-
-        if not event_id:
-            return None
-
-        kwargs.update(event_ids=[event_id])
-
-        events = self.search_events(**kwargs)
-
-        if events:
-            return events[0]
-
-        return None
 
     def get_performances(self, event_id):
         """
