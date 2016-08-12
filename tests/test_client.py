@@ -3,6 +3,7 @@ from datetime import datetime
 from mock import Mock
 from pyticketswitch.client import TicketSwitch
 from pyticketswitch import exceptions
+from pyticketswitch.interface.event import Event
 
 
 @pytest.fixture
@@ -420,3 +421,37 @@ class TestTicketSwitch:
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.search_events()
+
+    def test_get_event(self, client, monkeypatch):
+        event = Event('ABC1')
+        search_events = Mock(return_value=[event])
+        monkeypatch.setattr(client, 'search_events', search_events)
+
+        result = client.get_event('ABC1', req_media=True, req_cost_range=True)
+
+        search_events.assert_called_with(
+            event_ids=['ABC1'],
+            req_media=True,
+            req_cost_range=True
+        )
+
+        assert result is event
+
+    def test_get_event_with_no_events_returned(self, client, monkeypatch):
+        search_events = Mock(return_value=[])
+        monkeypatch.setattr(client, 'search_events', search_events)
+
+        result = client.get_event('ABC1', req_media=True, req_cost_range=True)
+
+        search_events.assert_called_with(
+            event_ids=['ABC1'],
+            req_media=True,
+            req_cost_range=True
+        )
+
+        assert result is None
+
+    def test_get_event_with_no_event_id(self, client):
+        result = client.get_event('', req_media=True, req_cost_range=True)
+
+        assert result is None

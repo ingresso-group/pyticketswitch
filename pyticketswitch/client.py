@@ -177,5 +177,22 @@ class TicketSwitch(object):
         ]
         return events
 
+    def get_event(self, event_id, **kwargs):
+        """
+        Shortcut to fetch a single event
+        """
+
+        if not event_id:
+            return None
+
+        kwargs.update(event_ids=[event_id])
+
+        events = self.search_events(**kwargs)
+
+        if events:
+            return events[0]
+
+        return None
+
     def get_performances(self, event_id):
         pass
