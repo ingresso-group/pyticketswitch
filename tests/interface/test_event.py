@@ -11,7 +11,69 @@ class TestEvent:
     DRC = tzoffset('DRC', 7200)
 
     def test_from_api_data(self):
+
+        data = self.get_huge_event_data()
+
+        event = Event.from_api_data(data)
+        assert event.event_id is 'ABC1'
+        assert event.status == 'live'
+
+        assert event.description is None
+
+        assert event.source == 'Super Awesome Ticketer'
+        assert event.event_type == 'simple_ticket'
+        assert event.venue == 'Top Notch Theater'
+
+        assert event.classes == ['Theater', 'Amazeballs']
+        assert event.filters == []
+
+        assert event.start_date == datetime(2016, 7, 21, 23, 57, 15, tzinfo=self.BST)
+        assert event.end_date == datetime(2017, 9, 3, 11, 30, 40, tzinfo=self.DRC)
+
+        assert event.postcode == 'W6 8DL'
+        assert event.city == 'London'
+        assert event.country == 'United Kingdom'
+        assert event.country_code == 'uk'
+        assert event.latitude == 51.49691253
+        assert event.longditude == -0.17223274
+
+        assert event.max_running_time == 120
+        assert event.min_running_time == 90
+
+        assert event.show_performance_time is True
+        assert event.has_performances is False
+        assert event.is_seated is True
+        assert event.needs_departure_date is True
+        assert event.needs_duration is True
+        assert event.needs_performance is True
+
+        assert event.upsell_list == ['DEF2', 'GHI3', 'JKL4']
+
+        assert len(event.content) == 1
+
+        assert len(event.media) == 2
+        assert len(event.reviews) == 1
+
+    def test_from_api_data_with_no_event_id(self):
         data = {
+            'foo': 'bar',
+        }
+
+        with pytest.raises(exceptions.IntegrityError):
+            Event.from_api_data(data)
+
+    def test_from_api_data_with_has_no_perfs(self):
+        data = {
+            'event_id': 'ABC1',
+            'has_no_perfs': True,
+        }
+
+        event = Event.from_api_data(data)
+
+        assert event.has_performances is False
+
+    def get_huge_event_data(self):
+        return {
             'event_id': 'ABC1',
             'event_status': 'live',
             'event_type': 'simple_ticket',
@@ -90,48 +152,48 @@ class TestEvent:
                 },
                 'min_seatprice': 37.5
             },
-            u'cost_range_details': {
-                u'ticket_type': [
+            'cost_range_details': {
+                'ticket_type': [
                     {
-                        u'ticket_type_desc': u'Grand Circle',
-                        u'price_band': [
+                        'ticket_type_desc': 'Grand Circle',
+                        'price_band': [
                             {
-                                u'price_band_desc': u'',
-                                u'cost_range': {
-                                    u'quantity_options': {
-                                        u'valid_quantity_mask': u'2046'
+                                'price_band_desc': '',
+                                'cost_range': {
+                                    'quantity_options': {
+                                        'valid_quantity_mask': '2046'
                                     },
-                                    u'max_surcharge': 11.65,
-                                    u'max_seatprice': 59.5,
-                                    u'range_currency': {
-                                        u'currency_factor': 100,
-                                        u'currency_places': 2,
-                                        u'currency_post_symbol': u'',
-                                        u'currency_number': 826,
-                                        u'currency_pre_symbol': u'\xa3',
-                                        u'currency_code': u'gbp'
+                                    'max_surcharge': 11.65,
+                                    'max_seatprice': 59.5,
+                                    'range_currency': {
+                                        'currency_factor': 100,
+                                        'currency_places': 2,
+                                        'currency_post_symbol': '',
+                                        'currency_number': 826,
+                                        'currency_pre_symbol': '\xa3',
+                                        'currency_code': 'gbp'
                                     },
-                                    u'min_surcharge': 11.25,
-                                    u'no_singles_cost_range': {
-                                        u'quantity_options': {
-                                            u'valid_quantity_mask': u'2046'
+                                    'min_surcharge': 11.25,
+                                    'no_singles_cost_range': {
+                                        'quantity_options': {
+                                            'valid_quantity_mask': '2046'
                                         },
-                                        u'max_surcharge': 11.65,
-                                        u'max_seatprice': 59.5,
-                                        u'range_currency': {
-                                            u'currency_factor': 100,
-                                            u'currency_places': 2,
-                                            u'currency_post_symbol': u'',
-                                            u'currency_number': 826,
-                                            u'currency_pre_symbol': u'\xa3',
-                                            u'currency_code': u'gbp'
+                                        'max_surcharge': 11.65,
+                                        'max_seatprice': 59.5,
+                                        'range_currency': {
+                                            'currency_factor': 100,
+                                            'currency_places': 2,
+                                            'currency_post_symbol': '',
+                                            'currency_number': 826,
+                                            'currency_pre_symbol': '\xa3',
+                                            'currency_code': 'gbp'
                                         },
-                                        u'min_surcharge': 11.25,
-                                        u'min_seatprice': 57.5
+                                        'min_surcharge': 11.25,
+                                        'min_seatprice': 57.5
                                     },
-                                    u'min_seatprice': 57.5
+                                    'min_seatprice': 57.5
                                 },
-                                u'price_band_code': u'B'
+                                'price_band_code': 'B'
                             },
                         ],
                     },
@@ -143,58 +205,46 @@ class TestEvent:
                     'value': 'value',
                     'value_html': '<p>value</p>',
                 }
+            },
+            'media': {
+                'media_asset': [{
+                    'caption_html': '',
+                    'name': 'landscape',
+                    'secure_complete_url': 'https://d1wx4w35ubmdix.cloudfront.net/shared/event_media/cropper_cloud/24/249fdb60b56ef4217a6049a1ed770f13552bca9c.jpg',
+                    'supports_http': True,
+                    'caption': '',
+                    'host': 'd1wx4w35ubmdix.cloudfront.net',
+                    'supports_https': True,
+                    'path': '/shared/event_media/cropper_cloud/24/249fdb60b56ef4217a6049a1ed770f13552bca9c.jpg',
+                    'insecure_complete_url': 'http://d1wx4w35ubmdix.cloudfront.net/shared/event_media/cropper_cloud/24/249fdb60b56ef4217a6049a1ed770f13552bca9c.jpg'
+                }]
+            },
+            'video_iframe': {
+                'video_iframe_host': 'www.youtube.com',
+                'video_iframe_supports_http': True,
+                'video_iframe_supports_https': True,
+                'video_iframe_path': '/embed/-pgZtzDj_7o?list=PL59A1A57EF510F502',
+                'video_iframe_caption': '',
+                'video_iframe_url_when_insecure': 'http://www.youtube.com/embed/-pgZtzDj_7o?list=PL59A1A57EF510F502',
+                'video_iframe_width': 560,
+                'video_iframe_height': 315,
+                'video_iframe_url_when_secure': 'https://www.youtube.com/embed/-pgZtzDj_7o?list=PL59A1A57EF510F502',
+                'video_iframe_caption_html': ''
+            },
+            'reviews': {
+                'review': [
+                    {
+                        'review_body': 'the finest mise-en-sc\xe8ne in the West End',
+                        'review_iso8601_date_and_time': '2013-03-30T12:00:00Z',
+                        'star_rating': 4,
+                        'review_lang': 'en',
+                        'review_title': '',
+                        'is_user_review': False,
+                        'review_date_desc': 'Sat, 30th March 2013',
+                        'review_time_desc': '12.00 PM',
+                        'review_author': "What's on Stage",
+                        'review_original_url': 'http://www.whatsonstage.com/index.php?pg=207&story=E01822737494'
+                    }
+                ]
             }
         }
-
-        event = Event.from_api_data(data)
-        assert event.event_id is 'ABC1'
-        assert event.status == 'live'
-
-        assert event.description is None
-
-        assert event.source == 'Super Awesome Ticketer'
-        assert event.event_type == 'simple_ticket'
-        assert event.venue == 'Top Notch Theater'
-
-        assert event.classes == ['Theater', 'Amazeballs']
-        assert event.filters == []
-
-        assert event.start_date == datetime(2016, 7, 21, 23, 57, 15, tzinfo=self.BST)
-        assert event.end_date == datetime(2017, 9, 3, 11, 30, 40, tzinfo=self.DRC)
-
-        assert event.postcode == 'W6 8DL'
-        assert event.city == 'London'
-        assert event.country == 'United Kingdom'
-        assert event.country_code == 'uk'
-        assert event.latitude == 51.49691253
-        assert event.longditude == -0.17223274
-
-        assert event.max_running_time == 120
-        assert event.min_running_time == 90
-
-        assert event.show_performance_time is True
-        assert event.has_performances is False
-        assert event.is_seated is True
-        assert event.needs_departure_date is True
-        assert event.needs_duration is True
-        assert event.needs_performance is True
-
-        assert event.upsell_list == ['DEF2', 'GHI3', 'JKL4']
-
-    def test_from_api_data_with_no_event_id(self):
-        data = {
-            'foo': 'bar',
-        }
-
-        with pytest.raises(exceptions.IntegrityError):
-            Event.from_api_data(data)
-
-    def test_from_api_data_with_has_no_perfs(self):
-        data = {
-            'event_id': 'ABC1',
-            'has_no_perfs': True,
-        }
-
-        event = Event.from_api_data(data)
-
-        assert event.has_performances is False

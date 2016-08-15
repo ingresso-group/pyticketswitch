@@ -2,6 +2,8 @@ from pyticketswitch.exceptions import IntegrityError
 from pyticketswitch.interface.cost_range import CostRange
 from pyticketswitch.interface.ticket_type import TicketType
 from pyticketswitch.interface.content import Content
+from pyticketswitch.interface.media import Media
+from pyticketswitch.interface.review import Review
 from pyticketswitch import utils
 
 
@@ -19,7 +21,7 @@ class Event(object):
                  no_singles_cost_range=None, cost_range_details=None,
                  content=None, event_info_html=None, event_info=None,
                  venue_addr_html=None, venue_addr=None, venue_info=None,
-                 venue_info_html=None):
+                 venue_info_html=None, media=None, reviews=None):
 
         self.event_id = event_id
         self.status = status
@@ -64,6 +66,9 @@ class Event(object):
         self.venue_addr_html = venue_addr_html
         self.venue_info = venue_info
         self.venue_info_html = venue_info_html
+
+        self.media = media
+        self.reviews = reviews
 
     @classmethod
     def from_api_data(cls, data):
@@ -120,6 +125,31 @@ class Event(object):
             for key, value in api_content.items():
                 content[key] = Content.from_api_data(value)
 
+        api_media = data.get('media', {})
+        media = []
+        if api_media:
+            for asset in api_media.get('media_asset', []):
+                media.append(Media.from_api_data(asset))
+
+        api_video = data.get('video_iframe', {})
+        if api_video:
+            kwargs = {
+                'secure_complete_url': api_video.get('video_iframe_url_when_secure', None),
+                'insecure_complete_url': api_video.get('video_iframe_url_when_insecure', None),
+                'caption': api_video.get('video_iframe_caption', None),
+                'caption_html': api_video.get('video_iframe_caption_html', None),
+                'width': api_video.get('video_iframe_width', None),
+                'height': api_video.get('video_iframe_height', None),
+                'name': 'video',
+            }
+            media.append(Media.from_api_data(kwargs))
+
+        api_reviews = data.get('reviews', {})
+        reviews = []
+        if api_reviews:
+            for api_review in api_reviews.get('review', []):
+                reviews.append(Review.from_api_data(api_review))
+
         kwargs = {
             'event_id': event_id,
             'status': data.get('event_status'),
@@ -166,6 +196,9 @@ class Event(object):
             'venue_info': data.get('venue_info', None),
             'venue_info_html': data.get('venue_info_html', None),
             'content': content,
+
+            'media': media,
+            'reviews': reviews,
         }
 
         return cls(**kwargs)

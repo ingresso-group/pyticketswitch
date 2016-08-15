@@ -175,7 +175,6 @@ class TicketSwitch(object):
 
         result = contents.get('results', {})
         raw_events = result.get('event', [])
-        print raw_events
         events = [
             Event.from_api_data(data)
             for data in raw_events
