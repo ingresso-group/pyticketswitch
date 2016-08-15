@@ -1,3 +1,5 @@
+v1.12.2, 15 August 2016 -- Added 'despatch_final_comment' to Order
+
 v1.12.1, 22 July 2016 -- Added 'ticket_type_desc_full' to Order
 
 v1.12.0, 13 June 2016 -- python3 now supported, travis config updated to reflect this.

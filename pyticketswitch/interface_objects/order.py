@@ -206,6 +206,10 @@ class Order(InterfaceObject):
         return self._despatch_method
 
     @property
+    def despatch_final_comment(self):
+        return getattr(self._core_order, 'despatch_final_comment', None)
+
+    @property
     def all_seats(self):
         """List of Seat objects on this order."""
         seats = []
