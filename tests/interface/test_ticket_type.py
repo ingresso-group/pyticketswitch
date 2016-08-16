@@ -12,7 +12,7 @@ class TestTicketType:
                     'price_band_desc': '',
                     'cost_range': {
                         'quantity_options': {
-                            'valid_quantity_mask': '2046'
+                            'valid_quantity_mask': 2046
                         },
                         'max_surcharge': 11.65,
                         'max_seatprice': 59.5,
@@ -27,7 +27,7 @@ class TestTicketType:
                         'min_surcharge': 11.25,
                         'no_singles_cost_range': {
                             'quantity_options': {
-                                'valid_quantity_mask': '2046'
+                                'valid_quantity_mask': 2046
                             },
                             'max_surcharge': 11.65,
                             'max_seatprice': 59.5,

@@ -21,7 +21,8 @@ class Event(object):
                  no_singles_cost_range=None, cost_range_details=None,
                  content=None, event_info_html=None, event_info=None,
                  venue_addr_html=None, venue_addr=None, venue_info=None,
-                 venue_info_html=None, media=None, reviews=None):
+                 venue_info_html=None, media=None, reviews=None,
+                 availability_details=None):
 
         self.event_id = event_id
         self.status = status
@@ -69,6 +70,8 @@ class Event(object):
 
         self.media = media
         self.reviews = reviews
+
+        self.availability_details = availability_details
 
     @classmethod
     def from_api_data(cls, data):
@@ -150,6 +153,13 @@ class Event(object):
             for api_review in api_reviews.get('review', []):
                 reviews.append(Review.from_api_data(api_review))
 
+        api_availability = data.get('avail_details', {})
+        availability_details = []
+        if api_availability:
+            ticket_type_list = api_availability.get('ticket_type', [])
+            for ticket_type in ticket_type_list:
+                availability_details.append(TicketType.from_api_data(ticket_type))
+
         kwargs = {
             'event_id': event_id,
             'status': data.get('event_status'),
@@ -199,6 +209,8 @@ class Event(object):
 
             'media': media,
             'reviews': reviews,
+
+            'availability_details': availability_details,
         }
 
         return cls(**kwargs)

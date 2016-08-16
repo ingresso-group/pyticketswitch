@@ -246,5 +246,34 @@ class TestEvent:
                         'review_original_url': 'http://www.whatsonstage.com/index.php?pg=207&story=E01822737494'
                     }
                 ]
+            },
+            'avail_details': {
+                'ticket_type': [{
+                    'ticket_type_desc': 'Grand Circle',
+                    'price_band': [{
+                        'price_band_desc': '',
+                        'price_band_code': 'B',
+                        'avail_detail': [{
+                            'quantity_options': {
+                                'valid_quantity_mask': '2046'
+                            },
+                            'day_mask': 21,
+                            'available_dates': {
+                                'last_yyyymmdd': '20161002',
+                                'first_yyyymmdd': '20160906'
+                            },
+                            'avail_currency': {
+                                'currency_factor': 100,
+                                'currency_places': 2,
+                                'currency_post_symbol': '',
+                                'currency_number': 826,
+                                'currency_pre_symbol': '\xa3',
+                                'currency_code': 'gbp'
+                            },
+                            'seatprice': 57.5,
+                            'surcharge': 11.25
+                        }]
+                    }]
+                }]
             }
         }

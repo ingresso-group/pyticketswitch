@@ -6,7 +6,7 @@ class TestCostRange:
     def test_from_api_data(self):
         data = {
             'quantity_options': {
-                'valid_quantity_mask': '2046'
+                'valid_quantity_mask': 2046
             },
             'max_surcharge': 29.65,
             'max_seatprice': 149.5,
