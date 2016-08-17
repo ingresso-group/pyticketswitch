@@ -255,6 +255,58 @@ class TestEvent:
                         'price_band_code': 'B',
                         'avail_detail': [{
                             'quantity_options': {
+                                'valid_quantity_flags': [
+                                    False,
+                                    True,
+                                    True,
+                                    True,
+                                    True,
+                                    True,
+                                    True,
+                                    True,
+                                    True,
+                                    True,
+                                    True
+                                ]
+                            },
+                            'available_weekdays': {
+                                'wed': True,
+                                'sun': True,
+                                'fri': True,
+                                'tue': True,
+                                'mon': False,
+                                'thu': True,
+                                'sat': True
+                            },
+                            'available_dates': {
+                                'last_yyyymmdd': '20161002',
+                                'first_yyyymmdd': '20160906',
+                                'nov': {
+                                    'day_30': False,
+                                    'day_18': False,
+                                },
+                                'oct': {
+                                    'day_30': True,
+                                    'day_31': False,
+                                    'day_18': True,
+                                },
+
+                            },
+                            'avail_currency': {
+                                'currency_factor': 100,
+                                'currency_places': 2,
+                                'currency_post_symbol': '',
+                                'currency_number': 826,
+                                'currency_pre_symbol': '\xa3',
+                                'currency_code': 'gbp'
+                            },
+                            'seatprice': 57.5,
+                            'surcharge': 11.25,
+
+
+
+
+                            'quantity_options': {
                                 'valid_quantity_mask': '2046'
                             },
                             'day_mask': 21,

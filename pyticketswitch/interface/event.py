@@ -159,6 +159,10 @@ class Event(object):
             ticket_type_list = api_availability.get('ticket_type', [])
             for ticket_type in ticket_type_list:
                 availability_details.append(TicketType.from_api_data(ticket_type))
+        api_meta_events = data.get('meta_event_component_events', {})
+        if api_meta_events:
+            for meta_event in api_meta_events.get('event', []):
+                pass
 
         kwargs = {
             'event_id': event_id,
