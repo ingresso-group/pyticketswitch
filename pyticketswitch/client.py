@@ -181,7 +181,7 @@ class TicketSwitch(object):
         ]
         return events
 
-    def get_performances(self, event_id):
+    def get_performances(self, event_id, req_cost_range=False):
         """
         Get performances for a specified event
 
@@ -196,6 +196,7 @@ class TicketSwitch(object):
         """
         params = {
             'event_id': event_id,
+            'req_cost_range': req_cost_range,
         }
 
         response = self.make_request('performances', params)

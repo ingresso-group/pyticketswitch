@@ -54,6 +54,8 @@ class TestEvent:
         assert len(event.media) == 2
         assert len(event.reviews) == 1
 
+        assert len(event.meta_events) == 1
+
     def test_from_api_data_with_no_event_id(self):
         data = {
             'foo': 'bar',
@@ -74,6 +76,11 @@ class TestEvent:
 
     def get_huge_event_data(self):
         return {
+            'meta_event_component_events': {
+                'event': [{
+                    'event_id': 'META123'
+                }]
+            },
             'event_id': 'ABC1',
             'event_status': 'live',
             'event_type': 'simple_ticket',

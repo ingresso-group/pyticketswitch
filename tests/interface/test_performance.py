@@ -1,7 +1,7 @@
-from pyticketswitch.interface.content import Content
+from pyticketswitch.interface.performance import Performance
 
 
-class TestContent:
+class TestPerformance:
 
     def test_from_api_data(self):
 
@@ -10,7 +10,7 @@ class TestContent:
             'value': 'value',
             'value_html': '<p>value</p>',
         }
-        content = Content.from_api_data(data, event)
+        performance = Performance.from_api_data(data)
         assert content.name == 'name'
         assert content.value == 'value'
         assert content.value_html == '<p>value</p>'

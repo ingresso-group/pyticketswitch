@@ -22,7 +22,7 @@ class Event(object):
                  content=None, event_info_html=None, event_info=None,
                  venue_addr_html=None, venue_addr=None, venue_info=None,
                  venue_info_html=None, media=None, reviews=None,
-                 availability_details=None):
+                 availability_details=None, meta_events=None):
 
         self.event_id = event_id
         self.status = status
@@ -72,6 +72,8 @@ class Event(object):
         self.reviews = reviews
 
         self.availability_details = availability_details
+
+        self.meta_events = meta_events
 
     @classmethod
     def from_api_data(cls, data):
@@ -160,12 +162,14 @@ class Event(object):
             for ticket_type in ticket_type_list:
                 availability_details.append(TicketType.from_api_data(ticket_type))
         api_meta_events = data.get('meta_event_component_events', {})
+        meta_events = []
         if api_meta_events:
             for meta_event in api_meta_events.get('event', []):
-                pass
+                meta_events.append(Event.from_api_data(meta_event))
 
         kwargs = {
             'event_id': event_id,
+            'description': data.get('event_desc', None),
             'status': data.get('event_status'),
             'event_type': data.get('event_type'),
             'source': data.get('source_desc'),
@@ -215,6 +219,7 @@ class Event(object):
             'reviews': reviews,
 
             'availability_details': availability_details,
+            'meta_events': meta_events,
         }
 
         return cls(**kwargs)

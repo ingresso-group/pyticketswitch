@@ -3,7 +3,6 @@ from datetime import datetime
 from mock import Mock
 from pyticketswitch.client import TicketSwitch
 from pyticketswitch import exceptions
-from pyticketswitch.interface.event import Event
 
 
 @pytest.fixture
@@ -430,7 +429,10 @@ class TestTicketSwitch:
 
         performances = client.get_performances('GHI789')
 
-        mock_make_request.assert_called_with('performances', {'event_id': 'GHI789'})
+        mock_make_request.assert_called_with('performances', {
+            'event_id': 'GHI789',
+            'req_cost_range': False,
+        })
 
         assert len(performances) == 3
 
