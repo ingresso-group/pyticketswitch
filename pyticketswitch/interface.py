@@ -365,9 +365,8 @@ class CoreAPI(object):
             self, crypto_block, upfront_data_token=None, perf_token=None,
             departure_date=None, usage_date=None, self_print_mode=None,
             trolley_token=None, add_discounts=None, quantity_options_only=None,
-            no_of_tickets=None, add_free_seat_blocks=None,
+            no_of_tickets=None, add_free_seat_blocks=None, add_free_seat_ids=None,
             add_user_commission=None):
-
         resp = self.make_core_request(
             'availability_options',
             crypto_block=crypto_block, upfront_data_token=upfront_data_token,
@@ -377,6 +376,7 @@ class CoreAPI(object):
             quantity_options_only=quantity_options_only,
             no_of_tickets=no_of_tickets,
             add_free_seat_blocks=add_free_seat_blocks,
+            add_free_seat_ids=add_free_seat_ids,
             add_user_commission=add_user_commission,
         )
 
@@ -400,7 +400,7 @@ class CoreAPI(object):
     def discount_options(
             self, crypto_block, band_token, no_of_tickets,
             upfront_data_token=None, despatch_token=None, trolley_token=None,
-            seat_block_token=None, seat_block_offset=None,
+            seat_block_token=None, seat_block_offset=None, seat_id_tokens=None,
             add_user_commission=None):
         resp = self.make_core_request(
             'discount_options',
@@ -409,6 +409,7 @@ class CoreAPI(object):
             no_of_tickets=no_of_tickets, upfront_data_token=upfront_data_token,
             trolley_token=trolley_token, seat_block_token=seat_block_token,
             seat_block_offset=seat_block_offset,
+            seat_id_tokens=seat_id_tokens,
             add_user_commission=add_user_commission,
         )
 
@@ -417,6 +418,7 @@ class CoreAPI(object):
     def create_order(
             self, crypto_block, upfront_data_token=None, discount_token=None,
             despatch_token=None):
+        print(discount_token)
         resp = self.make_core_request(
             'create_order',
             crypto_block=crypto_block, upfront_data_token=upfront_data_token,

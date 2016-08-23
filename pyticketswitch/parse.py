@@ -458,7 +458,6 @@ def _parse_seat_block(seat_block_elem):
     sb_arg = {}
 
     seats = []
-
     for s in seat_block_elem.findall('id_details'):
         seats.append(objects.Seat(**_text_dict(s)))
         seat_block_elem.remove(s)
@@ -613,7 +612,10 @@ def availability_options_result(root):
 
     if performance is not None:
         ret_dict['performance'] = _parse_performance(performance)
-
+    enforce_contiguous = root.findtext('contiguous_seat_selection_only')
+    ret_dict['enforce_contigous'] = False
+    if enforce_contiguous == 'yes':
+        ret_dict['enforce_contiguous'] = True
     return ret_dict
 
 
