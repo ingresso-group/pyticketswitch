@@ -54,7 +54,7 @@ def specific_dates_from_api_data(dates):
 
     return [
         date(int(year.split('_')[1]), MONTHS.get(month), int(day.split('_')[1]))
-        for year, months in dates
+        for year, months in dates.items()
         if year.startswith('year_')
         for month, days in months.items()
         for day, valid in days.items()

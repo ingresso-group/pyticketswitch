@@ -119,18 +119,16 @@ class TestSpecificDatesFromAPI:
 
     def test_specific_dates_from_api(self):
         api_data = {
-            'available_dates': {
-                'year_2016': {
-                    'nov': {
-                        'day_30': False,
-                        'day_18': False,
-                    },
-                    'oct': {
-                        'day_4': True,
-                        'day_3': True,
-                        'day_2': False,
-                        'day_1': True,
-                    }
+            'year_2016': {
+                'nov': {
+                    'day_30': False,
+                    'day_18': False,
+                },
+                'oct': {
+                    'day_4': True,
+                    'day_3': True,
+                    'day_2': False,
+                    'day_1': True,
                 }
             }
         }

@@ -35,7 +35,7 @@ class Availability(object):
         if api_last_date:
             last_date = utils.yyyymmdd_to_date(api_last_date)
 
-        specific_dates = utils.specific_dates_from_api_data(dates.iteritems())
+        specific_dates = utils.specific_dates_from_api_data(dates)
         print('dates:')
         print(specific_dates)
 
