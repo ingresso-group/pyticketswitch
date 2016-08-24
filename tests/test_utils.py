@@ -94,3 +94,45 @@ class TestIsoStrToDatetime:
         date_str = ''
         with pytest.raises(ValueError):
             utils.isostr_to_datetime(date_str)
+
+
+class TestYYYYToDate:
+
+    def test_yyyymmdd_to_date_valid_string(self):
+        date = utils.yyyymmdd_to_date('20160801')
+        assert date.year == 2016
+        assert date.month == 8
+        assert date.day == 1
+
+    def test_yyyymmdd_to_date_invalid_string(self):
+        with pytest.raises(TypeError):
+            utils.yyyymmdd_to_date(123)
+
+        with pytest.raises(ValueError):
+            utils.yyyymmdd_to_date('')
+
+        with pytest.raises(ValueError):
+            utils.yyyymmdd_to_date('wrong_date')
+
+
+class TestSpecificDatesFromAPI:
+
+    def test_specific_dates_from_api(self):
+        api_data = {
+            'available_dates': {
+                'year_2016': {
+                    'nov': {
+                        'day_30': False,
+                        'day_18': False,
+                    },
+                    'oct': {
+                        'day_4': True,
+                        'day_3': True,
+                        'day_2': False,
+                        'day_1': True,
+                    }
+                }
+            }
+        }
+        results = utils.specific_dates_from_api_data(api_data)
+        assert len(results) == 3

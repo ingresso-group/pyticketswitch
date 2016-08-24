@@ -226,7 +226,6 @@ class TicketSwitch(object):
         }
 
         raw_performances = result.get('performance', [])
-
         performances = [
             Performance.from_api_data(
                 data,

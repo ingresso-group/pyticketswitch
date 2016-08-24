@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from dateutil import parser
 from pyticketswitch.exceptions import InvalidParametersError
 
@@ -33,3 +33,30 @@ def isostr_to_datetime(date_str):
 
     dt = parser.parse(date_str)
     return dt
+
+
+def yyyymmdd_to_date(date_str):
+    if not date_str:
+        raise ValueError('{} is not a valid datetime string'.format(date_str))
+
+    date = datetime.strptime(date_str, '%Y%m%d')
+    if date:
+        return date.date()
+
+
+def specific_dates_from_api_data(dates):
+
+    MONTHS = {
+        'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4,
+        'may': 5, 'jun': 6, 'jul': 7, 'aug': 8,
+        'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12,
+    }
+
+    return [
+        date(int(year.split('_')[1]), MONTHS.get(month), int(day.split('_')[1]))
+        for year, months in dates
+        if year.startswith('year_')
+        for month, days in months.items()
+        for day, valid in days.items()
+        if valid is True
+    ]

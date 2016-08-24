@@ -1,11 +1,5 @@
-import datetime
+from pyticketswitch import utils
 from pyticketswitch.interface.currency import Currency
-
-MONTHS = {
-    'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4,
-    'may': 5, 'jun': 6, 'jul': 7, 'aug': 8,
-    'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12,
-}
 
 
 class Availability(object):
@@ -30,23 +24,20 @@ class Availability(object):
         currency = Currency.from_api_data(data.get('avail_currency', {}))
 
         dates = data.get('available_dates', {})
+        print(dates)
         api_first_date = dates.get('first_yyyymmdd', None)
         api_last_date = dates.get('last_yyyymmdd', None)
         first_date = None
         last_date = None
 
         if api_first_date:
-            first_date = datetime.datetime.strptime(api_first_date, '%Y%m%d').date()
+            first_date = utils.yyyymmdd_to_date(api_first_date)
         if api_last_date:
-            last_date = datetime.datetime.strptime(api_last_date, '%Y%m%d').date()
-        specific_dates = [
-            datetime.date(int(year.split('_')[1]), MONTHS.get(month), int(day.split('_')[1]))
-            for year, months in data.get('available_dates', {}).items()
-            if year.startswith('year_')
-            for month, days in months.items()
-            for day, valid in days.items()
-            if valid is True
-        ]
+            last_date = utils.yyyymmdd_to_date(api_last_date)
+
+        specific_dates = utils.specific_dates_from_api_data(dates.iteritems())
+        print('dates:')
+        print(specific_dates)
 
         kwargs = {
             'valid_quantity_flags': quantity.get('valid_quantity_flags', None),

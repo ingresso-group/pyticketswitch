@@ -16,6 +16,7 @@ class Performance(object):
         self.is_limited = is_limited
         self.cached_max_seats = cached_max_seats
         self.cost_range = cost_range
+        self.no_singles_cost_range = no_singles_cost_range
 
     @classmethod
     def from_api_data(cls, data, event):
@@ -24,7 +25,7 @@ class Performance(object):
 
         date_time = data.get('iso8601_date_and_time')
         if date_time:
-            utils.isostr_to_datetime(date_time)
+            date_time = utils.isostr_to_datetime(date_time)
 
         api_cost_range = data.get('cost_range', {})
         api_no_singles_cost_range = api_cost_range.get('no_singles_cost_range', {})

@@ -447,3 +447,20 @@ class TestTicketSwitch:
         assert performance_three.event.event_id == 'ABC123'
 
         assert performance_one.event is performance_three.event
+
+    def test_get_performances_invalid_response_code(self, client, monkeypatch, fake_func):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=404, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_performances('6IF')
+
+
+    def test_get_performances_no_results(self, client, monkeypatch, fake_func):
+        response = {}
+        fake_response = FakeResponse(status_code=200, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_performances('6IF')

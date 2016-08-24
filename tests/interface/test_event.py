@@ -297,7 +297,6 @@ class TestEvent:
                                     'day_31': False,
                                     'day_18': True,
                                 },
-
                             },
                             'avail_currency': {
                                 'currency_factor': 100,
@@ -309,10 +308,6 @@ class TestEvent:
                             },
                             'seatprice': 57.5,
                             'surcharge': 11.25,
-
-
-
-
                             'quantity_options': {
                                 'valid_quantity_mask': '2046'
                             },

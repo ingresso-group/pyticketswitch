@@ -10,7 +10,7 @@ class TestContent:
             'value': 'value',
             'value_html': '<p>value</p>',
         }
-        content = Content.from_api_data(data, event)
+        content = Content.from_api_data(data)
         assert content.name == 'name'
         assert content.value == 'value'
         assert content.value_html == '<p>value</p>'
