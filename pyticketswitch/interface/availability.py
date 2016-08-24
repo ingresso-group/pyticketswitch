@@ -24,7 +24,6 @@ class Availability(object):
         currency = Currency.from_api_data(data.get('avail_currency', {}))
 
         dates = data.get('available_dates', {})
-        print(dates)
         api_first_date = dates.get('first_yyyymmdd', None)
         api_last_date = dates.get('last_yyyymmdd', None)
         first_date = None
@@ -36,8 +35,6 @@ class Availability(object):
             last_date = utils.yyyymmdd_to_date(api_last_date)
 
         specific_dates = utils.specific_dates_from_api_data(dates)
-        print('dates:')
-        print(specific_dates)
 
         kwargs = {
             'valid_quantity_flags': quantity.get('valid_quantity_flags', None),

@@ -134,3 +134,4 @@ class TestSpecificDatesFromAPI:
         }
         results = utils.specific_dates_from_api_data(api_data)
         assert len(results) == 3
+        assert type(results[0]) == datetime.date
