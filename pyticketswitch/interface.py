@@ -409,7 +409,7 @@ class CoreAPI(object):
             no_of_tickets=no_of_tickets, upfront_data_token=upfront_data_token,
             trolley_token=trolley_token, seat_block_token=seat_block_token,
             seat_block_offset=seat_block_offset,
-            seat_id_tokens=seat_id_tokens,
+            seat_id_token=seat_id_tokens,
             add_user_commission=add_user_commission,
         )
 
