@@ -418,9 +418,6 @@ class CoreAPI(object):
     def create_order(
             self, crypto_block, upfront_data_token=None, discount_token=None,
             despatch_token=None):
-        print(discount_token)
-        print('crypto')
-        print(crypto_block)
         resp = self.make_core_request(
             'create_order',
             crypto_block=crypto_block, upfront_data_token=upfront_data_token,
