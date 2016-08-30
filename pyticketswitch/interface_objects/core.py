@@ -678,8 +678,6 @@ class Core(InterfaceObject):
         else:
             concession_ids = []
             for c in concessions:
-                print('actual concessions')
-                print(c.concession_id)
                 concession_ids.append(
                     c.concession_id
                 )
