@@ -105,7 +105,8 @@ class TicketType(InterfaceObject):
             interface_object=self
         )
 
-        no_of_tickets = str(int(no_of_tickets))
+        if no_of_tickets:
+            no_of_tickets = str(int(no_of_tickets))
 
         if despatch_method is not None:
             despatch_id = despatch_method.despatch_id
