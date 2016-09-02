@@ -612,10 +612,10 @@ def availability_options_result(root):
 
     if performance is not None:
         ret_dict['performance'] = _parse_performance(performance)
-    enforce_contiguous = root.findtext('contiguous_seat_selection_only')
-    ret_dict['enforce_contigous'] = False
-    if enforce_contiguous == 'yes':
-        ret_dict['enforce_contiguous'] = True
+    enforce_contiguous_seats = root.findtext('contiguous_seat_selection_only')
+    ret_dict['enforce_contiguous_seats'] = False
+    if enforce_contiguous_seats== 'yes':
+        ret_dict['enforce_contiguous_seats'] = True
     return ret_dict
 
 

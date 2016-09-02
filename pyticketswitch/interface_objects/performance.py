@@ -69,7 +69,7 @@ class Performance(InterfaceObject, CostRangeMixin):
         self._core_performance = core_performance
 
         self._ticket_types = None
-        self.enforce_contiguous = False
+        self.enforce_contiguous_seats = False
         self._despatch_methods = None
         self._valid_ticket_quantities = None
         self._event = None
@@ -441,7 +441,7 @@ class Performance(InterfaceObject, CostRangeMixin):
 
         self.despatch_methods = despatch_methods
 
-        self.enforce_contiguous = resp_dict.get('enforce_contiguous', False)
+        self.enforce_contiguous_seats = resp_dict.get('enforce_contiguous_seats', False)
 
         self._core_performance = resp_dict.get('performance')
 
