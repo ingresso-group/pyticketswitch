@@ -456,6 +456,8 @@ class Seat(CoreObject):
         is_restricted_view=None,
         seat_text=None,
         barcode=None,
+        seat_id_token=None,
+
         **kwargs
     ):
         self.full_id = full_id
@@ -465,6 +467,7 @@ class Seat(CoreObject):
         self.is_restricted_view = is_restricted_view
         self.seat_text = seat_text
         self.barcode = barcode
+        self.seat_id_token = seat_id_token
 
         vars(self).update(kwargs)
 
@@ -473,9 +476,9 @@ class SeatBlock(CoreObject):
 
     def __init__(
         self,
-        seat_block_token,
         block_length,
         seats=None,
+        seat_block_token=None,
         **kwargs
     ):
         self.seat_block_token = seat_block_token
@@ -483,7 +486,6 @@ class SeatBlock(CoreObject):
         if seats is None:
             seats = []
         self.seats = seats
-
         vars(self).update(kwargs)
 
 

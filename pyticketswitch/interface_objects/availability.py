@@ -69,7 +69,7 @@ class TicketType(InterfaceObject):
     def get_concessions(
         self, no_of_tickets, despatch_method=None, trolley=None,
         seat_block_id=None, seat_block_offset=None,
-        include_user_commission=None,
+        seat_id_tokens=None, include_user_commission=None,
     ):
         """Retrieves the Concession objects for this TicketType.
 
@@ -90,6 +90,8 @@ class TicketType(InterfaceObject):
             seat_block_offset (int): Optional, the offset into the seat block,
                 with 0 being the start of the block. Can only be specified if
                 a seat_block is provided.
+            seat_id_tokens(list): Optional, for specific seat ids.
+
             include_user_commission (boolean): Optional, flag to indicate
                 whether to request the user's commission information.
 
@@ -103,7 +105,8 @@ class TicketType(InterfaceObject):
             interface_object=self
         )
 
-        no_of_tickets = str(int(no_of_tickets))
+        if no_of_tickets:
+            no_of_tickets = str(int(no_of_tickets))
 
         if despatch_method is not None:
             despatch_id = despatch_method.despatch_id
@@ -127,6 +130,7 @@ class TicketType(InterfaceObject):
             trolley_token=trolley_id,
             seat_block_token=seat_block_id,
             seat_block_offset=seat_block_offset,
+            seat_id_tokens=seat_id_tokens,
             add_user_commission=include_user_commission,
         )
 

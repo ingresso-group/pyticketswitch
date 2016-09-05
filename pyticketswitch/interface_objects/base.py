@@ -543,6 +543,10 @@ class Seat(object):
         return self._core_seat.row_id
 
     @property
+    def seat_id_token(self):
+        return self._core_seat.seat_id_token
+
+    @property
     def separator(self):
         """The seat id is made up of row_id + separator + column_id.
         Returns empty string if there is no separator.

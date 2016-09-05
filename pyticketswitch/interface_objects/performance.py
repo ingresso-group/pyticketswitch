@@ -69,6 +69,7 @@ class Performance(InterfaceObject, CostRangeMixin):
         self._core_performance = core_performance
 
         self._ticket_types = None
+        self.enforce_contiguous_seats = False
         self._despatch_methods = None
         self._valid_ticket_quantities = None
         self._event = None
@@ -344,7 +345,8 @@ class Performance(InterfaceObject, CostRangeMixin):
 
     def get_availability(
         self, include_possible_concessions=None, no_of_tickets=None,
-        include_available_seat_blocks=None, include_user_commission=None,
+        include_available_seat_blocks=None, include_available_seat_ids=None,
+        include_user_commission=None,
     ):
         """Retrieves ticket availability information for this Performance.
 
@@ -359,6 +361,9 @@ class Performance(InterfaceObject, CostRangeMixin):
             no_of_tickets (int): Optional, set the number of tickets to
                 request, allows actual seats to be returned if possible.
             include_available_seat_blocks (boolean): Optional, flag to indicate
+                whether to request the available seat blocks, allowing specific
+                seats to be selected.
+            include_available_seat_ids (boolean): Optional, flag to indicate
                 whether to request the available seat blocks, allowing specific
                 seats to be selected.
             include_user_commission (boolean): Optional, flag to indicate
@@ -379,6 +384,7 @@ class Performance(InterfaceObject, CostRangeMixin):
             self_print_mode='html', add_discounts=include_possible_concessions,
             no_of_tickets=no_of_tickets,
             add_free_seat_blocks=include_available_seat_blocks,
+            add_free_seat_ids=include_available_seat_ids,
             add_user_commission=include_user_commission
         )
 
@@ -434,6 +440,8 @@ class Performance(InterfaceObject, CostRangeMixin):
                 despatch_methods.append(despatch_method)
 
         self.despatch_methods = despatch_methods
+
+        self.enforce_contiguous_seats = resp_dict.get('enforce_contiguous_seats', False)
 
         self._core_performance = resp_dict.get('performance')
 
