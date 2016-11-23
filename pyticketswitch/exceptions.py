@@ -1,27 +1,31 @@
-class PyTicketSwitchError(Exception):
+class PyticketswitchError(Exception):
     pass
 
 
-class AuthenticationError(PyTicketSwitchError):
+class AuthenticationError(PyticketswitchError):
     pass
 
 
-class InvalidParametersError(PyTicketSwitchError):
+class InvalidParametersError(PyticketswitchError):
     pass
 
 
-class InvalidResponseError(PyTicketSwitchError):
+class InvalidResponseError(PyticketswitchError):
     pass
 
 
-class IntegrityError(PyTicketSwitchError):
+class InvalidGeoData(PyticketswitchError):
+    pass
+
+
+class IntegrityError(PyticketswitchError):
 
     def __init__(self, message, data, *args):
         super(IntegrityError, self).__init__(message, *args)
         self.data = data
 
 
-class EndPointMissingError(PyTicketSwitchError):
+class EndPointMissingError(PyticketswitchError):
 
     def __init__(self, message, method, *args):
         super(EndPointMissingError, self).__init__(message, *args)

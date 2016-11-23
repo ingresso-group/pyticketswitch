@@ -10,9 +10,9 @@ class Content(object):
     def from_api_data(cls, data):
 
         kwargs = {
-            'name': data.get('name', None),
-            'value': data.get('value', None),
-            'value_html': data.get('value_html', None),
+            'name': data.get('name'),
+            'value': data.get('value'),
+            'value_html': data.get('value_html'),
         }
 
         return cls(**kwargs)

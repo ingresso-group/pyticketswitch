@@ -91,12 +91,12 @@ class Event(object):
         if end_date:
             end_date = utils.isostr_to_datetime(end_date)
 
-        classes = data.get('class', [])
-        if classes:
-            classes = [
-                c.get('class_desc') for c in classes
-                if 'class_desc' in c
-            ]
+        api_classes = data.get('class', [])
+        classes = [
+            c['class_desc']
+            for c in api_classes
+            if 'class_desc' in c
+        ]
 
         geo_data = data.get('geo_data', {})
 
@@ -107,7 +107,6 @@ class Event(object):
         api_no_singles_cost_range = api_cost_range.get('no_singles_cost_range', {})
         cost_range = None
         no_singles_cost_range = None
-        cost_range_details = []
 
         if api_cost_range:
             api_cost_range['singles'] = True
@@ -119,24 +118,25 @@ class Event(object):
                 api_no_singles_cost_range)
 
         api_cost_range_details = data.get('cost_range_details', {})
-        if api_cost_range_details:
-            ticket_type_list = api_cost_range_details.get('ticket_type', [])
-            for ticket_type in ticket_type_list:
-                cost_range_details.append(TicketType.from_api_data(ticket_type))
+        ticket_type_list = api_cost_range_details.get('ticket_type', [])
+        cost_range_details = [
+            TicketType.from_api_data(ticket_type)
+            for ticket_type in ticket_type_list
+        ]
 
         api_content = data.get('structured_info', {})
-        content = {}
-        if api_content:
-            for key, value in api_content.items():
-                content[key] = Content.from_api_data(value)
+        content = {
+            key: Content.from_api_data(value)
+            for key, value in api_content.items()
+        }
 
         api_media = data.get('media', {})
-        media = []
-        if api_media:
-            for asset in api_media.get('media_asset', []):
-                media.append(Media.from_api_data(asset))
+        media = [
+            Media.from_api_data(asset)
+            for asset in api_media.get('media_asset', [])
+        ]
 
-        api_video = data.get('video_iframe', {})
+        api_video = data.get('video_iframe')
         if api_video:
             kwargs = {
                 'secure_complete_url': api_video.get('video_iframe_url_when_secure', None),
@@ -150,22 +150,22 @@ class Event(object):
             media.append(Media.from_api_data(kwargs))
 
         api_reviews = data.get('reviews', {})
-        reviews = []
-        if api_reviews:
-            for api_review in api_reviews.get('review', []):
-                reviews.append(Review.from_api_data(api_review))
+        reviews = [
+            Review.from_api_data(api_review)
+            for api_review in api_reviews.get('review', [])
+        ]
 
         api_availability = data.get('avail_details', {})
-        availability_details = []
-        if api_availability:
-            ticket_type_list = api_availability.get('ticket_type', [])
-            for ticket_type in ticket_type_list:
-                availability_details.append(TicketType.from_api_data(ticket_type))
+        availability_details = [
+            TicketType.from_api_data(ticket_type)
+            for ticket_type in api_availability.get('ticket_type', [])
+        ]
+
         api_meta_events = data.get('meta_event_component_events', {})
-        meta_events = []
-        if api_meta_events:
-            for meta_event in api_meta_events.get('event', []):
-                meta_events.append(Event.from_api_data(meta_event))
+        meta_events = [
+            Event.from_api_data(meta_event)
+            for meta_event in api_meta_events.get('event', [])
+        ]
 
         kwargs = {
             'event_id': event_id,
@@ -207,12 +207,12 @@ class Event(object):
             'cost_range_details': cost_range_details,
 
             # extra info
-            'event_info_html': data.get('event_info_html', None),
-            'event_info': data.get('event_info', None),
-            'venue_addr_html': data.get('venue_addr_html', None),
-            'venue_addr': data.get('venue_addr', None),
-            'venue_info': data.get('venue_info', None),
-            'venue_info_html': data.get('venue_info_html', None),
+            'event_info_html': data.get('event_info_html'),
+            'event_info': data.get('event_info'),
+            'venue_addr_html': data.get('venue_addr_html'),
+            'venue_addr': data.get('venue_addr'),
+            'venue_info': data.get('venue_info'),
+            'venue_info_html': data.get('venue_info_html'),
             'content': content,
 
             'media': media,

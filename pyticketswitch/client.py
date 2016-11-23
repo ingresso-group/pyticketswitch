@@ -7,7 +7,7 @@ from pyticketswitch.interface.performance import Performance
 logger = logging.getLogger(__name__)
 
 
-class TicketSwitch(object):
+class Client(object):
     DEFAULT_ROOT_URL = "https://api.ticketswitch.com/cgi-bin"
     END_POINTS = {
         'events': 'json_events.exe',
@@ -72,16 +72,17 @@ class TicketSwitch(object):
         response = requests.get(url, params=params)
         return response
 
-    def search_events(self, keywords=None, start_date=None,
-                      end_date=None, country_code=None, city_code=None,
-                      geolocation=None, include_dead=False,
-                      include_non_live=False, order_by_popular=False,
-                      req_extra_info=False, req_reviews=False, req_media=False,
-                      req_cost_range=False, req_cost_range_details=False,
-                      req_avail_details=False,
-                      req_avail_details_with_perfs=False,
-                      req_meta_components=False, req_custom_fields=False,
-                      page=0, page_length=50):
+    def get_events(self, keywords=None, start_date=None, end_date=None,
+                   country_code=None, city=None, latitude=None, longitude=None,
+                   radius=None, include_dead=False, include_non_live=False,
+                   availability=False, availability_with_performances=False,
+                   extra_info=False, reviews=False, media=False,
+                   cost_range=False, best_value_offer=False,
+                   max_saving_offer=False, min_cost_offer=False,
+                   top_price_offer=False, no_singles_data=False,
+                   cost_range_details=False, meta_components=False,
+                   order_by_popular=False, event_ids=None, page=0,
+                   page_length=0, **kwargs):
 
         """
         Search for events with the given parameters
@@ -98,11 +99,19 @@ class TicketSwitch(object):
         if country_code:
             params.update(s_coco=country_code)
 
-        if city_code:
-            params.update(s_city=city_code)
+        if city:
+            params.update(s_city=city)
 
-        if geolocation:
-            params.update(s_geo=geolocation)
+        if all([latitude, longitude, radius]):
+            params.update(s_geo='{lat}:{lon}:{rad}'.format(
+                lat=latitude,
+                lon=longitude,
+                rad=radius,
+            ))
+        elif any([latitude, longitude, radius]):
+            raise exceptions.InvalidGeoData(
+                'Geo data must include latitude, longitude, and radius',
+            )
 
         if include_dead:
             params.update(include_dead=True)
@@ -113,13 +122,13 @@ class TicketSwitch(object):
         if order_by_popular:
             params.update(s_top=True)
 
-        if req_extra_info:
+        if extra_info:
             params.update(req_extra_info=True)
 
-        if req_reviews:
+        if reviews:
             params.update(req_reviews=True)
 
-        if req_media:
+        if media:
             params.update({
                 'req_media_triplet_one': True,
                 'req_media_triplet_two': True,
@@ -133,28 +142,50 @@ class TicketSwitch(object):
                 'req_video_iframe': True,
             })
 
-        if req_cost_range:
+        if cost_range:
             params.update(req_cost_range=True)
 
-        if req_cost_range_details:
+        if best_value_offer:
+            params.update(req_cost_range_best_value_offer=True,
+                          req_cost_range=True)
+
+        if max_saving_offer:
+            params.update(req_cost_range_max_saving_offer=True,
+                          req_cost_range=True)
+
+        if min_cost_offer:
+            params.update(req_cost_range_min_cost_offer=True,
+                          req_cost_range=True)
+
+        if top_price_offer:
+            params.update(req_cost_range_top_price_offer=True,
+                          req_cost_range=True)
+
+        if no_singles_data:
+            params.update(req_cost_range_no_singles_data=True,
+                          req_cost_range=True)
+
+        if cost_range_details:
             params.update(req_cost_range_details=True)
 
-        if req_avail_details:
+        if availability:
             params.update(req_avail_details=True)
 
-        if req_avail_details_with_perfs:
+        if availability_with_performances:
             params.update(req_avail_details_with_perfs=True)
 
-        if req_meta_components:
+        if meta_components:
             params.update(req_meta_components=True)
 
-        if req_custom_fields:
-            params.update(req_custom_fields=True)
+        if event_ids:
+            params.update(event_id_list=','.join(event_ids))
 
-        params.update({
-            'page_no': page,
-            'page_len': page_length,
-        })
+        if page > 0:
+            params.update(page_no=page)
+        if page_length > 0:
+            params.update(page_len=page_length)
+
+        params.update(kwargs)
 
         response = self.make_request('events', params)
 
@@ -181,7 +212,12 @@ class TicketSwitch(object):
         ]
         return events
 
-    def get_performances(self, event_id, req_cost_range=False):
+    def get_performances(self, event_id, availability=False,
+                         cost_range=False, best_value_offer=False,
+                         max_saving_offer=False, min_cost_offer=False,
+                         top_price_offer=False, no_singles_data=False,
+                         performance_ids=None, page_length=0, page=0,
+                         **kwargs):
         """
         Get performances for a specified event
 
@@ -194,10 +230,35 @@ class TicketSwitch(object):
 
         TODO: Workout if we should be returning the event list as well.
         """
-        params = {
-            'event_id': event_id,
-            'req_cost_range': req_cost_range,
-        }
+        params = {'event_id': event_id}
+
+        if cost_range:
+            params.update(req_cost_range=True)
+
+        if best_value_offer:
+            params.update(req_cost_range_best_value_offer=True,
+                          req_cost_range=True)
+
+        if max_saving_offer:
+            params.update(req_cost_range_max_saving_offer=True,
+                          req_cost_range=True)
+
+        if min_cost_offer:
+            params.update(req_cost_range_min_cost_offer=True,
+                          req_cost_range=True)
+
+        if top_price_offer:
+            params.update(req_cost_range_top_price_offer=True,
+                          req_cost_range=True)
+
+        if no_singles_data:
+            params.update(req_cost_range_no_singles_data=True,
+                          req_cost_range=True)
+
+        if availability:
+            params.update(req_avail_details=True)
+
+        params.update(kwargs)
 
         response = self.make_request('performances', params)
 
@@ -235,3 +296,5 @@ class TicketSwitch(object):
         ]
 
         return performances
+
+
