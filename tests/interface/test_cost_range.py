@@ -6,7 +6,7 @@ class TestCostRange:
     def test_from_api_data(self):
         data = {
             'quantity_options': {
-                'valid_quantity_mask': 2046
+                'valid_quantity_mask': 170,
             },
             'max_surcharge': 29.65,
             'max_seatprice': 149.5,
@@ -32,3 +32,4 @@ class TestCostRange:
         assert cost_range.currency.post_symbol == ''
         assert cost_range.currency.places == 2
         assert cost_range.currency.factor == 100
+        assert cost_range.valid_quantities == [2, 4, 6, 8]

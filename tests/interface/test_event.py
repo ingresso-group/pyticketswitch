@@ -59,7 +59,7 @@ def data():
         },
         'cost_range': {
             'quantity_options': {
-                'valid_quantity_mask': '2046'
+                'valid_quantity_mask': 2046
             },
             'max_surcharge': 29.65,
             'max_seatprice': 149.5,
@@ -74,7 +74,7 @@ def data():
             'min_surcharge': 7.25,
             'no_singles_cost_range': {
                 'quantity_options': {
-                    'valid_quantity_mask': '2046'
+                    'valid_quantity_mask': 2046
                 },
                 'max_surcharge': 29.65,
                 'max_seatprice': 149.5,
@@ -100,7 +100,7 @@ def data():
                             'price_band_desc': '',
                             'cost_range': {
                                 'quantity_options': {
-                                    'valid_quantity_mask': '2046'
+                                    'valid_quantity_mask': 2046
                                 },
                                 'max_surcharge': 11.65,
                                 'max_seatprice': 59.5,
@@ -115,7 +115,7 @@ def data():
                                 'min_surcharge': 11.25,
                                 'no_singles_cost_range': {
                                     'quantity_options': {
-                                        'valid_quantity_mask': '2046'
+                                        'valid_quantity_mask': 2046
                                     },
                                     'max_surcharge': 11.65,
                                     'max_seatprice': 59.5,
@@ -241,7 +241,7 @@ def data():
                         'seatprice': 57.5,
                         'surcharge': 11.25,
                         'quantity_options': {
-                            'valid_quantity_mask': '2046'
+                            'valid_quantity_mask': 2046
                         },
                         'day_mask': 21,
                         'available_dates': {
