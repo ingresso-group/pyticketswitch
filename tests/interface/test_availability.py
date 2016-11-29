@@ -5,239 +5,39 @@ from pyticketswitch.interface.currency import Currency
 
 
 @pytest.fixture
-def data_details():
-    return {
-        'ticket_type': [
-            {
-                'price_band': [
-                    {
-                        'price_band_code': 'A',
-                        'price_band_desc': 'AYYY!',
-                        'avail_detail': [
-                            {
-                                'available_weekdays_bitmask': 63,
-                                'seatprice': 47,
-                                'surcharge': 0,
-                                'available_dates': {
-                                    'last_yyyymmdd': '20170327',
-                                    'first_yyyymmdd': '20161129',
-                                    'year_2016': {
-                                        'nov_bitmask': 805306368,
-                                        'dec_bitmask': 1065287163
-                                    },
-                                    'year_2017': {
-                                        'feb_bitmask': 251526135,
-                                        'mar_bitmask': 117308407,
-                                        'jan_bitmask': 2012209087
-                                    }
-                                },
-                                'quantity_options': {
-                                    'valid_quantity_bitmask': 126
-                                },
-                                'avail_currency': {
-                                    'currency_factor': 100,
-                                    'currency_number': 826,
-                                    'currency_code': 'gbp',
-                                    'currency_pre_symbol': '#',
-                                    'currency_places': 2,
-                                    'currency_post_symbol': ''
-                                }
-                            }
-                        ]
-                    }
-                ],
-                'ticket_type_code': 'BALCONY',
-                'ticket_type_desc': 'Balcony'
+def avail_details():
+    kwargs = {
+        'ticket_type': 'BALCONY',
+        'ticket_type_description': 'Balcony',
+        'price_band': 'A',
+        'price_band_description': 'AYYY!',
+        'seatprice': 47,
+        'surcharge': 0,
+        'currency': Currency(
+            code='gbp',
+            factor=100,
+            places=2,
+            number=826,
+            pre_symbol='#',
+            post_symbol='',
+        ),
+        'first_date': datetime.date(2016, 11, 29),
+        'last_date': datetime.date(2017, 3, 27),
+        'calendar_masks': {
+            2016: {
+                12: 1065287163,
+                11: 805306368
             },
-            {
-                'price_band': [
-                    {
-                        'price_band_code': 'A',
-                        'price_band_desc': 'AYYY!',
-                        'avail_detail': [
-                            {
-                                'available_weekdays_bitmask': 63,
-                                'seatprice': 35,
-                                'surcharge': 0,
-                                'available_dates': {
-                                    'last_yyyymmdd': '20170327',
-                                    'first_yyyymmdd': '20161129',
-                                    'year_2016': {
-                                        'nov_bitmask': 805306368,
-                                        'dec_bitmask': 1065287163
-                                    },
-                                    'year_2017': {
-                                        'feb_bitmask': 251526135,
-                                        'mar_bitmask': 117308407,
-                                        'jan_bitmask': 2012209087
-                                    }
-                                },
-                                'quantity_options': {
-                                    'valid_quantity_bitmask': 126
-                                },
-                                'avail_currency': {
-                                    'currency_factor': 100,
-                                    'currency_number': 826,
-                                    'currency_code': 'gbp',
-                                    'currency_pre_symbol': '#',
-                                    'currency_places': 2,
-                                    'currency_post_symbol': ''
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        'price_band_code': 'B',
-                        'price_band_desc': 'BEE!',
-                        'avail_detail': [
-                            {
-                                'available_weekdays_bitmask': 63,
-                                'seatprice': 30,
-                                'surcharge': 0,
-                                'available_dates': {
-                                    'last_yyyymmdd': '20170327',
-                                    'first_yyyymmdd': '20161129',
-                                    'year_2016': {
-                                        'nov_bitmask': 805306368,
-                                        'dec_bitmask': 1065287163
-                                    },
-                                    'year_2017': {
-                                        'feb_bitmask': 251526135,
-                                        'mar_bitmask': 117308407,
-                                        'jan_bitmask': 2012209087
-                                    }
-                                },
-                                'quantity_options': {
-                                    'valid_quantity_bitmask': 126
-                                },
-                                'avail_currency': {
-                                    'currency_factor': 100,
-                                    'currency_number': 826,
-                                    'currency_code': 'gbp',
-                                    'currency_pre_symbol': '#',
-                                    'currency_places': 2,
-                                    'currency_post_symbol': ''
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        'price_band_code': 'C',
-                        'price_band_desc': 'SEE!',
-                        'avail_detail': [
-                            {
-                                'available_weekdays_bitmask': 63,
-                                'seatprice': 25,
-                                'surcharge': 0,
-                                'available_dates': {
-                                    'last_yyyymmdd': '20170327',
-                                    'first_yyyymmdd': '20161129',
-                                    'year_2016': {
-                                        'nov_bitmask': 805306368,
-                                        'dec_bitmask': 1065287163
-                                    },
-                                    'year_2017': {
-                                        'feb_bitmask': 251526135,
-                                        'mar_bitmask': 117308407,
-                                        'jan_bitmask': 2012209087
-                                    }
-                                },
-                                'quantity_options': {
-                                    'valid_quantity_bitmask': 126
-                                },
-                                'avail_currency': {
-                                    'currency_factor': 100,
-                                    'currency_number': 826,
-                                    'currency_code': 'gbp',
-                                    'currency_pre_symbol': '#',
-                                    'currency_places': 2,
-                                    'currency_post_symbol': ''
-                                }
-                            }
-                        ]
-                    }
-                ],
-                'ticket_type_code': 'CIRCLE',
-                'ticket_type_desc': 'Upper circle'
-            },
-            {
-                'price_band': [
-                    {
-                        'price_band_code': 'A',
-                        'price_band_desc': 'AYYY!',
-                        'avail_detail': [
-                            {
-                                'available_weekdays_bitmask': 63,
-                                'seatprice': 21,
-                                'surcharge': 0,
-                                'available_dates': {
-                                    'last_yyyymmdd': '20170327',
-                                    'first_yyyymmdd': '20161129',
-                                    'year_2016': {
-                                        'nov_bitmask': 805306368,
-                                        'dec_bitmask': 1065287163
-                                    },
-                                    'year_2017': {
-                                        'feb_bitmask': 251526135,
-                                        'mar_bitmask': 117308407,
-                                        'jan_bitmask': 2012209087
-                                    }
-                                },
-                                'quantity_options': {
-                                    'valid_quantity_bitmask': 126
-                                },
-                                'avail_currency': {
-                                    'currency_factor': 100,
-                                    'currency_number': 826,
-                                    'currency_code': 'gbp',
-                                    'currency_pre_symbol': '#',
-                                    'currency_places': 2,
-                                    'currency_post_symbol': ''
-                                }
-                            }
-                        ]
-                    },
-                    {
-                        'price_band_code': 'B',
-                        'price_band_desc': 'BEE!',
-                        'avail_detail': [
-                            {
-                                'available_weekdays_bitmask': 63,
-                                'seatprice': 18,
-                                'surcharge': 0,
-                                'available_dates': {
-                                    'last_yyyymmdd': '20170327',
-                                    'first_yyyymmdd': '20161129',
-                                    'year_2016': {
-                                        'nov_bitmask': 805306368,
-                                        'dec_bitmask': 1065287163
-                                    },
-                                    'year_2017': {
-                                        'feb_bitmask': 251526135,
-                                        'mar_bitmask': 117308407,
-                                        'jan_bitmask': 2012209087
-                                    }
-                                },
-                                'quantity_options': {
-                                    'valid_quantity_bitmask': 14
-                                },
-                                'avail_currency': {
-                                    'currency_factor': 100,
-                                    'currency_number': 826,
-                                    'currency_code': 'gbp',
-                                    'currency_pre_symbol': '#',
-                                    'currency_places': 2,
-                                    'currency_post_symbol': ''
-                                }
-                            }
-                        ]
-                    }
-                ],
-                'ticket_type_code': 'STALLS',
-                'ticket_type_desc': 'Stalls'
+            2017: {
+                2: 251526135,
+                1: 2012209087,
+                3: 117308407
             }
-        ]
+        },
+        'weekday_mask': 63,
     }
+    details = AvailabilityDetails(**kwargs)
+    return details
 
 
 @pytest.fixture
@@ -524,13 +324,13 @@ class TestAvailabilityDetails:
 
         assert details[0]._calendar_masks == {
             2016: {
-                'dec': 1065287163,
-                'nov': 536870912
+                12: 1065287163,
+                11: 536870912
             },
             2017: {
-                'feb': 251526135,
-                'jan': 2012209087,
-                'mar': 519961591
+                2: 251526135,
+                1: 2012209087,
+                3: 519961591
             },
         }
 
@@ -555,7 +355,7 @@ class TestAvailabilityDetails:
         details = AvailabilityDetails.from_api_data(data)
         assert len(details) == 1
 
-        assert details[0]._weekday_mask == 63
+        assert details[0].weekday_mask == 63
 
     def test_from_api_data_adds_valid_quantities(self):
         data = {
@@ -579,3 +379,71 @@ class TestAvailabilityDetails:
         assert len(details) == 1
 
         assert details[0].valid_quanities == [2, 3, 4]
+
+    def test_is_available_with_valid_year(self, avail_details):
+        assert avail_details.is_available(2016) is True
+
+    def test_is_available_with_invalid_year(self, avail_details):
+        assert avail_details.is_available(2019) is False
+
+    def test_is_available_fails_with_year_and_day_but_not_month(self, avail_details):
+        with pytest.raises(ValueError):
+            avail_details.is_available(2016, day=23)
+
+    def test_is_available_with_valid_year_month_combo(self, avail_details):
+        assert avail_details.is_available(2016, 12) is True
+
+    def test_is_available_with_invalid_year_month_combo(self, avail_details):
+        assert avail_details.is_available(2017, 6) is False
+
+    def test_is_available_with_valid_year_month_day_combo(self, avail_details):
+        """
+        mask is 1065287163 for dec 2016, this is 0b111111011111101111110111111011
+        each bit right to left is a day of the month, i.e we have availbility on
+        the 1st and 2nd and 4th, but not on the 3rd, 10th or 17th.
+        """
+        assert avail_details.is_available(2016, 12, 1) is True
+        assert avail_details.is_available(2016, 12, 2) is True
+        assert avail_details.is_available(2016, 12, 4) is True
+
+    def test_is_available_with_invalid_year_month_day_combo(self, avail_details):
+        """
+        mask is 1065287163 for dec 2016, this is 0b111111011111101111110111111011
+        each bit right to left is a day of the month, i.e we have availbility on
+        the 1st and 2nd and 4th, but not on the 3rd, 10th, 17th.
+        """
+        assert avail_details.is_available(2016, 12, 3) is False
+        assert avail_details.is_available(2016, 12, 10) is False
+        assert avail_details.is_available(2016, 12, 17) is False
+
+    def test_get_month_mask_valid_year_month(self, avail_details):
+        assert avail_details.get_month_mask(2016, 12) == 1065287163
+
+    def test_get_month_mask_invalid_year(self, avail_details):
+        assert avail_details.get_month_mask(2019, 12) is 0
+
+    def test_get_month_mask_invalid_month(self, avail_details):
+        assert avail_details.get_month_mask(2016, 6) is 0
+
+    def test_on_weekday(self):
+        """
+        mask is 7 bits representing the 7 days of the week. it's read right to
+        left with the right most being sunday and the left most being saturday
+        """
+        # 23 = 0b10111 (VALID = sun, mon, tues, thurs; INVALID = wed, fri, sat)
+        details = AvailabilityDetails(weekday_mask=23)
+
+        # 0 is monday
+        assert details.on_weekday(0) is True
+        # 1 is tuesday
+        assert details.on_weekday(1) is True
+        # 2 is wednesday
+        assert details.on_weekday(2) is False
+        # 3 is thursday
+        assert details.on_weekday(3) is True
+        # 4 is friday
+        assert details.on_weekday(4) is False
+        # 5 is saturday
+        assert details.on_weekday(5) is False
+        # 6 is sunday
+        assert details.on_weekday(6) is True

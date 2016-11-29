@@ -2,6 +2,11 @@ import datetime
 from pyticketswitch.utils import bitmask_to_numbered_list
 from pyticketswitch.interface.currency import Currency
 
+MONTH_NUMBERS = {
+    'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6, 'jul': 7,
+    'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12,
+}
+
 
 class AvailabilityMeta(object):
 
@@ -55,7 +60,7 @@ class AvailabilityDetails(object):
         self.first_date = first_date
         self.last_date = last_date
         self._calendar_masks = calendar_masks
-        self._weekday_mask = weekday_mask
+        self.weekday_mask = weekday_mask
         self.valid_quanities = valid_quanities
 
     @classmethod
@@ -105,7 +110,7 @@ class AvailabilityDetails(object):
 
                 kwargs['calendar_masks'] = {
                     int(year[5:]): {
-                        month[:3]: mask
+                        MONTH_NUMBERS[month[:3]]: mask
                         for month, mask in month_masks.items()
                     }
                     for year, month_masks in available_dates.items()
@@ -123,3 +128,54 @@ class AvailabilityDetails(object):
                 details.append(AvailabilityDetails(**kwargs))
 
         return details
+
+    def is_available(self, year, month=None, day=None):
+        """
+        Check if this combination of ticket_type and price band is available
+        on a given year/month/day.
+        """
+        if day and not month:
+            raise ValueError('a month must be specified to specify a day')
+
+        if year not in self._calendar_masks:
+            return False
+
+        year_data = self._calendar_masks[year]
+
+        if month and month not in year_data:
+            return False
+
+        month_mask = year_data.get(month)
+
+        # the month mask is a 32 bit int where the right most bit is the first
+        # day of the month. To find if we have availability on a specfic day,
+        # we bit shift the mask by the zero indexed day and AND it by 1. If the
+        # result is a 1 then this combo of ticket type and price band is
+        # available on that day, otherwise it is not.
+        if day and (month_mask >> (day - 1) & 1) == 0:
+            return False
+
+        return True
+
+    def get_month_mask(self, year, month):
+        """
+        Retrieve the available days mask for a year and month. If a mask is not
+        available then it will return 0
+        """
+        year_data = self._calendar_masks.get(year, {})
+        return year_data.get(month, 0)
+
+    def on_weekday(self, day):
+        """
+        Check if this combination of ticket_type and price band is available
+        on a given day of the week, where 0 is monday and sunday is 6.
+
+        NOTE: the api uses sunday as day 0 where as python uses monday. I've
+        made a concious decision here to use the python numbers to keep it
+        consistant with anything written against this. (also a sunday day 0 is
+        silly)
+        """
+
+        adjusted_day = day + 1 if day < 6 else 0
+
+        return bool(self.weekday_mask >> adjusted_day & 1)
