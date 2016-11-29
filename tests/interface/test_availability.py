@@ -38,7 +38,7 @@ def data_details():
                                     'currency_factor': 100,
                                     'currency_number': 826,
                                     'currency_code': 'gbp',
-                                    'currency_pre_symbol': '£',
+                                    'currency_pre_symbol': '#',
                                     'currency_places': 2,
                                     'currency_post_symbol': ''
                                 }
@@ -79,7 +79,7 @@ def data_details():
                                     'currency_factor': 100,
                                     'currency_number': 826,
                                     'currency_code': 'gbp',
-                                    'currency_pre_symbol': '£',
+                                    'currency_pre_symbol': '#',
                                     'currency_places': 2,
                                     'currency_post_symbol': ''
                                 }
@@ -114,7 +114,7 @@ def data_details():
                                     'currency_factor': 100,
                                     'currency_number': 826,
                                     'currency_code': 'gbp',
-                                    'currency_pre_symbol': '£',
+                                    'currency_pre_symbol': '#',
                                     'currency_places': 2,
                                     'currency_post_symbol': ''
                                 }
@@ -149,7 +149,7 @@ def data_details():
                                     'currency_factor': 100,
                                     'currency_number': 826,
                                     'currency_code': 'gbp',
-                                    'currency_pre_symbol': '£',
+                                    'currency_pre_symbol': '#',
                                     'currency_places': 2,
                                     'currency_post_symbol': ''
                                 }
@@ -190,7 +190,7 @@ def data_details():
                                     'currency_factor': 100,
                                     'currency_number': 826,
                                     'currency_code': 'gbp',
-                                    'currency_pre_symbol': '£',
+                                    'currency_pre_symbol': '#',
                                     'currency_places': 2,
                                     'currency_post_symbol': ''
                                 }
@@ -225,7 +225,7 @@ def data_details():
                                     'currency_factor': 100,
                                     'currency_number': 826,
                                     'currency_code': 'gbp',
-                                    'currency_pre_symbol': '£',
+                                    'currency_pre_symbol': '#',
                                     'currency_places': 2,
                                     'currency_post_symbol': ''
                                 }
@@ -312,7 +312,7 @@ def data_meta():
             "currency_number": 826,
             "currency_places": 2,
             "currency_post_symbol": "",
-            "currency_pre_symbol": "£"
+            "currency_pre_symbol": "#"
         },
         "quantity_options": {
             "valid_quantity_flags": [
@@ -340,7 +340,7 @@ class TestAvailabilityMeta:
         assert meta.contiguous_seat_selection_only is True
         assert meta.currency == Currency(
             'gbp', factor=100, places=2, number=826, post_symbol='',
-            pre_symbol='£'
+            pre_symbol='#'
         )
         assert meta.valid_quantities == [2, 3, 4, 5, 6, 7]
 
@@ -446,7 +446,7 @@ class TestAvailabilityDetails:
                                     'currency_number': 826,
                                     'currency_places': 2,
                                     'currency_post_symbol': 'GBP',
-                                    'currency_pre_symbol': '£'
+                                    'currency_pre_symbol': '#'
                                 },
                             }],
                         },
@@ -462,7 +462,7 @@ class TestAvailabilityDetails:
         assert details[0].currency.number == 826
         assert details[0].currency.places ==2
         assert details[0].currency.post_symbol == 'GBP'
-        assert details[0].currency.pre_symbol =='£'
+        assert details[0].currency.pre_symbol =='#'
 
     def test_from_api_data_adds_first_last_dates(self):
         data = {
