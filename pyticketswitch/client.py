@@ -3,6 +3,9 @@ import logging
 from pyticketswitch import exceptions, utils
 from pyticketswitch.interface.event import Event
 from pyticketswitch.interface.performance import Performance
+from pyticketswitch.interface.availability import AvailabilityMeta
+from pyticketswitch.interface.ticket_type import TicketType
+
 
 logger = logging.getLogger(__name__)
 
@@ -296,3 +299,68 @@ class Client(object):
         ]
 
         return performances
+
+    def get_availability(self, performance_id, discounts=False,
+                         example_seats=False, seat_blocks=False,
+                         user_commission=False, **kwargs):
+        """
+        Fetch available tickets and prices for a given performance
+        """
+        params = {'perf_id': performance_id}
+
+        if discounts:
+            params.update(add_discounts=True)
+
+        if example_seats:
+            params.update(add_example_seats=True)
+
+        if seat_blocks:
+            params.update(add_seat_blocks=True)
+
+        if user_commission:
+            params.update(add_user_commission=True)
+
+        params.update(kwargs)
+
+        response = self.make_request('availability', params)
+
+        if not response.status_code == 200:
+            raise exceptions.InvalidResponseError(
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    self.END_POINTS['availability'],
+                )
+            )
+
+        contents = response.json()
+
+        if 'availability' not in contents:
+            raise exceptions.InvalidResponseError(
+                "got no availability key in json response"
+            )
+
+        if contents.get('backend_is_broken'):
+            raise exceptions.BackendBrokenError(
+                'Error returned from upstream backend system'
+            )
+
+        if contents.get('backend_is_down'):
+            raise exceptions.BackendDownError(
+                'Unable to contact upstream backend system'
+            )
+
+        if contents.get('backend_throttle_failed'):
+            raise exceptions.BackendThrottleError(
+                'The call timed out while being queued for throttling'
+            )
+
+        meta = AvailabilityMeta.from_api_data(contents)
+
+        raw_availability = contents.get('availability', [])
+
+        availability = [
+            TicketType.from_api_data(data)
+            for data in raw_availability
+        ]
+
+        return availability, meta

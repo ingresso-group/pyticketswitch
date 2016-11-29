@@ -60,3 +60,19 @@ def specific_dates_from_api_data(dates):
         for day, valid in days.items()
         if valid is True
     ]
+
+
+def bitmask_to_boolean_list(mask):
+    of_length = max(1, mask.bit_length())
+    return [
+        bool(mask >> i & 1)
+        for i in range(of_length)
+    ]
+
+
+def bitmask_to_numbered_list(mask):
+    return [
+        i+1
+        for i in range(mask.bit_length())
+        if bool(mask >> i & 1)
+    ]

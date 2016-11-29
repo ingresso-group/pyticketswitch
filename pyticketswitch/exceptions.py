@@ -30,3 +30,19 @@ class EndPointMissingError(PyticketswitchError):
     def __init__(self, message, method, *args):
         super(EndPointMissingError, self).__init__(message, *args)
         self.method = method
+
+
+class BackendError(PyticketswitchError):
+    pass
+
+
+class BackendBrokenError(BackendError):
+    pass
+
+
+class BackendDownError(BackendError):
+    pass
+
+
+class BackendThrottleFailedError(BackendError):
+    pass

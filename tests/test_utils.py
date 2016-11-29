@@ -135,3 +135,33 @@ class TestSpecificDatesFromAPI:
         results = utils.specific_dates_from_api_data(api_data)
         assert len(results) == 3
         assert type(results[0]) == datetime.date
+
+
+class TestBitmaskToBooleanList:
+    """
+    NOTE: we are expecting big endian masks so the last bit of of our mask
+    should the first element in our array
+    """
+
+    def test_simple_masks(self):
+        # 0 == 0b0 so we only have one bit an it's a 0
+        assert utils.bitmask_to_boolean_list(0) == [False]
+        # 1 == 0b1 so we only have one bit an it's a 1
+        assert utils.bitmask_to_boolean_list(1) == [True]
+        # 5 == 0b101 so we expecting a length of 3 with the bits 1, 0 and 1
+        assert utils.bitmask_to_boolean_list(5) == [True, False, True]
+        # 6 == 0b110 so we expecting a length of 3 with the bits 0, 1 and 1
+        assert utils.bitmask_to_boolean_list(6) == [False, True, True]
+
+
+class TestBitmaskToNumberedList:
+
+    def test_simple_masks(self):
+        # 0 == 0b0 so we only have one bit an it's a 0
+        assert utils.bitmask_to_numbered_list(0) == []
+        # 1 == 0b1 so we only hanumberedbit an it's a 1
+        assert utils.bitmask_to_numbered_list(1) == [1]
+        # 5 == 0b101 so the 1st numbered bitst are 1's
+        assert utils.bitmask_to_numbered_list(5) == [1, 3]
+        # 6 == 0b110 so the 2nd numbered bits are 1's
+        assert utils.bitmask_to_numbered_list(6) == [2, 3]

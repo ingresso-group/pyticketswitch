@@ -4,6 +4,7 @@ from pyticketswitch.interface.ticket_type import TicketType
 from pyticketswitch.interface.content import Content
 from pyticketswitch.interface.media import Media
 from pyticketswitch.interface.review import Review
+from pyticketswitch.interface.availability import AvailabilityDetails
 from pyticketswitch import utils
 
 
@@ -155,11 +156,8 @@ class Event(object):
             for api_review in api_reviews.get('review', [])
         ]
 
-        api_availability = data.get('avail_details', {})
-        availability_details = [
-            TicketType.from_api_data(ticket_type)
-            for ticket_type in api_availability.get('ticket_type', [])
-        ]
+        availability_details = AvailabilityDetails.from_api_data(
+            data.get('avail_details', {}))
 
         api_meta_events = data.get('meta_event_component_events', {})
         meta_events = [
