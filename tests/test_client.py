@@ -100,21 +100,21 @@ class TestClient:
             }
         )
 
-    def test__add_kwargs_extra_info(self, client):
+    def test_add_optional_kwargs_extra_info(self, client):
         params = {}
-        client._add_kwargs(params, extra_info=True)
+        client.add_optional_kwargs(params, extra_info=True)
 
         assert params == {'req_extra_info': True}
 
-    def test__add_kwargs_reviews(self, client):
+    def test_add_optional_kwargs_reviews(self, client):
         params = {}
-        client._add_kwargs(params, reviews=True)
+        client.add_optional_kwargs(params, reviews=True)
 
         assert params == {'req_reviews': True}
 
-    def test__add_kwargs_media(self, client):
+    def test_add_optional_kwargs_media(self, client):
         params = {}
-        client._add_kwargs(params, media=True)
+        client.add_optional_kwargs(params, media=True)
 
         assert params == {
             'req_media_triplet_one': True,
@@ -129,84 +129,84 @@ class TestClient:
             'req_video_iframe': True,
         }
 
-    def test__add_kwargs_cost_range(self, client):
+    def test_add_optional_kwargs_cost_range(self, client):
         params = {}
-        client._add_kwargs(params, cost_range=True)
+        client.add_optional_kwargs(params, cost_range=True)
 
         assert params == {'req_cost_range': True}
 
-    def test__add_kwargs_best_value_offer(self, client):
+    def test_add_optional_kwargs_best_value_offer(self, client):
         params = {}
-        client._add_kwargs(params, best_value_offer=True)
+        client.add_optional_kwargs(params, best_value_offer=True)
 
         assert params == {
             'req_cost_range': True,
             'req_cost_range_best_value_offer': True,
         }
 
-    def test__add_kwargs_max_saving_offer(self, client):
+    def test_add_optional_kwargs_max_saving_offer(self, client):
         params = {}
-        client._add_kwargs(params, max_saving_offer=True)
+        client.add_optional_kwargs(params, max_saving_offer=True)
 
         assert params == {
             'req_cost_range': True,
             'req_cost_range_max_saving_offer': True,
         }
 
-    def test__add_kwargs_min_cost_offer(self, client):
+    def test_add_optional_kwargs_min_cost_offer(self, client):
         params = {}
-        client._add_kwargs(params, min_cost_offer=True)
+        client.add_optional_kwargs(params, min_cost_offer=True)
 
         assert params == {
             'req_cost_range': True,
             'req_cost_range_min_cost_offer': True,
         }
 
-    def test__add_kwargs_top_price_offer(self, client):
+    def test_add_optional_kwargs_top_price_offer(self, client):
         params = {}
-        client._add_kwargs(params, top_price_offer=True)
+        client.add_optional_kwargs(params, top_price_offer=True)
 
         params == {
             'req_cost_range': True,
             'req_cost_range_top_price_offer': True,
         }
 
-    def test__add_kwargs_no_singles_data(self, client):
+    def test_add_optional_kwargs_no_singles_data(self, client):
         params = {}
-        client._add_kwargs(params, no_singles_data=True)
+        client.add_optional_kwargs(params, no_singles_data=True)
 
         assert params == {
             'req_cost_range': True,
             'req_cost_range_no_singles_data': True,
         }
 
-    def test__add_kwargs_cost_range_details(self, client):
+    def test_add_optional_kwargs_cost_range_details(self, client):
         params = {}
-        client._add_kwargs(params, cost_range_details=True)
+        client.add_optional_kwargs(params, cost_range_details=True)
 
         assert params == {
             'req_cost_range_details': True,
         }
 
-    def test__add_kwargs_avail_details(self, client):
+    def test_add_optional_kwargs_avail_details(self, client):
         params = {}
-        client._add_kwargs(params, availability=True)
+        client.add_optional_kwargs(params, availability=True)
 
         params == {
             'req_avail_details': True,
         }
 
-    def test__add_kwargs_avail_details_with_perfs(self, client):
+    def test_add_optional_kwargs_avail_details_with_perfs(self, client):
         params = {}
-        client._add_kwargs(params, availability_with_performances=True)
+        client.add_optional_kwargs(params, availability_with_performances=True)
 
         params == {
             'req_avail_details_with_perfs': True,
         }
 
-    def test__add_kwargs_meta_components(self, client):
+    def test_add_optional_kwargs_meta_components(self, client):
         params = {}
-        client._add_kwargs(params, meta_components=True)
+        client.add_optional_kwargs(params, meta_components=True)
 
         params == {'req_meta_components': True}
 

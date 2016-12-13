@@ -60,13 +60,14 @@ class Client(object):
         response = requests.get(url, params=params)
         return response
 
-    def _add_kwargs(self, params, availability=False,
-                    availability_with_performances=False, extra_info=False,
-                    reviews=False, media=False, cost_range=False,
-                    best_value_offer=False, max_saving_offer=False,
-                    min_cost_offer=False, top_price_offer=False,
-                    no_singles_data=False, cost_range_details=False,
-                    meta_components=False, **kwargs):
+    def add_optional_kwargs(self, params, availability=False,
+                            availability_with_performances=False,
+                            extra_info=False, reviews=False, media=False,
+                            cost_range=False, best_value_offer=False,
+                            max_saving_offer=False, min_cost_offer=False,
+                            top_price_offer=False, no_singles_data=False,
+                            cost_range_details=False, meta_components=False,
+                            **kwargs):
 
         if extra_info:
             params.update(req_extra_info=True)
@@ -174,7 +175,7 @@ class Client(object):
         if page_length > 0:
             params.update(page_len=page_length)
 
-        self._add_kwargs(params, **kwargs)
+        self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('events.v1', params)
 
@@ -211,7 +212,7 @@ class Client(object):
         if event_ids:
             params.update(event_id_list=','.join(event_ids))
 
-        self._add_kwargs(params, **kwargs)
+        self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('events_by_id.v1', params)
 
