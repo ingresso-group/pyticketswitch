@@ -401,13 +401,28 @@ class TestClient:
             'event_id_list': '6IF,25DR,3ENO',
         })
 
+    def test_get_events_invalid_response_code(self, client, monkeypatch, fake_func):
+        response = {'events_by_id': {}}
+        fake_response = FakeResponse(status_code=404, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_events(['6IF', '25DR'])
+
+    def test_get_events_no_results(self, client, monkeypatch, fake_func):
+        response = {}
+        fake_response = FakeResponse(status_code=200, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_events(['6IF', '25DR'])
+
     def test_get_events_misc_kwargs(self, client, mock_make_request_for_events):
         client.get_events([], foobar='lolbeans')
 
         mock_make_request_for_events.assert_called_with('events_by_id.v1', {
             'foobar': 'lolbeans'
         })
-
 
     def test_list_performances_invalid_response_code(self, client, monkeypatch, fake_func):
         response = {'results': {}}
@@ -527,7 +542,7 @@ class TestClient:
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
-            'foobar': 'lolbeans'
+            'foobar': 'lolbeans',
         })
 
     def test_get_performances(self, client, monkeypatch):
@@ -561,3 +576,18 @@ class TestClient:
         assert performance_one.event_id == 'ABC123'
         assert performance_two.event_id == 'DEF456'
 
+    def test_get_performances_invalid_response_code(self, client, monkeypatch, fake_func):
+        response = None
+        fake_response = FakeResponse(status_code=404, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_performances(['6IF-1', '6IF-2'])
+
+    def test_get_performances_no_performances(self, client, monkeypatch, fake_func):
+        response = {}
+        fake_response = FakeResponse(status_code=200, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_performances(['6IF-1', '6IF-2'])
