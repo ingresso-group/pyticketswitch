@@ -11,11 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class Client(object):
-    DEFAULT_ROOT_URL = "https://api.ticketswitch.com/cgi-bin"
-    END_POINTS = {
-        'events': 'json_events.exe',
-        'performances': 'json_performances.exe',
-    }
+    DEFAULT_ROOT_URL = "https://api.ticketswitch.com/f13"
 
     def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
                  language=None, domain=None, ip=None):
@@ -43,23 +39,12 @@ class Client(object):
 
         return user_path
 
-    def get_end_point(self, method):
-        if method not in self.END_POINTS:
-            raise exceptions.EndPointMissingError(
-                'no endpoint for method `{}`'.format(method),
-                method,
-            )
-
-        end_point = '/{}'.format(self.END_POINTS[method])
-        return end_point
-
-    def get_url(self, method):
+    def get_url(self, end_point):
         user_path = self.get_user_path()
-        end_point = self.get_end_point(method)
-        url = "{url}{end_point}{user_path}/".format(
+        url = "{url}/{end_point}{user_path}/".format(
             url=self.url,
-            user_path=user_path,
             end_point=end_point,
+            user_path=user_path,
         )
         return url
 
@@ -75,55 +60,13 @@ class Client(object):
         response = requests.get(url, params=params)
         return response
 
-    def get_events(self, keywords=None, start_date=None, end_date=None,
-                   country_code=None, city=None, latitude=None, longitude=None,
-                   radius=None, include_dead=False, include_non_live=False,
-                   availability=False, availability_with_performances=False,
-                   extra_info=False, reviews=False, media=False,
-                   cost_range=False, best_value_offer=False,
-                   max_saving_offer=False, min_cost_offer=False,
-                   top_price_offer=False, no_singles_data=False,
-                   cost_range_details=False, meta_components=False,
-                   order_by_popular=False, event_ids=None, page=0,
-                   page_length=0, **kwargs):
-
-        """
-        Search for events with the given parameters
-        """
-
-        params = {}
-
-        if keywords:
-            params.update(s_keys=','.join(keywords))
-
-        if start_date or end_date:
-            params.update(s_dates=utils.date_range_str(start_date, end_date))
-
-        if country_code:
-            params.update(s_coco=country_code)
-
-        if city:
-            params.update(s_city=city)
-
-        if all([latitude, longitude, radius]):
-            params.update(s_geo='{lat}:{lon}:{rad}'.format(
-                lat=latitude,
-                lon=longitude,
-                rad=radius,
-            ))
-        elif any([latitude, longitude, radius]):
-            raise exceptions.InvalidGeoData(
-                'Geo data must include latitude, longitude, and radius',
-            )
-
-        if include_dead:
-            params.update(include_dead=True)
-
-        if include_non_live:
-            params.update(include_non_live=True)
-
-        if order_by_popular:
-            params.update(s_top=True)
+    def _add_kwargs(self, params, availability=False,
+                    availability_with_performances=False, extra_info=False,
+                    reviews=False, media=False, cost_range=False,
+                    best_value_offer=False, max_saving_offer=False,
+                    min_cost_offer=False, top_price_offer=False,
+                    no_singles_data=False, cost_range_details=False,
+                    meta_components=False, **kwargs):
 
         if extra_info:
             params.update(req_extra_info=True)
@@ -180,23 +123,66 @@ class Client(object):
         if meta_components:
             params.update(req_meta_components=True)
 
-        if event_ids:
-            params.update(event_id_list=','.join(event_ids))
+        params.update(kwargs)
+
+    def search_events(self, keywords=None, start_date=None, end_date=None,
+                      country_code=None, city=None, latitude=None,
+                      longitude=None, radius=None, include_dead=False,
+                      include_non_live=False, order_by_popular=False,
+                      page=0, page_length=0, **kwargs):
+
+        """
+        Search for events with the given parameters
+        """
+
+        params = {}
+
+        if keywords:
+            params.update(s_keys=','.join(keywords))
+
+        if start_date or end_date:
+            params.update(s_dates=utils.date_range_str(start_date, end_date))
+
+        if country_code:
+            params.update(s_coco=country_code)
+
+        if city:
+            params.update(s_city=city)
+
+        if all([latitude, longitude, radius]):
+            params.update(s_geo='{lat}:{lon}:{rad}'.format(
+                lat=latitude,
+                lon=longitude,
+                rad=radius,
+            ))
+        elif any([latitude, longitude, radius]):
+            raise exceptions.InvalidGeoData(
+                'Geo data must include latitude, longitude, and radius',
+            )
+
+        if include_dead:
+            params.update(include_dead=True)
+
+        if include_non_live:
+            params.update(include_non_live=True)
+
+        if order_by_popular:
+            params.update(s_top=True)
 
         if page > 0:
             params.update(page_no=page)
         if page_length > 0:
             params.update(page_len=page_length)
 
-        params.update(kwargs)
+        self._add_kwargs(params, **kwargs)
 
-        response = self.make_request('events', params)
+        response = self.make_request('events.v1', params)
 
         if not response.status_code == 200:
             raise exceptions.InvalidResponseError(
                 "got status code `{}` from {}".format(
                     response.status_code,
-                    self.END_POINTS['events'],
+                    'events.v1',
                 )
             )
 
@@ -213,6 +199,42 @@ class Client(object):
             Event.from_api_data(data)
             for data in raw_events
         ]
+        return events
+
+    def get_events(self, event_ids, **kwargs):
+
+        """
+        Get events with the given id's
+        """
+        params = {}
+
+        if event_ids:
+            params.update(event_id_list=','.join(event_ids))
+
+        self._add_kwargs(params, **kwargs)
+
+        response = self.make_request('events_by_id.v1', params)
+
+        if not response.status_code == 200:
+            raise exceptions.InvalidResponseError(
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    'events_by_id.v1',
+                )
+            )
+
+        contents = response.json()
+
+        if 'events_by_id' not in contents:
+            raise exceptions.InvalidResponseError(
+                "got no events_by_id key in json response"
+            )
+
+        events_by_id = contents.get('events_by_id', {})
+        events = {
+            event_id: Event.from_api_data(raw_event.get('event'))
+            for event_id, raw_event in events_by_id.items()
+        }
         return events
 
     def get_performances(self, event_id, availability=False,
@@ -263,13 +285,13 @@ class Client(object):
 
         params.update(kwargs)
 
-        response = self.make_request('performances', params)
+        response = self.make_request('performances.v1', params)
 
         if not response.status_code == 200:
             raise exceptions.InvalidResponseError(
                 "got status code `{}` from {}".format(
                     response.status_code,
-                    self.END_POINTS['performances'],
+                    'performances.v1',
                 )
             )
 
@@ -322,13 +344,13 @@ class Client(object):
 
         params.update(kwargs)
 
-        response = self.make_request('availability', params)
+        response = self.make_request('availability.v1', params)
 
         if not response.status_code == 200:
             raise exceptions.InvalidResponseError(
                 "got status code `{}` from {}".format(
                     response.status_code,
-                    self.END_POINTS['availability'],
+                    'availability.v1',
                 )
             )
 
