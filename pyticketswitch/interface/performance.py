@@ -4,13 +4,13 @@ from pyticketswitch.interface.cost_range import CostRange
 
 class Performance(object):
 
-    def __init__(self, performance_id, event, date_time=None,
+    def __init__(self, performance_id, event_id, date_time=None,
                  has_pool_seats=False, is_limited=False,
                  cached_max_seats=None, cost_range=None,
                  no_singles_cost_range=None):
 
         self.performance_id = performance_id
-        self.event = event
+        self.event_id = event_id
         self.date_time = date_time
         self.has_pool_seats = has_pool_seats
         self.is_limited = is_limited
@@ -19,9 +19,10 @@ class Performance(object):
         self.no_singles_cost_range = no_singles_cost_range
 
     @classmethod
-    def from_api_data(cls, data, event):
+    def from_api_data(cls, data):
 
         performance_id = data.get('perf_id')
+        event_id = data.get('event_id')
 
         date_time = data.get('iso8601_date_and_time')
         if date_time:
@@ -43,7 +44,7 @@ class Performance(object):
 
         kwargs = {
             'performance_id': performance_id,
-            'event': event,
+            'event_id': event_id,
             'date_time': date_time,
             'has_pool_seats': data.get('has_pool_seats', False),
             'is_limited': data.get('is_limited', False),

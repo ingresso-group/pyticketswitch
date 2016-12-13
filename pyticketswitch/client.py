@@ -126,14 +126,14 @@ class Client(object):
 
         params.update(kwargs)
 
-    def search_events(self, keywords=None, start_date=None, end_date=None,
-                      country_code=None, city=None, latitude=None,
-                      longitude=None, radius=None, include_dead=False,
-                      include_non_live=False, order_by_popular=False,
-                      page=0, page_length=0, **kwargs):
+    def list_events(self, keywords=None, start_date=None, end_date=None,
+                    country_code=None, city=None, latitude=None,
+                    longitude=None, radius=None, include_dead=False,
+                    include_non_live=False, order_by_popular=False, page=0,
+                    page_length=0, **kwargs):
 
         """
-        Search for events with the given parameters
+        list events with the given parameters
         """
 
         params = {}
@@ -238,53 +238,13 @@ class Client(object):
         }
         return events
 
-    def get_performances(self, event_id, availability=False,
-                         cost_range=False, best_value_offer=False,
-                         max_saving_offer=False, min_cost_offer=False,
-                         top_price_offer=False, no_singles_data=False,
-                         performance_ids=None, page_length=0, page=0,
-                         **kwargs):
+    def list_performances(self, event_id, page_length=0, page=0, **kwargs):
         """
-        Get performances for a specified event
-
-
-        json_performances returns a list of performances and a list of events
-        that they belong to. This is due to meta events, where an event is a
-        composite of a collection of other events. As such this method parses
-        both the performance and event list, and maps each performance to it's
-        relevant event
-
-        TODO: Workout if we should be returning the event list as well.
+        List performances for a specified event
         """
         params = {'event_id': event_id}
 
-        if cost_range:
-            params.update(req_cost_range=True)
-
-        if best_value_offer:
-            params.update(req_cost_range_best_value_offer=True,
-                          req_cost_range=True)
-
-        if max_saving_offer:
-            params.update(req_cost_range_max_saving_offer=True,
-                          req_cost_range=True)
-
-        if min_cost_offer:
-            params.update(req_cost_range_min_cost_offer=True,
-                          req_cost_range=True)
-
-        if top_price_offer:
-            params.update(req_cost_range_top_price_offer=True,
-                          req_cost_range=True)
-
-        if no_singles_data:
-            params.update(req_cost_range_no_singles_data=True,
-                          req_cost_range=True)
-
-        if availability:
-            params.update(req_avail_details=True)
-
-        params.update(kwargs)
+        self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('performances.v1', params)
 
@@ -305,21 +265,47 @@ class Client(object):
 
         result = contents.get('results', {})
 
-        raw_events = result.get('events_by_id', {})
-        events = {
-            event_id: Event.from_api_data(event.get('event'))
-            for event_id, event in raw_events.items()
-            if event.get('event')
-        }
-
         raw_performances = result.get('performance', [])
         performances = [
-            Performance.from_api_data(
-                data,
-                events.get(data.get('event_id'))
-            )
+            Performance.from_api_data(data)
             for data in raw_performances
         ]
+
+        return performances
+
+    def get_performances(self, performance_ids, **kwargs):
+        """
+        Get performances retrieves performances with the specific given id's
+        """
+
+        params = {
+            'perf_id_list': ','.join(performance_ids),
+        }
+
+        self.add_optional_kwargs(params, **kwargs)
+
+        response = self.make_request('performances_by_id.v1', params)
+
+        if not response.status_code == 200:
+            raise exceptions.InvalidResponseError(
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    'performances_by_id.v1',
+                )
+            )
+
+        contents = response.json()
+
+        if 'performances_by_id' not in contents:
+            raise exceptions.InvalidResponseError(
+                "got no performances_by_id key in json response"
+            )
+
+        raw_performances = contents.get('performances_by_id', {})
+        performances = {
+            performance_id: Performance.from_api_data(data.get('performance'))
+            for performance_id, data in raw_performances
+        }
 
         return performances
 

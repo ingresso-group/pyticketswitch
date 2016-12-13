@@ -210,7 +210,7 @@ class TestClient:
 
         params == {'req_meta_components': True}
 
-    def test_search_events(self, client, monkeypatch):
+    def test_list_events(self, client, monkeypatch):
         response = {
             'results': {
                 'event': [
@@ -223,7 +223,7 @@ class TestClient:
         mock_make_request = Mock(return_value=fake_response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        events = client.search_events()
+        events = client.list_events()
 
         mock_make_request.assert_called_with('events.v1', {})
 
@@ -233,29 +233,29 @@ class TestClient:
         assert event_one.event_id =='ABC123'
         assert event_two.event_id == 'DEF456'
 
-    def test_search_events_with_keywords(self, client, mock_make_request):
-        client.search_events(keywords=['awesome', 'stuff'])
+    def test_list_events_with_keywords(self, client, mock_make_request):
+        client.list_events(keywords=['awesome', 'stuff'])
 
         mock_make_request.assert_called_with('events.v1', {
             's_keys': 'awesome,stuff',
         })
 
-    def test_search_events_with_start_date(self, client, mock_make_request):
-        client.search_events(start_date=datetime(2016, 7, 23, 0, 7, 25))
+    def test_list_events_with_start_date(self, client, mock_make_request):
+        client.list_events(start_date=datetime(2016, 7, 23, 0, 7, 25))
 
         mock_make_request.assert_called_with('events.v1', {
             's_dates': '20160723:',
         })
 
-    def test_search_events_with_end_date(self, client, mock_make_request):
-        client.search_events(end_date=datetime(2016, 7, 23, 0, 7, 25))
+    def test_list_events_with_end_date(self, client, mock_make_request):
+        client.list_events(end_date=datetime(2016, 7, 23, 0, 7, 25))
 
         mock_make_request.assert_called_with('events.v1', {
             's_dates': ':20160723',
         })
 
-    def test_search_events_with_start_and_end_date(self, client, mock_make_request):
-        client.search_events(
+    def test_list_events_with_start_and_end_date(self, client, mock_make_request):
+        client.list_events(
             start_date=datetime(2015, 3, 11, 0, 9, 45),
             end_date=datetime(2016, 7, 23, 0, 7, 25)
         )
@@ -264,22 +264,22 @@ class TestClient:
             's_dates': '20150311:20160723',
         })
 
-    def test_search_events_country_code(self, client, mock_make_request):
-        client.search_events(country_code='fj')
+    def test_list_events_country_code(self, client, mock_make_request):
+        client.list_events(country_code='fj')
 
         mock_make_request.assert_called_with('events.v1', {
             's_coco': 'fj',
         })
 
-    def test_search_events_city_code(self, client, mock_make_request):
-        client.search_events(city='ldn')
+    def test_list_events_city_code(self, client, mock_make_request):
+        client.list_events(city='ldn')
 
         mock_make_request.assert_called_with('events.v1', {
             's_city': 'ldn',
         })
 
-    def test_search_events_geolocation(self, client, mock_make_request):
-        client.search_events(
+    def test_list_events_geolocation(self, client, mock_make_request):
+        client.list_events(
             latitude=51.52961137,
             longitude=-0.10601562,
             radius=10
@@ -289,77 +289,77 @@ class TestClient:
             's_geo': '51.52961137:-0.10601562:10',
         })
 
-    def test_search_events_invalid_geolocation(self, client):
+    def test_list_events_invalid_geolocation(self, client):
         with pytest.raises(exceptions.InvalidGeoData):
-            client.search_events(
+            client.list_events(
                 longitude=-0.10601562,
                 radius=10
             )
 
         with pytest.raises(exceptions.InvalidGeoData):
-            client.search_events(
+            client.list_events(
                 latitude=51.52961137,
                 radius=10
             )
 
         with pytest.raises(exceptions.InvalidGeoData):
-            client.search_events(
+            client.list_events(
                 latitude=51.52961137,
                 longitude=-0.10601562,
             )
 
         with pytest.raises(exceptions.InvalidGeoData):
-            client.search_events(
+            client.list_events(
                 radius=10
             )
 
-    def test_search_events_include_dead(self, client, mock_make_request):
-        client.search_events(include_dead=True)
+    def test_list_events_include_dead(self, client, mock_make_request):
+        client.list_events(include_dead=True)
 
         mock_make_request.assert_called_with('events.v1', {
             'include_dead': True,
         })
 
-    def test_search_events_include_non_live(self, client, mock_make_request):
-        client.search_events(include_non_live=True)
+    def test_list_events_include_non_live(self, client, mock_make_request):
+        client.list_events(include_non_live=True)
 
         mock_make_request.assert_called_with('events.v1', {
             'include_non_live': True,
         })
 
-    def test_search_events_order_by_popular(self, client, mock_make_request):
-        client.search_events(order_by_popular=True)
+    def test_list_events_order_by_popular(self, client, mock_make_request):
+        client.list_events(order_by_popular=True)
 
         mock_make_request.assert_called_with('events.v1', {
             's_top': True,
         })
 
-    def test_search_events_pagination(self, client, mock_make_request):
-        client.search_events(page=2, page_length=50)
+    def test_list_events_pagination(self, client, mock_make_request):
+        client.list_events(page=2, page_length=50)
 
         mock_make_request.assert_called_with('events.v1', {
             'page_no': 2,
             'page_len': 50,
         })
 
-    def test_search_events_invalid_response_code(self, client, monkeypatch, fake_func):
+    def test_list_events_invalid_response_code(self, client, monkeypatch, fake_func):
         response = {'results': {}}
         fake_response = FakeResponse(status_code=404, json=response)
         monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
 
         with pytest.raises(exceptions.InvalidResponseError):
-            client.search_events()
+            client.list_events()
 
-    def test_search_events_no_results(self, client, monkeypatch, fake_func):
+    def test_list_events_no_results(self, client, monkeypatch, fake_func):
         response = {}
         fake_response = FakeResponse(status_code=200, json=response)
         monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
 
         with pytest.raises(exceptions.InvalidResponseError):
-            client.search_events()
+            client.list_events()
 
-    def test_search_events_misc_kwargs(self, client, mock_make_request):
-        client.search_events(foobar='lolbeans')
+    def test_list_events_misc_kwargs(self, client, mock_make_request):
+        client.list_events(foobar='lolbeans')
 
         mock_make_request.assert_called_with('events.v1', {
             'foobar': 'lolbeans'
@@ -408,62 +408,24 @@ class TestClient:
             'foobar': 'lolbeans'
         })
 
-    def test_get_performances_with_meta_event(self, client, monkeypatch):
-        response = {
-            'results': {
-                'events_by_id': {
-                    'ABC123': {'event': {'event_id': 'ABC123'}},
-                    'DEF456': {'event': {'event_id': 'DEF456'}},
-                },
-                'performance': [
-                    {'perf_id': 'ABC123-1', 'event_id': 'ABC123'},
-                    {'perf_id': 'DEF456-1', 'event_id': 'DEF456'},
-                    {'perf_id': 'ABC123-2', 'event_id': 'ABC123'},
-                ]
-            },
-        }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
-        monkeypatch.setattr(client, 'make_request', mock_make_request)
-
-        performances = client.get_performances('GHI789')
-
-        mock_make_request.assert_called_with('performances.v1', {
-            'event_id': 'GHI789',
-        })
-
-        assert len(performances) == 3
-
-        performance_one, performance_two, performance_three = performances
-
-        assert performance_one.performance_id == 'ABC123-1'
-        assert performance_two.performance_id == 'DEF456-1'
-        assert performance_three.performance_id == 'ABC123-2'
-
-        assert performance_one.event.event_id == 'ABC123'
-        assert performance_two.event.event_id == 'DEF456'
-        assert performance_three.event.event_id == 'ABC123'
-
-        assert performance_one.event is performance_three.event
-
-    def test_get_performances_invalid_response_code(self, client, monkeypatch, fake_func):
+    def test_list_performances_invalid_response_code(self, client, monkeypatch, fake_func):
         response = {'results': {}}
         fake_response = FakeResponse(status_code=404, json=response)
         monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
 
         with pytest.raises(exceptions.InvalidResponseError):
-            client.get_performances('6IF')
+            client.list_performances('6IF')
 
-    def test_get_performances_no_results(self, client, monkeypatch, fake_func):
+    def test_list_performances_no_results(self, client, monkeypatch, fake_func):
         response = {}
         fake_response = FakeResponse(status_code=200, json=response)
         monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
 
         with pytest.raises(exceptions.InvalidResponseError):
-            client.get_performances('6IF')
+            client.list_performances('6IF')
 
-    def test_get_performances(self, client, monkeypatch):
+    def test_list_performances(self, client, monkeypatch):
         response = {
             'results': {
                 'events_by_id': {
@@ -481,7 +443,7 @@ class TestClient:
         mock_make_request = Mock(return_value=fake_response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        performances = client.get_performances('ABC123')
+        performances = client.list_performances('ABC123')
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
@@ -495,20 +457,20 @@ class TestClient:
         assert performance_two.performance_id == 'ABC123-2'
         assert performance_three.performance_id == 'ABC123-3'
 
-        assert performance_one.event.event_id == 'ABC123'
-        assert performance_two.event.event_id == 'ABC123'
-        assert performance_three.event.event_id == 'ABC123'
+        assert performance_one.event_id == 'ABC123'
+        assert performance_two.event_id == 'ABC123'
+        assert performance_three.event_id == 'ABC123'
 
-    def test_get_performances_cost_range(self, client, mock_make_request):
-        client.get_performances('ABC123', cost_range=True)
+    def test_list_performances_cost_range(self, client, mock_make_request):
+        client.list_performances('ABC123', cost_range=True)
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
             'req_cost_range': True
         })
 
-    def test_get_performances_best_value_offer(self, client, mock_make_request):
-        client.get_performances('ABC123', best_value_offer=True)
+    def test_list_performances_best_value_offer(self, client, mock_make_request):
+        client.list_performances('ABC123', best_value_offer=True)
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
@@ -516,8 +478,8 @@ class TestClient:
             'req_cost_range_best_value_offer': True
         })
 
-    def test_get_performances_max_saving_offer(self, client, mock_make_request):
-        client.get_performances('ABC123', max_saving_offer=True)
+    def test_list_performances_max_saving_offer(self, client, mock_make_request):
+        client.list_performances('ABC123', max_saving_offer=True)
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
@@ -525,8 +487,8 @@ class TestClient:
             'req_cost_range_max_saving_offer': True
         })
 
-    def test_get_performances_min_cost_offer(self, client, mock_make_request):
-        client.get_performances('ABC123', min_cost_offer=True)
+    def test_list_performances_min_cost_offer(self, client, mock_make_request):
+        client.list_performances('ABC123', min_cost_offer=True)
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
@@ -534,8 +496,8 @@ class TestClient:
             'req_cost_range_min_cost_offer': True
         })
 
-    def test_get_performances_top_price_offer(self, client, mock_make_request):
-        client.get_performances('ABC123', top_price_offer=True)
+    def test_list_performances_top_price_offer(self, client, mock_make_request):
+        client.list_performances('ABC123', top_price_offer=True)
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
@@ -543,8 +505,8 @@ class TestClient:
             'req_cost_range_top_price_offer': True
         })
 
-    def test_get_performances_no_singles_data(self, client, mock_make_request):
-        client.get_performances('ABC123', no_singles_data=True)
+    def test_list_performances_no_singles_data(self, client, mock_make_request):
+        client.list_performances('ABC123', no_singles_data=True)
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
@@ -552,16 +514,16 @@ class TestClient:
             'req_cost_range_no_singles_data': True
         })
 
-    def test_get_performances_availability(self, client, mock_make_request):
-        client.get_performances('ABC123', availability=True)
+    def test_list_performances_availability(self, client, mock_make_request):
+        client.list_performances('ABC123', availability=True)
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
             'req_avail_details': True
         })
 
-    def test_get_performances_misc_kwargs(self, client, mock_make_request):
-        client.get_performances('ABC123', foobar='lolbeans')
+    def test_list_performances_misc_kwargs(self, client, mock_make_request):
+        client.list_performances('ABC123', foobar='lolbeans')
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',

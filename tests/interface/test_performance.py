@@ -51,13 +51,8 @@ class TestPerformance:
             },
         }
 
-        class FakeEvent(object):
-            def __init__(self):
-                self.event_id = '25DR'
-
-        event = FakeEvent()
-        performance = Performance.from_api_data(data, event)
-        assert performance.event.event_id == '25DR'
+        performance = Performance.from_api_data(data)
+        assert performance.event_id == '25DR'
         assert performance.date_time.year == 2016
         assert performance.date_time.month == 10
         assert performance.date_time.day == 5
