@@ -529,3 +529,35 @@ class TestClient:
             'event_id': 'ABC123',
             'foobar': 'lolbeans'
         })
+
+    def test_get_performances(self, client, monkeypatch):
+        response = {
+            'performances_by_id': {
+                'ABC123-1': {
+                    'performance': {'perf_id': 'ABC123-1', 'event_id': 'ABC123'},
+                },
+                'DEF456-2': {
+                    'performance': {'perf_id': 'DEF456-2', 'event_id': 'DEF456'},
+                }
+            },
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        performances = client.get_performances(['ABC123-1', 'DEF456-2'])
+
+        mock_make_request.assert_called_with('performances_by_id.v1', {
+            'perf_id_list': 'ABC123-1,DEF456-2',
+        })
+
+        performance_one = performances['ABC123-1']
+        performance_two = performances['DEF456-2']
+
+        assert performance_one.performance_id == 'ABC123-1'
+        assert performance_two.performance_id == 'DEF456-2'
+
+        assert performance_one.event_id == 'ABC123'
+        assert performance_two.event_id == 'DEF456'
+
