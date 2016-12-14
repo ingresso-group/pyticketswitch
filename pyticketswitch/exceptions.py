@@ -44,5 +44,5 @@ class BackendDownError(BackendError):
     pass
 
 
-class BackendThrottleFailedError(BackendError):
+class BackendThrottleError(BackendError):
     pass

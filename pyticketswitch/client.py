@@ -329,7 +329,7 @@ class Client(object):
         if user_commission:
             params.update(add_user_commission=True)
 
-        params.update(kwargs)
+        self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('availability.v1', params)
 
@@ -342,11 +342,6 @@ class Client(object):
             )
 
         contents = response.json()
-
-        if 'availability' not in contents:
-            raise exceptions.InvalidResponseError(
-                "got no availability key in json response"
-            )
 
         if contents.get('backend_is_broken'):
             raise exceptions.BackendBrokenError(
@@ -363,13 +358,18 @@ class Client(object):
                 'The call timed out while being queued for throttling'
             )
 
+        if 'availability' not in contents:
+            raise exceptions.InvalidResponseError(
+                "got no availability key in json response"
+            )
+
         meta = AvailabilityMeta.from_api_data(contents)
 
-        raw_availability = contents.get('availability', [])
+        raw_availability = contents.get('availability', {})
 
         availability = [
             TicketType.from_api_data(data)
-            for data in raw_availability
+            for data in raw_availability.get('ticket_type', [])
         ]
 
         return availability, meta

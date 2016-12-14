@@ -29,9 +29,28 @@ def mock_make_request(client, monkeypatch):
     monkeypatch.setattr(client, 'make_request', mock_make_request)
     return mock_make_request
 
+
 @pytest.fixture
 def mock_make_request_for_events(client, monkeypatch):
     response = {'events_by_id': {}}
+    fake_response = FakeResponse(status_code=200, json=response)
+    mock_make_request = Mock(return_value=fake_response)
+    monkeypatch.setattr(client, 'make_request', mock_make_request)
+    return mock_make_request
+
+
+@pytest.fixture
+def mock_make_request_for_performances(client, monkeypatch):
+    response = {'performances_by_id': {}}
+    fake_response = FakeResponse(status_code=200, json=response)
+    mock_make_request = Mock(return_value=fake_response)
+    monkeypatch.setattr(client, 'make_request', mock_make_request)
+    return mock_make_request
+
+
+@pytest.fixture
+def mock_make_request_for_availability(client, monkeypatch):
+    response = {'availability': {}}
     fake_response = FakeResponse(status_code=200, json=response)
     mock_make_request = Mock(return_value=fake_response)
     monkeypatch.setattr(client, 'make_request', mock_make_request)
@@ -591,3 +610,185 @@ class TestClient:
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.get_performances(['6IF-1', '6IF-2'])
+
+    def test_get_performances_misc_kwargs(self, client, mock_make_request_for_performances):
+        client.get_performances(['6IF-1', '25DR-2'], foobar='lolbeans')
+
+        mock_make_request_for_performances.assert_called_with('performances_by_id.v1', {
+            'perf_id_list': '6IF-1,25DR-2',
+            'foobar': 'lolbeans',
+        })
+
+    def test_get_availability(self, client, monkeypatch):
+        response = {
+            'availability': {
+                'ticket_type': [
+                    {
+                        'ticket_type_code': 'CIRCLE',
+                        'price_band': [
+                            {'price_band_code': 'A'},
+                            {'price_band_code': 'B'},
+                        ]
+                    },
+                    {
+                        'ticket_type_code': 'STALLS',
+                        'price_band': [
+                            {'price_band_code': 'C'},
+                            {'price_band_code': 'D'},
+                        ]
+                    }
+                ]
+            },
+
+            'backend_is_broken': False,
+            'backend_is_down': False,
+            'backend_throttle_failed': False,
+            'can_leave_singles': True,
+            'contiguous_seat_selection_only': True,
+            'currency': {
+                'currency_code': "gbp"
+            },
+            'quantity_options': {
+                'valid_quantity_bitmask': 126
+            },
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        availability, meta = client.get_availability('ABC123-1')
+
+        mock_make_request.assert_called_with('availability.v1', {
+            'perf_id': 'ABC123-1',
+        })
+
+        assert meta.can_leave_singles is True
+        assert meta.contiguous_seat_selection_only is True
+        assert meta.currency.code == 'gbp'
+        assert meta.valid_quantities == [2, 3, 4, 5, 6, 7]
+
+        assert len(availability) == 2
+
+        ticket_type_one = availability[0]
+        assert ticket_type_one.code == 'CIRCLE'
+
+        assert len(ticket_type_one.price_bands) == 2
+
+        price_band_one = ticket_type_one.price_bands[0]
+        assert price_band_one.code == 'A'
+
+        price_band_two = ticket_type_one.price_bands[1]
+        assert price_band_two.code == 'B'
+
+        ticket_type_two = availability[1]
+        assert ticket_type_two.code == 'STALLS'
+
+        assert len(ticket_type_two.price_bands) == 2
+
+        price_band_three = ticket_type_two.price_bands[0]
+        assert price_band_three.code == 'C'
+
+        price_band_four = ticket_type_two.price_bands[1]
+        assert price_band_four.code == 'D'
+
+    def test_get_availability_with_discounts(self, client, mock_make_request_for_availability):
+        client.get_availability('6IF-1', discounts=True)
+
+        mock_make_request_for_availability.assert_called_with('availability.v1', {
+            'perf_id': '6IF-1',
+            'add_discounts': True
+        })
+
+    def test_get_availability_with_example_seats(self, client, mock_make_request_for_availability):
+        client.get_availability('6IF-1', example_seats=True)
+
+        mock_make_request_for_availability.assert_called_with('availability.v1', {
+            'perf_id': '6IF-1',
+            'add_example_seats': True
+        })
+
+    def test_get_availability_with_seat_blocks(self, client, mock_make_request_for_availability):
+        client.get_availability('6IF-1', seat_blocks=True)
+
+        mock_make_request_for_availability.assert_called_with('availability.v1', {
+            'perf_id': '6IF-1',
+            'add_seat_blocks': True
+        })
+
+    def test_get_availability_with_user_commission(self, client, mock_make_request_for_availability):
+        client.get_availability('6IF-1', user_commission=True)
+
+        mock_make_request_for_availability.assert_called_with('availability.v1', {
+            'perf_id': '6IF-1',
+            'add_user_commission': True,
+        })
+
+    def test_get_availability_no_availability(self, client, monkeypatch):
+        response = {
+            'backend_is_broken': False,
+            'backend_is_down': False,
+            'backend_throttle_failed': False,
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            _, _ = client.get_availability('ABC123-1')
+
+    def test_get_availability_backend_is_broken(self, client, monkeypatch):
+        response = {
+            'availability': {},
+            'backend_is_broken': True,
+            'backend_is_down': False,
+            'backend_throttle_failed': False,
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.BackendBrokenError):
+            _, _ = client.get_availability('ABC123-1')
+
+    def test_get_availability_backend_is_down(self, client, monkeypatch):
+        response = {
+            'availability': {},
+            'backend_is_broken': False,
+            'backend_is_down': True,
+            'backend_throttle_failed': False,
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.BackendDownError):
+            _, _ = client.get_availability('ABC123-1')
+
+    def test_get_availability_backend_throttle_failed(self, client, monkeypatch):
+        response = {
+            'availability': {},
+            'backend_is_broken': False,
+            'backend_is_down': False,
+            'backend_throttle_failed': True,
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.BackendThrottleError):
+            _, _ = client.get_availability('ABC123-1')
+
+    def test_get_availability_bad_status_code(self, client, monkeypatch):
+        response = {}
+
+        fake_response = FakeResponse(status_code=500, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            _, _ = client.get_availability('ABC123-1')

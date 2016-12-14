@@ -21,9 +21,12 @@ class AvailabilityMeta(object):
     @classmethod
     def from_api_data(cls, data):
         quantity_options = data.get('quantity_options', {})
-        valid_quantity_bitmask = quantity_options.get('valid_quantity_bitmask', [])
+        valid_quantity_bitmask = quantity_options.get('valid_quantity_bitmask')
 
-        valid_quantities = bitmask_to_numbered_list(valid_quantity_bitmask)
+        if valid_quantity_bitmask:
+            valid_quantities = bitmask_to_numbered_list(valid_quantity_bitmask)
+        else:
+            valid_quantities = None
 
         kwargs = {
             'can_leave_singles': data.get('can_leave_singles', True),
