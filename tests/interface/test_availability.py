@@ -115,15 +115,7 @@ def data_meta():
             "currency_pre_symbol": "#"
         },
         "quantity_options": {
-            "valid_quantity_flags": [
-                False,
-                True,
-                True,
-                True,
-                True,
-                True,
-                True
-            ]
+            "valid_quantity_bitmask": 105,
         }
     }
 
@@ -142,7 +134,7 @@ class TestAvailabilityMeta:
             'gbp', factor=100, places=2, number=826, post_symbol='',
             pre_symbol='#'
         )
-        assert meta.valid_quantities == [2, 3, 4, 5, 6, 7]
+        assert meta.valid_quantities == [1, 4, 6, 7]
 
 
 class TestAvailabilityDetails:
