@@ -392,7 +392,7 @@ class Client(object):
 
         if 'send_methods' not in contents:
             raise exceptions.InvalidResponseError(
-                "got no availability key in json response"
+                "got no send_methods key in json response"
             )
 
         raw_send_methods = contents.get('send_methods', {})

@@ -792,3 +792,43 @@ class TestClient:
 
         with pytest.raises(exceptions.InvalidResponseError):
             _, _ = client.get_availability('ABC123-1')
+
+    def test_get_send_methods(self, client, monkeypatch):
+        response = {
+            'send_methods': {
+                'send_method': [
+                    {'send_code': 'COBO'},
+                    {'send_code': 'POST'}
+                ]
+            }
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        send_methods = client.get_send_methods('ABC123-1')
+
+        mock_make_request.assert_called_with('send_methods.v1', {
+            'perf_id': 'ABC123-1',
+        })
+
+        assert len(send_methods) == 2
+        assert send_methods[0].code == 'COBO'
+        assert send_methods[1].code == 'POST'
+
+    def test_get_send_methods_bad_response_code(self, client, monkeypatch):
+        fake_response = FakeResponse(status_code=500, json={})
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_send_methods('ABC123-1')
+
+    def test_get_send_methods_bad_data(self, client, monkeypatch):
+        fake_response = FakeResponse(status_code=200, json={})
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_send_methods('ABC123-1')
