@@ -5,6 +5,7 @@ from pyticketswitch.interface.event import Event
 from pyticketswitch.interface.performance import Performance
 from pyticketswitch.interface.availability import AvailabilityMeta
 from pyticketswitch.interface.ticket_type import TicketType
+from pyticketswitch.interface.send_method import SendMethod
 
 
 logger = logging.getLogger(__name__)
@@ -373,3 +374,32 @@ class Client(object):
         ]
 
         return availability, meta
+
+    def get_send_methods(self, performance_id):
+
+        params = {'perf_id': performance_id}
+        response = self.make_request('send_methods.v1', params)
+
+        if not response.status_code == 200:
+            raise exceptions.InvalidResponseError(
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    'send_methods.v1',
+                )
+            )
+
+        contents = response.json()
+
+        if 'send_methods' not in contents:
+            raise exceptions.InvalidResponseError(
+                "got no availability key in json response"
+            )
+
+        raw_send_methods = contents.get('send_methods', {})
+
+        send_methods = [
+            SendMethod.from_api_data(data)
+            for data in raw_send_methods.get('send_method', [])
+        ]
+
+        return send_methods
