@@ -6,6 +6,7 @@ from pyticketswitch.interface.performance import Performance
 from pyticketswitch.interface.availability import AvailabilityMeta
 from pyticketswitch.interface.ticket_type import TicketType
 from pyticketswitch.interface.send_method import SendMethod
+from pyticketswitch.interface.month import Month
 
 
 logger = logging.getLogger(__name__)
@@ -239,6 +240,39 @@ class Client(object):
         }
         return events
 
+    def get_months(self, event_id, **kwargs):
+        params = {'event_id': event_id}
+
+        self.add_optional_kwargs(params, **kwargs)
+
+        response = self.make_request('months.v1', params)
+
+        if not response.status_code == 200:
+            raise exceptions.InvalidResponseError(
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    'months.v1',
+                )
+            )
+
+        contents = response.json()
+
+        if 'results' not in contents:
+            raise exceptions.InvalidResponseError(
+                "got no results key in json response"
+            )
+
+        result = contents.get('results', {})
+        raw_months = result.get('month', [])
+
+        months = [
+            Month.from_api_data(data)
+            for data in raw_months
+        ]
+
+        return months
+
+
     def list_performances(self, event_id, page_length=0, page=0, **kwargs):
         """
         List performances for a specified event
@@ -403,3 +437,4 @@ class Client(object):
         ]
 
         return send_methods
+

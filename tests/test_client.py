@@ -443,6 +443,61 @@ class TestClient:
             'foobar': 'lolbeans'
         })
 
+    def test_get_months(self, client, monkeypatch):
+        response = {
+            'results': {
+                'month': [
+                    {'month': 'dec', 'year': 2016},
+                    {'month': 'jan', 'year': 2017},
+                    {'month': 'feb', 'year': 2017},
+                ]
+            }
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        months = client.get_months('ABC123')
+
+        mock_make_request.assert_called_with(
+            'months.v1',
+            {'event_id': 'ABC123'},
+        )
+
+        assert len(months) == 3
+
+        assert months[0].month == 12
+        assert months[0].year == 2016
+        assert months[1].month == 1
+        assert months[1].year == 2017
+        assert months[2].month == 2
+        assert months[2].year == 2017
+
+    def test_get_months_invalid_response_code(self, client, monkeypatch, fake_func):
+        response = {'results': {}}
+        fake_response = FakeResponse(status_code=404, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_months('6IF')
+
+    def test_get_months_no_results(self, client, monkeypatch, fake_func):
+        response = {}
+        fake_response = FakeResponse(status_code=200, json=response)
+        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_months('6IF')
+
+    def test_get_months_misc_kwargs(self, client, mock_make_request):
+        client.get_months('6IF', foobar='lolbeans')
+
+        mock_make_request.assert_called_with('months.v1', {
+            'event_id': '6IF',
+            'foobar': 'lolbeans'
+        })
+
     def test_list_performances_invalid_response_code(self, client, monkeypatch, fake_func):
         response = {'results': {}}
         fake_response = FakeResponse(status_code=404, json=response)
