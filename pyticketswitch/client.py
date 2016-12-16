@@ -7,6 +7,7 @@ from pyticketswitch.interface.availability import AvailabilityMeta
 from pyticketswitch.interface.ticket_type import TicketType
 from pyticketswitch.interface.send_method import SendMethod
 from pyticketswitch.interface.month import Month
+from pyticketswitch.interface.discount import Discount
 
 
 logger = logging.getLogger(__name__)
@@ -272,7 +273,6 @@ class Client(object):
 
         return months
 
-
     def list_performances(self, event_id, page_length=0, page=0, **kwargs):
         """
         List performances for a specified event
@@ -438,3 +438,35 @@ class Client(object):
 
         return send_methods
 
+    def get_discounts(self, performance_id, ticket_type_code, price_band_code):
+        params = {
+            'perf_id': performance_id,
+            'ticket_type_code': ticket_type_code,
+            'price_band_code': price_band_code,
+        }
+
+        response = self.make_request('discounts.v1', params)
+
+        if not response.status_code == 200:
+            raise exceptions.InvalidResponseError(
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    'discounts.v1',
+                )
+            )
+
+        contents = response.json()
+
+        if 'discounts' not in contents:
+            raise exceptions.InvalidResponseError(
+                "got no discounts key in json response"
+            )
+
+        raw_send_methods = contents.get('discounts', {})
+
+        send_methods = [
+            Discount.from_api_data(data)
+            for data in raw_send_methods.get('discount', [])
+        ]
+
+        return send_methods
