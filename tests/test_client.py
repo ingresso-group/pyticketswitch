@@ -887,3 +887,45 @@ class TestClient:
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.get_send_methods('ABC123-1')
+
+    def test_get_discounts(self, client, monkeypatch):
+        response = {
+            'discounts': {
+                'discount': [
+                    {'discount_code': 'ADULT'},
+                    {'discount_code': 'CHILD'}
+                ]
+            }
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        discounts = client.get_discounts('ABC123-1', 'STALLS', 'A/pool')
+
+        mock_make_request.assert_called_with('discounts.v1', {
+            'perf_id': 'ABC123-1',
+            'ticket_type_code': 'STALLS',
+            'price_band_code': 'A/pool',
+        })
+
+        assert len(discounts) == 2
+        assert discounts[0].code == 'ADULT'
+        assert discounts[1].code == 'CHILD'
+
+    def test_get_discounts_bad_response_code(self, client, monkeypatch):
+        fake_response = FakeResponse(status_code=500, json={})
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_discounts('ABC123-1', 'STALLS', 'A/pool')
+
+    def test_get_discounts_bad_data(self, client, monkeypatch):
+        fake_response = FakeResponse(status_code=200, json={})
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_discounts('ABC123-1', 'STALLS', 'A/pool')

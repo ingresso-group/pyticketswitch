@@ -462,11 +462,11 @@ class Client(object):
                 "got no discounts key in json response"
             )
 
-        raw_send_methods = contents.get('discounts', {})
+        raw_discounts = contents.get('discounts', {})
 
-        send_methods = [
+        discounts = [
             Discount.from_api_data(data)
-            for data in raw_send_methods.get('discount', [])
+            for data in raw_discounts.get('discount', [])
         ]
 
-        return send_methods
+        return discounts
