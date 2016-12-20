@@ -3,6 +3,7 @@ from datetime import datetime
 from mock import Mock
 from pyticketswitch.client import Client
 from pyticketswitch import exceptions
+from pyticketswitch.interface.trolley import Trolley
 
 
 @pytest.fixture
@@ -51,6 +52,15 @@ def mock_make_request_for_performances(client, monkeypatch):
 @pytest.fixture
 def mock_make_request_for_availability(client, monkeypatch):
     response = {'availability': {}}
+    fake_response = FakeResponse(status_code=200, json=response)
+    mock_make_request = Mock(return_value=fake_response)
+    monkeypatch.setattr(client, 'make_request', mock_make_request)
+    return mock_make_request
+
+
+@pytest.fixture
+def mock_make_request_for_trolley(client, monkeypatch):
+    response = {'trolley_token': 'ABC123'}
     fake_response = FakeResponse(status_code=200, json=response)
     mock_make_request = Mock(return_value=fake_response)
     monkeypatch.setattr(client, 'make_request', mock_make_request)
@@ -929,3 +939,103 @@ class TestClient:
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.get_discounts('ABC123-1', 'STALLS', 'A/pool')
+
+    def test_get_trolley(self, client, monkeypatch):
+        response = {'trolley_token': 'DEF456'}
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        trolley = client.get_trolley()
+
+        mock_make_request.assert_called_with('trolley.v1', {})
+
+        assert isinstance(trolley, Trolley)
+        assert trolley.token == 'DEF456'
+
+
+    def test_get_trolley_bad_response_code(self, client, monkeypatch):
+        fake_response = FakeResponse(status_code=500, json={})
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_trolley()
+
+    def test_get_trolley_with_trolley_token(self, client, mock_make_request_for_trolley):
+        client.get_trolley(token='DEF456')
+
+        mock_make_request_for_trolley.assert_called_with('trolley.v1', {
+            'trolley_token': 'DEF456'
+        })
+
+    def test_get_trolley_with_performance_id(self, client, mock_make_request_for_trolley):
+        client.get_trolley(performance_id='6IF-A8B')
+
+        mock_make_request_for_trolley.assert_called_with('trolley.v1', {
+            'perf_id': '6IF-A8B'
+        })
+
+    def test_get_trolley_with_number_of_seats(self, client, mock_make_request_for_trolley):
+        client.get_trolley(number_of_seats=3)
+
+        mock_make_request_for_trolley.assert_called_with('trolley.v1', {
+            'no_of_seats': 3
+        })
+
+    def test_get_trolley_with_ticket_type_code(self, client, mock_make_request_for_trolley):
+        client.get_trolley(ticket_type_code='STALLS')
+
+        mock_make_request_for_trolley.assert_called_with('trolley.v1', {
+            'ticket_type_code': 'STALLS'
+        })
+
+    def test_get_trolley_with_price_band_code(self, client, mock_make_request_for_trolley):
+        client.get_trolley(price_band_code='A')
+
+        mock_make_request_for_trolley.assert_called_with('trolley.v1', {
+            'price_band_code': 'A'
+        })
+
+    def test_get_trolley_with_item_numbers_to_remove(self, client, mock_make_request_for_trolley):
+        client.get_trolley(item_numbers_to_remove=[1, 2, 3], token='ABC123')
+
+        mock_make_request_for_trolley.assert_called_with('trolley.v1', {
+            'trolley_token': 'ABC123',
+            'remove_items_list': '1,2,3'
+        })
+
+    def test_get_trolley_with_item_numbers_to_remove_with_no_token(self, client):
+        with pytest.raises(exceptions.InvalidParametersError):
+            client.get_trolley(item_numbers_to_remove=[1, 2, 3])
+
+    def test_get_trolley_with_seats(self, client, mock_make_request_for_trolley):
+        client.get_trolley(seats=['A12', 'B13', 'C14'])
+
+        mock_make_request_for_trolley.assert_called_with('trolley.v1', {
+            'seat0': 'A12',
+            'seat1': 'B13',
+            'seat2': 'C14',
+        })
+
+    def test_get_trolley_with_discounts(self, client, mock_make_request_for_trolley):
+        client.get_trolley(discounts=['ADULT', 'CHILD', 'SENIOR'])
+
+        mock_make_request_for_trolley.assert_called_with('trolley.v1', {
+            'disc0': 'ADULT',
+            'disc1': 'CHILD',
+            'disc2': 'SENIOR',
+        })
+
+    def test_get_trolley_with_send_codes(self, client, mock_make_request_for_trolley):
+        client.get_trolley(send_codes={'nimax': 'POST', 'see': 'COBO'})
+
+        mock_make_request_for_trolley.assert_called_with('trolley.v1', {
+            'nimax_send_code': 'POST',
+            'see_send_code': 'COBO'
+        })
+
+    def test_get_trolley_with_invalid_send_codes(self, client):
+        with pytest.raises(exceptions.InvalidParametersError):
+            client.get_trolley(send_codes=['POST', 'COBO'])
