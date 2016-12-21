@@ -474,7 +474,7 @@ class Client(object):
 
     def get_trolley(self, token=None, number_of_seats=None, discounts=None,
                     seats=None, send_codes=None, ticket_type_code=None,
-                    performance_id=None, price_band_code=None, 
+                    performance_id=None, price_band_code=None,
                     item_numbers_to_remove=None, **kwargs):
 
         """
@@ -540,7 +540,7 @@ class Client(object):
 
         if send_codes and not isinstance(send_codes, dict):
             raise exceptions.InvalidParametersError(
-                'send_codes should be a dictionary in the format of `{source_code: send_code}`' 
+                'send_codes should be a dictionary in the format of `{source_code: send_code}`'
             )
 
         if send_codes:
@@ -566,13 +566,3 @@ class Client(object):
         trolley = Trolley.from_api_data(contents)
 
         return trolley
-
-
-
-
-
-
-
-
-
-
