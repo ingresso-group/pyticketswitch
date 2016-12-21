@@ -13,8 +13,10 @@ class TestPerformance:
             'is_limited': False,
             'is_ghost': False,
             'perf_id': '25DR-52O',
+            'perf_name': 'ABC123',
             'has_pool_seats': True,
             'cached_max_seats': 10,
+            'running_time': 200,
             'cost_range': {
                 'quantity_options': {
                     'valid_quantity_mask': 2046
@@ -49,6 +51,130 @@ class TestPerformance:
                 },
                 'min_seatprice': 57.5
             },
+            'avail_details': {
+                'ticket_type': [
+                    {
+                        'price_band': [
+                            {
+                                'avail_detail': [
+                                    {
+                                        'avail_currency': {
+                                            'currency_code': 'gbp'
+                                        },
+                                        'cached_number_available': 6,
+                                        'quantity_options': {
+                                            'valid_quantity_bitmask': 126
+                                        },
+                                        'seatprice': 47,
+                                        'surcharge': 0
+                                    }
+                                ],
+                                'price_band_code': 'A',
+                                'price_band_desc': ''
+                            }
+                        ],
+                        'ticket_type_code': 'BALCONY',
+                        'ticket_type_desc': 'Balcony'
+                    },
+                    {
+                        'price_band': [
+                            {
+                                'avail_detail': [
+                                    {
+                                        'avail_currency': {
+                                            'currency_code': 'gbp'
+                                        },
+                                        'cached_number_available': 6,
+                                        'quantity_options': {
+                                            'valid_quantity_bitmask': 126
+                                        },
+                                        'seatprice': 35,
+                                        'surcharge': 0
+                                    }
+                                ],
+                                'price_band_code': 'A',
+                                'price_band_desc': ''
+                            },
+                            {
+                                'avail_detail': [
+                                    {
+                                        'avail_currency': {
+                                            'currency_code': 'gbp'
+                                        },
+                                        'cached_number_available': 6,
+                                        'quantity_options': {
+                                            'valid_quantity_bitmask': 126
+                                        },
+                                        'seatprice': 30,
+                                        'surcharge': 0
+                                    }
+                                ],
+                                'price_band_code': 'B',
+                                'price_band_desc': ''
+                            },
+                            {
+                                'avail_detail': [
+                                    {
+                                        'avail_currency': {
+                                            'currency_code': 'gbp'
+                                        },
+                                        'cached_number_available': 6,
+                                        'quantity_options': {
+                                            'valid_quantity_bitmask': 126
+                                        },
+                                        'seatprice': 25,
+                                        'surcharge': 0
+                                    }
+                                ],
+                                'price_band_code': 'C',
+                                'price_band_desc': ''
+                            }
+                        ],
+                        'ticket_type_code': "CIRCLE",
+                        'ticket_type_desc': "Upper circle"
+                    },
+                    {
+                        'price_band': [
+                            {
+                                'avail_detail': [
+                                    {
+                                        'avail_currency': {
+                                            'currency_code': 'gbp'
+                                        },
+                                        'cached_number_available': 6,
+                                        'quantity_options': {
+                                            'valid_quantity_bitmask': 126
+                                        },
+                                        'seatprice': 21,
+                                        'surcharge': 0
+                                    }
+                                ],
+                                'price_band_code': 'A',
+                                'price_band_desc': ''
+                            },
+                            {
+                                'avail_detail': [
+                                    {
+                                        'avail_currency': {
+                                            'currency_code': 'gbp'
+                                        },
+                                        'cached_number_available': 3,
+                                        'quantity_options': {
+                                            'valid_quantity_bitmask': 14
+                                        },
+                                        'seatprice': 18,
+                                        'surcharge': 0
+                                    }
+                                ],
+                                'price_band_code': 'B',
+                                'price_band_desc': ''
+                            }
+                        ],
+                        'ticket_type_code': 'STALLS',
+                        'ticket_type_desc': 'Stalls'
+                    }
+                ]
+            }
         }
 
         performance = Performance.from_api_data(data)
@@ -61,3 +187,8 @@ class TestPerformance:
         assert performance.cached_max_seats == 10
         assert performance.cost_range.max_seatprice == 59.5
         assert performance.no_singles_cost_range.max_seatprice == 69.5
+        assert performance.is_ghost is False
+        assert performance.name == 'ABC123'
+        assert performance.running_time == 200
+
+        assert len(performance.availability_details) == 6
