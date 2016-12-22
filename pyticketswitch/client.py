@@ -472,29 +472,10 @@ class Client(object):
 
         return discounts
 
-    def get_trolley(self, token=None, number_of_seats=None, discounts=None,
-                    seats=None, send_codes=None, ticket_type_code=None,
-                    performance_id=None, price_band_code=None,
-                    item_numbers_to_remove=None, **kwargs):
-
-        """
-        The resource that is being retrieved here is primarily a trolley token.
-        Along with that we also get information about what that trolley token
-        contains, and we reutrn that as a Trolley object.
-
-        The trolley.v1 endpoint isn't really a resource GET in the same way as
-        as you might think of a GET request in a REST API. There is no state on
-        the server side that we are retrieving. Instead this endpoint will
-        consistantly generate a token based on the arugments given. If a
-        trolley token is provided and additional arguments are given then the
-        server will mutate the passed in token as if alterations have been made
-        to a trolley's state, again no state has acutally changed and this
-        mutation should be consistantly repeatable
-
-        It looks odd and the phrasing around this is inconsistant with the rest
-        of this wrapper so far. I would welcome suggestions on improving this.
-        """
-
+    def order_params(self, token=None, number_of_seats=None, discounts=None,
+                     seats=None, send_codes=None, ticket_type_code=None,
+                     performance_id=None, price_band_code=None,
+                     item_numbers_to_remove=None, **kwargs):
         params = {}
 
         if token:
@@ -551,6 +532,38 @@ class Client(object):
 
         params.update(kwargs)
 
+        return params
+
+    def get_trolley(self, token=None, number_of_seats=None, discounts=None,
+                    seats=None, send_codes=None, ticket_type_code=None,
+                    performance_id=None, price_band_code=None,
+                    item_numbers_to_remove=None, **kwargs):
+
+        """
+        The resource that is being retrieved here is primarily a trolley token.
+        Along with that we also get information about what that trolley token
+        contains, and we reutrn that as a Trolley object.
+
+        The trolley.v1 endpoint isn't really a resource GET in the same way as
+        as you might think of a GET request in a REST API. There is no state on
+        the server side that we are retrieving. Instead this endpoint will
+        consistantly generate a token based on the arugments given. If a
+        trolley token is provided and additional arguments are given then the
+        server will mutate the passed in token as if alterations have been made
+        to a trolley's state, again no state has acutally changed and this
+        mutation should be consistantly repeatable
+
+        It looks odd and the phrasing around this is inconsistant with the rest
+        of this wrapper so far. I would welcome suggestions on improving this.
+        """
+
+        params = self.trolley_params(
+            token=token, number_of_seats=number_of_seats, discounts=discounts,
+            seats=seats, send_codes=send_codes,
+            ticket_type_code=ticket_type_code, performance_id=performance_id,
+            price_band_code=price_band_code,
+            item_numbers_to_remove=item_numbers_to_remove, **kwargs)
+
         response = self.make_request('trolley.v1', params)
 
         if not response.status_code == 200:
@@ -558,6 +571,41 @@ class Client(object):
                 "got status code `{}` from {}".format(
                     response.status_code,
                     'trolley.v1',
+                )
+            )
+
+        contents = response.json()
+
+        trolley = Trolley.from_api_data(contents)
+
+        return trolley
+
+    def make_reservation(self, token=None, number_of_seats=None, discounts=None,
+                         seats=None, send_codes=None, ticket_type_code=None,
+                         performance_id=None, price_band_code=None,
+                         item_numbers_to_remove=None, **kwargs):
+
+        """
+        This call takes the same arguments as the `get_trolley` call and returns
+        a `Trolley` object. However this method actually attempts to
+        reserve the tickets in the backend system, and it's results are immutable.
+        TODO: check if results are actually immutable.
+        """
+
+        params = self.trolley_params(
+            token=token, number_of_seats=number_of_seats, discounts=discounts,
+            seats=seats, send_codes=send_codes,
+            ticket_type_code=ticket_type_code, performance_id=performance_id,
+            price_band_code=price_band_code,
+            item_numbers_to_remove=item_numbers_to_remove, **kwargs)
+
+        response = self.make_request('reserve.v1', params)
+
+        if not response.status_code == 200:
+            raise exceptions.InvalidResponseError(
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    'reserve.v1',
                 )
             )
 
