@@ -13,6 +13,9 @@ from pyticketswitch.interface.trolley import Trolley
 
 logger = logging.getLogger(__name__)
 
+POST = 'post'
+GET = 'get'
+
 
 class Client(object):
     DEFAULT_ROOT_URL = "https://api.ticketswitch.com/f13"
@@ -58,10 +61,33 @@ class Client(object):
         """
         return self.password
 
-    def make_request(self, method, params):
-        url = self.get_url(method)
+    def make_request(self, endpoint, params, method=GET):
+        url = self.get_url(endpoint)
         params.update(user_passwd=self.get_password())
-        response = requests.get(url, params=params)
+
+        if method == POST:
+            response = requests.post(url, params=params)
+        else:
+            response = requests.get(url, params=params)
+
+        if not response.status_code == 200:
+
+            contents = response.json()
+
+            if 'error_code' in contents:
+                raise exceptions.APIError(
+                    contents['error_desc'],
+                    contents['error_code'],
+                    response,
+                )
+
+            raise exceptions.InvalidResponseError(
+                "got status code `{}` from {}".format(
+                    response.status_code,
+                    endpoint,
+                )
+            )
+
         return response
 
     def add_optional_kwargs(self, params, availability=False,
@@ -183,14 +209,6 @@ class Client(object):
 
         response = self.make_request('events.v1', params)
 
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'events.v1',
-                )
-            )
-
         contents = response.json()
 
         if 'results' not in contents:
@@ -220,14 +238,6 @@ class Client(object):
 
         response = self.make_request('events_by_id.v1', params)
 
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'events_by_id.v1',
-                )
-            )
-
         contents = response.json()
 
         if 'events_by_id' not in contents:
@@ -248,14 +258,6 @@ class Client(object):
         self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('months.v1', params)
-
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'months.v1',
-                )
-            )
 
         contents = response.json()
 
@@ -283,14 +285,6 @@ class Client(object):
         self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('performances.v1', params)
-
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'performances.v1',
-                )
-            )
 
         contents = response.json()
 
@@ -321,14 +315,6 @@ class Client(object):
         self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('performances_by_id.v1', params)
-
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'performances_by_id.v1',
-                )
-            )
 
         contents = response.json()
 
@@ -369,14 +355,6 @@ class Client(object):
 
         response = self.make_request('availability.v1', params)
 
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'availability.v1',
-                )
-            )
-
         contents = response.json()
 
         if contents.get('backend_is_broken'):
@@ -415,14 +393,6 @@ class Client(object):
         params = {'perf_id': performance_id}
         response = self.make_request('send_methods.v1', params)
 
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'send_methods.v1',
-                )
-            )
-
         contents = response.json()
 
         if 'send_methods' not in contents:
@@ -448,14 +418,6 @@ class Client(object):
 
         response = self.make_request('discounts.v1', params)
 
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'discounts.v1',
-                )
-            )
-
         contents = response.json()
 
         if 'discounts' not in contents:
@@ -472,10 +434,10 @@ class Client(object):
 
         return discounts
 
-    def order_params(self, token=None, number_of_seats=None, discounts=None,
-                     seats=None, send_codes=None, ticket_type_code=None,
-                     performance_id=None, price_band_code=None,
-                     item_numbers_to_remove=None, **kwargs):
+    def trolley_params(self, token=None, number_of_seats=None, discounts=None,
+                       seats=None, send_codes=None, ticket_type_code=None,
+                       performance_id=None, price_band_code=None,
+                       item_numbers_to_remove=None, **kwargs):
         params = {}
 
         if token:
@@ -566,14 +528,6 @@ class Client(object):
 
         response = self.make_request('trolley.v1', params)
 
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'trolley.v1',
-                )
-            )
-
         contents = response.json()
 
         trolley = Trolley.from_api_data(contents)
@@ -599,15 +553,7 @@ class Client(object):
             price_band_code=price_band_code,
             item_numbers_to_remove=item_numbers_to_remove, **kwargs)
 
-        response = self.make_request('reserve.v1', params)
-
-        if not response.status_code == 200:
-            raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    'reserve.v1',
-                )
-            )
+        response = self.make_request('reserve.v1', params, method=POST)
 
         contents = response.json()
 

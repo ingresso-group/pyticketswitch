@@ -46,3 +46,11 @@ class BackendDownError(BackendError):
 
 class BackendThrottleError(BackendError):
     pass
+
+
+class APIError(PyticketswitchError):
+    def __init__(self, msg, code, response, *args, **kwargs):
+        super(APIError, self).__init__(msg, *args, **kwargs)
+        self.msg = msg
+        self.code = code
+        self.response = response
