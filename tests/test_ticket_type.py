@@ -1,4 +1,4 @@
-from pyticketswitch.interface.ticket_type import TicketType
+from pyticketswitch.ticket_type import TicketType
 
 
 class TestTicketType:

@@ -1,4 +1,4 @@
-from pyticketswitch.interface.discount import Discount
+from pyticketswitch.discount import Discount
 
 
 class TestDiscount:

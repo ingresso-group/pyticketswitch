@@ -1,10 +1,10 @@
 from pyticketswitch.exceptions import IntegrityError
-from pyticketswitch.interface.cost_range import CostRange
-from pyticketswitch.interface.ticket_type import TicketType
-from pyticketswitch.interface.content import Content
-from pyticketswitch.interface.media import Media
-from pyticketswitch.interface.review import Review
-from pyticketswitch.interface.availability import AvailabilityDetails
+from pyticketswitch.cost_range import CostRange
+from pyticketswitch.ticket_type import TicketType
+from pyticketswitch.content import Content
+from pyticketswitch.media import Media
+from pyticketswitch.review import Review
+from pyticketswitch.availability import AvailabilityDetails
 from pyticketswitch import utils
 
 

@@ -1,7 +1,7 @@
 import datetime
 from pyticketswitch.utils import bitmask_to_numbered_list
-from pyticketswitch.interface.currency import Currency
-from pyticketswitch.interface.misc import MONTH_NUMBERS
+from pyticketswitch.currency import Currency
+from pyticketswitch.misc import MONTH_NUMBERS
 
 
 class AvailabilityMeta(object):

@@ -1,4 +1,4 @@
-from pyticketswitch.interface.cost_range import CostRange
+from pyticketswitch.cost_range import CostRange
 
 
 class PriceBand(object):

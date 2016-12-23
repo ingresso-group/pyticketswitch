@@ -1,4 +1,4 @@
-from pyticketswitch.interface.performance import Performance
+from pyticketswitch.performance import Performance
 
 
 class TestPerformance:

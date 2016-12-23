@@ -1,6 +1,6 @@
 import pytest
 from pyticketswitch import exceptions
-from pyticketswitch.interface.event import Event
+from pyticketswitch.event import Event
 from datetime import datetime
 from dateutil.tz import tzoffset
 

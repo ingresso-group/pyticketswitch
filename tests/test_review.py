@@ -1,4 +1,4 @@
-from pyticketswitch.interface.review import Review
+from pyticketswitch.review import Review
 
 
 class TestReview:

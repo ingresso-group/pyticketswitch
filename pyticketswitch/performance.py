@@ -1,6 +1,6 @@
 from pyticketswitch import utils
-from pyticketswitch.interface.cost_range import CostRange
-from pyticketswitch.interface.availability import AvailabilityDetails
+from pyticketswitch.cost_range import CostRange
+from pyticketswitch.availability import AvailabilityDetails
 
 
 class Performance(object):

@@ -1,6 +1,6 @@
-from pyticketswitch.interface.event import Event
-from pyticketswitch.interface.performance import Performance
-from pyticketswitch.interface.order import TicketOrder, Order
+from pyticketswitch.event import Event
+from pyticketswitch.performance import Performance
+from pyticketswitch.order import TicketOrder, Order
 
 
 class TestTicketOrder:

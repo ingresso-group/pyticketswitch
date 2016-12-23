@@ -1,4 +1,4 @@
-from pyticketswitch.interface.currency import Currency
+from pyticketswitch.currency import Currency
 from pyticketswitch.utils import bitmask_to_numbered_list
 
 

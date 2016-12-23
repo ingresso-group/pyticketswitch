@@ -1,4 +1,4 @@
-from pyticketswitch.interface.send_method import SendMethod
+from pyticketswitch.send_method import SendMethod
 
 
 class TestSendMethod:

@@ -1,4 +1,4 @@
-from pyticketswitch.interface.media import Media
+from pyticketswitch.media import Media
 
 
 class TestMedia:

@@ -1,4 +1,4 @@
-from pyticketswitch.interface.month import Month
+from pyticketswitch.month import Month
 
 
 class TestMonth:

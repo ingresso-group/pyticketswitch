@@ -1,4 +1,4 @@
-from pyticketswitch.interface.price_band import PriceBand
+from pyticketswitch.price_band import PriceBand
 
 
 class TestPriceBand:

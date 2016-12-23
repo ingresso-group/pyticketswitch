@@ -1,4 +1,4 @@
-from pyticketswitch.interface.trolley import Trolley
+from pyticketswitch.trolley import Trolley
 
 
 class TestTrolley:

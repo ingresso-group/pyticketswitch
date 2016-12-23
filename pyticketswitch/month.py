@@ -1,4 +1,4 @@
-from pyticketswitch.interface.misc import MONTH_NUMBERS
+from pyticketswitch.misc import MONTH_NUMBERS
 
 
 class Month(object):

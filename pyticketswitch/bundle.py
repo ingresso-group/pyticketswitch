@@ -1,5 +1,5 @@
-from pyticketswitch.interface.currency import Currency
-from pyticketswitch.interface.order import Order
+from pyticketswitch.currency import Currency
+from pyticketswitch.order import Order
 
 
 class Bundle(object):

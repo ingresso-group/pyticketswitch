@@ -1,14 +1,14 @@
 import requests
 import logging
 from pyticketswitch import exceptions, utils
-from pyticketswitch.interface.event import Event
-from pyticketswitch.interface.performance import Performance
-from pyticketswitch.interface.availability import AvailabilityMeta
-from pyticketswitch.interface.ticket_type import TicketType
-from pyticketswitch.interface.send_method import SendMethod
-from pyticketswitch.interface.month import Month
-from pyticketswitch.interface.discount import Discount
-from pyticketswitch.interface.trolley import Trolley
+from pyticketswitch.event import Event
+from pyticketswitch.performance import Performance
+from pyticketswitch.availability import AvailabilityMeta
+from pyticketswitch.ticket_type import TicketType
+from pyticketswitch.send_method import SendMethod
+from pyticketswitch.month import Month
+from pyticketswitch.discount import Discount
+from pyticketswitch.trolley import Trolley
 
 
 logger = logging.getLogger(__name__)

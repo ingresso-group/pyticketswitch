@@ -1,4 +1,4 @@
-from pyticketswitch.interface.content import Content
+from pyticketswitch.content import Content
 
 
 class TestContent:

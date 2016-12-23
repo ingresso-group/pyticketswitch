@@ -3,7 +3,7 @@ from datetime import datetime
 from mock import Mock
 from pyticketswitch.client import Client, POST
 from pyticketswitch import exceptions
-from pyticketswitch.interface.trolley import Trolley
+from pyticketswitch.trolley import Trolley
 
 
 @pytest.fixture

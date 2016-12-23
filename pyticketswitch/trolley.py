@@ -1,5 +1,5 @@
-from pyticketswitch.interface.bundle import Bundle
-from pyticketswitch.interface.order import Order
+from pyticketswitch.bundle import Bundle
+from pyticketswitch.order import Order
 
 
 class Trolley(object):

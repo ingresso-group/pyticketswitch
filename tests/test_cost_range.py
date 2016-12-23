@@ -1,4 +1,4 @@
-from pyticketswitch.interface.cost_range import CostRange, CostRangeDetails
+from pyticketswitch.cost_range import CostRange, CostRangeDetails
 
 
 class TestCostRange:

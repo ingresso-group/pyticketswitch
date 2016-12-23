@@ -1,7 +1,7 @@
 import pytest
 import datetime
-from pyticketswitch.interface.availability import AvailabilityMeta, AvailabilityDetails
-from pyticketswitch.interface.currency import Currency
+from pyticketswitch.availability import AvailabilityMeta, AvailabilityDetails
+from pyticketswitch.currency import Currency
 
 
 @pytest.fixture

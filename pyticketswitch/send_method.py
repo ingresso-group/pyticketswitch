@@ -1,4 +1,4 @@
-from pyticketswitch.interface.country import Country
+from pyticketswitch.country import Country
 
 
 class SendMethod(object):

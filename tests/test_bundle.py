@@ -1,5 +1,5 @@
-from pyticketswitch.interface.currency import Currency
-from pyticketswitch.interface.bundle import Bundle
+from pyticketswitch.currency import Currency
+from pyticketswitch.bundle import Bundle
 
 
 class TestBundle(object):
