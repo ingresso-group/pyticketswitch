@@ -1,13 +1,13 @@
 class Address(object):
 
-    def __init__(self, address_lines=None, country_code=None, country=None,
-                 email_address=None, home_phone=None, postcode=None, town=None,
+    def __init__(self, lines=None, country_code=None, country=None,
+                 email=None, home_phone=None, postcode=None, town=None,
                  work_phone=None):
 
-        self.address_lines = address_lines
+        self.lines = lines
         self.country_code = country_code
         self.country = country
-        self.email_address = email_address
+        self.email = email
         self.home_phone = home_phone
         self.postcode = postcode
         self.town = town
@@ -18,12 +18,12 @@ class Address(object):
         kwargs = {
             'country_code': data.get('country_code'),
             'country': data.get('country'),
-            'email_address': data.get('email_address'),
+            'email': data.get('email_address'),
             'home_phone': data.get('home_phone'),
             'postcode': data.get('postcode'),
             'town': data.get('town'),
             'work_phone': data.get('work_phone'),
-            'address_lines': [
+            'lines': [
                 data.get('address_line_one'),
                 data.get('address_line_two'),
             ]

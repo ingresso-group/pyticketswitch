@@ -9,6 +9,7 @@ from pyticketswitch.send_method import SendMethod
 from pyticketswitch.month import Month
 from pyticketswitch.discount import Discount
 from pyticketswitch.trolley import Trolley
+from pyticketswitch.reservation import Reservation
 
 
 logger = logging.getLogger(__name__)
@@ -557,6 +558,6 @@ class Client(object):
 
         contents = response.json()
 
-        trolley = Trolley.from_api_data(contents)
+        trolley = Reservation.from_api_data(contents)
 
         return trolley

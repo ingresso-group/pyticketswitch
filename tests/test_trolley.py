@@ -17,11 +17,13 @@ class TestTrolley:
                 ]
             },
             'trolley_token': 'ABC123',
+            'random_index': 'DEF456',
         }
 
         trolley = Trolley.from_api_data(data)
 
         assert trolley.token == 'ABC123'
+        assert trolley.random_index == 'DEF456'
 
         assert len(trolley.bundles) == 2
         assert trolley.bundles[0].source_code == 'foo'

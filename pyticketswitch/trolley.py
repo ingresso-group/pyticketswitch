@@ -4,8 +4,9 @@ from pyticketswitch.order import Order
 
 class Trolley(object):
 
-    def __init__(self, token, bundles=None, discarded_orders=None):
+    def __init__(self, token=None, random_index=None, bundles=None, discarded_orders=None):
         self.token = token
+        self.random_index = random_index
         self.bundles = bundles
         self.discarded_orders = discarded_orders
 
@@ -29,6 +30,7 @@ class Trolley(object):
 
         kwargs = {
             'token': data.get('trolley_token'),
+            'random_index': data.get('random_index'),
             'bundles': bundles,
             'discarded_orders': discarded_orders,
         }

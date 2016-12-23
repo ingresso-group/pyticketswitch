@@ -4,6 +4,7 @@ from mock import Mock
 from pyticketswitch.client import Client, POST
 from pyticketswitch import exceptions
 from pyticketswitch.trolley import Trolley
+from pyticketswitch.reservation import Reservation
 
 
 @pytest.fixture
@@ -996,16 +997,15 @@ class TestClient:
         assert trolley.token == 'DEF456'
 
     def test_make_reservation(self, client, monkeypatch):
-        response = {'trolley_token': 'DEF456'}
+        response = {'reserved_trolley': {'random_index': 'DEF456'}}
 
         fake_response = FakeResponse(status_code=200, json=response)
         mock_make_request = Mock(return_value=fake_response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        trolley = client.make_reservation()
+        reservation = client.make_reservation()
 
         mock_make_request.assert_called_with('reserve.v1', {}, method=POST)
 
-        assert isinstance(trolley, Trolley)
-        assert trolley.token == 'DEF456'
-
+        assert isinstance(reservation, Reservation)
+        assert reservation.trolley.random_index == 'DEF456'
