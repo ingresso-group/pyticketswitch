@@ -281,8 +281,8 @@ class TestClient:
         assert len(events) == 2
         event_one, event_two = events
 
-        assert event_one.event_id =='ABC123'
-        assert event_two.event_id == 'DEF456'
+        assert event_one.id =='ABC123'
+        assert event_two.id == 'DEF456'
 
     def test_list_events_with_keywords(self, client, mock_make_request):
         client.list_events(keywords=['awesome', 'stuff'])
@@ -393,7 +393,6 @@ class TestClient:
             'page_len': 50,
         })
 
-
     def test_list_events_no_results(self, client, monkeypatch, fake_func):
         response = {}
         fake_response = FakeResponse(status_code=200, json=response)
@@ -435,8 +434,8 @@ class TestClient:
         event_one = events['ABC123']
         event_two = events['DEF456']
 
-        assert event_one.event_id =='ABC123'
-        assert event_two.event_id == 'DEF456'
+        assert event_one.id =='ABC123'
+        assert event_two.id == 'DEF456'
 
     def test_get_events_event_list(self, client, mock_make_request_for_events):
         client.get_events(['6IF', '25DR', '3ENO'])
@@ -543,9 +542,9 @@ class TestClient:
 
         performance_one, performance_two, performance_three = performances
 
-        assert performance_one.performance_id == 'ABC123-1'
-        assert performance_two.performance_id == 'ABC123-2'
-        assert performance_three.performance_id == 'ABC123-3'
+        assert performance_one.id == 'ABC123-1'
+        assert performance_two.id == 'ABC123-2'
+        assert performance_three.id == 'ABC123-3'
 
         assert performance_one.event_id == 'ABC123'
         assert performance_two.event_id == 'ABC123'
@@ -647,8 +646,8 @@ class TestClient:
         performance_one = performances['ABC123-1']
         performance_two = performances['DEF456-2']
 
-        assert performance_one.performance_id == 'ABC123-1'
-        assert performance_two.performance_id == 'DEF456-2'
+        assert performance_one.id == 'ABC123-1'
+        assert performance_two.id == 'DEF456-2'
 
         assert performance_one.event_id == 'ABC123'
         assert performance_two.event_id == 'DEF456'

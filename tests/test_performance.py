@@ -178,6 +178,7 @@ class TestPerformance:
         }
 
         performance = Performance.from_api_data(data)
+        assert performance.id == '25DR-52O'
         assert performance.event_id == '25DR'
         assert performance.date_time.year == 2016
         assert performance.date_time.month == 10

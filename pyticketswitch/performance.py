@@ -5,13 +5,13 @@ from pyticketswitch.availability import AvailabilityDetails
 
 class Performance(object):
 
-    def __init__(self, performance_id, event_id, date_time=None,
+    def __init__(self, id_, event_id, date_time=None,
                  has_pool_seats=False, is_limited=False,
                  cached_max_seats=None, cost_range=None,
                  no_singles_cost_range=None, is_ghost=False, name=None,
                  running_time=None, availability_details=None):
 
-        self.performance_id = performance_id
+        self.id = id_
         self.event_id = event_id
         self.date_time = date_time
         self.has_pool_seats = has_pool_seats
@@ -27,7 +27,7 @@ class Performance(object):
     @classmethod
     def from_api_data(cls, data):
 
-        performance_id = data.get('perf_id')
+        id_ = data.get('perf_id')
         event_id = data.get('event_id')
 
         date_time = data.get('iso8601_date_and_time')
@@ -52,7 +52,7 @@ class Performance(object):
             data.get('avail_details', {}))
 
         kwargs = {
-            'performance_id': performance_id,
+            'id_': id_,
             'event_id': event_id,
             'date_time': date_time,
             'running_time': data.get('running_time'),

@@ -39,7 +39,6 @@ class Trolley(object):
         }
 
         random_index = raw_contents.get('random_index')
-        print(raw_contents)
         if random_index:
             kwargs.update(random_index=random_index)
 

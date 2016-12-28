@@ -72,9 +72,9 @@ class TestOrder:
         assert order.seat_request_status == 'not_requested'
 
         assert isinstance(order.event, Event)
-        assert order.event.event_id == '6IF'
+        assert order.event.id == '6IF'
         assert isinstance(order.performance, Performance)
-        assert order.performance.performance_id == '6IF-A7N'
+        assert order.performance.id == '6IF-A7N'
 
         assert len(order.ticket_orders) == 2
         assert order.ticket_orders[0].code == 'ADULT'

@@ -10,7 +10,7 @@ from pyticketswitch import utils
 
 class Event(object):
 
-    def __init__(self, event_id, status=None, event_type=None, source=None,
+    def __init__(self, id_, status=None, event_type=None, source=None,
                  venue=None, description=None, postcode=None, classes=None,
                  filters=None, start_date=None, end_date=None,
                  upsell_list=None, city=None, country=None, country_code=None,
@@ -25,7 +25,7 @@ class Event(object):
                  venue_info_html=None, media=None, reviews=None,
                  availability_details=None, meta_events=None):
 
-        self.event_id = event_id
+        self.id = id_
         self.status = status
         self.description = description
         self.source = source
@@ -79,9 +79,9 @@ class Event(object):
     @classmethod
     def from_api_data(cls, data):
 
-        event_id = data.get('event_id')
+        id_ = data.get('event_id')
 
-        if not event_id:
+        if not id_:
             raise IntegrityError("event_id not found in event data", data=data)
 
         start_date = data.get('date_range_start', {}).get('iso8601_date_and_time')
@@ -166,7 +166,7 @@ class Event(object):
         ]
 
         kwargs = {
-            'event_id': event_id,
+            'id_': id_,
             'description': data.get('event_desc', None),
             'status': data.get('event_status'),
             'event_type': data.get('event_type'),
