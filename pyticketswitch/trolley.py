@@ -14,6 +14,10 @@ class Trolley(object):
     def from_api_data(cls, data):
 
         raw_contents = data.get('trolley_contents', {})
+
+        if not raw_contents:
+            raw_contents = data.get('reserved_trolley', {})
+
         raw_bundles = raw_contents.get('bundle', [])
 
         bundles = [
@@ -30,9 +34,13 @@ class Trolley(object):
 
         kwargs = {
             'token': data.get('trolley_token'),
-            'random_index': data.get('random_index'),
             'bundles': bundles,
             'discarded_orders': discarded_orders,
         }
+
+        random_index = raw_contents.get('random_index')
+        print(raw_contents)
+        if random_index:
+            kwargs.update(random_index=random_index)
 
         return cls(**kwargs)

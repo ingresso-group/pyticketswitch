@@ -48,10 +48,8 @@ class Reservation(object):
         if minutes is not None:
             kwargs.update(minutes_left=float(minutes))
 
-        raw_trolley = data.get('reserved_trolley')
-        if raw_trolley:
-            trolley = Trolley.from_api_data(raw_trolley)
-            kwargs.update(trolley=trolley)
+        trolley = Trolley.from_api_data(data)
+        kwargs.update(trolley=trolley)
 
         raw_unreserved_orders = data.get('unreserve_orders')
         if raw_unreserved_orders:

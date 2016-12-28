@@ -985,7 +985,7 @@ class TestClient:
             client.trolley_params(send_codes=['POST', 'COBO'])
 
     def test_get_trolley(self, client, monkeypatch):
-        response = {'trolley_token': 'DEF456'}
+        response = {'trolley_contents': {}, 'trolley_token': 'DEF456'}
 
         fake_response = FakeResponse(status_code=200, json=response)
         mock_make_request = Mock(return_value=fake_response)

@@ -41,10 +41,12 @@ class TestPriceBand:
                 },
                 'min_seatprice': 57.5
             },
-            'price_band_code': 'B'
+            'price_band_code': 'B',
+            'discount_code': 'ABC123',
         }
 
         price_band = PriceBand.from_api_data(data)
 
         assert price_band.code == 'B'
         assert price_band.description == 'Cheap Seats'
+        assert price_band.default_discount.code == 'ABC123'
