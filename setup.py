@@ -15,6 +15,7 @@ setup(
     description='A Python interface for the Ingresso XML Core API',
     install_requires=[
         'requests>=2.0.0',
+        'python-dateutil>2.5.3',
         'six>=1.10.0',
     ],
     classifiers=[
