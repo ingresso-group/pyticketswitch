@@ -624,10 +624,12 @@ class TestClient:
         response = {
             'performances_by_id': {
                 'ABC123-1': {
-                    'performance': {'perf_id': 'ABC123-1', 'event_id': 'ABC123'},
+                    'perf_id': 'ABC123-1',
+                    'event_id': 'ABC123',
                 },
                 'DEF456-2': {
-                    'performance': {'perf_id': 'DEF456-2', 'event_id': 'DEF456'},
+                    'perf_id': 'DEF456-2',
+                    'event_id': 'DEF456',
                 }
             },
         }

@@ -326,7 +326,7 @@ class Client(object):
 
         raw_performances = contents.get('performances_by_id', {})
         performances = {
-            performance_id: Performance.from_api_data(data.get('performance'))
+            performance_id: Performance.from_api_data(data)
             for performance_id, data in raw_performances.items()
         }
 
