@@ -35,6 +35,9 @@ class Currency(object):
 
         return True
 
+    def __ne__(self, other):
+        return not self == other
+
     @classmethod
     def from_api_data(cls, data):
 
