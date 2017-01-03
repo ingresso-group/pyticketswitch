@@ -22,12 +22,13 @@ class Client(object):
     DEFAULT_ROOT_URL = "https://api.ticketswitch.com/f13"
 
     def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
-                 language=None, domain=None, ip=None):
+                 language=None, domain=None, ip=None, **kwargs):
         self.user = user
         self.password = password
         self.url = url
         self.sub_user = sub_user
         self.language = language
+        self.kwargs = kwargs
 
     def get_user_path(self):
         if not self.user:
