@@ -8,7 +8,7 @@ print("")
 print("events.v1")
 events = client.list_events()
 for event in events:
-    print(event.event_id, event.description)
+    print(event.id, event.description)
 
 
 print("")
@@ -22,15 +22,15 @@ event = events['6IF']
 
 print("")
 print("performances.v1:")
-performances = client.list_performances(event.event_id)
+performances = client.list_performances(event.id)
 for performance in performances:
-    print(performance.performance_id, performance.date_time.isoformat())
+    print(performance.id, performance.date_time.isoformat())
 
 
 print("")
 print("performances_by_id.v1:")
 performances = client.get_performances([
-    performance.performance_id
+    performance.id
     for performance in random.sample(performances, 2)
 ])
 
@@ -40,7 +40,7 @@ for performance_id, performance in performances.items():
 
 print("")
 print("availablity.v1:")
-availability, meta = client.get_availability(performance.performance_id)
+availability, meta = client.get_availability(performance.id)
 print("can leave singles:", meta.can_leave_singles)
 print("contiguous seat selection only:", meta.contiguous_seat_selection_only)
 print("currency:", meta.currency.code)
@@ -58,7 +58,7 @@ print("trolley.v1:")
 ticket_type = random.choice(availability)
 price_band = random.choice(ticket_type.price_bands)
 trolley = client.get_trolley(
-    performance_id=performance.performance_id,
+    performance_id=performance.id,
     ticket_type_code=ticket_type.code,
     price_band_code=price_band.code,
     number_of_seats=2,
@@ -69,7 +69,7 @@ print("total:", trolley.bundles[0].total)
 
 trolley = client.get_trolley(
     token=trolley.token,
-    performance_id=performance.performance_id,
+    performance_id=performance.id,
     ticket_type_code=ticket_type.code,
     price_band_code=price_band.code,
     number_of_seats=4,
