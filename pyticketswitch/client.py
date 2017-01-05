@@ -50,7 +50,7 @@ class Client(object):
 
     def get_url(self, end_point):
         user_path = self.get_user_path()
-        url = "{url}/{end_point}{user_path}/".format(
+        url = "{url}/f13/{end_point}{user_path}/".format(
             url=self.url,
             end_point=end_point,
             user_path=user_path,
