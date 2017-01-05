@@ -19,7 +19,7 @@ GET = 'get'
 
 
 class Client(object):
-    DEFAULT_ROOT_URL = "https://api.ticketswitch.com/f13"
+    DEFAULT_ROOT_URL = "https://api.ticketswitch.com"
 
     def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
                  language=None, domain=None, ip=None, **kwargs):
