@@ -27,6 +27,11 @@ def data():
         #TODO: don't actually know what filters look like yet...
         'filters': [],
 
+        'custom_fields': [
+            {'custom_field_name': 'foo_bar'},
+            {'custom_field_name': 'lol_beans'},
+        ],
+
         'date_range_start': {
             'iso8601_date_and_time': '2016-07-21T23:57:15+01:00',
         },
@@ -58,38 +63,28 @@ def data():
             'event_id': ['DEF2', 'GHI3', 'JKL4'],
         },
         'cost_range': {
-            'quantity_options': {
-                'valid_quantity_mask': 2046
-            },
-            'max_surcharge': 29.65,
-            'max_seatprice': 149.5,
-            'range_currency': {
-                'currency_factor': 100,
-                'currency_places': 2,
-                'currency_post_symbol': '',
-                'currency_number': 826,
-                'currency_pre_symbol': '\xa3',
-                'currency_code': 'gbp'
-            },
-            'min_surcharge': 7.25,
+            'max_seatprice': 47,
+            'max_surcharge': 0,
+            'min_seatprice': 18,
+            'min_surcharge': 0,
             'no_singles_cost_range': {
+                'max_seatprice': 47,
+                'max_surcharge': 0,
+                'min_seatprice': 18,
+                'min_surcharge': 0,
                 'quantity_options': {
-                    'valid_quantity_mask': 2046
+                    'valid_quantity_bitmask': 126
                 },
-                'max_surcharge': 29.65,
-                'max_seatprice': 149.5,
                 'range_currency': {
-                    'currency_factor': 100,
-                    'currency_places': 2,
-                    'currency_post_symbol': '',
-                    'currency_number': 826,
-                    'currency_pre_symbol': '\xa3',
                     'currency_code': 'gbp'
-                },
-                'min_surcharge': 7.25,
-                'min_seatprice': 37.5
+                }
             },
-            'min_seatprice': 37.5
+            'quantity_options': {
+                'valid_quantity_bitmask': 126
+            },
+            'range_currency': {
+                'currency_code': 'gbp'
+            }
         },
         'cost_range_details': {
             'ticket_type': [
@@ -313,6 +308,8 @@ class TestEvent:
         assert len(event.reviews) == 1
 
         assert len(event.meta_events) == 1
+
+        assert len(event.fields) == 2
 
     def test_from_api_data_with_no_event_id(self):
         data = {

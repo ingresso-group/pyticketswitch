@@ -72,6 +72,8 @@ class Client(object):
         else:
             response = requests.get(url, params=params)
 
+        logger.debug(response.content)
+
         if not response.status_code == 200:
 
             contents = response.json()
@@ -249,7 +251,7 @@ class Client(object):
 
         events_by_id = contents.get('events_by_id', {})
         events = {
-            event_id: Event.from_api_data(raw_event.get('event'))
+            event_id: Event.from_events_by_id_data(raw_event)
             for event_id, raw_event in events_by_id.items()
         }
         return events

@@ -1,4 +1,5 @@
 import pytest
+import json
 from datetime import datetime
 from mock import Mock
 from pyticketswitch.client import Client, POST
@@ -76,6 +77,9 @@ class FakeResponse(object):
 
     def json(self):
         return self._json
+
+    def content(self):
+        return json.dumps(self._json)
 
 
 class TestClient:

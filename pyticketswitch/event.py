@@ -5,7 +5,9 @@ from pyticketswitch.content import Content
 from pyticketswitch.media import Media
 from pyticketswitch.review import Review
 from pyticketswitch.availability import AvailabilityDetails
+from pyticketswitch.field import Field
 from pyticketswitch import utils
+from pyticketswitch.utils import bitmask_to_numbered_list
 
 
 class Event(object):
@@ -23,7 +25,8 @@ class Event(object):
                  content=None, event_info_html=None, event_info=None,
                  venue_addr_html=None, venue_addr=None, venue_info=None,
                  venue_info_html=None, media=None, reviews=None,
-                 availability_details=None, meta_events=None):
+                 availability_details=None, meta_events=None,
+                 valid_quantities=None, fields=None):
 
         self.id = id_
         self.status = status
@@ -62,6 +65,7 @@ class Event(object):
         self.cost_range_details = cost_range_details
 
         self.content = content
+        self.fields = fields
         self.event_info = event_info
         self.event_info_html = event_info_html
         self.venue_addr = venue_addr
@@ -75,6 +79,8 @@ class Event(object):
         self.availability_details = availability_details
 
         self.meta_events = meta_events
+
+        self.valid_quantities = valid_quantities
 
     @classmethod
     def from_api_data(cls, data):
@@ -131,6 +137,11 @@ class Event(object):
             for key, value in api_content.items()
         }
 
+        fields = {
+            field.get('custom_field_name'): Field.from_api_data(field)
+            for field in data.get('custom_fields', {})
+        }
+
         api_media = data.get('media', {})
         media = [
             Media.from_api_data(asset)
@@ -176,6 +187,7 @@ class Event(object):
             'classes': classes,
             #TODO: don't actually know what filters look like yet...
             'filters': data.get('custom_filter', []),
+            'fields': fields,
 
             'start_date': start_date,
             'end_date': end_date,
@@ -221,3 +233,15 @@ class Event(object):
         }
 
         return cls(**kwargs)
+
+    @classmethod
+    def from_events_by_id_data(cls, data):
+
+        event = cls.from_api_data(data.get('event'))
+
+        quantity_options = data.get('quantity_options', {})
+        valid_quantities = quantity_options.get('valid_quantity_bitmask')
+        if valid_quantities:
+            event.valid_quantities = bitmask_to_numbered_list(valid_quantities)
+
+        return event
