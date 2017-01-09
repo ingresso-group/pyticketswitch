@@ -19,7 +19,6 @@ def data():
         'source_desc': 'Super Awesome Ticketer',
         'venue_desc': 'Top Notch Theater',
 
-        'critic_review_percentage': 100,
 
         'class': [
             {'class_desc': 'Theater'},
@@ -183,6 +182,7 @@ def data():
                 }
             ]
         },
+        'critic_review_percent': 100,
         'avail_details': {
             'ticket_type': [{
                 'ticket_type_desc': 'Grand Circle',
@@ -279,7 +279,7 @@ class TestEvent:
         assert event.event_type == 'simple_ticket'
         assert event.venue == 'Top Notch Theater'
 
-        assert event.critic_review_percentage == 100
+        assert event.critic_review_percent == 100
 
         assert event.classes == ['Theater', 'Amazeballs']
         assert event.filters == []
