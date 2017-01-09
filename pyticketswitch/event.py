@@ -26,7 +26,8 @@ class Event(object):
                  venue_addr_html=None, venue_addr=None, venue_info=None,
                  venue_info_html=None, media=None, reviews=None,
                  critic_review_percent=None, availability_details=None,
-                 meta_events=None, valid_quantities=None, fields=None):
+                 meta_events=None, valid_quantities=None, fields=None,
+                 raw=None):
 
         self.id = id_
         self.status = status
@@ -82,6 +83,7 @@ class Event(object):
         self.meta_events = meta_events
 
         self.valid_quantities = valid_quantities
+        self.raw = raw
 
     @classmethod
     def from_api_data(cls, data):
@@ -232,6 +234,7 @@ class Event(object):
 
             'availability_details': availability_details,
             'meta_events': meta_events,
+            'raw': data,
         }
 
         return cls(**kwargs)

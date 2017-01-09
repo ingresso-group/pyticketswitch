@@ -314,6 +314,7 @@ class TestEvent:
         assert len(event.meta_events) == 1
 
         assert len(event.fields) == 2
+        assert event.raw == data
 
     def test_from_api_data_with_no_event_id(self):
         data = {
