@@ -27,8 +27,7 @@ def fake_func():
 @pytest.fixture
 def mock_make_request(client, monkeypatch):
     response = {'results': {}}
-    fake_response = FakeResponse(status_code=200, json=response)
-    mock_make_request = Mock(return_value=fake_response)
+    mock_make_request = Mock(return_value=response)
     monkeypatch.setattr(client, 'make_request', mock_make_request)
     return mock_make_request
 
@@ -36,8 +35,7 @@ def mock_make_request(client, monkeypatch):
 @pytest.fixture
 def mock_make_request_for_events(client, monkeypatch):
     response = {'events_by_id': {}}
-    fake_response = FakeResponse(status_code=200, json=response)
-    mock_make_request = Mock(return_value=fake_response)
+    mock_make_request = Mock(return_value=response)
     monkeypatch.setattr(client, 'make_request', mock_make_request)
     return mock_make_request
 
@@ -45,8 +43,7 @@ def mock_make_request_for_events(client, monkeypatch):
 @pytest.fixture
 def mock_make_request_for_performances(client, monkeypatch):
     response = {'performances_by_id': {}}
-    fake_response = FakeResponse(status_code=200, json=response)
-    mock_make_request = Mock(return_value=fake_response)
+    mock_make_request = Mock(return_value=response)
     monkeypatch.setattr(client, 'make_request', mock_make_request)
     return mock_make_request
 
@@ -54,8 +51,7 @@ def mock_make_request_for_performances(client, monkeypatch):
 @pytest.fixture
 def mock_make_request_for_availability(client, monkeypatch):
     response = {'availability': {}}
-    fake_response = FakeResponse(status_code=200, json=response)
-    mock_make_request = Mock(return_value=fake_response)
+    mock_make_request = Mock(return_value=response)
     monkeypatch.setattr(client, 'make_request', mock_make_request)
     return mock_make_request
 
@@ -63,8 +59,7 @@ def mock_make_request_for_availability(client, monkeypatch):
 @pytest.fixture
 def mock_make_request_for_trolley(client, monkeypatch):
     response = {'trolley_token': 'ABC123'}
-    fake_response = FakeResponse(status_code=200, json=response)
-    mock_make_request = Mock(return_value=fake_response)
+    mock_make_request = Mock(return_value=response)
     monkeypatch.setattr(client, 'make_request', mock_make_request)
     return mock_make_request
 
@@ -118,14 +113,14 @@ class TestClient:
 
     @pytest.mark.integration
     def test_make_request(self, client, monkeypatch):
-        fake_response = FakeResponse()
+        fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
         fake_get = Mock(return_value=fake_response)
         monkeypatch.setattr('requests.get', fake_get)
         params = {
             'foo': 'bar',
         }
         response = client.make_request('events.v1', params)
-        assert response is fake_response
+        assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/bilbo/',
             params={
@@ -274,8 +269,7 @@ class TestClient:
                 ],
             },
         }
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         events = client.list_events()
@@ -399,8 +393,7 @@ class TestClient:
 
     def test_list_events_no_results(self, client, monkeypatch, fake_func):
         response = {}
-        fake_response = FakeResponse(status_code=200, json=response)
-        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+        monkeypatch.setattr(client, 'make_request', fake_func(response))
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.list_events()
@@ -424,8 +417,7 @@ class TestClient:
             },
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         events = client.get_events(['ABC123', 'DEF456'])
@@ -450,8 +442,7 @@ class TestClient:
 
     def test_get_events_no_results(self, client, monkeypatch, fake_func):
         response = {}
-        fake_response = FakeResponse(status_code=200, json=response)
-        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+        monkeypatch.setattr(client, 'make_request', fake_func(response))
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.get_events(['6IF', '25DR'])
@@ -472,8 +463,7 @@ class TestClient:
             },
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         event = client.get_event('ABC123')
@@ -495,8 +485,7 @@ class TestClient:
             }
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         months = client.get_months('ABC123')
@@ -517,8 +506,7 @@ class TestClient:
 
     def test_get_months_no_results(self, client, monkeypatch, fake_func):
         response = {}
-        fake_response = FakeResponse(status_code=200, json=response)
-        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+        monkeypatch.setattr(client, 'make_request', fake_func(response))
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.get_months('6IF')
@@ -533,8 +521,7 @@ class TestClient:
 
     def test_list_performances_no_results(self, client, monkeypatch, fake_func):
         response = {}
-        fake_response = FakeResponse(status_code=200, json=response)
-        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+        monkeypatch.setattr(client, 'make_request', fake_func(response))
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.list_performances('6IF')
@@ -553,8 +540,7 @@ class TestClient:
             },
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         performances = client.list_performances('ABC123')
@@ -658,8 +644,7 @@ class TestClient:
             },
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         performances = client.get_performances(['ABC123-1', 'DEF456-2'])
@@ -679,8 +664,7 @@ class TestClient:
 
     def test_get_performances_no_performances(self, client, monkeypatch, fake_func):
         response = {}
-        fake_response = FakeResponse(status_code=200, json=response)
-        monkeypatch.setattr(client, 'make_request', fake_func(fake_response))
+        monkeypatch.setattr(client, 'make_request', fake_func(response))
 
         with pytest.raises(exceptions.InvalidResponseError):
             client.get_performances(['6IF-1', '6IF-2'])
@@ -727,8 +711,7 @@ class TestClient:
             },
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         availability, meta = client.get_availability('ABC123-1')
@@ -805,8 +788,7 @@ class TestClient:
             'backend_throttle_failed': False,
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         with pytest.raises(exceptions.InvalidResponseError):
@@ -820,8 +802,7 @@ class TestClient:
             'backend_throttle_failed': False,
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         with pytest.raises(exceptions.BackendBrokenError):
@@ -835,8 +816,7 @@ class TestClient:
             'backend_throttle_failed': False,
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         with pytest.raises(exceptions.BackendDownError):
@@ -850,8 +830,7 @@ class TestClient:
             'backend_throttle_failed': True,
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         with pytest.raises(exceptions.BackendThrottleError):
@@ -867,8 +846,7 @@ class TestClient:
             }
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         send_methods = client.get_send_methods('ABC123-1')
@@ -881,17 +859,8 @@ class TestClient:
         assert send_methods[0].code == 'COBO'
         assert send_methods[1].code == 'POST'
 
-    def test_get_send_methods_bad_response_code(self, client, monkeypatch):
-        fake_response = FakeResponse(status_code=500, json={})
-        mock_make_request = Mock(return_value=fake_response)
-        monkeypatch.setattr(client, 'make_request', mock_make_request)
-
-        with pytest.raises(exceptions.InvalidResponseError):
-            client.get_send_methods('ABC123-1')
-
     def test_get_send_methods_bad_data(self, client, monkeypatch):
-        fake_response = FakeResponse(status_code=200, json={})
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value={})
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         with pytest.raises(exceptions.InvalidResponseError):
@@ -907,8 +876,7 @@ class TestClient:
             }
         }
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         discounts = client.get_discounts('ABC123-1', 'STALLS', 'A/pool')
@@ -923,17 +891,9 @@ class TestClient:
         assert discounts[0].code == 'ADULT'
         assert discounts[1].code == 'CHILD'
 
-    def test_get_discounts_bad_response_code(self, client, monkeypatch):
-        fake_response = FakeResponse(status_code=500, json={})
-        mock_make_request = Mock(return_value=fake_response)
-        monkeypatch.setattr(client, 'make_request', mock_make_request)
-
-        with pytest.raises(exceptions.InvalidResponseError):
-            client.get_discounts('ABC123-1', 'STALLS', 'A/pool')
 
     def test_get_discounts_bad_data(self, client, monkeypatch):
-        fake_response = FakeResponse(status_code=200, json={})
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value={})
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         with pytest.raises(exceptions.InvalidResponseError):
@@ -1011,8 +971,7 @@ class TestClient:
     def test_get_trolley(self, client, monkeypatch):
         response = {'trolley_contents': {}, 'trolley_token': 'DEF456'}
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         trolley = client.get_trolley()
@@ -1025,8 +984,7 @@ class TestClient:
     def test_make_reservation(self, client, monkeypatch):
         response = {'reserved_trolley': {'random_index': 'DEF456'}}
 
-        fake_response = FakeResponse(status_code=200, json=response)
-        mock_make_request = Mock(return_value=fake_response)
+        mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         reservation = client.make_reservation()
