@@ -463,6 +463,27 @@ class TestClient:
             'foobar': 'lolbeans'
         })
 
+    def test_get_event(self, client, monkeypatch):
+        response = {
+            'events_by_id': {
+                'ABC123': {
+                    'event': {'event_id': 'ABC123'},
+                },
+            },
+        }
+
+        fake_response = FakeResponse(status_code=200, json=response)
+        mock_make_request = Mock(return_value=fake_response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        event = client.get_event('ABC123')
+
+        mock_make_request.assert_called_with(
+            'events_by_id.v1',
+            {'event_id_list': 'ABC123'},
+        )
+        assert event.id =='ABC123'
+
     def test_get_months(self, client, monkeypatch):
         response = {
             'results': {

@@ -256,6 +256,10 @@ class Client(object):
         }
         return events
 
+    def get_event(self, event_id, **kwargs):
+        events = self.get_events([event_id], **kwargs)
+        return events.get(event_id)
+
     def get_months(self, event_id, **kwargs):
         params = {'event_id': event_id}
 
