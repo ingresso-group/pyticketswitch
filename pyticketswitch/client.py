@@ -92,7 +92,7 @@ class Client(object):
                 )
             )
 
-        return response
+        return response.json()
 
     def add_optional_kwargs(self, params, availability=False,
                             availability_with_performances=False,
@@ -213,7 +213,7 @@ class Client(object):
 
         response = self.make_request('events.v1', params)
 
-        contents = response.json()
+        contents = response
 
         if 'results' not in contents:
             raise exceptions.InvalidResponseError(
@@ -242,7 +242,7 @@ class Client(object):
 
         response = self.make_request('events_by_id.v1', params)
 
-        contents = response.json()
+        contents = response
 
         if 'events_by_id' not in contents:
             raise exceptions.InvalidResponseError(
@@ -267,7 +267,7 @@ class Client(object):
 
         response = self.make_request('months.v1', params)
 
-        contents = response.json()
+        contents = response
 
         if 'results' not in contents:
             raise exceptions.InvalidResponseError(
@@ -294,7 +294,7 @@ class Client(object):
 
         response = self.make_request('performances.v1', params)
 
-        contents = response.json()
+        contents = response
 
         if 'results' not in contents:
             raise exceptions.InvalidResponseError(
@@ -324,7 +324,7 @@ class Client(object):
 
         response = self.make_request('performances_by_id.v1', params)
 
-        contents = response.json()
+        contents = response
 
         if 'performances_by_id' not in contents:
             raise exceptions.InvalidResponseError(
@@ -363,7 +363,7 @@ class Client(object):
 
         response = self.make_request('availability.v1', params)
 
-        contents = response.json()
+        contents = response
 
         if contents.get('backend_is_broken'):
             raise exceptions.BackendBrokenError(
@@ -401,7 +401,7 @@ class Client(object):
         params = {'perf_id': performance_id}
         response = self.make_request('send_methods.v1', params)
 
-        contents = response.json()
+        contents = response
 
         if 'send_methods' not in contents:
             raise exceptions.InvalidResponseError(
@@ -426,7 +426,7 @@ class Client(object):
 
         response = self.make_request('discounts.v1', params)
 
-        contents = response.json()
+        contents = response
 
         if 'discounts' not in contents:
             raise exceptions.InvalidResponseError(
@@ -536,7 +536,7 @@ class Client(object):
 
         response = self.make_request('trolley.v1', params)
 
-        contents = response.json()
+        contents = response
 
         trolley = Trolley.from_api_data(contents)
 
@@ -563,7 +563,7 @@ class Client(object):
 
         response = self.make_request('reserve.v1', params, method=POST)
 
-        contents = response.json()
+        contents = response
 
         trolley = Reservation.from_api_data(contents)
 
