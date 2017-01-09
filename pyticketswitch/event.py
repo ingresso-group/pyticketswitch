@@ -25,8 +25,8 @@ class Event(object):
                  content=None, event_info_html=None, event_info=None,
                  venue_addr_html=None, venue_addr=None, venue_info=None,
                  venue_info_html=None, media=None, reviews=None,
-                 availability_details=None, meta_events=None,
-                 valid_quantities=None, fields=None):
+                 critic_review_percentage=None, availability_details=None,
+                 meta_events=None, valid_quantities=None, fields=None):
 
         self.id = id_
         self.status = status
@@ -75,6 +75,7 @@ class Event(object):
 
         self.media = media
         self.reviews = reviews
+        self.critic_review_percentage = critic_review_percentage
 
         self.availability_details = availability_details
 
@@ -227,6 +228,7 @@ class Event(object):
 
             'media': media,
             'reviews': reviews,
+            'critic_review_percentage': data.get('critic_review_percentage'),
 
             'availability_details': availability_details,
             'meta_events': meta_events,

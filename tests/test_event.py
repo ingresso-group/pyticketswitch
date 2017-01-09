@@ -19,6 +19,8 @@ def data():
         'source_desc': 'Super Awesome Ticketer',
         'venue_desc': 'Top Notch Theater',
 
+        'critic_review_percentage': 100,
+
         'class': [
             {'class_desc': 'Theater'},
             {'class_desc': 'Amazeballs'},
@@ -276,6 +278,8 @@ class TestEvent:
         assert event.source == 'Super Awesome Ticketer'
         assert event.event_type == 'simple_ticket'
         assert event.venue == 'Top Notch Theater'
+
+        assert event.critic_review_percentage == 100
 
         assert event.classes == ['Theater', 'Amazeballs']
         assert event.filters == []
