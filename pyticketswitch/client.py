@@ -57,15 +57,15 @@ class Client(object):
         )
         return url
 
-    def get_password(self):
+    def get_auth_params(self):
         """
         This is here so that it can be overwritten for differing auth methods
         """
-        return self.password
+        return {'user_passwd': self.password}
 
     def make_request(self, endpoint, params, method=GET):
         url = self.get_url(endpoint)
-        params.update(user_passwd=self.get_password())
+        params.update(self.get_auth_params())
 
         if method == POST:
             response = requests.post(url, params=params)
