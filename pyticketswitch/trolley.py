@@ -4,11 +4,13 @@ from pyticketswitch.order import Order
 
 class Trolley(object):
 
-    def __init__(self, token=None, transaction_uuid=None, bundles=None, discarded_orders=None):
+    def __init__(self, token=None, transaction_uuid=None, bundles=None,
+                 discarded_orders=None, minutes_left=None):
         self.token = token
         self.transaction_uuid = transaction_uuid
         self.bundles = bundles
         self.discarded_orders = discarded_orders
+        self.minutes_left = minutes_left
 
     @classmethod
     def from_api_data(cls, data):
@@ -38,5 +40,9 @@ class Trolley(object):
             'discarded_orders': discarded_orders,
             'transaction_uuid': raw_contents.get('transaction_uuid')
         }
+
+        minutes = data.get('minutes_left_on_reserve')
+        if minutes is not None:
+            kwargs.update(minutes_left=float(minutes))
 
         return cls(**kwargs)

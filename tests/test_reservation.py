@@ -13,7 +13,6 @@ class TestReservation:
                 'ae': 'United Arab Emirates',
             },
             'can_edit_address': True,
-            'minutes_left_on_reserve': 15,
             'needs_agent_reference': True,
             'needs_email_address': True,
             'needs_payment_card': True,
@@ -35,6 +34,7 @@ class TestReservation:
                         'order': [{'item_number': 1}],
                     }
                 ],
+                'minutes_left_on_reserve': 15,
                 'random_index': '5d3928de-c923-11e6-b2f6-0025903268a0',
                 'trolley_bundle_count': 1,
                 'trolley_order_count': 1
@@ -47,7 +47,6 @@ class TestReservation:
         assert reservation.needs_payment_card is True
         assert reservation.needs_email_address is True
         assert reservation.needs_agent_reference is True
-        assert reservation.minutes_left == 15
         assert reservation.can_edit_address is True
 
         assert isinstance(reservation.prefilled_address, Address)

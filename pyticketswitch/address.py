@@ -1,12 +1,12 @@
 class Address(object):
 
-    def __init__(self, lines=None, country_code=None, country=None,
+    def __init__(self, lines=None, country_code=None, county=None,
                  email=None, home_phone=None, postcode=None, town=None,
                  work_phone=None):
 
         self.lines = lines
         self.country_code = country_code
-        self.country = country
+        self.county = county
         self.email = email
         self.home_phone = home_phone
         self.postcode = postcode
@@ -17,7 +17,7 @@ class Address(object):
     def from_api_data(cls, data):
         kwargs = {
             'country_code': data.get('country_code'),
-            'country': data.get('country'),
+            'county': data.get('county'),
             'email': data.get('email_address'),
             'home_phone': data.get('home_phone'),
             'postcode': data.get('postcode'),

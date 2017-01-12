@@ -15,12 +15,18 @@ class TestTicketOrder:
             'sale_surcharge': 2.50,
             'total_sale_seatprice': 50,
             'total_sale_surcharge': 5,
+            'seats': {
+                'id_details': [
+                    {'full_id': 'ABC123'},
+                    {'full_id': 'DEF456'},
+                ]
+            }
         }
 
         ticket_order = TicketOrder.from_api_data(data)
 
         assert ticket_order.code == 'ADULT'
-        assert ticket_order.seats == 2
+        assert ticket_order.number_of_seats == 2
         assert ticket_order.description == 'Adult standard'
         assert isinstance(ticket_order.seatprice, float)
         assert ticket_order.seatprice == 25.0
@@ -31,6 +37,9 @@ class TestTicketOrder:
         assert isinstance(ticket_order.total_surcharge, float)
         assert ticket_order.total_surcharge == 5.0
         assert ticket_order.disallowed_mask == 123
+        assert len(ticket_order.seats) == 2
+        assert ticket_order.seats[0].id == 'ABC123'
+        assert ticket_order.seats[1].id == 'DEF456'
 
 
 class TestOrder:
@@ -66,7 +75,7 @@ class TestOrder:
         assert order.price_band_code == 'C/pool'
         assert order.ticket_type_code == 'CIRCLE'
         assert order.ticket_type_description == 'Upper circle'
-        assert order.seats == 3
+        assert order.number_of_seats == 3
         assert order.total_seatprice == 51
         assert order.total_surcharge == 5.40
         assert order.seat_request_status == 'not_requested'

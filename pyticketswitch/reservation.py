@@ -6,10 +6,10 @@ from pyticketswitch.order import Order
 
 class Reservation(object):
 
-    def __init__(self, trolley, unreserved_orders=None, prefilled_address=None,
+    def __init__(self, trolley=None, unreserved_orders=None, prefilled_address=None,
                  needs_payment_card=False, needs_email_address=False,
-                 needs_agent_reference=False, minutes_left=None,
-                 can_edit_address=False, allowed_countries=None):
+                 needs_agent_reference=False, can_edit_address=False,
+                 allowed_countries=None):
 
         self.trolley = trolley
         self.unreserved_orders = unreserved_orders
@@ -17,7 +17,6 @@ class Reservation(object):
         self.needs_payment_card = needs_payment_card
         self.needs_email_address = needs_email_address
         self.needs_agent_reference = needs_agent_reference
-        self.minutes_left = minutes_left
         self.can_edit_address = can_edit_address
         self.allowed_countries = allowed_countries
 
@@ -43,10 +42,6 @@ class Reservation(object):
         address = data.get('prefilled_address')
         if address is not None:
             kwargs.update(prefilled_address=Address.from_api_data(address))
-
-        minutes = data.get('minutes_left_on_reserve')
-        if minutes is not None:
-            kwargs.update(minutes_left=float(minutes))
 
         trolley = Trolley.from_api_data(data)
         kwargs.update(trolley=trolley)

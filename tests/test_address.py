@@ -8,7 +8,7 @@ class TestAddress:
             'address_line_one': 'Metro Building',
             'address_line_two': '1 Butterwick',
             'country_code': 'uk',
-            'country': 'United Kingdom',
+            'county': 'London',
             'email_address': 'lol@beans.com',
             'home_phone': '020810101010101',
             'postcode': 'W6 8DL',
@@ -23,7 +23,7 @@ class TestAddress:
         assert address.town == 'Hammersmith, London'
         assert address.postcode == 'W6 8DL'
         assert address.country_code == 'uk'
-        assert address.country == 'United Kingdom'
+        assert address.county == 'London'
         assert address.email == 'lol@beans.com'
         assert address.home_phone == '020810101010101'
         assert address.work_phone == '020801010101010'

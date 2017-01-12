@@ -1,15 +1,17 @@
 from pyticketswitch.event import Event
 from pyticketswitch.performance import Performance
+from pyticketswitch.seat import Seat
 
 
 class TicketOrder(object):
 
-    def __init__(self, code, seats, description=None, seatprice=None,
-                 surcharge=None, total_seatprice=None, total_surcharge=None,
-                 disallowed_mask=None):
+    def __init__(self, code, seats=None, number_of_seats=None, description=None,
+                 seatprice=None, surcharge=None, total_seatprice=None,
+                 total_surcharge=None, disallowed_mask=None):
         self.code = code
         self.seats = seats
         self.description = description
+        self.number_of_seats = number_of_seats
         self.seatprice = seatprice
         self.surcharge = surcharge
         self.total_seatprice = total_seatprice
@@ -20,7 +22,7 @@ class TicketOrder(object):
     def from_api_data(cls, data):
         kwargs = {
             'code': data.get('discount_code'),
-            'seats': data.get('no_of_seats'),
+            'number_of_seats': data.get('no_of_seats'),
             'description': data.get('discount_desc'),
             'disallowed_mask': data.get('discount_disallowed_seat_no_bitmask'),
         }
@@ -44,6 +46,14 @@ class TicketOrder(object):
         if raw_total_surcharge is not None:
             kwargs.update(total_surcharge=float(raw_total_surcharge))
 
+        seats_data = data.get('seats')
+        if seats_data:
+            seats = [
+                Seat.from_api_data(seat)
+                for seat in seats_data.get('id_details', [])
+            ]
+            kwargs.update(seats=seats)
+
         return cls(**kwargs)
 
 
@@ -51,7 +61,7 @@ class Order(object):
 
     def __init__(self, item, event=None, performance=None, price_band_code=None,
                  ticket_type_code=None, ticket_type_description=None,
-                 ticket_orders=None, seats=None, total_seatprice=None,
+                 ticket_orders=None, number_of_seats=None, total_seatprice=None,
                  total_surcharge=None, seat_request_status=None):
         self.item = item
         self.event = event
@@ -60,7 +70,7 @@ class Order(object):
         self.ticket_type_code = ticket_type_code
         self.ticket_type_description = ticket_type_description
         self.ticket_orders = ticket_orders
-        self.seats = seats
+        self.number_of_seats = number_of_seats
         self.total_seatprice = total_seatprice
         self.total_surcharge = total_surcharge
         self.seat_request_status = seat_request_status
@@ -69,7 +79,7 @@ class Order(object):
     def from_api_data(cls, data):
         kwargs = {
             'item': data.get('item_number'),
-            'seats': data.get('total_no_of_seats'),
+            'number_of_seats': data.get('total_no_of_seats'),
             'price_band_code': data.get('price_band_code'),
             'ticket_type_code': data.get('ticket_type_code'),
             'ticket_type_description': data.get('ticket_type_desc'),
