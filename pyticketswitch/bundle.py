@@ -54,3 +54,10 @@ class Bundle(object):
             kwargs.update(total=float(total))
 
         return cls(**kwargs)
+
+    def get_events(self):
+        return [
+            order.event
+            for order in self.orders
+            if order.event and order.event.id
+        ]

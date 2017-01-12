@@ -1,5 +1,7 @@
 from pyticketswitch.currency import Currency
 from pyticketswitch.bundle import Bundle
+from pyticketswitch.event import Event
+from pyticketswitch.order import Order
 
 
 class TestBundle(object):
@@ -41,3 +43,20 @@ class TestBundle(object):
 
         assert isinstance(bundle.currency, Currency)
         assert bundle.currency.code == 'gbp'
+
+    def test_get_events(self):
+
+        event_one = Event(id_='abc123')
+        event_two = Event(id_='def456')
+
+        bundle = Bundle(
+            'tests',
+            orders=[
+                Order(item=1, event=event_one),
+                Order(item=2, event=event_two),
+            ]
+        )
+
+        events = bundle.get_events()
+
+        assert events == [event_one, event_two]

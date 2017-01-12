@@ -46,3 +46,11 @@ class Trolley(object):
             kwargs.update(minutes_left=float(minutes))
 
         return cls(**kwargs)
+
+    def get_events(self):
+        return [
+            event
+            for bundle in self.bundles
+            for event in bundle.get_events
+            if event and event.id
+        ]
