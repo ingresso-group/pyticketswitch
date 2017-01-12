@@ -43,13 +43,13 @@ class TestTrolley:
                     {'bundle_source_code': 'foo'},
                     {'bundle_source_code': 'bar'},
                 ],
-                'random_index': 'DEF456',
+                'transaction_uuid': 'DEF456',
             },
         }
 
         trolley = Trolley.from_api_data(data)
 
-        assert trolley.random_index == 'DEF456'
+        assert trolley.transaction_uuid == 'DEF456'
 
         assert len(trolley.bundles) == 2
         assert trolley.bundles[0].source_code == 'foo'

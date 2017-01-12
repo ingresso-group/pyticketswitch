@@ -982,7 +982,7 @@ class TestClient:
         assert trolley.token == 'DEF456'
 
     def test_make_reservation(self, client, monkeypatch):
-        response = {'reserved_trolley': {'random_index': 'DEF456'}}
+        response = {'reserved_trolley': {'transaction_uuid': 'DEF456'}}
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
@@ -992,4 +992,4 @@ class TestClient:
         mock_make_request.assert_called_with('reserve.v1', {}, method=POST)
 
         assert isinstance(reservation, Reservation)
-        assert reservation.trolley.random_index == 'DEF456'
+        assert reservation.trolley.transaction_uuid == 'DEF456'

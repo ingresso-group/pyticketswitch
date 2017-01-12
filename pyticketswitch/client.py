@@ -10,6 +10,7 @@ from pyticketswitch.month import Month
 from pyticketswitch.discount import Discount
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.reservation import Reservation
+from pyticketswitch.status import Status
 
 
 logger = logging.getLogger(__name__)
@@ -213,14 +214,12 @@ class Client(object):
 
         response = self.make_request('events.v1', params)
 
-        contents = response
-
-        if 'results' not in contents:
+        if 'results' not in response:
             raise exceptions.InvalidResponseError(
                 "got no results key in json response"
             )
 
-        result = contents.get('results', {})
+        result = response.get('results', {})
         raw_events = result.get('event', [])
         events = [
             Event.from_api_data(data)
@@ -242,14 +241,12 @@ class Client(object):
 
         response = self.make_request('events_by_id.v1', params)
 
-        contents = response
-
-        if 'events_by_id' not in contents:
+        if 'events_by_id' not in response:
             raise exceptions.InvalidResponseError(
                 "got no events_by_id key in json response"
             )
 
-        events_by_id = contents.get('events_by_id', {})
+        events_by_id = response.get('events_by_id', {})
         events = {
             event_id: Event.from_events_by_id_data(raw_event)
             for event_id, raw_event in events_by_id.items()
@@ -267,14 +264,12 @@ class Client(object):
 
         response = self.make_request('months.v1', params)
 
-        contents = response
-
-        if 'results' not in contents:
+        if 'results' not in response:
             raise exceptions.InvalidResponseError(
                 "got no results key in json response"
             )
 
-        result = contents.get('results', {})
+        result = response.get('results', {})
         raw_months = result.get('month', [])
 
         months = [
@@ -294,14 +289,12 @@ class Client(object):
 
         response = self.make_request('performances.v1', params)
 
-        contents = response
-
-        if 'results' not in contents:
+        if 'results' not in response:
             raise exceptions.InvalidResponseError(
                 "got no results key in json response"
             )
 
-        result = contents.get('results', {})
+        result = response.get('results', {})
 
         raw_performances = result.get('performance', [])
         performances = [
@@ -324,14 +317,12 @@ class Client(object):
 
         response = self.make_request('performances_by_id.v1', params)
 
-        contents = response
-
-        if 'performances_by_id' not in contents:
+        if 'performances_by_id' not in response:
             raise exceptions.InvalidResponseError(
                 "got no performances_by_id key in json response"
             )
 
-        raw_performances = contents.get('performances_by_id', {})
+        raw_performances = response.get('performances_by_id', {})
         performances = {
             performance_id: Performance.from_api_data(data)
             for performance_id, data in raw_performances.items()
@@ -363,31 +354,29 @@ class Client(object):
 
         response = self.make_request('availability.v1', params)
 
-        contents = response
-
-        if contents.get('backend_is_broken'):
+        if response.get('backend_is_broken'):
             raise exceptions.BackendBrokenError(
                 'Error returned from upstream backend system'
             )
 
-        if contents.get('backend_is_down'):
+        if response.get('backend_is_down'):
             raise exceptions.BackendDownError(
                 'Unable to contact upstream backend system'
             )
 
-        if contents.get('backend_throttle_failed'):
+        if response.get('backend_throttle_failed'):
             raise exceptions.BackendThrottleError(
                 'The call timed out while being queued for throttling'
             )
 
-        if 'availability' not in contents:
+        if 'availability' not in response:
             raise exceptions.InvalidResponseError(
                 "got no availability key in json response"
             )
 
-        meta = AvailabilityMeta.from_api_data(contents)
+        meta = AvailabilityMeta.from_api_data(response)
 
-        raw_availability = contents.get('availability', {})
+        raw_availability = response.get('availability', {})
 
         availability = [
             TicketType.from_api_data(data)
@@ -401,14 +390,13 @@ class Client(object):
         params = {'perf_id': performance_id}
         response = self.make_request('send_methods.v1', params)
 
-        contents = response
 
-        if 'send_methods' not in contents:
+        if 'send_methods' not in response:
             raise exceptions.InvalidResponseError(
                 "got no send_methods key in json response"
             )
 
-        raw_send_methods = contents.get('send_methods', {})
+        raw_send_methods = response.get('send_methods', {})
 
         send_methods = [
             SendMethod.from_api_data(data)
@@ -426,14 +414,12 @@ class Client(object):
 
         response = self.make_request('discounts.v1', params)
 
-        contents = response
-
-        if 'discounts' not in contents:
+        if 'discounts' not in response:
             raise exceptions.InvalidResponseError(
                 "got no discounts key in json response"
             )
 
-        raw_discounts = contents.get('discounts', {})
+        raw_discounts = response.get('discounts', {})
 
         discounts = [
             Discount.from_api_data(data)
@@ -536,9 +522,7 @@ class Client(object):
 
         response = self.make_request('trolley.v1', params)
 
-        contents = response
-
-        trolley = Trolley.from_api_data(contents)
+        trolley = Trolley.from_api_data(response)
 
         return trolley
 
@@ -563,8 +547,7 @@ class Client(object):
 
         response = self.make_request('reserve.v1', params, method=POST)
 
-        contents = response
-
-        trolley = Reservation.from_api_data(contents)
+        trolley = Reservation.from_api_data(response)
 
         return trolley
+
