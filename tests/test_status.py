@@ -16,6 +16,7 @@ class TestStatus:
             'reserve_iso8601_date_and_time': '2016-11-09T18:19:27Z',
             'purchase_iso8601_date_and_time': '2016-11-11T12:34:49Z',
             'transaction_status': 'purchased',
+            'reserve_user': {'user_id': 'foobar'},
             'trolley_contents': {
                 'transaction_uuid': '284d9c3a-d698-11e6-be8c-002590326962',
             }
@@ -30,3 +31,4 @@ class TestStatus:
         assert status.languages == ['en-gb', 'en', 'en-us', 'nl']
         assert status.remote_site == 'foobar.example.com'
         assert status.trolley.transaction_uuid == '284d9c3a-d698-11e6-be8c-002590326962'
+        assert status.reserve_user.id == 'foobar'

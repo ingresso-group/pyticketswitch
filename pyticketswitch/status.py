@@ -1,4 +1,5 @@
 from pyticketswitch.trolley import Trolley
+from pyticketswitch.user import User
 from pyticketswitch.utils import isostr_to_datetime
 
 
@@ -6,7 +7,7 @@ class Status(object):
 
     def __init__(self, status=None, reserved_at=None, trolley=None,
                  purchased_at=None, external_sale_page=None,
-                 languages=None, remote_site=None):
+                 languages=None, remote_site=None, reserve_user=None):
         self.status = status
         self.reserved_at = reserved_at
         self.purchased_at = purchased_at
@@ -14,6 +15,7 @@ class Status(object):
         self.external_sale_page = external_sale_page
         self.languages = languages
         self.remote_site = remote_site
+        self.reserve_user = reserve_user
 
     @classmethod
     def from_api_data(cls, data):
@@ -35,6 +37,11 @@ class Status(object):
         external_sale_page_raw = data.get('external_sale_page_raw')
         if external_sale_page_raw:
             raise NotImplemented("don't know what this looks like yet")
+
+        reserve_user_data = data.get('reserve_user')
+        if reserve_user_data:
+            reserve_user = User.from_api_data(reserve_user_data)
+            kwargs.update(reserve_user=reserve_user)
 
         languages_raw = data.get('language_list')
         if languages_raw:
