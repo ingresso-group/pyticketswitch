@@ -61,8 +61,9 @@ class Order(object):
 
     def __init__(self, item, event=None, performance=None, price_band_code=None,
                  ticket_type_code=None, ticket_type_description=None,
-                 ticket_orders=None, number_of_seats=None, total_seatprice=None,
-                 total_surcharge=None, seat_request_status=None):
+                 ticket_orders=None, number_of_seats=None,
+                 total_seatprice=None, total_surcharge=None,
+                 seat_request_status=None, requested_seats=None):
         self.item = item
         self.event = event
         self.performance = performance
@@ -74,6 +75,7 @@ class Order(object):
         self.total_seatprice = total_seatprice
         self.total_surcharge = total_surcharge
         self.seat_request_status = seat_request_status
+        self.requested_seats = requested_seats
 
     @classmethod
     def from_api_data(cls, data):
@@ -111,5 +113,13 @@ class Order(object):
         raw_total_surcharge = data.get('total_sale_surcharge')
         if raw_total_surcharge is not None:
             kwargs.update(total_surcharge=float(raw_total_surcharge))
+
+        raw_requested_seats = data.get('requested_seats')
+        if raw_requested_seats:
+            requested_seats = [
+                Seat.from_api_data(seat)
+                for seat in raw_requested_seats.get('id_details', [])
+            ]
+            kwargs.update(requested_seats=requested_seats)
 
         return cls(**kwargs)

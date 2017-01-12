@@ -67,6 +67,12 @@ class TestOrder:
             "total_no_of_seats": 3,
             "total_sale_seatprice": 51,
             "total_sale_surcharge": 5.40,
+            "requested_seats": {
+                "id_details": [
+                    {'full_id': 'ABC123'},
+                    {'full_id': 'DEF456'},
+                ]
+            },
         }
 
         order = Order.from_api_data(data)
@@ -88,3 +94,7 @@ class TestOrder:
         assert len(order.ticket_orders) == 2
         assert order.ticket_orders[0].code == 'ADULT'
         assert order.ticket_orders[1].code == 'CHILD'
+
+        assert len(order.requested_seats) == 2
+        assert order.requested_seats[0].id == 'ABC123'
+        assert order.requested_seats[1].id == 'DEF456'
