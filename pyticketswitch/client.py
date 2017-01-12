@@ -11,6 +11,7 @@ from pyticketswitch.discount import Discount
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.reservation import Reservation
 from pyticketswitch.status import Status
+from pyticketswitch.user import User
 
 
 logger = logging.getLogger(__name__)
@@ -94,6 +95,22 @@ class Client(object):
             )
 
         return response.json()
+
+    def test(self):
+        """
+        calls /f13/test.v1
+
+        will return the running user on sucess and will raise an exception
+        if the authentication details are invalid.
+
+        This call is not required, but may be useful for validating auth 
+        credentials, or checking on the health of the ticketswitch API.
+        """
+        response = self.make_request('test.v1', {})
+
+        user = User.from_api_data(response)
+
+        return user
 
     def add_optional_kwargs(self, params, availability=False,
                             availability_with_performances=False,

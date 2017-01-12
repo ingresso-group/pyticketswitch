@@ -6,6 +6,7 @@ from pyticketswitch.client import Client, POST
 from pyticketswitch import exceptions
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.reservation import Reservation
+from pyticketswitch.user import User
 from pyticketswitch.status import Status
 
 
@@ -1014,3 +1015,16 @@ class TestClient:
 
         assert isinstance(status, Status)
         assert status.trolley.transaction_uuid == 'DEF456'
+
+    def test_test(self, client, monkeypatch):
+        response = {'user_id': 'foobar'}
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        user = client.test()
+
+        mock_make_request.assert_called_with('test.v1', {})
+
+        assert isinstance(user, User)
+        assert user.id == 'foobar'
