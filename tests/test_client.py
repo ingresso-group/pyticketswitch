@@ -6,6 +6,7 @@ from pyticketswitch.client import Client, POST
 from pyticketswitch import exceptions
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.reservation import Reservation
+from pyticketswitch.status import Status
 
 
 @pytest.fixture
@@ -891,7 +892,6 @@ class TestClient:
         assert discounts[0].code == 'ADULT'
         assert discounts[1].code == 'CHILD'
 
-
     def test_get_discounts_bad_data(self, client, monkeypatch):
         mock_make_request = Mock(return_value={})
         monkeypatch.setattr(client, 'make_request', mock_make_request)
@@ -993,3 +993,24 @@ class TestClient:
 
         assert isinstance(reservation, Reservation)
         assert reservation.trolley.transaction_uuid == 'DEF456'
+
+    def test_get_status(self, client, monkeypatch):
+        response = {'trolley_contents': {'transaction_uuid': 'DEF456'}}
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        status = client.get_status(
+            transaction_uuid='DEF456',
+            customer=True,
+            external_sale_page=True,
+        )
+
+        mock_make_request.assert_called_with('status.v1', {
+            'transaction_uuid': 'DEF456',
+            'add_customer': True,
+            'add_external_sale_page': True,
+        })
+
+        assert isinstance(status, Status)
+        assert status.trolley.transaction_uuid == 'DEF456'

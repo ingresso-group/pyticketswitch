@@ -551,3 +551,20 @@ class Client(object):
 
         return trolley
 
+    def get_status(self, transaction_uuid, customer=False,
+                   external_sale_page=False):
+        params = {
+            'transaction_uuid': transaction_uuid,
+        }
+
+        if customer:
+            params.update(add_customer=True)
+
+        if external_sale_page:
+            params.update(add_external_sale_page=True)
+
+        response = self.make_request('status.v1', params)
+
+        status = Status.from_api_data(response)
+
+        return status
