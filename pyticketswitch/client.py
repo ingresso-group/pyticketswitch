@@ -103,7 +103,7 @@ class Client(object):
         will return the running user on sucess and will raise an exception
         if the authentication details are invalid.
 
-        This call is not required, but may be useful for validating auth 
+        This call is not required, but may be useful for validating auth
         credentials, or checking on the health of the ticketswitch API.
         """
         response = self.make_request('test.v1', {})
@@ -406,7 +406,6 @@ class Client(object):
 
         params = {'perf_id': performance_id}
         response = self.make_request('send_methods.v1', params)
-
 
         if 'send_methods' not in response:
             raise exceptions.InvalidResponseError(
