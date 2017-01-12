@@ -567,6 +567,12 @@ class Client(object):
 
         return trolley
 
+    def release_reservation(self, transaction_uuid):
+        params = {'transaction_uuid': transaction_uuid}
+        response = self.make_request('release.v1', params, method=POST)
+
+        return response.get('released_ok', False)
+
     def get_status(self, transaction_uuid, customer=False,
                    external_sale_page=False):
         params = {

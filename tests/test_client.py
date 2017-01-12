@@ -1028,3 +1028,17 @@ class TestClient:
 
         assert isinstance(user, User)
         assert user.id == 'foobar'
+
+    def test_release_reservation(self, client, monkeypatch):
+        response = {'released_ok': True}
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        released = client.release_reservation('abc123')
+
+        mock_make_request.assert_called_with('release.v1', {
+            'transaction_uuid': 'abc123',
+        }, method=POST)
+
+        assert released is True
