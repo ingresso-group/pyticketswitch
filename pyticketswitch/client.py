@@ -351,13 +351,16 @@ class Client(object):
         performances = self.get_performances([performance_id], **kwargs)
         return performances.get(performance_id)
 
-    def get_availability(self, performance_id, discounts=False,
-                         example_seats=False, seat_blocks=False,
-                         user_commission=False, **kwargs):
+    def get_availability(self, performance_id, number_of_seats=None,
+                         discounts=False, example_seats=False,
+                         seat_blocks=False, user_commission=False, **kwargs):
         """
         Fetch available tickets and prices for a given performance
         """
         params = {'perf_id': performance_id}
+
+        if number_of_seats:
+            params.update(no_of_seats=number_of_seats)
 
         if discounts:
             params.update(add_discounts=True)

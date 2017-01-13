@@ -772,6 +772,14 @@ class TestClient:
         price_band_four = ticket_type_two.price_bands[1]
         assert price_band_four.code == 'D'
 
+    def test_get_availability_with_number_of_seats(self, client, mock_make_request_for_availability):
+        client.get_availability('6IF-1', number_of_seats=2)
+
+        mock_make_request_for_availability.assert_called_with('availability.v1', {
+            'perf_id': '6IF-1',
+            'no_of_seats': 2,
+        })
+
     def test_get_availability_with_discounts(self, client, mock_make_request_for_availability):
         client.get_availability('6IF-1', discounts=True)
 
