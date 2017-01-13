@@ -56,3 +56,6 @@ class Trolley(object):
             for event in bundle.get_events()
             if event and event.id
         ]
+
+    def get_event_ids(self):
+        return {event.id for event in self.get_events()}

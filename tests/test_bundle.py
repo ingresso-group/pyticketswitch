@@ -68,3 +68,19 @@ class TestBundle(object):
         events = bundle.get_events()
 
         assert events == []
+
+    def test_get_event_ids(self):
+        event_one = Event(id_='abc123')
+        event_two = Event(id_='def456')
+
+        bundle = Bundle(
+            'tests',
+            orders=[
+                Order(item=1, event=event_one),
+                Order(item=2, event=event_two),
+            ]
+        )
+
+        events = bundle.get_event_ids()
+
+        assert events == {'abc123', 'def456'}

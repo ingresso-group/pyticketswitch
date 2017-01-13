@@ -63,3 +63,6 @@ class Bundle(object):
             for order in self.orders
             if order.event and order.event.id
         ]
+
+    def get_event_ids(self):
+        return {event.id for event in self.get_events()}
