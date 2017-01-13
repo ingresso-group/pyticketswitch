@@ -1,4 +1,7 @@
 from pyticketswitch.trolley import Trolley
+from pyticketswitch.bundle import Bundle
+from pyticketswitch.event import Event
+from pyticketswitch.order import Order
 
 
 class TestTrolley:
@@ -58,3 +61,41 @@ class TestTrolley:
         assert len(trolley.discarded_orders) == 2
         assert trolley.discarded_orders[0].item == 3
         assert trolley.discarded_orders[1].item == 6
+
+    def test_get_events(self):
+
+        event_one = Event(id_='abc123')
+        event_two = Event(id_='def456')
+        event_three = Event(id_='ghi789')
+        event_four = Event(id_='jlk012')
+
+        bundle_one = Bundle(
+            'tests',
+            orders=[
+                Order(item=1, event=event_one),
+                Order(item=2, event=event_two),
+            ]
+        )
+        bundle_two = Bundle(
+            'tests_two',
+            orders=[
+                Order(item=3, event=event_three),
+                Order(item=4, event=event_four),
+            ]
+        )
+
+        trolley = Trolley(
+            bundles=[bundle_one, bundle_two]
+        )
+
+        events = trolley.get_events()
+
+        assert events == [event_one, event_two, event_three, event_four]
+
+    def test_get_events_with_no_bundles(self):
+
+        trolley = Trolley(bundles=None)
+
+        events = trolley.get_events()
+
+        assert events == []

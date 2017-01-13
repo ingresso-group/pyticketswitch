@@ -56,6 +56,8 @@ class Bundle(object):
         return cls(**kwargs)
 
     def get_events(self):
+        if not self.orders:
+            return []
         return [
             order.event
             for order in self.orders

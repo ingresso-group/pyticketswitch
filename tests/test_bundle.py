@@ -60,3 +60,11 @@ class TestBundle(object):
         events = bundle.get_events()
 
         assert events == [event_one, event_two]
+
+    def test_get_events_with_no_orders(self):
+
+        bundle = Bundle('tests', orders=None)
+
+        events = bundle.get_events()
+
+        assert events == []

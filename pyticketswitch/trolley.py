@@ -48,9 +48,11 @@ class Trolley(object):
         return cls(**kwargs)
 
     def get_events(self):
+        if not self.bundles:
+            return []
         return [
             event
             for bundle in self.bundles
-            for event in bundle.get_events
+            for event in bundle.get_events()
             if event and event.id
         ]
