@@ -347,6 +347,10 @@ class Client(object):
 
         return performances
 
+    def get_performance(self, performance_id, **kwargs):
+        performances = self.get_performances([performance_id], **kwargs)
+        return performances.get(performance_id)
+
     def get_availability(self, performance_id, discounts=False,
                          example_seats=False, seat_blocks=False,
                          user_commission=False, **kwargs):

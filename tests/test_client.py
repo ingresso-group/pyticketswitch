@@ -679,6 +679,27 @@ class TestClient:
             'foobar': 'lolbeans',
         })
 
+    def test_get_performance(self, client, monkeypatch):
+        response = {
+            'performances_by_id': {
+                'ABC123-1': {
+                    'perf_id': 'ABC123-1',
+                    'event_id': 'ABC123',
+                },
+            },
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        performance = client.get_performance('ABC123-1')
+
+        mock_make_request.assert_called_with(
+            'performances_by_id.v1',
+            {'perf_id_list': 'ABC123-1'},
+        )
+        assert performance.id =='ABC123-1'
+
     def test_get_availability(self, client, monkeypatch):
         response = {
             'availability': {
