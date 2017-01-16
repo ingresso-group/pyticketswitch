@@ -7,7 +7,7 @@ class PriceBand(object):
 
     def __init__(self, code, default_discount, description=None,
                  cost_range=None, no_singles_cost_range=None,
-                 example_seats=None):
+                 example_seats=None, example_seats_are_real=True):
 
         self.code = code
         self.description = description
@@ -15,6 +15,7 @@ class PriceBand(object):
         self.no_singles_cost_range = no_singles_cost_range
         self.default_discount = default_discount
         self.example_seats = example_seats
+        self.example_seats_are_real = example_seats_are_real
 
     @classmethod
     def from_api_data(cls, data):
@@ -40,6 +41,7 @@ class PriceBand(object):
             'cost_range': cost_range,
             'no_singles_cost_range': no_singles_cost_range,
             'default_discount': discount,
+            'example_seats_are_real': data.get('example_seats_are_real', True),
         }
 
         example_seats_data = data.get('example_seats')

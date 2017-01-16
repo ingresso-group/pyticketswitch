@@ -48,7 +48,8 @@ class TestPriceBand:
                     {'full_id': 'ZZ-TOP'},
                     {'full_id': 'ZZ-BOTTOM'},
                 ]
-            }
+            },
+            'example_seats_are_real': False,
         }
 
         price_band = PriceBand.from_api_data(data)
@@ -60,3 +61,4 @@ class TestPriceBand:
         assert len(price_band.example_seats) == 2
         assert price_band.example_seats[0].id == 'ZZ-TOP'
         assert price_band.example_seats[1].id == 'ZZ-BOTTOM'
+        assert price_band.example_seats_are_real is False
