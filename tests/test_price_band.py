@@ -43,6 +43,12 @@ class TestPriceBand:
             },
             'price_band_code': 'B',
             'discount_code': 'ABC123',
+            'example_seats': {
+                'id_details': [
+                    {'full_id': 'ZZ-TOP'},
+                    {'full_id': 'ZZ-BOTTOM'},
+                ]
+            }
         }
 
         price_band = PriceBand.from_api_data(data)
@@ -50,3 +56,7 @@ class TestPriceBand:
         assert price_band.code == 'B'
         assert price_band.description == 'Cheap Seats'
         assert price_band.default_discount.code == 'ABC123'
+
+        assert len(price_band.example_seats) == 2
+        assert price_band.example_seats[0].id == 'ZZ-TOP'
+        assert price_band.example_seats[1].id == 'ZZ-BOTTOM'
