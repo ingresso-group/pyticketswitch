@@ -1,3 +1,4 @@
+import pytest
 from pyticketswitch.discount import Discount
 
 
@@ -32,20 +33,30 @@ class TestDiscount:
         assert discount.availability == 6
         assert discount.disallowed_mask == 126
 
-    def test_init_with_no_non_offer_prices(self):
-        discount = Discount('foo', seatprice=123.45, surcharge=6.78)
-        assert discount.non_offer_seatprice == 123.45
-        assert discount.non_offer_surcharge == 6.78
-
     def test_combined_price(self):
-
         discount = Discount('foo', seatprice=123.45, surcharge=6.78)
-
         assert discount.combined_price() == 130.23
 
-    def test_non_offer_combined_price(self):
+    def test_combined_price_missing_prices(self):
+        discount = Discount('foo', seatprice=123.45)
+        with pytest.raises(AssertionError):
+            discount.combined_price()
 
+        discount = Discount('bar', surcharge=6.78)
+        with pytest.raises(AssertionError):
+            discount.combined_price()
+
+    def test_non_offer_combined_price(self):
         discount = Discount('foo', non_offer_seatprice=123.45,
                             non_offer_surcharge=6.78)
 
         assert discount.non_offer_combined_price() == 130.23
+
+    def test_non_offer_combined_price_missing_prices(self):
+        discount = Discount('foo', non_offer_seatprice=123.45)
+        with pytest.raises(AssertionError):
+            discount.non_offer_combined_price()
+
+        discount = Discount('bar', non_offer_surcharge=6.78)
+        with pytest.raises(AssertionError):
+            discount.non_offer_combined_price()
