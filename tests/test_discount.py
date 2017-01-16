@@ -31,3 +31,16 @@ class TestDiscount:
         assert discount.non_offer_surcharge == 5.5
         assert discount.availability == 6
         assert discount.disallowed_mask == 126
+
+    def test_combined_price(self):
+
+        discount = Discount('foo', seatprice=123.45, surcharge=6.78)
+
+        assert discount.combined_price() == 130.23
+
+    def test_non_offer_combined_price(self):
+
+        discount = Discount('foo', non_offer_seatprice=123.45,
+                            non_offer_surcharge=6.78)
+
+        assert discount.non_offer_combined_price() == 130.23

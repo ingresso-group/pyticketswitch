@@ -47,3 +47,9 @@ class Discount(object):
             return False
 
         return True
+
+    def combined_price(self):
+        return self.seatprice + self.surcharge
+
+    def non_offer_combined_price(self):
+        return self.non_offer_seatprice + self.non_offer_surcharge
