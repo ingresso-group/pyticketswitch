@@ -11,8 +11,8 @@ class Discount(object):
         self.is_offer = is_offer
         self.seatprice = seatprice
         self.surcharge = surcharge
-        self.non_offer_seatprice = non_offer_seatprice or seatprice
-        self.non_offer_surcharge = non_offer_surcharge or surcharge
+        self.non_offer_seatprice = non_offer_seatprice
+        self.non_offer_surcharge = non_offer_surcharge
         self.availability = availability
         self.percentage_saving = percentage_saving
         self.absolute_saving = absolute_saving
@@ -49,7 +49,27 @@ class Discount(object):
         return True
 
     def combined_price(self):
+        """
+        This method assumes that we have both a seatprice and surcharge.
+        in the situation where are missing either a seatprice or a surcharge
+        then we don't have all the information to be able provide this
+        information.
+
+        It might seem like the obvious thing to do would be to assume the
+        missing data was in fact zero and simply allow the addition to
+        continue. However that would be somewhat dangerous when we are talking
+        about prices, and it's better to actually raise an exception to
+        indicate that there was a problem with the objects data, than to inform
+        a customer that the tickets are free or have no booking fees
+        """
+        assert self.seatprice is not None, 'seatprice data missing'
+        assert self.surcharge is not None, 'surcharge data missing'
         return self.seatprice + self.surcharge
 
     def non_offer_combined_price(self):
+        """
+        See combined_price()
+        """
+        assert self.non_offer_seatprice is not None, 'non_offer_seatprice data missing'
+        assert self.non_offer_surcharge is not None, 'non_offer_surcharge data missing'
         return self.non_offer_seatprice + self.non_offer_surcharge
