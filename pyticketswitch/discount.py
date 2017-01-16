@@ -11,8 +11,8 @@ class Discount(object):
         self.is_offer = is_offer
         self.seatprice = seatprice
         self.surcharge = surcharge
-        self.non_offer_seatprice = non_offer_seatprice
-        self.non_offer_surcharge = non_offer_surcharge
+        self.non_offer_seatprice = non_offer_seatprice or seatprice
+        self.non_offer_surcharge = non_offer_surcharge or surcharge
         self.availability = availability
         self.percentage_saving = percentage_saving
         self.absolute_saving = absolute_saving
