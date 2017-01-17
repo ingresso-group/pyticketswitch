@@ -1,4 +1,24 @@
-from pyticketswitch.seat import Seat
+from pyticketswitch.seat import Seat, SeatBlock
+
+
+class TestSeatBlock:
+
+    def from_api_data(self):
+
+        data = {
+            'block_length': 10,
+            'id_details': [
+                {'full_id': 'D1'},
+                {'full_id': 'B2'},
+            ]
+        }
+
+        seat_block = SeatBlock.from_api_data(data)
+
+        assert seat_block.length == 10
+        assert len(seat_block.seats) == 2
+        assert seat_block.seats[0].id == 'D1'
+        assert seat_block.seats[1].id == 'B2'
 
 
 class TestSeat:

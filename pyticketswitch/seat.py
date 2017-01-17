@@ -1,3 +1,28 @@
+class SeatBlock(object):
+
+    def __init__(self, length, seats=None):
+
+        self.length = length
+        self.seats = seats
+
+    @classmethod
+    def from_api_data(cls, data):
+
+        kwargs = {
+            'length': data.get('block_length'),
+        }
+
+        seats_data = data.get('id_details')
+        if seats_data:
+            seats = [
+                Seat.from_api_data(seat)
+                for seat in seats_data
+            ]
+            kwargs.update(seats=seats)
+
+        return cls(**kwargs)
+
+
 class Seat(object):
 
     def __init__(self, id_=None, column=None, row=None, is_restricted=False,
