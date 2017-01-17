@@ -50,6 +50,12 @@ class TestPriceBand:
                 ]
             },
             'example_seats_are_real': False,
+            'free_seat_blocks': {
+                'seat_block': [
+                    {'block_length': 10},
+                    {'block_length': 20},
+                ]
+            }
         }
 
         price_band = PriceBand.from_api_data(data)
@@ -62,3 +68,7 @@ class TestPriceBand:
         assert price_band.example_seats[0].id == 'ZZ-TOP'
         assert price_band.example_seats[1].id == 'ZZ-BOTTOM'
         assert price_band.example_seats_are_real is False
+
+        assert len(price_band.seat_blocks) == 2
+        assert price_band.seat_blocks[0].length == 10
+        assert price_band.seat_blocks[1].length == 20
