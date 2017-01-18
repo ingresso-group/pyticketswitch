@@ -145,11 +145,11 @@ class Event(object):
             for field in data.get('custom_fields', {})
         }
 
+        media = {}
         api_media = data.get('media', {})
-        media = [
-            Media.from_api_data(asset)
-            for asset in api_media.get('media_asset', [])
-        ]
+        for asset in api_media.get('media_asset', []):
+            new_media = Media.from_api_data(asset)
+            media[new_media.name] = new_media
 
         api_video = data.get('video_iframe')
         if api_video:
@@ -162,7 +162,8 @@ class Event(object):
                 'height': api_video.get('video_iframe_height', None),
                 'name': 'video',
             }
-            media.append(Media.from_api_data(kwargs))
+            new_video = Media.from_api_data(kwargs)
+            media['video'] = new_video
 
         api_reviews = data.get('reviews', {})
         reviews = [
