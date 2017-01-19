@@ -264,15 +264,16 @@ class Client(object):
             )
 
         events_by_id = response.get('events_by_id', {})
-        events = {
-            event_id: Event.from_events_by_id_data(raw_event)
+        events = [
+            Event.from_events_by_id_data(raw_event)
             for event_id, raw_event in events_by_id.items()
-        }
+        ]
         return events
 
     def get_event(self, event_id, **kwargs):
         events = self.get_events([event_id], **kwargs)
-        return events.get(event_id)
+        if events:
+            return events[0]
 
     def get_months(self, event_id, **kwargs):
         params = {'event_id': event_id}

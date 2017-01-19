@@ -3,12 +3,12 @@ import datetime
 
 class Review(object):
 
-    def __init__(self, body=None, date_and_time=None, rating=None,
+    def __init__(self, body=None, date_and_time=None, star_rating=None,
                  lang=None, title=None, is_user=False, author=None, url=None):
 
         self.body = body
         self.date_and_time = date_and_time
-        self.rating = rating
+        self.star_rating = star_rating
         self.language = lang
         self.title = title
         self.is_user = is_user
@@ -26,7 +26,7 @@ class Review(object):
         kwargs = {
             'body': data.get('review_body', None),
             'date_and_time': review_date,
-            'rating': data.get('star_rating', None),
+            'star_rating': data.get('star_rating', None),
             'lang': data.get('review_lang', None),
             'title': data.get('review_title', None),
             'is_user': data.get('is_user_review', False),

@@ -16,7 +16,7 @@ class Event(object):
                  venue=None, description=None, postcode=None, classes=None,
                  filters=None, start_date=None, end_date=None,
                  upsell_list=None, city=None, country=None, country_code=None,
-                 latitude=None, longditude=None, needs_departure_date=False,
+                 latitude=None, longitude=None, needs_departure_date=False,
                  needs_duration=False, needs_performance=False,
                  has_performances=False, is_seated=False,
                  show_performance_time=False, min_running_time=None,
@@ -47,7 +47,7 @@ class Event(object):
         self.country = country
         self.country_code = country_code
         self.latitude = latitude
-        self.longditude = longditude
+        self.longitude = longitude
 
         self.max_running_time = max_running_time
         self.min_running_time = min_running_time
@@ -202,7 +202,7 @@ class Event(object):
             'country_code': data.get('country_code'),
 
             'latitude': geo_data.get('latitude'),
-            'longditude': geo_data.get('longditude'),
+            'longitude': geo_data.get('longitude'),
 
             'max_running_time': data.get('max_running_time'),
             'min_running_time': data.get('min_running_time'),

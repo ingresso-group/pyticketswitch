@@ -47,7 +47,7 @@ def data():
 
         'geo_data': {
             'latitude': 51.49691253,
-            'longditude': -0.17223274,
+            'longitude': -0.17223274,
         },
 
         'max_running_time': 120,
@@ -292,7 +292,7 @@ class TestEvent:
         assert event.country == 'United Kingdom'
         assert event.country_code == 'uk'
         assert event.latitude == 51.49691253
-        assert event.longditude == -0.17223274
+        assert event.longitude == -0.17223274
 
         assert event.max_running_time == 120
         assert event.min_running_time == 90

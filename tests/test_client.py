@@ -429,11 +429,10 @@ class TestClient:
             {'event_id_list': 'ABC123,DEF456'},
         )
 
-        event_one = events['ABC123']
-        event_two = events['DEF456']
+        assert len(events) == 2
 
-        assert event_one.id =='ABC123'
-        assert event_two.id == 'DEF456'
+        for event in events:
+            assert event.id == 'ABC123' or event.id =='DEF456'
 
     def test_get_events_event_list(self, client, mock_make_request_for_events):
         client.get_events(['6IF', '25DR', '3ENO'])
