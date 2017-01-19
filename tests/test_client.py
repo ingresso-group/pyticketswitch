@@ -868,6 +868,12 @@ class TestClient:
 
     def test_get_send_methods(self, client, monkeypatch):
         response = {
+            'currency': {
+                'currency_code': 'GBP',
+            },
+            'desired_currency': {
+                'currency_code': 'USD',
+            },
             'send_methods': {
                 'send_method': [
                     {'send_code': 'COBO'},
@@ -879,7 +885,7 @@ class TestClient:
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        send_methods = client.get_send_methods('ABC123-1')
+        send_methods, meta = client.get_send_methods('ABC123-1')
 
         mock_make_request.assert_called_with('send_methods.v1', {
             'perf_id': 'ABC123-1',
@@ -888,6 +894,9 @@ class TestClient:
         assert len(send_methods) == 2
         assert send_methods[0].code == 'COBO'
         assert send_methods[1].code == 'POST'
+
+        assert meta.currency.code == 'GBP'
+        assert meta.desired_currency.code == 'USD'
 
     def test_get_send_methods_bad_data(self, client, monkeypatch):
         mock_make_request = Mock(return_value={})
@@ -898,6 +907,12 @@ class TestClient:
 
     def test_get_discounts(self, client, monkeypatch):
         response = {
+            'currency': {
+                'currency_code': 'GBP',
+            },
+            'desired_currency': {
+                'currency_code': 'USD',
+            },
             'discounts': {
                 'discount': [
                     {'discount_code': 'ADULT'},
@@ -909,7 +924,7 @@ class TestClient:
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        discounts = client.get_discounts('ABC123-1', 'STALLS', 'A/pool')
+        discounts, meta = client.get_discounts('ABC123-1', 'STALLS', 'A/pool')
 
         mock_make_request.assert_called_with('discounts.v1', {
             'perf_id': 'ABC123-1',
@@ -920,6 +935,9 @@ class TestClient:
         assert len(discounts) == 2
         assert discounts[0].code == 'ADULT'
         assert discounts[1].code == 'CHILD'
+
+        assert meta.currency.code == 'GBP'
+        assert meta.desired_currency.code == 'USD'
 
     def test_get_discounts_bad_data(self, client, monkeypatch):
         mock_make_request = Mock(return_value={})

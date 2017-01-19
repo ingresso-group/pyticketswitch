@@ -1,4 +1,4 @@
-from pyticketswitch.currency import Currency
+from pyticketswitch.currency import Currency, CurrencyMeta
 
 
 class TestCurrency:
@@ -71,6 +71,41 @@ class TestCurrency:
 
         assert currency_one != currency_two
 
+
     def test_neq_none(self):
         currency = Currency('gbp')
         assert currency != None  # noqa
+
+
+class TestCurrencyMeta:
+
+    def test_from_api_data(self):
+
+        data = {
+            'currency': {
+                'currency_code': 'GBP',
+            },
+            'desired_currency': {
+                'currency_code': 'USD',
+            },
+        }
+
+        meta = CurrencyMeta.from_api_data(data)
+
+        assert isinstance(meta, CurrencyMeta)
+
+        assert isinstance(meta.currency, Currency)
+        assert meta.currency.code == 'GBP'
+
+        assert isinstance(meta.desired_currency, Currency)
+        assert meta.desired_currency.code == 'USD'
+
+    def test_from_api_data_with_no_currency_data(self):
+
+        data = {
+            'foo': 'bar'
+        }
+
+        meta = CurrencyMeta.from_api_data(data)
+
+        assert meta is None

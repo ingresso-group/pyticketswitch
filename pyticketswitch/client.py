@@ -12,6 +12,7 @@ from pyticketswitch.trolley import Trolley
 from pyticketswitch.reservation import Reservation
 from pyticketswitch.status import Status
 from pyticketswitch.user import User
+from pyticketswitch.currency import CurrencyMeta
 
 
 logger = logging.getLogger(__name__)
@@ -427,7 +428,9 @@ class Client(object):
             for data in raw_send_methods.get('send_method', [])
         ]
 
-        return send_methods
+        meta = CurrencyMeta.from_api_data(response)
+
+        return send_methods, meta
 
     def get_discounts(self, performance_id, ticket_type_code, price_band_code):
         params = {
@@ -450,7 +453,9 @@ class Client(object):
             for data in raw_discounts.get('discount', [])
         ]
 
-        return discounts
+        meta = CurrencyMeta.from_api_data(response)
+
+        return discounts, meta
 
     def trolley_params(self, token=None, number_of_seats=None, discounts=None,
                        seats=None, send_codes=None, ticket_type_code=None,

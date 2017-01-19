@@ -50,3 +50,26 @@ class Currency(object):
         }
 
         return cls(data.get('currency_code'), **kwargs)
+
+
+class CurrencyMeta(object):
+
+    def __init__(self, currency, desired_currency=None):
+        self.currency = currency
+        self.desired_currency = desired_currency
+
+    @classmethod
+    def from_api_data(cls, data):
+        currency_data = data.get('currency')
+        if not currency_data:
+            return
+
+        currency = Currency.from_api_data(currency_data)
+
+        desired_currency_data = data.get('desired_currency')
+        if desired_currency_data:
+            desired_currency = Currency.from_api_data(desired_currency_data)
+        else:
+            desired_currency = None
+
+        return cls(currency, desired_currency=desired_currency)
