@@ -1,4 +1,6 @@
 from pyticketswitch.price_band import PriceBand
+from pyticketswitch.discount import Discount
+from pyticketswitch.seat import SeatBlock, Seat
 
 
 class TestPriceBand:
@@ -72,3 +74,74 @@ class TestPriceBand:
         assert len(price_band.seat_blocks) == 2
         assert price_band.seat_blocks[0].length == 10
         assert price_band.seat_blocks[1].length == 20
+
+    def test_get_seats(self):
+
+        price_band = PriceBand(
+            'A/pool',
+            Discount('ADULT'),
+            seat_blocks=[
+                SeatBlock(
+                    2,
+                    seats=[
+                        Seat(id_='A1'),
+                        Seat(id_='A2'),
+                    ]
+                ),
+                SeatBlock(
+                    3,
+                    seats=[
+                        Seat(id_='B1'),
+                        Seat(id_='B2'),
+                        Seat(id_='B3'),
+                    ]
+                ),
+            ]
+        )
+
+        seats = price_band.get_seats()
+
+        assert seats[0].id == 'A1'
+        assert seats[1].id == 'A2'
+        assert seats[2].id == 'B1'
+        assert seats[3].id == 'B2'
+        assert seats[4].id == 'B3'
+
+    def test_get_seats_with_seatblocks_without_seats(self):
+
+        price_band = PriceBand(
+            'A/pool',
+            Discount('ADULT'),
+            seat_blocks=[
+                SeatBlock(
+                    2,
+                    seats=None
+                ),
+                SeatBlock(
+                    3,
+                    seats=[
+                        Seat(id_='B1'),
+                        Seat(id_='B2'),
+                        Seat(id_='B3'),
+                    ]
+                ),
+            ]
+        )
+
+        seats = price_band.get_seats()
+
+        assert seats[0].id == 'B1'
+        assert seats[1].id == 'B2'
+        assert seats[2].id == 'B3'
+
+    def test_get_seats_without_seatblocks(self):
+
+        price_band = PriceBand(
+            'A/pool',
+            Discount('ADULT'),
+            seat_blocks=None,
+        )
+
+        seats = price_band.get_seats()
+
+        assert seats == []

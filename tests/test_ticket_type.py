@@ -1,4 +1,7 @@
 from pyticketswitch.ticket_type import TicketType
+from pyticketswitch.price_band import PriceBand
+from pyticketswitch.discount import Discount
+from pyticketswitch.seat import SeatBlock, Seat
 
 
 class TestTicketType:
@@ -53,3 +56,73 @@ class TestTicketType:
         assert ticket_type.code == 'GRA'
         assert ticket_type.description == 'Grand Circle'
         assert len(ticket_type.price_bands) == 1
+        
+    def test_get_seats(self):
+
+        ticket_type = TicketType(
+            'STALLS',
+            price_bands=[
+                PriceBand(
+                    'A/pool',
+                    Discount('ADULT'),
+                    seat_blocks=[
+                        SeatBlock(
+                            2,
+                            seats=[
+                                Seat(id_='A1'),
+                                Seat(id_='A2'),
+                            ]
+                        ),
+                        SeatBlock(
+                            3,
+                            seats=[
+                                Seat(id_='B1'),
+                                Seat(id_='B2'),
+                                Seat(id_='B3'),
+                            ]
+                        ),
+                    ]
+                ),
+                PriceBand(
+                    'B/pool',
+                    Discount('ADULT'),
+                    seat_blocks=[
+                        SeatBlock(
+                            1,
+                            seats=[
+                                Seat(id_='C1'),
+                            ]
+                        ),
+                        SeatBlock(
+                            2,
+                            seats=[
+                                Seat(id_='D1'),
+                                Seat(id_='D2'),
+                            ]
+                        ),
+                    ]
+                ),
+            ]
+        )
+
+        seats = ticket_type.get_seats()
+
+        assert seats[0].id == 'A1'
+        assert seats[1].id == 'A2'
+        assert seats[2].id == 'B1'
+        assert seats[3].id == 'B2'
+        assert seats[4].id == 'B3'
+        assert seats[5].id == 'C1'
+        assert seats[6].id == 'D1'
+        assert seats[7].id == 'D2'
+
+    def test_get_seats_with_no_price_bands(self):
+
+        ticket_type = TicketType(
+            'STALLS',
+            price_bands=None
+        )
+
+        seats = ticket_type.get_seats()
+
+        assert seats == []

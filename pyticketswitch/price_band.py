@@ -63,3 +63,14 @@ class PriceBand(object):
             kwargs.update(seat_blocks=seat_blocks)
 
         return cls(**kwargs)
+
+    def get_seats(self):
+
+        if not self.seat_blocks:
+            return []
+
+        return [
+            seat
+            for seat_block in self.seat_blocks
+            for seat in seat_block.seats or []
+        ]

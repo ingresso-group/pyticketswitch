@@ -24,3 +24,14 @@ class TicketType(object):
         }
 
         return cls(**kwargs)
+
+    def get_seats(self):
+
+        if not self.price_bands:
+            return []
+
+        return [
+            seat
+            for price_band in self.price_bands
+            for seat in price_band.get_seats()
+        ]
