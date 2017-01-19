@@ -71,10 +71,33 @@ class TestCurrency:
 
         assert currency_one != currency_two
 
-
     def test_neq_none(self):
         currency = Currency('gbp')
         assert currency != None  # noqa
+
+    def test_price_from_string_with_post_symbol(self):
+
+        currency = Currency(
+            'bhd',
+            places=3,
+            pre_symbol=None,
+            post_symbol='BD',
+        )
+
+        price = currency.price_as_string(13.1)
+        assert price == '13.100BD'
+
+    def test_price_from_string_with_pre_symbol(self):
+
+        currency = Currency(
+            'fjd',
+            places=2,
+            pre_symbol='$',
+            post_symbol=None,
+        )
+
+        price = currency.price_as_string(13.1)
+        assert price == '$13.10'
 
 
 class TestCurrencyMeta:
