@@ -68,6 +68,14 @@ class CostRange(object):
         }
         return cls(**kwargs)
 
+    def has_special_offer(self):
+        return any(
+            [self.best_value_offer, self.max_saving_offer, self.min_cost_offer, self.top_price_offer]
+        )
+
+    def min_combined_price(self):
+        return self.min_surcharge + self.min_seatprice
+
 
 class CostRangeDetails(object):
 
