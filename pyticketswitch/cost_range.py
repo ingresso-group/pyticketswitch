@@ -68,7 +68,7 @@ class CostRange(object):
         }
         return cls(**kwargs)
 
-    def has_special_offer(self):
+    def has_offer(self):
         return any(
             [self.best_value_offer, self.max_saving_offer, self.min_cost_offer, self.top_price_offer]
         )
