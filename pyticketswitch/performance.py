@@ -6,6 +6,7 @@ from pyticketswitch.availability import AvailabilityDetails
 class Performance(object):
 
     def __init__(self, id_, event_id, date_time=None,
+                 date_desc=None, time_desc=None, required_info=None,
                  has_pool_seats=False, is_limited=False,
                  cached_max_seats=None, cost_range=None,
                  no_singles_cost_range=None, is_ghost=False, name=None,
@@ -14,6 +15,9 @@ class Performance(object):
         self.id = id_
         self.event_id = event_id
         self.date_time = date_time
+        self.date_desc = date_desc
+        self.time_desc = time_desc
+        self.required_info = required_info
         self.has_pool_seats = has_pool_seats
         self.is_limited = is_limited
         self.cached_max_seats = cached_max_seats
@@ -33,6 +37,10 @@ class Performance(object):
         date_time = data.get('iso8601_date_and_time')
         if date_time:
             date_time = utils.isostr_to_datetime(date_time)
+
+        date_desc = data.get('date_desc')
+        time_desc = data.get('time_desc')
+        required_info = data.get('required_info')
 
         api_cost_range = data.get('cost_range', {})
         api_no_singles_cost_range = api_cost_range.get('no_singles_cost_range', {})
@@ -55,6 +63,9 @@ class Performance(object):
             'id_': id_,
             'event_id': event_id,
             'date_time': date_time,
+            'date_desc': date_desc,
+            'time_desc': time_desc,
+            'required_info': required_info,
             'running_time': data.get('running_time'),
             'name': data.get('perf_name'),
             'has_pool_seats': data.get('has_pool_seats', False),
