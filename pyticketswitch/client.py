@@ -246,7 +246,6 @@ class Client(object):
         return events
 
     def get_events(self, event_ids, **kwargs):
-
         """
         Get events with the given id's
         """
@@ -265,16 +264,16 @@ class Client(object):
             )
 
         events_by_id = response.get('events_by_id', {})
-        events = [
-            Event.from_events_by_id_data(raw_event)
+        events = {
+            event_id: Event.from_events_by_id_data(raw_event)
             for event_id, raw_event in events_by_id.items()
-        ]
+        }
         return events
 
     def get_event(self, event_id, **kwargs):
         events = self.get_events([event_id], **kwargs)
         if events:
-            return events[0]
+            return events[event_id]
 
     def get_months(self, event_id, **kwargs):
         params = {'event_id': event_id}
