@@ -36,14 +36,13 @@ class Seat(object):
 
     @classmethod
     def from_api_data(cls, data):
-
         kwargs = {
             'id_': data.get('full_id'),
             'column': data.get('col_id'),
             'row': data.get('row_id'),
             'is_restricted': data.get('is_restricted', False),
             'seat_text_code': data.get('seat_text_code'),
-            'separator': data.get('separator')
+            'separator': data.get('separator', ''),
         }
 
         return cls(**kwargs)
