@@ -1,8 +1,9 @@
 from pyticketswitch.bundle import Bundle
 from pyticketswitch.order import Order
+from pyticketswitch.mixins import JSONMixin
 
 
-class Trolley(object):
+class Trolley(JSONMixin, object):
 
     def __init__(self, token=None, transaction_uuid=None, bundles=None,
                  discarded_orders=None, minutes_left=None):

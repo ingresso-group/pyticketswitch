@@ -8,9 +8,10 @@ from pyticketswitch.availability import AvailabilityDetails
 from pyticketswitch.field import Field
 from pyticketswitch import utils
 from pyticketswitch.utils import bitmask_to_numbered_list
+from pyticketswitch.mixins import JSONMixin
 
 
-class Event(object):
+class Event(JSONMixin, object):
 
     def __init__(self, id_, status=None, event_type=None, source=None,
                  venue=None, description=None, postcode=None, classes=None,

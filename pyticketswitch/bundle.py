@@ -1,8 +1,9 @@
 from pyticketswitch.currency import Currency
 from pyticketswitch.order import Order
+from pyticketswitch.mixins import JSONMixin
 
 
-class Bundle(object):
+class Bundle(JSONMixin, object):
 
     def __init__(self, source_code, orders=None, description=None,
                  total_seatprice=None, total_surcharge=None,

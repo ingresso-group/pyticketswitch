@@ -1,4 +1,7 @@
-class User(object):
+from pyticketswitch.mixins import JSONMixin
+
+
+class User(JSONMixin, object):
 
     def __init__(self, id_, name=None, country=None, sub_user=None,
                  is_b2b=False, statement_descriptor=None,

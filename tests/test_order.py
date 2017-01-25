@@ -15,12 +15,10 @@ class TestTicketOrder:
             'sale_surcharge': 2.50,
             'total_sale_seatprice': 50,
             'total_sale_surcharge': 5,
-            'seats': {
-                'id_details': [
-                    {'full_id': 'ABC123'},
-                    {'full_id': 'DEF456'},
-                ]
-            }
+            'seats': [
+                {'full_id': 'ABC123'},
+                {'full_id': 'DEF456'},
+            ]
         }
 
         ticket_order = TicketOrder.from_api_data(data)

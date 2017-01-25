@@ -1,4 +1,7 @@
-class Media(object):
+from pyticketswitch.mixins import JSONMixin
+
+
+class Media(JSONMixin, object):
 
     def __init__(self, caption=None, caption_html=None, name=None, url=None,
                  secure=None, width=0, height=0):

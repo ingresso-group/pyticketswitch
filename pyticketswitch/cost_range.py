@@ -1,9 +1,10 @@
 from pyticketswitch.currency import Currency
 from pyticketswitch.offer import Offer
 from pyticketswitch.utils import bitmask_to_numbered_list
+from pyticketswitch.mixins import JSONMixin
 
 
-class CostRange(object):
+class CostRange(JSONMixin, object):
 
     def __init__(self, valid_quantities=None, max_surcharge=None, max_seatprice=None,
                  min_surcharge=None, min_seatprice=None, allows_singles=True,
@@ -77,7 +78,7 @@ class CostRange(object):
         return self.min_surcharge + self.min_seatprice
 
 
-class CostRangeDetails(object):
+class CostRangeDetails(JSONMixin, object):
 
     def __init__(self, ticket_type, price_band, cost_range,
                  ticket_type_description=None, price_band_description=None,

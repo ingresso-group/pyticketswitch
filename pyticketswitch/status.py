@@ -1,9 +1,10 @@
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.user import User
 from pyticketswitch.utils import isostr_to_datetime
+from pyticketswitch.mixins import JSONMixin
 
 
-class Status(object):
+class Status(JSONMixin, object):
 
     def __init__(self, status=None, reserved_at=None, trolley=None,
                  purchased_at=None, external_sale_page=None,

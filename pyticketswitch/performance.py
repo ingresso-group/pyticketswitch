@@ -1,9 +1,10 @@
 from pyticketswitch import utils
 from pyticketswitch.cost_range import CostRange
 from pyticketswitch.availability import AvailabilityDetails
+from pyticketswitch.mixins import JSONMixin
 
 
-class Performance(object):
+class Performance(JSONMixin, object):
 
     def __init__(self, id_, event_id, date_time=None,
                  date_desc=None, time_desc=None, required_info=None,

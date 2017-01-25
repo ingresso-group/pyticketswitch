@@ -1,4 +1,7 @@
-class SeatBlock(object):
+from pyticketswitch.mixins import JSONMixin
+
+
+class SeatBlock(JSONMixin, object):
 
     def __init__(self, length, seats=None):
 
@@ -23,7 +26,7 @@ class SeatBlock(object):
         return cls(**kwargs)
 
 
-class Seat(object):
+class Seat(JSONMixin, object):
 
     def __init__(self, id_=None, column=None, row=None, is_restricted=False,
                  seat_text_code=None, separator=None):

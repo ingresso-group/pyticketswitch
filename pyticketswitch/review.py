@@ -1,7 +1,8 @@
 import datetime
+from pyticketswitch.mixins import JSONMixin
 
 
-class Review(object):
+class Review(JSONMixin, object):
 
     def __init__(self, body=None, date_and_time=None, star_rating=None,
                  lang=None, title=None, is_user=False, author=None, url=None):
