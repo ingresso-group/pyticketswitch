@@ -2,9 +2,10 @@ from pyticketswitch.trolley import Trolley
 from pyticketswitch.address import Address
 from pyticketswitch.country import Country
 from pyticketswitch.order import Order
+from pyticketswitch.mixins import JSONMixin
 
 
-class Reservation(object):
+class Reservation(JSONMixin, object):
 
     def __init__(self, trolley=None, unreserved_orders=None, prefilled_address=None,
                  needs_payment_card=False, needs_email_address=False,

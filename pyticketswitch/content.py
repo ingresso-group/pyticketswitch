@@ -1,4 +1,7 @@
-class Content(object):
+from pyticketswitch.mixins import JSONMixin
+
+
+class Content(JSONMixin, object):
 
     def __init__(self, name=None, value=None, value_html=None):
 

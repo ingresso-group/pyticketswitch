@@ -1,4 +1,7 @@
-class Discount(object):
+from pyticketswitch.mixins import JSONMixin
+
+
+class Discount(JSONMixin, object):
 
     def __init__(self, code, description=None, price_band=None, seatprice=None,
                  surcharge=None, is_offer=False, non_offer_seatprice=None,

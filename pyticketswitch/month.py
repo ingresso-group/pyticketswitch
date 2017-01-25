@@ -1,7 +1,8 @@
 from pyticketswitch.misc import MONTH_NUMBERS
+from pyticketswitch.mixins import JSONMixin
 
 
-class Month(object):
+class Month(JSONMixin, object):
 
     def __init__(self, month, year, description=None, dates_bitmask=None,
                  weekday_bitmask=None):

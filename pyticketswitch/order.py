@@ -1,9 +1,10 @@
 from pyticketswitch.event import Event
 from pyticketswitch.performance import Performance
 from pyticketswitch.seat import Seat
+from pyticketswitch.mixins import JSONMixin
 
 
-class TicketOrder(object):
+class TicketOrder(JSONMixin, object):
 
     def __init__(self, code, seats=None, number_of_seats=None, description=None,
                  seatprice=None, surcharge=None, total_seatprice=None,
@@ -50,14 +51,14 @@ class TicketOrder(object):
         if seats_data:
             seats = [
                 Seat.from_api_data(seat)
-                for seat in seats_data.get('id_details', [])
+                for seat in seats_data
             ]
             kwargs.update(seats=seats)
 
         return cls(**kwargs)
 
 
-class Order(object):
+class Order(JSONMixin, object):
 
     def __init__(self, item, event=None, performance=None, price_band_code=None,
                  ticket_type_code=None, ticket_type_description=None,
@@ -118,7 +119,7 @@ class Order(object):
         if raw_requested_seats:
             requested_seats = [
                 Seat.from_api_data(seat)
-                for seat in raw_requested_seats.get('id_details', [])
+                for seat in raw_requested_seats
             ]
             kwargs.update(requested_seats=requested_seats)
 

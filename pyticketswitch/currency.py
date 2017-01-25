@@ -1,7 +1,7 @@
-import six
+from pyticketswitch.mixins import JSONMixin
 
 
-class Currency(object):
+class Currency(JSONMixin, object):
 
     def __init__(self, code, factor=None, places=None, number=None,
                  pre_symbol=None, post_symbol=None):
@@ -64,7 +64,7 @@ class Currency(object):
         )
 
 
-class CurrencyMeta(object):
+class CurrencyMeta(JSONMixin, object):
 
     def __init__(self, currency, desired_currency=None):
         self.currency = currency

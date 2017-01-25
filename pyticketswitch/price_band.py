@@ -1,9 +1,10 @@
 from pyticketswitch.cost_range import CostRange
 from pyticketswitch.discount import Discount
 from pyticketswitch.seat import Seat, SeatBlock
+from pyticketswitch.mixins import JSONMixin
 
 
-class PriceBand(object):
+class PriceBand(JSONMixin, object):
 
     def __init__(self, code, default_discount, description=None,
                  cost_range=None, no_singles_cost_range=None,

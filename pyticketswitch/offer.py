@@ -1,4 +1,7 @@
-class Offer(object):
+from pyticketswitch.mixins import JSONMixin
+
+
+class Offer(JSONMixin, object):
 
     def __init__(self, absolute_saving=None, percentage_saving=None,
                  original_seatprice=None, original_surcharge=None,

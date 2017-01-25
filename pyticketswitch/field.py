@@ -1,4 +1,7 @@
-class Field(object):
+from pyticketswitch.mixins import JSONMixin
+
+
+class Field(JSONMixin, object):
 
     def __init__(self, name, label, data):
         self.name = name

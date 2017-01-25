@@ -1,4 +1,7 @@
-class Address(object):
+from pyticketswitch.mixins import JSONMixin
+
+
+class Address(JSONMixin, object):
 
     def __init__(self, lines=None, country_code=None, county=None,
                  email=None, home_phone=None, postcode=None, town=None,

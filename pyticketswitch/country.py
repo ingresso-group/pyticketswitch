@@ -1,4 +1,7 @@
-class Country(object):
+from pyticketswitch.mixins import JSONMixin
+
+
+class Country(JSONMixin, object):
 
     def __init__(self, code, description=None):
         self.code = code

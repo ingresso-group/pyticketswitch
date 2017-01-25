@@ -1,10 +1,11 @@
 import datetime
 from pyticketswitch.utils import bitmask_to_numbered_list
+from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.currency import Currency
 from pyticketswitch.misc import MONTH_NUMBERS
 
 
-class AvailabilityMeta(object):
+class AvailabilityMeta(JSONMixin, object):
 
     def __init__(self, can_leave_singles=True,
                  contiguous_seat_selection_only=True,
@@ -38,7 +39,7 @@ class AvailabilityMeta(object):
         return cls(**kwargs)
 
 
-class AvailabilityDetails(object):
+class AvailabilityDetails(JSONMixin, object):
 
     def __init__(self, ticket_type=None, price_band=None,
                  ticket_type_description=None, price_band_description=None,
