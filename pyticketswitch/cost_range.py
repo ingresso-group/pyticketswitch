@@ -76,6 +76,9 @@ class CostRange(object):
     def get_min_combined_price(self):
         return self.min_surcharge + self.min_seatprice
 
+    def get_max_combined_price(self):
+        return self.max_surcharge + self.max_seatprice
+
 
 class CostRangeDetails(object):
 
