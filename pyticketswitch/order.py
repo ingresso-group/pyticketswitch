@@ -119,7 +119,7 @@ class Order(JSONMixin, object):
         if raw_requested_seats:
             requested_seats = [
                 Seat.from_api_data(seat)
-                for seat in raw_requested_seats.get('id_details', [])
+                for seat in raw_requested_seats
             ]
             kwargs.update(requested_seats=requested_seats)
 
