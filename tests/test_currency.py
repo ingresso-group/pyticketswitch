@@ -1,3 +1,5 @@
+import six
+
 from pyticketswitch.currency import Currency, CurrencyMeta
 
 
@@ -98,6 +100,16 @@ class TestCurrency:
 
         price = currency.price_as_string(13.1)
         assert price == '$13.10'
+
+    def test_price_from_string_with_ascii_encoded(self):
+        currency = Currency(
+            'edw',
+            places=2,
+            pre_symbol=u'\xa3',
+            post_symbol=None,
+        )
+        price = currency.price_as_string(13.1)
+        assert price == six.text_type(u'\xa313.10')
 
 
 class TestCurrencyMeta:

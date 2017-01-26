@@ -55,8 +55,8 @@ class Currency(JSONMixin, object):
         return cls(data.get('currency_code'), **kwargs)
 
     def price_as_string(self, price):
-        format_string = '{pre}{price:.' + str(self.places) + 'f}{post}'
-
+        price = price if price else 0
+        format_string = six.text_type('{pre}{price:.' + str(self.places) + 'f}{post}')
         return format_string.format(
             pre=self.pre_symbol or '',
             price=price,

@@ -20,9 +20,8 @@ class SendMethod(JSONMixin, object):
             'typ': data.get('send_type'),
         }
 
-        cost = data.get('send_cost')
-        if cost:
-            kwargs.update(cost=float(cost))
+        cost = data.get('send_cost', 0.0)
+        kwargs.update(cost=float(cost))
 
         permitted_countries_raw = data.get('permitted_countries', {})
 
