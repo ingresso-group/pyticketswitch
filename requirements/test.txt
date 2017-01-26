@@ -8,3 +8,4 @@ vcrpy-unittest
 mock
 behave
 pyhamcrest
+flake8

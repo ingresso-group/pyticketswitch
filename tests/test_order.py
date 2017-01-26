@@ -65,12 +65,10 @@ class TestOrder:
             "total_no_of_seats": 3,
             "total_sale_seatprice": 51,
             "total_sale_surcharge": 5.40,
-            "requested_seats": {
-                "id_details": [
-                    {'full_id': 'ABC123'},
-                    {'full_id': 'DEF456'},
-                ]
-            },
+            "requested_seats": [
+                {'full_id': 'ABC123'},
+                {'full_id': 'DEF456'},
+            ],
         }
 
         order = Order.from_api_data(data)

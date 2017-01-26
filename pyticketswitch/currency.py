@@ -1,3 +1,4 @@
+import six
 from pyticketswitch.mixins import JSONMixin
 
 

@@ -3,7 +3,7 @@ class PyticketswitchError(Exception):
 
 
 class APIError(PyticketswitchError):
-    def __init__(self, msg, code, response, *args, **kwargs):
+    def __init__(self, msg, code=None, response=None, *args, **kwargs):
         super(APIError, self).__init__(msg, *args, **kwargs)
         self.msg = msg
         self.code = code
