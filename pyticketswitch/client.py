@@ -82,6 +82,14 @@ class Client(object):
             contents = response.json()
 
             if 'error_code' in contents:
+
+                if contents['error_code'] == 3:
+                    raise exceptions.AuthenticationError(
+                        contents['error_desc'],
+                        contents['error_code'],
+                        response,
+                    )
+
                 raise exceptions.APIError(
                     contents['error_desc'],
                     contents['error_code'],

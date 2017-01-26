@@ -6,3 +6,5 @@ tox
 vcrpy
 vcrpy-unittest
 mock
+behave
+pyhamcrest
