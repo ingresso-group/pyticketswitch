@@ -1,4 +1,4 @@
-Feature: wrap the /f13/test.v1 endpoint
+Feature: test that the api is working
     In order to check credentials and the health of the remote API
     As a developer
     I want to be able to call a simple method and have it raise an exception

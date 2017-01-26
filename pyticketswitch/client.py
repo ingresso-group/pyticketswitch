@@ -70,6 +70,8 @@ class Client(object):
         url = self.get_url(endpoint)
         params.update(self.get_auth_params())
 
+        logger.debug(u'url: %s; endpoint: %s; params: %s', self.url, endpoint, params)
+
         if method == POST:
             response = requests.post(url, params=params)
         else:
