@@ -1,0 +1,42 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: https://api.ticketswitch.com/f13/events.v1/demo/?s_geo=51.491188%3A-0.223731%3A5&user_passwd=demopass
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA9VX227bOBD9FULAvpmu7or9li6yTZBkt6id9GGzEFiJiQhLpMBLmiDwv3co0aod
+        2UV2kxbYJ9tnhqMzM2dG9JMnqTK1Vt78yaP3lGtv/veTVzD9mBeipN7cqwUvBcdm5U16vKSqAPyi
+        wy1YE6VoF0FXlGhpTy3dtzXYheFaDvH6QA5zsa4407RE54zflaKxdqO0aPJbVmsqgdI/k57d5sAp
+        GARH55QrOKM7Hr0DK8F8Fl0NQEt0BdDNOwBx1Z3Dq+HczbvBUWmijbIZs3s6oPqxtawroWmdS9Gx
+        6y1Gsl06eIfOHRV5STSxdamJZtrY9JNgmvhJ4B9NbGHvHIr9aRhEYZpBuSqici7ylspbIHNLakUn
+        HlO5goLSckAa8pBLwzk8L9esgSBB6APM+D6YU1oC2ZZIbSS1vOgQqbcZCRyB+FxLswEtByEbwgu6
+        wVuhtGvk5yBA8dUFpArUZFHlJYMSgm++auCx0yyI4+AomoG9El+7YI6Se7ASRoK3C0cfoNhUad8b
+        LK66Jw8gAk5qtAQzek8KaF+JrB/0wdBnmuh1uSuN3m/csN53u2/ryX9XP9FaksJW0aroeOvXT5qC
+        6xvj+2F6jC5p84VKVbFW7Q5Cev7HeBAAxPeY4Ob7qZeOgWJNW1NoI/RA75uE69+AD97lc3AS4lk6
+        C8Ikej4LQRaGUZjFL5+Gf6HvbXRH4M6wpfDF5wyFnw4pPJqmURT5s6MwTsYa78fljSV+zQotJCOI
+        gPW4hhprdGkUNc0+kW+8MXjj3hs779fI/Jct+d+FNAqdPpYUfSRy9XzFL/et+CUu7ClcwSkMcli9
+        zYLvqGBLBTsqh9d7ECSzdCzpLPKD/9V6D1F08eGg9mdxFoW+H6Txr9rvTg62TzuiGOneNcs6brXs
+        NZJvjGLWdtl9/iS5v4cy1+SxILJEH+FaBiaFYMQgRF3DNkUYnf354dPJYvEXWp4slrvzEC38i/FA
+        WBR/+R4Yty4whinGqz4wBooAK4Ftf97sVbCVD97kgyEf7PLBm2ywy+YHN6YsTEc3piBNsugFE7Wl
+        +Fe+IfbNSHh1emBG4mnsz9KjJI5e+HrYtCHXX8VoSM6ccXTr+dEkbKkf1NaSO7s3Nl19sgDNawo3
+        H1BL4k96gBv78vbm7rfKJW0Isyunw9wfhmeoFprUueH2RJkPfyri9Xr9DbuOuJRkDAAA
+    headers:
+      Cache-Control: ['max-age=3600, must-revalidate']
+      Connection: [close]
+      Content-Encoding: [gzip]
+      Content-Length: ['906']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Fri, 27 Jan 2017 16:41:59 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000; includeSubDomains;]
+      Vary: ['Accept-Encoding,Cookie,User-Agent']
+      X-Clacks-Overhead: [GNU Terry Pratchett]
+    status: {code: 200, message: OK}
+version: 1

@@ -12,24 +12,30 @@ Feature: search for events
 
     Scenario: date range search
         Given an API client with valid credentials
-        When a search for events with performances "700"-"710" days from now
+        When a search for events with performances "700"-"710" days from now is performed
         Then a list of "5" events should be returned
         And those events should have the ID's "6KS, 6KT, GVA, 3CVG, 3CVE"
 
     Scenario: country search
         Given an API client with valid credentials
-        When a search for events in country with code "jp"
+        When a search for events in country with code "jp" is performed
         Then a single event should be returned
         And that event should have the ID of "AG8"
 
     Scenario: city search
         Given an API client with valid credentials
-        When a search for events in city with code "belfast-uk"
+        When a search for events in city with code "belfast-uk" is performed
         Then a single event should be returned
         And that event should have the ID of "2HJD"
 
     Scenario: geo search
         Given an API client with valid credentials
-        When a search for events withing "5"km of "51.491188" lat and "-0.223731" long
+        When a search for events within "5"km of "51.491188" lat and "-0.223731" long is performed
         Then a list of "4" events should be returned
         And those events should have the ID's "I3U, 6KF, I3T, 3S0L"
+
+    Scenario: paginated search
+        Given an API client with valid credentials
+        When a search is performed for page 2 with a page length of 3 is performed
+        Then a list of "3" events should be returned
+        And those events should have the ID's "3Q2P, I3T, 6KU"

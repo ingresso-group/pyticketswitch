@@ -1,0 +1,36 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: https://api.ticketswitch.com/f13/events_by_id.v1/demo/?user_passwd=demopass&event_id_list=6IF
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA21Ty27bMBD8FYFAb1IiObGC+ujWRYs2OTQuerANghHXNmGKVMmlYyPwv3epV5sg
+        Jwuzu8OdmfULgyMY9PzpzJVksxdWfvsSf1o4flQKz7yyEtiMaWukNVk4sLTDJfiK8B8tHkEtvAcf
+        56QwVZyZC60Bk3XI80mZfG7RC3XaYNCNzB1lj/Wsv4xCkMl3ZXbS1rHuFKqKOzgqeOYNuKrdschz
+        qgWPtuZbpREcm602aSdhILsXiHt4TuY2OAPtNnc+eQhYOVEdwCXLxeOSDUPRitaJAWgE7glaXxOY
+        1R1X9tRyZT4zI02G4HF9Pc55FBh8tE4dYUTx3ETRXtWNBk6aDoBjMTQetOZaeRyDaBda0UYLarv/
+        mrPNZWx36o3GrNP4gQRm/wRmvcAdWC4FisitBSoMMYBpcTWdfCyL4uYujTHvejzLr4q8zItpOaEX
+        98JzY6PzW9K0FdpDypTnHgQlxWboAgG1OHEXjKHcSFtNLMWEEqqVeQ82AJIENMJhcBBXg5G6qwVH
+        a9J5vULjDtbV3ZF17zbWY39Oi0/Fz+R2+UB6/d62t7LtH+16PVlUwXB9cKJMKLicjZXe0sWJzskI
+        nSypnMyjk0YmsS94cO+fIsUSRoJHITW44d5+U7KeDS3/Rde1tZF1PeT2UWgl+Z8gDKWk4r9qVaST
+        9Ca9TadpuRlYyH8w5EU1JHC5XP4ClJyjw9cDAAA=
+    headers:
+      Cache-Control: ['max-age=3600, must-revalidate']
+      Connection: [close]
+      Content-Encoding: [gzip]
+      Content-Length: ['542']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Fri, 27 Jan 2017 17:03:11 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000; includeSubDomains;]
+      Vary: ['Accept-Encoding,Cookie,User-Agent']
+      X-Clacks-Overhead: [GNU Terry Pratchett]
+    status: {code: 200, message: OK}
+version: 1

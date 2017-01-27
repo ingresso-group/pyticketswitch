@@ -1,0 +1,52 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: https://api.ticketswitch.com/f13/test.v1/demo/?user_passwd=demopass
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA02QMQ7DMAhFr1J5bpaOmXuFzpZtSISS4Aiw1Kjq3WunSdUJxHvwLb9cDGlCBj9K
+        LqvrHeCSPbGhcJh9EgSyA15dyhWw/eQ6AhxCmc2nXNhkqxWwkjJVRurjLbrepODVCdaDHJaG7zWF
+        1SQYZb48FKXqasFwafcBNQmtluUborbNbW2gJ0JnIWobluhPsFfowjB0x4NO4U8iHgVVczcio1A6
+        lNLS95jWeYLjF9z7AzghAXgeAQAA
+    headers:
+      Cache-Control: ['max-age=3600, must-revalidate']
+      Connection: [close]
+      Content-Encoding: [gzip]
+      Content-Length: ['192']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Fri, 27 Jan 2017 16:41:59 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000; includeSubDomains;]
+      Vary: ['Accept-Encoding,Cookie,User-Agent']
+      X-Clacks-Overhead: [GNU Terry Pratchett]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: https://api.ticketswitch.com/f13/test.v1/boatymcboatyface/?user_passwd=irship
+  response:
+    body: {string: '{"error_code":3,"error_desc":"User authorisation failure"}'}
+    headers:
+      Cache-Control: ['max-age=3600, must-revalidate']
+      Connection: [close]
+      Content-Length: ['58']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Fri, 27 Jan 2017 16:43:39 GMT']
+      Server: [nginx]
+      Vary: ['Accept-Encoding,Cookie,User-Agent']
+      WWW-Authenticate: [Basic realm="TicketSwitch_Core_User"]
+      X-Clacks-Overhead: [GNU Terry Pratchett]
+    status: {code: 401, message: Unauthorized}
+version: 1

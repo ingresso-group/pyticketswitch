@@ -1,0 +1,34 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: https://api.ticketswitch.com/f13/events.v1/demo/?user_passwd=demopass&s_city=belfast-uk
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA11Ty27jMAz8FUNnq62zzcE5BltgHz16T9uFoNqMI1SWDJFqUQT+96VsRWh7i2eG
+        Q2rIXEQAjJZQHC4CXsGROPy9iN7Qu+r9AOIgnsGeNJKML6LeiAGwZ+K4EQm1GhFWDzqDppDquvxr
+        Yd5HR6E4bk4Zy2Z/nCEYqt/GjYOfEh+R/KROxhIEHupfvc13LegAqXpISCWr7n2GqhFXiRlYsPvx
+        63tBZk1nxp5uEyqJa+VKSOJK2TzdFiWSpshPEda8QkGTjDE002xBkelfgAoZg/k4lVynkt3qzKIR
+        vBo06RSP1WQophT29zf7tm3um1pY78aMyv1N+223a1tO7axROa9mCCee56QtQi0MKuRcgV9IITLg
+        AAbuPutAMUBqBEW8cTFwU+8+o8nVh0m7Hq5Os0fKGzp2TbU7PvDwePZvq5gfPRUp+hh6uO6Td8ZX
+        hF55lxLLZE7kZyaZ4FgifLmeqmM1Vo80FMGHOLNIriKZRAvfwaxHblk2dUkAKAtuTEve39Ub4OL0
+        nE4nf6MKMGnjuHTF8uF/QcmTtiq6VDGo8udolmX5D0bK9cksAwAA
+    headers:
+      Cache-Control: ['max-age=3600, must-revalidate']
+      Connection: [close]
+      Content-Encoding: [gzip]
+      Content-Length: ['438']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Fri, 27 Jan 2017 16:41:59 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000; includeSubDomains;]
+      Vary: ['Accept-Encoding,Cookie,User-Agent']
+      X-Clacks-Overhead: [GNU Terry Pratchett]
+    status: {code: 200, message: OK}
+version: 1

@@ -1,17 +1,20 @@
 import datetime
+import vcr
 from behave import when, then
 from hamcrest import *  # noqa
 
 
 @when('a search for "{keywords}" keywords is performed')
+@vcr.use_cassette('fixtures/cassettes/search-keyword.yaml')
 def when_search_by_keyword(context, keywords):
     keywords = keywords.split(', ')
     assert keywords
     context.events = context.client.list_events(keywords=keywords)
 
 
-@when('a search for events with performances "{start_days}"-"{end_days}" days from now')
-def when_a_search_by_daterange(context, start_days, end_days):
+@when('a search for events with performances "{start_days}"-"{end_days}" days from now is performed')
+@vcr.use_cassette('fixtures/cassettes/search-daterange.yaml')
+def when_search_by_daterange(context, start_days, end_days):
     now = datetime.datetime.now()
     start_date = now + datetime.timedelta(days=int(start_days))
     end_date = now + datetime.timedelta(days=int(end_days))
@@ -21,22 +24,39 @@ def when_a_search_by_daterange(context, start_days, end_days):
     )
 
 
-@when(u'a search for events in country with code "{country_code}"')
+@when(u'a search for events in country with code "{country_code}" is performed')
+@vcr.use_cassette('fixtures/cassettes/search-country.yaml')
 def when_search_for_country(context, country_code):
     assert country_code
     context.events = context.client.list_events(country_code=country_code)
 
 
-@when(u'a search for events in city with code "{city}"')
+@when(u'a search for events in city with code "{city}" is performed')
+@vcr.use_cassette('fixtures/cassettes/search-city.yaml')
 def when_search_for_city(context, city):
     assert city
     context.events = context.client.list_events(city=city)
 
 
-@when(u'a search for events withing "{radius}"km of "{latitude}" lat and "{longitude}" long')
+@when(u'a search for events within "{radius}"km of "{latitude}" lat and "{longitude}" long is performed')
+@vcr.use_cassette('fixtures/cassettes/search-geo.yaml')
 def when_search_with_geo(context, radius, latitude, longitude):
     assert radius and latitude and longitude
     context.events = context.client.list_events(radius=radius, latitude=latitude, longitude=longitude)
+
+
+@when(u'a search is performed for page 2 with a page length of 3 is performed')
+@vcr.use_cassette('fixtures/cassettes/search-paginated.yaml')
+def when_search_with_pages(context):
+    context.events = context.client.list_events(page=2, page_length=3)
+
+
+@when(u'we attempt to fetch events with the ID\'s "{event_ids}"')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml')
+def when_get_events(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+    context.events = context.client.get_events(event_ids)
 
 
 @then('a single event should be returned')
