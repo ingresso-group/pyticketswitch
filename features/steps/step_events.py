@@ -5,7 +5,7 @@ from hamcrest import *  # noqa
 
 
 @when('a search for "{keywords}" keywords is performed')
-@vcr.use_cassette('fixtures/cassettes/search-keyword.yaml')
+@vcr.use_cassette('fixtures/cassettes/search-keyword.yaml', record_mode='new_episodes')
 def when_search_by_keyword(context, keywords):
     keywords = keywords.split(', ')
     assert keywords
