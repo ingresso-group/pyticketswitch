@@ -8,3 +8,8 @@ Feature: get specific events
         Given an API client with valid credentials
         When we attempt to fetch events with the ID's "6IF"
         Then those events should have the ID's "6IF"
+
+    Scenario: multiple events
+        Given an API client with valid credentials
+        When we attempt to fetch events with the ID's "6IF, 6KS, GVA"
+        Then those events should have the ID's "6IF, 6KS, GVA"

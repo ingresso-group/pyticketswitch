@@ -182,7 +182,8 @@ class Client(object):
             params.update(req_avail_details=True)
 
         if availability_with_performances:
-            params.update(req_avail_details_with_perfs=True)
+            params.update(req_avail_details=True,
+                          req_avail_details_with_perfs=True)
 
         if meta_components:
             params.update(req_meta_components=True)

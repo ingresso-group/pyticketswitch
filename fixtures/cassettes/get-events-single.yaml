@@ -33,4 +33,164 @@ interactions:
       Vary: ['Accept-Encoding,Cookie,User-Agent']
       X-Clacks-Overhead: [GNU Terry Pratchett]
     status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: https://api.ticketswitch.com/f13/events_by_id.v1/demo/?event_id_list=6IF%2C6KS%2CGVA&user_passwd=demopass
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA62W3U7bQBCFX2VliTtvsBOS0NwBCW1FqSqS0gtA1uKdwAp7ne5PIEK8Uh+iT9ZZ
+        r21wCJSKXkHOzo5n5nzj5D6AJUijk8tVIngwug8Gnw/dn1J2/6TCrJK04BCMgqyQvJDU3gSh1zno
+        FPUvpe7EjGkN2t3jTKbuzj7LMjDk3EZRd0DGpfqAkYWVRjWZfcpKq7J+l8IAJ0dCXvEid+dKGJEm
+        CpYCbpMFqLSsMY4iPLPaFHkyF5kBFYzOLkLfQp3smBlzDbdkv7BKQlnNUJOv1qSKpTegyGwynQX1
+        JTeKchK1sGDmGqXzbRRp7nPRyzIX1VQ2aagBbc63m3vaMGO1G51YQqOa1cI1rUW+yCDBnm7ANId2
+        oSHLkkxo0xhRFnSGFU0w7PhTFFw8NOFKrPVIfY9b2CB9bJBWDV5BkXBmmMudMSOMdQb0406/+2EQ
+        x71h6Gy+qnQadeJoEMX9QRefeM10Igs3+Tn2NGeZhjAQOtHA0KlgZJRFIWd3ibJSom/YW45Z4i46
+        lAu5SZYAHBtYMGWsAlcaNKn9mVVYJuLVUl0Nhco9ZP65i0KbCqfJQXxCdmZfsV99XZSszKuH+liN
+        I0qhpg/u0BM0Lgqak2qkkzvESbKMzPCY7LtJSk5cnNWgNqOIttgmwZTxDFTN2w90Vgd1yBPrfFhp
+        mY/BaS9ZJnjy0zKJLgm3VWdx2A174U7YDwcXdRacP0icRVo7gFcHR9OXl1jgQtK5Wt9hJ7dXGHFC
+        dtzsHcF7Tz49X2Cfr73Ah6q05+/LGdMxW5FZew/8DmIjz3fwaEpjytmK+tV55749ulDWQZs6XliV
+        qDPst5ak14nesBwtptd491C+FffqYJ3sWn432i2Ax0JLWGVM8t+/yDemxEZ+H6O2DrpbexPqI99H
+        8cfTvRcpXrj8zymuC3xCcSoU8peyS6bQ1VFwUH4OyYFX6m+mU7wJZvW/0Z4WFj8KRcan4zbarrtn
+        aKNIdXWF8iV/K9q50GmCX5f5JqzrGqivYTPWO7ud3d2dFtfdTq/XHb4T7X98lVcHT97lw34U7254
+        kb+Ke/xG3ON13PHnCuGWHBc2E5KcFPYKNvGOYZRb6sOoD3sV9ldAf3j4A7aPGSuGCQAA
+    headers:
+      Cache-Control: ['max-age=3600, must-revalidate']
+      Connection: [close]
+      Content-Encoding: [gzip]
+      Content-Length: ['849']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Mon, 30 Jan 2017 17:56:18 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000; includeSubDomains;]
+      Vary: ['Accept-Encoding,Cookie,User-Agent']
+      X-Clacks-Overhead: [GNU Terry Pratchett]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: https://api.ticketswitch.com/f13/events_by_id.v1/demo/?req_avail_details=True&event_id_list=6IF&user_passwd=demopass
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+1W207bQBD9FWulvtlgOyTQvJGUqqiBSpCqqgBZm/UkWbFeu3sJRChf0z/pl3XW
+        N0wVqYVSqQ/JS5Iz4/HMnDOjeSCwAml0MlsnPCXDBzI4fe++Stj9oCvKRZKCwS/tAMPZLZjErAsg
+        w6sHUijOIJlRmZZ/u/4dgFmlQLK1i9D8TlieYgyymBXEf0TnlJlckWEUhh1U2mwGiB7Fgw5aCMoA
+        04q7WK5NotfZLMcESDdyoeDR8OM72fhVdnQmIEmpgbLAOVcYYI2fLEuxKBKH0WEY9SIMJegWUz9+
+        +zTUHcBtStfYVW4yqm/JcNDziQZqymaR4cHhHtamrWJLqhYIhO7/igqeJt8slYYb7pK5ivzY7/kH
+        ft8f3Gxu/E6zm+YdkydoCpq5qp1zh6nGe3Q8GX86/0qeGuuHRlSwXK6xlh2rL2G11//nrPo7Kv6M
+        ivDVqBjtqPgrKuLXm4rxs3bd+PRiPDnZvuo+FwUoj3HFBOz23UuZjXb77j+hIjp6DhXP3HTbx+ty
+        ejyZXG4fr0tDBV6LmxusgnHTEiNymeYysLekxmv/SYk7EPuhq66lVDKorhIBxru2YRgPvHcl6sLm
+        VhrVRq5C1lgz5JIbSL2PXC7SPHN2hW1giYIVh7sENwArj9xaF9rkWTLnwjhVXGHR5Q3cBDujxizh
+        zhvlVkkosznU3rk1TFGsX3nTk8spaR5yt3R5SjdAQc0Soet9BIOsihXMyliBDmQbJkDNmOv99jlt
+        qLHatY6voEWr45tonhWojoqA1mgLDUIkgmvTXvJlQleYkduHZx9C4pip3RX/pcagqvENFhg8FhjU
+        BS4gd9KmLragKCzrCOhHe6jaQRT1Dn1H86LGg3AvCgdh1B/E+MYl1YnMXefnWNOcCg0+4TpxSgbM
+        0CiLQEbvE2WlRN6wtszJO0aGMi63wRLAabWgylhVTV0burJZhWmivJ6gLodcZZXIqve6Oa/ldDKO
+        LryD6TnWq5d5qZV5/dLKV2OLWDsLcI+cIHEhaS11S0/uUU6SCm+KZm/kOilTz/lZDWq7FJEW+zhK
+        NBWgGr19ATdXjUuHusqtpKzy2fx2EzdRsP8gsResYWCz2fwEPk00wBgOAAA=
+    headers:
+      Cache-Control: ['max-age=3600, must-revalidate']
+      Connection: [close]
+      Content-Encoding: [gzip]
+      Content-Length: ['842']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Mon, 30 Jan 2017 18:17:59 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000; includeSubDomains;]
+      Vary: ['Accept-Encoding,Cookie,User-Agent']
+      X-Clacks-Overhead: [GNU Terry Pratchett]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: https://api.ticketswitch.com/f13/events_by_id.v1/demo/?req_avail_details_with_perfs=True&user_passwd=demopass&event_id_list=6IF
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+1X227jNhD9FYFA36SsKFlykrfYTdFFvSmwcVEUSSBQ1NhmI1EqSTkxAn9N/6Rf
+        1qFulgsDRYDtQwr7ReKZ4WhmziFpvhHYgjQ6SXeJyMj1G4k//2AfDWxf2JaJPMnA4ENbwAj+DCYx
+        uwrI9cMbqZTgkKRMZs1w7D8CeK0USL6zEfr3hJcZxiDrtCLuAV0xbkpFrqnvj1BZFykgehnEI7TK
+        GQdMKxhjpTaJ3hVpiQmQceRKwcHw159k77bZsTSHJGMGmgJXQmGAHf6KIsOiSODTqU9DiqFydsIU
+        BVdo2gFTiR03XatUkgpTMP2MKfshvQqmPia5gvSABxGNgpiGkUt+Z/KAU38aTif0Mpi4pGCjQAEN
+        /Wg6CYOpNewOhkl8FYRhHNL9UUkvAM8Z2+mDYxy6RAMzDWk4b3qBPda14hum1gj4drxluciSP2om
+        jTDCNuWBuoEbuhM3cuOn/ZM7Ir0n8YYcoRlobrtvnUeK6b1nN4v5z3e/kWNjN2nGcl7KHdJzVtdH
+        VlcY/efqcs+S+FiS8L+ZJGZnSfwvJBF8u11i/q4zaP7563xxe/oI+qWqQDlcKJ7D+Rz66Aqj53Po
+        LIkjSdDL90jinSfQ6e3mfnmzWNyf3m7uDcvxdrV/wiq4MINA8lJmpfTqZ9Lhnf+iwS2IvOiWvYxJ
+        Du2/5xyM81j7fhA73zeoDVvW0qghchuyw/pNTwoDmfOTkOusLKxdYRt4omAr4CXBHZE3l8JOn9qU
+        RbISubHqfMCimztjH+wLM2YDL86srJWEJpupdu5qwxXD+pWzvL1fkn6SvXs2V88eqJjZIPT4CUGv
+        aGN5aRPL054cwnioXfP4aZinDTO1tq0TWxjQ9rJKtCgqVEdLwGCsKw15nuRCm+Hm2yT0gBnZ8+HL
+        jz6xzHTuSvyjRq+t8Tss0DsU6HUFrqG0S4zZ2DlDYdWWgIhe4OqJKQ1R0kjzusM9/4L6sU+jOMAv
+        bphOZGk7v8KaVizX4BKhE6tkwAyNqsGuiNdE1VIib1hbYeUdIEOFkKdgCWC1WjFlatWu/iF0a6sV
+        ponyOkJtDqUqWpG137X7TSen2zn96kyWd1iv3pSNVlbdR1tfjS3iw1qAV+QEifPJYOlaevuKcpIs
+        d5Zodma2kzJzrF+tQZ2WItJSH5YSy3JQvd5+BbuuepcRda1bQ1nrs//XE6GPgv0Hib3gPQP7/f5v
+        lTLU6kgRAAA=
+    headers:
+      Cache-Control: ['max-age=3600, must-revalidate']
+      Connection: [close]
+      Content-Encoding: [gzip]
+      Content-Length: ['920']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Mon, 30 Jan 2017 18:24:11 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000; includeSubDomains;]
+      Vary: ['Accept-Encoding,Cookie,User-Agent']
+      X-Clacks-Overhead: [GNU Terry Pratchett]
+    status: {code: 200, message: OK}
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.9.1]
+    method: GET
+    uri: https://api.ticketswitch.com/f13/events_by_id.v1/demo/?event_id_list=6IF&req_avail_details_with_perfs=True&req_avail_details=True&user_passwd=demopass
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA+1X227jNhD9FYFA36SsKFlykrfYTdFFvSmwcVEUSSBQ1NhmI1EqSTkxAn9N/6Rf
+        1qFulgsDRYDtQwr7ReKZ4WhmziFpvhHYgjQ6SXeJyMj1G4k//2AfDWxf2JaJPMnA4ENbwAj+DCYx
+        uwrI9cMbqZTgkKRMZs1w7D8CeK0USL6zEfr3hJcZxiDrtCLuAV0xbkpFrqnvj1BZFykgehnEI7TK
+        GQdMKxhjpTaJ3hVpiQmQceRKwcHw159k77bZsTSHJGMGmgJXQmGAHf6KIsOiSODTqU9DiqFydsIU
+        BVdo2gFTiR03XatUkgpTMP2MKfshvQqmPia5gvSABxGNgpiGkUt+Z/KAU38aTif0Mpi4pGCjQAEN
+        /Wg6CYOpNewOhkl8FYRhHNL9UUkvAM8Z2+mDYxy6RAMzDWk4b3qBPda14hum1gj4drxluciSP2om
+        jTDCNuWBuoEbuhM3cuOn/ZM7Ir0n8YYcoRlobrtvnUeK6b1nN4v5z3e/kWNjN2nGcl7KHdJzVtdH
+        VlcY/efqcs+S+FiS8L+ZJGZnSfwvJBF8u11i/q4zaP7563xxe/oI+qWqQDlcKJ7D+Rz66Aqj53Po
+        LIkjSdDL90jinSfQ6e3mfnmzWNyf3m7uDcvxdrV/wiq4MINA8lJmpfTqZ9Lhnf+iwS2IvOiWvYxJ
+        Du2/5xyM81j7fhA73zeoDVvW0qghchuyw/pNTwoDmfOTkOusLKxdYRt4omAr4CXBHZE3l8JOn9qU
+        RbISubHqfMCimztjH+wLM2YDL86srJWEJpupdu5qwxXD+pWzvL1fkn6SvXs2V88eqJjZIPT4CUGv
+        aGN5aRPL054cwnioXfP4aZinDTO1tq0TWxjQ9rJKtCgqVEdLwGCsKw15nuRCm+Hm2yT0gBnZ8+HL
+        jz6xzHTuSvyjRq+t8Tss0DsU6HUFrqG0S4zZ2DlDYdWWgIhe4OqJKQ1R0kjzusM9/4L6sU+jOMAv
+        bphOZGk7v8KaVizX4BKhE6tkwAyNqsGuiNdE1VIib1hbYeUdIEOFkKdgCWC1WjFlatWu/iF0a6sV
+        ponyOkJtDqUqWpG137X7TSen2zn96kyWd1iv3pSNVlbdR1tfjS3iw1qAV+QEifPJYOlaevuKcpIs
+        d5Zodma2kzJzrF+tQZ2WItJSH5YSy3JQvd5+BbuuepcRda1bQ1nrs//XE6GPgv0Hib3gPQP7/f5v
+        lTLU6kgRAAA=
+    headers:
+      Cache-Control: ['max-age=3600, must-revalidate']
+      Connection: [close]
+      Content-Encoding: [gzip]
+      Content-Length: ['920']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Mon, 30 Jan 2017 18:42:32 GMT']
+      Server: [nginx]
+      Strict-Transport-Security: [max-age=31536000; includeSubDomains;]
+      Vary: ['Accept-Encoding,Cookie,User-Agent']
+      X-Clacks-Overhead: [GNU Terry Pratchett]
+    status: {code: 200, message: OK}
 version: 1
