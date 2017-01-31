@@ -155,12 +155,12 @@ class Event(JSONMixin, object):
         api_video = data.get('video_iframe')
         if api_video:
             kwargs = {
-                'secure_complete_url': api_video.get('video_iframe_url_when_secure', None),
-                'insecure_complete_url': api_video.get('video_iframe_url_when_insecure', None),
-                'caption': api_video.get('video_iframe_caption', None),
-                'caption_html': api_video.get('video_iframe_caption_html', None),
-                'width': api_video.get('video_iframe_width', None),
-                'height': api_video.get('video_iframe_height', None),
+                'secure_complete_url': api_video.get('video_iframe_url_when_secure'),
+                'insecure_complete_url': api_video.get('video_iframe_url_when_insecure'),
+                'caption': api_video.get('video_iframe_caption'),
+                'caption_html': api_video.get('video_iframe_caption_html'),
+                'width': api_video.get('video_iframe_width'),
+                'height': api_video.get('video_iframe_height'),
                 'name': 'video',
             }
             new_video = Media.from_api_data(kwargs)

@@ -28,8 +28,8 @@ class Media(JSONMixin, object):
             'name': data.get('name', None),
             'url': url,
             'secure': secure,
-            'width': data.get('width', 0),
-            'height': data.get('height', 0),
+            'width': data.get('width'),
+            'height': data.get('height'),
         }
 
         return cls(**kwargs)

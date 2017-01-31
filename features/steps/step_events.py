@@ -1,7 +1,8 @@
 import datetime
+import json
 import vcr
 from behave import when, then
-from hamcrest import *  # noqa
+from hamcrest import assert_that, has_length, equal_to, has_item
 
 
 @when('a search for "{keywords}" keywords is performed')
@@ -31,6 +32,39 @@ def when_search_by_keyword_with_availability_with_performances(context, keywords
     context.events = context.client.list_events(
         keywords=keywords,
         availability_with_performances=True,
+    )
+
+
+@when('a search for "{keywords}" keywords requesting extra info is performed')
+@vcr.use_cassette('fixtures/cassettes/search-keyword.yaml', record_mode='new_episodes')
+def when_search_by_keyword_with_extra_info(context, keywords):
+    keywords = keywords.split(', ')
+    assert keywords
+    context.events = context.client.list_events(
+        keywords=keywords,
+        extra_info=True,
+    )
+
+
+@when('a search for "{keywords}" keywords requesting reviews is performed')
+@vcr.use_cassette('fixtures/cassettes/search-keyword.yaml', record_mode='new_episodes')
+def when_search_by_keyword_with_reviews(context, keywords):
+    keywords = keywords.split(', ')
+    assert keywords
+    context.events = context.client.list_events(
+        keywords=keywords,
+        reviews=True,
+    )
+
+
+@when('a search for "{keywords}" keywords requesting media is performed')
+@vcr.use_cassette('fixtures/cassettes/search-keyword.yaml', record_mode='new_episodes')
+def when_search_by_keyword_with_media(context, keywords):
+    keywords = keywords.split(', ')
+    assert keywords
+    context.events = context.client.list_events(
+        keywords=keywords,
+        media=True,
     )
 
 
@@ -103,6 +137,30 @@ def when_get_events_with_availability_with_performances(context, event_ids):
     )
 
 
+@when(u'we attempt to fetch events with the ID\'s "{event_ids}" requesting extra info')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
+def when_get_events_with_extra_info(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+    context.events = context.client.get_events(event_ids, extra_info=True)
+
+
+@when(u'we attempt to fetch events with the ID\'s "{event_ids}" requesting reviews')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
+def when_get_events_with_reviews(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+    context.events = context.client.get_events(event_ids, reviews=True)
+
+
+@when(u'we attempt to fetch events with the ID\'s "{event_ids}" requesting media')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
+def when_get_events_with_media(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+    context.events = context.client.get_events(event_ids, media=True)
+
+
 @then('a single event should be returned')
 def then_a_single_event(context):
     assert_that(context.events, has_length(1))
@@ -150,3 +208,69 @@ def then_the_availability_details_has_performance_info(context):
         next_month.year,
         next_month.month,
     )
+
+
+@then(u'the event has content information')
+def then_the_event_has_content_info(context):
+    assert context.event.content
+    content = context.event.content
+    expected = json.loads(context.text)
+    for key, values in expected.items():
+        assert_that(content, has_item(key))
+        value = content[key]
+        expected_value = values['value']
+        expected_value_html = values['value_html']
+        assert_that(value.value, equal_to(expected_value))
+        assert_that(value.value_html, equal_to(expected_value_html))
+
+
+@then(u'the event has event information')
+def then_the_event_has_event_info(context):
+    assert context.event.event_info
+    assert context.event.event_info_html
+    expected = json.loads(context.text)
+    assert_that(context.event.event_info, equal_to(expected['value']))
+    assert_that(context.event.event_info_html, equal_to(expected['value_html']))
+
+
+@then(u'the event has event information starting with')
+def then_the_event_has_event_info_starting_with(context):
+    assert context.event.event_info
+    assert context.event.event_info_html
+    expected = json.loads(context.text)
+    sample_size = len(expected['value'])
+    assert_that(context.event.event_info[:sample_size], equal_to(expected['value']))
+    sample_size = len(expected['value_html'])
+    assert_that(context.event.event_info_html[:sample_size], equal_to(expected['value_html']))
+
+
+@then(u'the event has venue information')
+def then_the_event_has_venue_info(context):
+    assert context.event.venue_addr
+    assert context.event.venue_addr_html
+    expected = json.loads(context.text)
+    assert_that(context.event.venue_addr, equal_to(expected['value']))
+    assert_that(context.event.venue_addr_html, equal_to(expected['value_html']))
+
+
+@then(u'the event has "{reviews}" reviews')
+def then_the_event_has_reviews(context, reviews):
+    assert context.event.reviews
+    assert_that(context.event.reviews, has_length(int(reviews)))
+
+
+@then(u'the event has media')
+def then_the_event_has_media(context):
+    assert context.event.media
+    media = context.event.media
+    expected = json.loads(context.text)
+    for key, values in expected.items():
+        assert_that(media, has_item(key))
+        item = media[key]
+        assert_that(item.caption, equal_to(values['caption']))
+        assert_that(item.caption_html, equal_to(values['caption_html']))
+        assert_that(item.name, equal_to(values['name']))
+        assert_that(item.url, equal_to(values['url']))
+        assert_that(item.secure, equal_to(values['secure']))
+        assert_that(item.width, equal_to(values['width']))
+        assert_that(item.height, equal_to(values['height']))
