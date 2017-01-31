@@ -13,8 +13,8 @@ Feature: search for events
     Scenario: date range search
         Given an API client with valid credentials
         When a search for events with performances "700"-"710" days from now is performed
-        Then a list of "5" events should be returned
-        And those events should have the ID's "6KS, 6KT, GVA, 3CVG, 3CVE"
+        Then a list of "4" events should be returned
+        And those events should have the ID's "6KS, 6KT, GVA, 3CVG"
 
     Scenario: country search
         Given an API client with valid credentials

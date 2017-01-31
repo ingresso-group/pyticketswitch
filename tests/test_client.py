@@ -75,6 +75,7 @@ class FakeResponse(object):
     def json(self):
         return self._json
 
+    @property
     def content(self):
         return json.dumps(self._json)
 

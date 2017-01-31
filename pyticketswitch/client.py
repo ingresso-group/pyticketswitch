@@ -1,5 +1,6 @@
 import requests
 import logging
+import six
 from pyticketswitch import exceptions, utils
 from pyticketswitch.event import Event
 from pyticketswitch.performance import Performance
@@ -77,7 +78,7 @@ class Client(object):
         else:
             response = requests.get(url, params=params)
 
-        logger.debug(response.content)
+        logger.debug(six.u(response.content))
 
         if not response.status_code == 200:
 
