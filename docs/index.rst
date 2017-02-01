@@ -3,13 +3,22 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to pyticketswitch's documentation!
-==========================================
+Pyticketswitch
+--------------
+
+Release v\ |version|. (:ref:`Installation <install>`)
+
+Python wrapper for the ticketswitch 
+`f13 API <http://ingresso-group.github.io/slate>`.
+
+
+API Documentation
+-----------------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   api
 
 
 Indices and tables

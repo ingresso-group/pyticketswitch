@@ -20,13 +20,44 @@ logger = logging.getLogger(__name__)
 
 POST = 'post'
 GET = 'get'
+DEFAULT_ROOT_URL = "https://api.ticketswitch.com"
 
 
 class Client(object):
-    DEFAULT_ROOT_URL = "https://api.ticketswitch.com"
+    """Client wraps the ticketswitch f13 API.
+
+    Client contains auth details and provides helper methods for calling
+    the f13 endpoints.
+
+    Args:
+        user (str): user id used to connect to the api.
+        password (str): Password for the user used to connect to the api.
+        url (:obj:`str`, optional): Root url for the API.
+            Defaults to https://api.ticketswitch.com.
+        sub_user (:obj:`str`, optional): the sub user is used to idicate a
+            specific agent of the holder of the main users account requests
+            is being made for. For example a travel agent might hold the main
+            account but an agent in the london office might specify `london` as
+            their sub user, whereas an agent in belfast might specify `belfast`
+            or even something more specific. Defaults to None
+        language (:obj:`str`, optional): prefered IETF language tag. When
+            available this will translate text to the specified language. When
+            None language defaults to user's preference. Defaults to None.
+        **kwargs: Additional arbitary key word arguments to keep with the
+            object.
+
+    Attributes:
+        user (str): user id used to connect to the api.
+        password (str): Password for the user used to connect to the api.
+        url (str): Root url for the API.
+        sub_user (str): the sub user is used to idicate a
+        language (str): prefered IETF language tag
+        kwargs: Additional arbitary key word arguments.
+
+    """
 
     def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
-                 language=None, domain=None, ip=None, **kwargs):
+                 language=None, **kwargs):
         self.user = user
         self.password = password
         self.url = url
@@ -35,6 +66,14 @@ class Client(object):
         self.kwargs = kwargs
 
     def get_user_path(self):
+        """Creates the user path for use in the url from client attributes
+
+        Returns:
+            str: the user path
+
+            Takes the format of "/user/subuser/language"
+
+        """
         if not self.user:
             raise exceptions.AuthenticationError("no user provided")
 
@@ -53,6 +92,18 @@ class Client(object):
         return user_path
 
     def get_url(self, end_point):
+        """Get the url for a given endpoint
+
+        Args:
+            end_point (str): the target api end point, for example events.v1 or
+                performances.v1
+
+        Returns:
+            str: the full url for the given endpoint, contains the base url,
+                user path and endpoint
+
+        """
+
         user_path = self.get_user_path()
         url = "{url}/f13/{end_point}{user_path}/".format(
             url=self.url,
@@ -62,12 +113,36 @@ class Client(object):
         return url
 
     def get_auth_params(self):
-        """
-        This is here so that it can be overwritten for differing auth methods
+        """Get the authentication parameters for inclusion in requests.
+
+        This this method is intended to be overwritten if
+        additional/alternative auth params need to be provided
+
+        Returns:
+            dict: auth params that passed to requests
+
         """
         return {'user_passwd': self.password}
 
     def make_request(self, endpoint, params, method=GET):
+        """Makes actual requests to the API
+
+        Args:
+            endpoint (str): target API endpoint
+            params (dict): parameters to provide to requests
+            method (:obj:`str`, optional): HTTP method to make the request with
+                valid values are ``post`` and ``get``. Defaults to ``get``.
+
+        Returns:
+            str: The body of the response after deserialising from JSON
+
+        Raises:
+            AuthenticationError: When authentication details provided are
+                invalid
+            InvalidResponseError: When the status code of the response is not
+                200
+            APIError: When any other explict errors are returned from the API
+        """
         url = self.get_url(endpoint)
         params.update(self.get_auth_params())
 
@@ -109,7 +184,8 @@ class Client(object):
         return response.json()
 
     def test(self):
-        """
+        """Test the connection
+
         calls /f13/test.v1
 
         will return the running user on sucess and will raise an exception
@@ -117,6 +193,11 @@ class Client(object):
 
         This call is not required, but may be useful for validating auth
         credentials, or checking on the health of the ticketswitch API.
+
+        Returns:
+            :obj:`pyticketswitch.user.User`: details about the user calling the
+                API
+
         """
         response = self.make_request('test.v1', {})
 
@@ -132,6 +213,33 @@ class Client(object):
                             top_price_offer=False, no_singles_data=False,
                             cost_range_details=False, meta_components=False,
                             **kwargs):
+        """Adds additional arguments to the requests.
+
+        All client methods will take several optional arguments that will
+        extend the data returned with addtional information about the returned
+        objects.
+
+        Generally these are applicable to objects that return events, however
+        some arguments will also augment performances such as ``availability``
+        and ``cost_range``.
+
+        Args:
+            params (dict): The parameters dictionary into which any additional
+                paramters will be added
+            availability (:obj:`bool`, optional): Includes general information
+                about availability of events and performances.
+            availability_with_performances (:obj:`bool`, optional): Includes
+                detailed information about avilability of events and includes
+                performance information.
+            extra_info (:obj:`bool`, optional): Includes additional event
+                textual content.
+            reviews (:obj:`bool`, optional): Includes event reviews when
+                available.
+            media (:obj:`bool`, optional): Includes any media assets associated
+                with an event.
+            cost_range (:obj:`bool`): Include price range estimates
+
+        """
 
         if extra_info:
             params.update(req_extra_info=True)
