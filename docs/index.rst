@@ -11,9 +11,29 @@ Release v\ |version|. (:ref:`Installation <install>`)
 Python wrapper for the ticketswitch 
 `f13 API <http://ingresso-group.github.io/slate>`.
 
+Features
+========
+
+- Search for events and performances.
+- Availability details for performances.
+- Make live reservations.
+- Purchase tickets.
+
+
+User Guide
+==========
+
+.. toctree::
+    :maxdepth: 2
+
+    users/intro
+    users/install
+    users/quickstart
+    users/advanced
+
 
 API Documentation
------------------
+=================
 
 .. toctree::
    :maxdepth: 2
