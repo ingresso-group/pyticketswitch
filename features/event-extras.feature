@@ -155,14 +155,100 @@ Feature: add additional information to request
         }
         """
 
-    Scenario: search with reviews
+    Scenario: search with cost range
         Given an API client with valid credentials
-        When a search for "nutcracker, sadlers" keywords requesting reviews is performed  
+        When a search for "nutcracker, sadlers" keywords requesting cost ranges  with all offers is performed  
         Then a single event should be returned
-        And the event has "2" reviews
+        And the event has cost range and no singles cost range
+        And the cost range min seatprice is "68.0"
+        And the cost range max seatprice is "68.0"
+        And the cost range min surcharge is "3.0"
+        And the cost range max surcharge is "3.0"
+        And the cost range currency is "gbp"
+        And the valid quanities are "1, 2, 3, 4"
+        And the no singles cost range min seatprice is "68.0"
+        And the no singles cost range max seatprice is "68.0"
+        And the no singles cost range min surcharge is "3.0"
+        And the no singles cost range max surcharge is "3.0"
+        And the no singles cost range currency is "gbp"
+        And the no singles valid quanities are "1, 2, 3, 4"
+        And the cost range has offers
+        """
+        {
+            "best_value_offer": {
+                "absolute_saving": 0,
+                "percentage_saving": 0,
+                "original_seatprice": 0,
+                "original_surcharge": 0,
+                "seatprice": 0,
+                "surcharge": 0,
+            },
+            "max_saving_offer": {
+                "absolute_saving": 0,
+                "percentage_saving": 0,
+                "original_seatprice": 0,
+                "original_surcharge": 0,
+                "seatprice": 0,
+                "surcharge": 0,
+            },
+            "min_cost_offer": {
+                "absolute_saving": 0,
+                "percentage_saving": 0,
+                "original_seatprice": 0,
+                "original_surcharge": 0,
+                "seatprice": 0,
+                "surcharge": 0,
+            },
+            "top_price_offer": {
+                "absolute_saving": 0,
+                "percentage_saving": 0,
+                "original_seatprice": 0,
+                "original_surcharge": 0,
+                "seatprice": 0,
+                "surcharge": 0,
+            }
+        }
+        """
+        And the no singles cost range has offers
+        """
+        {
+            "best_value_offer": {
+                "absolute_saving": 0,
+                "percentage_saving": 0,
+                "original_seatprice": 0,
+                "original_surcharge": 0,
+                "seatprice": 0,
+                "surcharge": 0,
+            },
+            "max_saving_offer": {
+                "absolute_saving": 0,
+                "percentage_saving": 0,
+                "original_seatprice": 0,
+                "original_surcharge": 0,
+                "seatprice": 0,
+                "surcharge": 0,
+            },
+            "min_cost_offer": {
+                "absolute_saving": 0,
+                "percentage_saving": 0,
+                "original_seatprice": 0,
+                "original_surcharge": 0,
+                "seatprice": 0,
+                "surcharge": 0,
+            },
+            "top_price_offer": {
+                "absolute_saving": 0,
+                "percentage_saving": 0,
+                "original_seatprice": 0,
+                "original_surcharge": 0,
+                "seatprice": 0,
+                "surcharge": 0,
+            }
+        }
+        """
 
-    Scenario: get single event with reviews
+    Scenario: get single event with cost range
         Given an API client with valid credentials
-        When we attempt to fetch events with the ID's "6IF" requesting reviews
+        When we attempt to fetch events with the ID's "6IF" requesting cost ranges with all offers
         Then a single event should be returned
         And the event has "2" reviews

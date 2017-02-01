@@ -54,12 +54,12 @@ class CostRange(JSONMixin, object):
 
         kwargs = {
             'valid_quantities': bitmask_to_numbered_list(
-                quantity_options.get('valid_quantity_mask', 0)
+                quantity_options.get('valid_quantity_mask')
             ),
-            'min_surcharge': float(data.get('min_surcharge', 0)),
-            'min_seatprice': float(data.get('min_seatprice', 0)),
-            'max_surcharge': float(data.get('max_surcharge', 0)),
-            'max_seatprice': float(data.get('max_seatprice', 0)),
+            'min_surcharge': float(data.get('min_surcharge')),
+            'min_seatprice': float(data.get('min_seatprice')),
+            'max_surcharge': float(data.get('max_surcharge')),
+            'max_seatprice': float(data.get('max_seatprice')),
             'allows_singles': data.get('singles', True),
             'currency': currency,
             'best_value_offer': best_value_offer,
