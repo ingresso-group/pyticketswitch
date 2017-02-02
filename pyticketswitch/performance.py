@@ -79,3 +79,6 @@ class Performance(JSONMixin, object):
         }
 
         return cls(**kwargs)
+
+    def __repr__(self):
+        return u'<Performance {}: {}>'.format(self.id, self.date_time.isoformat())

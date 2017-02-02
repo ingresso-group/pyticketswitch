@@ -252,3 +252,6 @@ class Event(JSONMixin, object):
             event.valid_quantities = bitmask_to_numbered_list(valid_quantities)
 
         return event
+
+    def __repr__(self):
+        return u'<Event {}:{}>'.format(self.id, self.description)
