@@ -423,6 +423,11 @@ class Client(object):
         """
         params = {'event_id': event_id}
 
+        if page > 0:
+            params.update(page_no=page)
+        if page_length > 0:
+            params.update(page_len=page_length)
+
         self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('performances.v1', params)
