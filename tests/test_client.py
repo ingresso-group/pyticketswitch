@@ -625,6 +625,21 @@ class TestClient:
             'req_avail_details': True
         })
 
+    def test_list_performances_pagination(self, client, mock_make_request):
+        client.list_performances(
+            'ABC123',
+            availability=True,
+            page=3,
+            page_length=20,
+        )
+
+        mock_make_request.assert_called_with('performances.v1', {
+            'event_id': 'ABC123',
+            'req_avail_details': True,
+            'page_no': 3,
+            'page_len': 20,
+        })
+
     def test_list_performances_misc_kwargs(self, client, mock_make_request):
         client.list_performances('ABC123', foobar='lolbeans')
 
