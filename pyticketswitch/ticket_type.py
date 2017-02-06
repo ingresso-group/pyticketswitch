@@ -36,3 +36,6 @@ class TicketType(JSONMixin, object):
             for price_band in self.price_bands
             for seat in price_band.get_seats()
         ]
+
+    def __repr__(self):
+        return u'<TicketType {}: {}>'.format(self.code, self.description)

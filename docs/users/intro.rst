@@ -8,19 +8,20 @@ Overview
 
 Pyticketswitch is a wrapper around Ingresso's F13 API.
 
-Full API documentation (and a much better introduction) to can be found here: 
+Full API documentation (and a much better introduction) can be found here: 
 
-http://ingresso-group.github.io/slate/#introduction
+http://ingresso-group.github.io/slate/
 
 The work horse of this wrapper is the wonderful 
-`requests <http://docs.python-requests.org>` library.
+`Requests`_ library.
 
+.. _`Requests`: http://docs.python-requests.org
 
 Goals
 =====
 
 These are some general goals that we are aiming at. If you feel that something
-overly complicates matters or doesn't meat these goals feel free to call us out
+overly complicates matters or doesn't meet these goals feel free to call us out
 on it.
 
 * Wrappers should be relatively logic free and generally light weight.
@@ -31,30 +32,24 @@ on it.
 * If we don't have the data we will return None not empty lists or dictionaries
 * No logic in __init__'s.
 * Well tested and documented.
+* Python 3 primary target with python 2 support
+
+Legacy API
+==========
+
+Prior to version 2.0.0 this wrapper dealt with the ticketswitch XML API. This
+library was a horrible mess and we have remodeled and restructured it beyond
+the point of recognition (actually we deleted everything and started again).
+
+As such if you are looking to interact with the XML API then the last release
+of this library supporting it was version 1.13.0. 
+:ref:`See legacy installation instructions <legacy_install>`
+
+We do not intended to reintroduce support for this API and will eventually take
+it out of circualation, however there is no date set for this as of yet.
+
 
 Licence
 =======
 
-Pyticketswitch is released under the MIT licence:
-
-Copyright 2017 Ingresso Group LTD
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-
+    .. include:: ../../LICENSE

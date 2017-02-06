@@ -1,4 +1,4 @@
-.PHONY: docs, docs-server
+.PHONY: docs
 
 init:
 	virtualenv venv
@@ -26,9 +26,3 @@ publish:
 docs:
 	cd docs && make html
 	@echo "Build successful! View the docs homepage at docs/_build/html/index.html."
-
-docs-server:
-	@echo "http://localhost:8000/_build/html"
-	cd docs && python3 -m http.server
-	
-

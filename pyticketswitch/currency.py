@@ -64,6 +64,9 @@ class Currency(JSONMixin, object):
             post=self.post_symbol or '',
         )
 
+    def __repr__(self):
+        return u'<Currency {}>'.format(self.code)
+
 
 class CurrencyMeta(JSONMixin, object):
 

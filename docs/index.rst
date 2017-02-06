@@ -8,8 +8,9 @@ Pyticketswitch
 
 Release v\ |version|. (:ref:`Installation <install>`)
 
-Python wrapper for the ticketswitch 
-`f13 API <http://ingresso-group.github.io/slate>`.
+Python wrapper around Ingresso's `F13 API`_.
+
+.. _`F13 API`: http://ingresso-group.github.io/slate
 
 Features
 ========
@@ -30,7 +31,6 @@ User Guide
     users/install
     users/quickstart
     users/advanced
-
 
 API Documentation
 =================
