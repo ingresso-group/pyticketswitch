@@ -49,3 +49,6 @@ class Seat(JSONMixin, object):
         }
 
         return cls(**kwargs)
+
+    def __repr__(self):
+        return u'<Seat {}>'.format(self.id)

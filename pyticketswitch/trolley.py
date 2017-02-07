@@ -60,3 +60,11 @@ class Trolley(JSONMixin, object):
 
     def get_event_ids(self):
         return {event.id for event in self.get_events()}
+
+    def __repr__(self):
+        if self.transaction_uuid:
+            return u'<Trolley uuid:{}>'.format(self.transaction_uuid)
+        if self.token:
+            return u'<Trolley token:{}>'.format(self.token)
+
+        return super(Trolley, self).__repr__()

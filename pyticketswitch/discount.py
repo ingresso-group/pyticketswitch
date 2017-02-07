@@ -76,3 +76,6 @@ class Discount(JSONMixin, object):
         assert self.non_offer_seatprice is not None, 'non_offer_seatprice data missing'
         assert self.non_offer_surcharge is not None, 'non_offer_surcharge data missing'
         return self.non_offer_seatprice + self.non_offer_surcharge
+
+    def __repr__(self):
+        return u'<Discount {}:{}>'.format(self.code, self.description)

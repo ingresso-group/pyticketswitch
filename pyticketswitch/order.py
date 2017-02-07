@@ -57,6 +57,9 @@ class TicketOrder(JSONMixin, object):
 
         return cls(**kwargs)
 
+    def __repr__(self):
+        return u'<TicketOrder {}>'.format(self.code)
+
 
 class Order(JSONMixin, object):
 
@@ -124,3 +127,17 @@ class Order(JSONMixin, object):
             kwargs.update(requested_seats=requested_seats)
 
         return cls(**kwargs)
+
+    def get_seats(self):
+        if not self.ticket_orders:
+            return []
+
+        return [
+            seat
+            for ticket_order in self.ticket_orders
+            for seat in ticket_order.seats
+            if ticket_order.seats
+        ]
+
+    def __repr__(self):
+        return u'<Order {}>'.format(self.item)

@@ -67,3 +67,6 @@ class Bundle(JSONMixin, object):
 
     def get_event_ids(self):
         return {event.id for event in self.get_events()}
+
+    def __repr__(self):
+        return u'<Bundle {}>'.format(self.source_code)

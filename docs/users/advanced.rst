@@ -65,3 +65,24 @@ Pagination
 .. _pagination:
 
 ALL THE PAGES BELONG TO US!
+
+Requesting Seat Availability
+============================
+
+.. _seated_availability:
+
+seats glorious seats
+
+Trollies, Bundles, Orders and Ticket orders
+===========================================
+
+.. _trollies_bundles_orders_ticket_orders:
+
+Trolley -> Bundle -> Order -> TicketOrder
+
+Basketing
+=========
+
+.. _basketing:
+
+I puts the item in the baskets

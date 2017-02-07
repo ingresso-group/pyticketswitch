@@ -75,3 +75,8 @@ class PriceBand(JSONMixin, object):
             for seat_block in self.seat_blocks
             for seat in seat_block.seats or []
         ]
+
+    def __repr__(self):
+        if self.description:
+            return u'<PriceBand {}:{}>'.format(self.code, self.description)
+        return u'<PriceBand {}>'.format(self.code)

@@ -15,3 +15,7 @@ class Country(JSONMixin, object):
         }
 
         return cls(**kwargs)
+
+    def __repr__(self):
+
+        return u'<Country {}:{}>'.format(self.code, self.description)

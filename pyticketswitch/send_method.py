@@ -36,3 +36,6 @@ class SendMethod(JSONMixin, object):
             kwargs.update(permitted_countries=permitted_countries)
 
         return cls(**kwargs)
+
+    def __repr__(self):
+        return u'<SendMethod {}:{}>'.format(self.code, self.description)

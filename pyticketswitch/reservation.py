@@ -56,3 +56,8 @@ class Reservation(JSONMixin, object):
             kwargs.update(unreserved_orders=unreserved_orders)
 
         return cls(**kwargs)
+
+    def __repr__(self):
+        if self.trolley and self.trolley.transaction_uuid:
+            return u'<Reservation {}>'.format(self.trolley.transaction_uuid)
+        return super(Reservation, self).__repr__()
