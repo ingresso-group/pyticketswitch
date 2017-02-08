@@ -52,14 +52,29 @@ class CostRange(JSONMixin, object):
         if api_top_price_offer:
             top_price_offer = Offer.from_api_data(api_top_price_offer)
 
+        min_seatprice = data.get('min_seatprice')
+        min_surcharge = data.get('min_surcharge')
+        max_seatprice = data.get('max_seatprice')
+        max_surcharge = data.get('max_surcharge')
+
+        # checking explictly for is not none, as zero is a legit value.
+        if min_seatprice is not None:
+            min_seatprice = float(min_seatprice)
+        if max_seatprice is not None:
+            max_seatprice = float(max_seatprice)
+        if min_surcharge is not None:
+            min_surcharge = float(min_surcharge)
+        if max_surcharge is not None:
+            max_surcharge = float(max_surcharge)
+
         kwargs = {
             'valid_quantities': bitmask_to_numbered_list(
                 quantity_options.get('valid_quantity_mask')
             ),
-            'min_surcharge': float(data.get('min_surcharge')),
-            'min_seatprice': float(data.get('min_seatprice')),
-            'max_surcharge': float(data.get('max_surcharge')),
-            'max_seatprice': float(data.get('max_seatprice')),
+            'min_surcharge': min_surcharge,
+            'min_seatprice': min_seatprice,
+            'max_surcharge': max_surcharge,
+            'max_seatprice': max_seatprice,
             'allows_singles': data.get('singles', True),
             'currency': currency,
             'best_value_offer': best_value_offer,

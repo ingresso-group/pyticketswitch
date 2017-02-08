@@ -1,7 +1,6 @@
 import pytest
 from pyticketswitch import exceptions
 from pyticketswitch.event import Event
-from datetime import datetime
 from dateutil.tz import tzoffset
 
 
@@ -283,9 +282,6 @@ class TestEvent:
 
         assert event.classes == ['Theater', 'Amazeballs']
         assert event.filters == []
-
-        assert event.start_date == datetime(2016, 7, 21, 23, 57, 15, tzinfo=self.BST)
-        assert event.end_date == datetime(2017, 9, 3, 11, 30, 40, tzinfo=self.DRC)
 
         assert event.postcode == 'W6 8DL'
         assert event.city == 'London'

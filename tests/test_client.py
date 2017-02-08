@@ -532,6 +532,7 @@ class TestClient:
     def test_list_performances(self, client, monkeypatch):
         response = {
             'results': {
+                'has_perf_names': False,
                 'events_by_id': {
                     'ABC123': {'event': {'event_id': 'ABC123'}},
                 },
@@ -546,7 +547,7 @@ class TestClient:
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        performances = client.list_performances('ABC123')
+        performances, meta = client.list_performances('ABC123')
 
         mock_make_request.assert_called_with('performances.v1', {
             'event_id': 'ABC123',
@@ -563,6 +564,8 @@ class TestClient:
         assert performance_one.event_id == 'ABC123'
         assert performance_two.event_id == 'ABC123'
         assert performance_three.event_id == 'ABC123'
+
+        assert meta.has_names is False
 
     def test_list_performances_cost_range(self, client, mock_make_request):
         client.list_performances('ABC123', cost_range=True)

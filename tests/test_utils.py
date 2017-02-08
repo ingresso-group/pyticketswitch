@@ -165,3 +165,6 @@ class TestBitmaskToNumberedList:
         assert utils.bitmask_to_numbered_list(5) == [1, 3]
         # 6 == 0b110 so the 2nd numbered bits are 1's
         assert utils.bitmask_to_numbered_list(6) == [2, 3]
+
+    def test_with_none(self):
+        assert utils.bitmask_to_numbered_list(None) == []

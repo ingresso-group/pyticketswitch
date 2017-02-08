@@ -1,3 +1,4 @@
+import json
 from behave import then
 from hamcrest import assert_that, equal_to
 
@@ -94,7 +95,7 @@ def the_no_singles_valid_quantities_currency_are(context, quantities):
 def then_the_cost_range_has_offers(context):
     expected = json.loads(context.text)
     for key, offer in expected.items():
-        
+        pass
 
 
 @then(u'the no singles cost range has offers')

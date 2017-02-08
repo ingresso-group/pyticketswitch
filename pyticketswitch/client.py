@@ -3,7 +3,7 @@ import logging
 import six
 from pyticketswitch import exceptions, utils
 from pyticketswitch.event import Event
-from pyticketswitch.performance import Performance
+from pyticketswitch.performance import Performance, PerformanceMeta
 from pyticketswitch.availability import AvailabilityMeta
 from pyticketswitch.ticket_type import TicketType
 from pyticketswitch.send_method import SendMethod
@@ -445,7 +445,9 @@ class Client(object):
             for data in raw_performances
         ]
 
-        return performances
+        meta = PerformanceMeta.from_api_data(response)
+
+        return performances, meta
 
     def get_performances(self, performance_ids, **kwargs):
         """

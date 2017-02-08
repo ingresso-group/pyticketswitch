@@ -6,7 +6,6 @@ from pyticketswitch.media import Media
 from pyticketswitch.review import Review
 from pyticketswitch.availability import AvailabilityDetails
 from pyticketswitch.field import Field
-from pyticketswitch import utils
 from pyticketswitch.utils import bitmask_to_numbered_list
 from pyticketswitch.mixins import JSONMixin
 
@@ -39,9 +38,6 @@ class Event(JSONMixin, object):
 
         self.classes = classes
         self.filters = filters
-
-        self.start_date = start_date
-        self.end_date = end_date
 
         self.postcode = postcode
         self.city = city
@@ -93,14 +89,6 @@ class Event(JSONMixin, object):
 
         if not id_:
             raise IntegrityError("event_id not found in event data", data=data)
-
-        start_date = data.get('date_range_start', {}).get('iso8601_date_and_time')
-        if start_date:
-            start_date = utils.isostr_to_datetime(start_date)
-
-        end_date = data.get('date_range_end', {}).get('iso8601_date_and_time')
-        if end_date:
-            end_date = utils.isostr_to_datetime(end_date)
 
         api_classes = data.get('class', [])
         classes = [
@@ -194,9 +182,6 @@ class Event(JSONMixin, object):
             'filters': data.get('custom_filter', []),
             'fields': fields,
 
-            'start_date': start_date,
-            'end_date': end_date,
-
             'postcode': data.get('postcode'),
             'city': data.get('city_desc'),
             'country': data.get('country_desc'),
@@ -243,7 +228,6 @@ class Event(JSONMixin, object):
 
     @classmethod
     def from_events_by_id_data(cls, data):
-
         event = cls.from_api_data(data.get('event'))
 
         quantity_options = data.get('quantity_options', {})

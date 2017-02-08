@@ -71,6 +71,9 @@ def bitmask_to_boolean_list(mask):
 
 
 def bitmask_to_numbered_list(mask):
+    if mask is None:
+        return []
+
     return [
         i+1
         for i in range(mask.bit_length())

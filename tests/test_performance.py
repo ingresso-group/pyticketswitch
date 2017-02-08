@@ -1,4 +1,5 @@
-from pyticketswitch.performance import Performance
+import datetime
+from pyticketswitch.performance import Performance, PerformanceMeta
 
 
 class TestPerformance:
@@ -193,3 +194,34 @@ class TestPerformance:
         assert performance.running_time == 200
 
         assert len(performance.availability_details) == 6
+
+    def test_repr_with_date(self):
+        performance = Performance(
+            'ABC1-23',
+            'ABC1',
+            date_time=datetime.datetime(2017, 2, 8, 14, 8, 0),
+        )
+        assert repr(performance) == u'<Performance ABC1-23: 2017-02-08T14:08:00>'
+
+    def test_repr_without_date(self):
+        performance = Performance('ABC1-23', 'ABC1')
+        assert repr(performance) == u'<Performance ABC1-23>'
+
+
+class TestPerformanceMeta:
+
+    def test_from_api_data(self):
+        data = {
+            'autoselect_this_performance': True,
+            'results': {
+                'has_perf_names': True,
+                'performance': [
+                    {'perf_id': '6IF-B1H', 'event_id': '6IF'}
+                ]
+            }
+        }
+
+        meta = PerformanceMeta.from_api_data(data)
+
+        assert meta.auto_select is True
+        assert meta.has_names is True

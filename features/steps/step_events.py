@@ -2,7 +2,8 @@ import datetime
 import json
 import vcr
 from behave import when, then
-from hamcrest import assert_that, has_length, equal_to, has_item
+from hamcrest import (assert_that, has_length, equal_to, has_item,
+                      greater_than_or_equal_to, less_than_or_equal_to)
 
 
 @when('a search for "{keywords}" keywords is performed')
@@ -76,7 +77,8 @@ def when_search_by_daterange(context, start_days, end_days):
     end_date = now + datetime.timedelta(days=int(end_days))
     context.events = context.client.list_events(
         start_date=start_date,
-        end_date=end_date
+        end_date=end_date,
+        extra_info=True,
     )
 
 
@@ -173,6 +175,25 @@ def then_a_single_event(context):
 @then('a list of "{num}" events should be returned')
 def then_a_list_of_num_events(context, num):
     assert_that(context.events, has_length(int(num)))
+
+
+@then('the events all have a performance between "{start}" and "{end}" days from now')
+def then_events_have_performance_between_days(context, start, end):
+    assert len(context.events) > 0
+    now = datetime.datetime.now()
+    start_date = now + datetime.timedelta(days=int(start))
+    end_date = now + datetime.timedelta(days=int(end))
+
+    for event in context.events:
+        performances = context.client.get_performances(event.id, page_length=100, page=0)
+
+        if any(performance.date_time >= start_date and
+               performance.date_time <= end_date
+               for performance in performances):
+            continue
+
+        raise Exception('Event with id %s does not have a performance inside the given date range' % event.id)
+
 
 
 @then('that event should have the ID of "{event_id}"')

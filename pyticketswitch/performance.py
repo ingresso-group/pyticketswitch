@@ -31,6 +31,7 @@ class Performance(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        print(data)
 
         id_ = data.get('perf_id')
         event_id = data.get('event_id')
@@ -81,4 +82,39 @@ class Performance(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<Performance {}: {}>'.format(self.id, self.date_time.isoformat())
+        if self.date_time:
+            return u'<Performance {}: {}>'.format(self.id, self.date_time.isoformat())
+        return u'<Performance {}>'.format(self.id)
+
+
+class PerformanceMeta(JSONMixin, object):
+    """
+    PerformanceMeta contains meta information about a list of
+    :class:`Performances <pyticketswitch.performance.Performance>`.
+
+
+    Args:
+        auto_select (:obj:`bool`, optional): indicates that the performance
+            list will contain only one performance and this performance should
+            be automatically selected for the customer.
+        has_names: (:obj:`bool`, optional): indicates that the related
+            performances have names
+
+    Attributes:
+        auto_select (bool): indicates that the performance list will contain
+            only one performance and this performance should be automatically
+            selected for the customer.
+        has_names: (bool): indicates that the related performances have names
+    """
+
+    def __init__(self, auto_select=False, has_names=False):
+        self.auto_select = auto_select
+        self.has_names = has_names
+
+    @classmethod
+    def from_api_data(cls, data):
+
+        auto_select = data.get('autoselect_this_performance', False)
+        has_names = data.get('results', {}).get('has_perf_names', False)
+
+        return cls(auto_select=auto_select, has_names=has_names)
