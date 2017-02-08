@@ -417,7 +417,8 @@ class Client(object):
 
         return months
 
-    def list_performances(self, event_id, page_length=0, page=0, **kwargs):
+    def list_performances(self, event_id, start_date=None, end_date=None,
+                          page_length=0, page=0, **kwargs):
         """
         List performances for a specified event
         """
@@ -427,6 +428,9 @@ class Client(object):
             params.update(page_no=page)
         if page_length > 0:
             params.update(page_len=page_length)
+
+        if start_date or end_date:
+            params.update(s_dates=utils.date_range_str(start_date, end_date))
 
         self.add_optional_kwargs(params, **kwargs)
 
