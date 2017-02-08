@@ -29,12 +29,11 @@ Feature: search for events
 
     Scenario: geo search
         Given an API client with valid credentials
-        When a search for events within "5"km of "51.491188" lat and "-0.223731" long is performed
-        Then a list of "4" events should be returned
-        And those events should have the ID's "I3U, 6KF, I3T, 3S0L"
+        When a search for events within "100"km of "35.5000" lat and "139.300" long is performed
+        Then a list of "1" events should be returned
+        And those events should have the ID's "AG8"
 
     Scenario: paginated search
         Given an API client with valid credentials
         When a search is performed for page 2 with a page length of 3 is performed
-        Then a list of "3" events should be returned
-        And those events should have the ID's "3Q2P, I3T, 6KU"
+        Then the 7, 8 and 9th events are returned

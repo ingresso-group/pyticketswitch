@@ -155,6 +155,7 @@ Feature: add additional information to request
         }
         """
 
+    @wip
     Scenario: search with cost range
         Given an API client with valid credentials
         When a search for "nutcracker, sadlers" keywords requesting cost ranges  with all offers is performed  
@@ -247,6 +248,7 @@ Feature: add additional information to request
         }
         """
 
+    @wip
     Scenario: get single event with cost range
         Given an API client with valid credentials
         When we attempt to fetch events with the ID's "6IF" requesting cost ranges with all offers

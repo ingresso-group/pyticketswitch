@@ -97,7 +97,7 @@ def when_search_for_city(context, city):
 
 
 @when(u'a search for events within "{radius}"km of "{latitude}" lat and "{longitude}" long is performed')
-@vcr.use_cassette('fixtures/cassettes/search-geo.yaml')
+@vcr.use_cassette('fixtures/cassettes/search-geo.yaml', record_mode='new_episodes')
 def when_search_with_geo(context, radius, latitude, longitude):
     assert radius and latitude and longitude
     context.events = context.client.list_events(radius=radius, latitude=latitude, longitude=longitude)
@@ -215,6 +215,22 @@ def then_those_events_with_ids(context, event_ids):
         actual_event_ids = [event.id for event in context.events.values()]
     else:
         actual_event_ids = [event.id for event in context.events]
+
+    for event_id in expected_event_ids:
+        assert_that(actual_event_ids, has_item(event_id))
+
+
+@then(u'the 7, 8 and 9th events are returned')
+@vcr.use_cassette('fixtures/cassettes/events-list-all.yaml')
+def then_an_event_range(context):
+    all_events = context.client.list_events()
+    assert all_events
+
+    expected_event_ids = [event.id for event in all_events[6:9]]
+    actual_event_ids = [event.id for event in context.events]
+
+    assert expected_event_ids
+    assert actual_event_ids
 
     for event_id in expected_event_ids:
         assert_that(actual_event_ids, has_item(event_id))
