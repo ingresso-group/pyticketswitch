@@ -92,10 +92,10 @@ class PerformanceMeta(JSONMixin, object):
 
 
     Args:
-        auto_select (:obj:`bool`, optional): indicates that the performance
+        auto_select (bool, optional): indicates that the performance
             list will contain only one performance and this performance should
             be automatically selected for the customer.
-        has_names: (:obj:`bool`, optional): indicates that the related
+        has_names: (bool, optional): indicates that the related
             performances have names
 
     Attributes:

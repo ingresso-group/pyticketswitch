@@ -419,13 +419,31 @@ class Client(object):
 
     def list_performances(self, event_id, start_date=None, end_date=None,
                           page_length=0, page=0, **kwargs):
-        """
-        List performances for a specified event
+        """List performances for a specified event
+
+        Args:
+            event_id (str): identifier for the event.
+            start_date (datetime.datetime, optional):
+                list performances only if they occur after this date.
+            end_date (datetime.datetime, optional):
+                list performances only if they occur before this date.
+            page (int, optional): the page of a paginated response.
+            page_length (int, optional): how many performances are
+                returned per page.
+            **kwargs: see :func:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
+
+        Returns:
+            list, :class:`PerformanceMeta <pyticketswitch.performance.PerformanceMeta>`:
+                a list of :class:`Performances <pyticketswitch.performance.Performance>`
+                for the given event and meta information about the performances.
+
         """
         params = {'event_id': event_id}
 
         if page > 0:
             params.update(page_no=page)
+
         if page_length > 0:
             params.update(page_len=page_length)
 

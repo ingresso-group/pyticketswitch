@@ -1,9 +1,9 @@
 import datetime
 import json
 import vcr
+from dateutil.tz import tzutc
 from behave import when, then
-from hamcrest import (assert_that, has_length, equal_to, has_item,
-                      greater_than_or_equal_to, less_than_or_equal_to)
+from hamcrest import assert_that, has_length, equal_to, has_item
 
 
 @when('a search for "{keywords}" keywords is performed')
@@ -178,22 +178,29 @@ def then_a_list_of_num_events(context, num):
 
 
 @then('the events all have a performance between "{start}" and "{end}" days from now')
+@vcr.use_cassette('fixtures/cassettes/event-performances-date-range.yaml', record_mode='new_episodes')
 def then_events_have_performance_between_days(context, start, end):
     assert len(context.events) > 0
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(tzutc())
     start_date = now + datetime.timedelta(days=int(start))
     end_date = now + datetime.timedelta(days=int(end))
 
     for event in context.events:
-        performances = context.client.get_performances(event.id, page_length=100, page=0)
-
+        performances, meta = context.client.list_performances(
+            event.id,
+            start_date=start_date,
+            end_date=end_date,
+            page=0,
+            page_length=20,
+        )
+        if meta.auto_select:
+            continue
         if any(performance.date_time >= start_date and
                performance.date_time <= end_date
                for performance in performances):
             continue
 
         raise Exception('Event with id %s does not have a performance inside the given date range' % event.id)
-
 
 
 @then('that event should have the ID of "{event_id}"')

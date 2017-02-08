@@ -66,7 +66,6 @@ These results will be generated from cached data and should not be considered
 100% accurate.
 
 .. autoclass:: pyticketswitch.currency.Currency
-.. autoclass:: pyticketswitch.currency.CurrencyMeta
 .. autoclass:: pyticketswitch.cost_range.CostRange
 .. autoclass:: pyticketswitch.cost_range.CostRangeDetails
 .. autoclass:: pyticketswitch.offer.Offer
@@ -91,6 +90,13 @@ Seats
 
 .. autoclass:: pyticketswitch.seat.SeatBlock
 .. autoclass:: pyticketswitch.seat.Seat
+
+Meta Objects
+------------
+.. autoclass:: pyticketswitch.availability.AvailabilityMeta
+.. autoclass:: pyticketswitch.currency.CurrencyMeta
+.. autoclass:: pyticketswitch.performance.PerformanceMeta
+
 
 
 Utilities
