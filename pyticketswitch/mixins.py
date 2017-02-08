@@ -14,7 +14,7 @@ class JSONMixin(object):
                 return obj.isoformat()
 
             if hasattr(obj, '__jsondict__'):
-                return obj.__jsondict__(hide_none=hide_none)
+                return obj.__jsondict__(hide_none=hide_none, hide_empty=hide_empty)
 
             if isinstance(obj, list):
                 return [sanitise(item) for item in obj]
