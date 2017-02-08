@@ -31,8 +31,6 @@ class Performance(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
-        print(data)
-
         id_ = data.get('perf_id')
         event_id = data.get('event_id')
 
