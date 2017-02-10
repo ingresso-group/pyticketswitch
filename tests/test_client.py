@@ -289,21 +289,21 @@ class TestClient:
         client.list_events(keywords=['awesome', 'stuff'])
 
         mock_make_request.assert_called_with('events.v1', {
-            's_keys': 'awesome,stuff',
+            'keywords': 'awesome,stuff',
         })
 
     def test_list_events_with_start_date(self, client, mock_make_request):
         client.list_events(start_date=datetime(2016, 7, 23, 0, 7, 25))
 
         mock_make_request.assert_called_with('events.v1', {
-            's_dates': '20160723:',
+            'date_range': '20160723:',
         })
 
     def test_list_events_with_end_date(self, client, mock_make_request):
         client.list_events(end_date=datetime(2016, 7, 23, 0, 7, 25))
 
         mock_make_request.assert_called_with('events.v1', {
-            's_dates': ':20160723',
+            'date_range': ':20160723',
         })
 
     def test_list_events_with_start_and_end_date(self, client, mock_make_request):
@@ -313,21 +313,21 @@ class TestClient:
         )
 
         mock_make_request.assert_called_with('events.v1', {
-            's_dates': '20150311:20160723',
+            'date_range': '20150311:20160723',
         })
 
     def test_list_events_country_code(self, client, mock_make_request):
         client.list_events(country_code='fj')
 
         mock_make_request.assert_called_with('events.v1', {
-            's_coco': 'fj',
+            'country_code': 'fj',
         })
 
     def test_list_events_city_code(self, client, mock_make_request):
-        client.list_events(city='ldn')
+        client.list_events(city_code='london-uk')
 
         mock_make_request.assert_called_with('events.v1', {
-            's_city': 'ldn',
+            'city_code': 'london-uk',
         })
 
     def test_list_events_geolocation(self, client, mock_make_request):
@@ -338,7 +338,7 @@ class TestClient:
         )
 
         mock_make_request.assert_called_with('events.v1', {
-            's_geo': '51.52961137:-0.10601562:10',
+            'circle': '51.52961137:-0.10601562:10',
         })
 
     def test_list_events_invalid_geolocation(self, client):
@@ -372,18 +372,11 @@ class TestClient:
             'include_dead': True,
         })
 
-    def test_list_events_include_non_live(self, client, mock_make_request):
-        client.list_events(include_non_live=True)
+    def test_list_events_sort_order(self, client, mock_make_request):
+        client.list_events(sort_order='foobar')
 
         mock_make_request.assert_called_with('events.v1', {
-            'include_non_live': True,
-        })
-
-    def test_list_events_order_by_popular(self, client, mock_make_request):
-        client.list_events(order_by_popular=True)
-
-        mock_make_request.assert_called_with('events.v1', {
-            's_top': True,
+            'sort_order': 'foobar',
         })
 
     def test_list_events_pagination(self, client, mock_make_request):

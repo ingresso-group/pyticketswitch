@@ -86,3 +86,29 @@ Basketing
 .. _basketing:
 
 I puts the item in the baskets
+
+Sorting search results
+======================
+
+.. _sorting_search_results:
+
+The ``sort_order`` argument of the 
+:meth:`Client.list_events <pyticketswitch.client.Client.list_events>`
+method will sort returned events by the specified metric.
+
+Valid values for this attribute are as follows:
+
+===================  ====================================================================
+      Value                                    Description
+===================  ====================================================================
+``most_popular``     sales across all partners over the last 48 hours in descending order
+``alphabetic``       event description in ascending order alphabetically
+``cost_ascending``   minimum total cost of the ticket in ascending order
+``cost_descending``  maximum total cost of the ticket in descending order
+``critic_rating``    average critic rating in descending order
+``recent``           date we first saw the event in descending order
+``last_sale``        the last time we sold a ticket for the event in descending order
+===================  ====================================================================
+
+The default sort order is ``alphabetic``. The secondary sorting metric is
+always ``alphabetic``.

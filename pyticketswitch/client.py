@@ -198,6 +198,12 @@ class Client(object):
             :obj:`pyticketswitch.user.User`: details about the user calling the
                 API
 
+        Example:.
+            >>> from pyticketswitch import Client
+            >>> client = Client('demo', 'demopass')
+            >>> client.test()
+            <User: demo>
+
         """
         response = self.make_request('test.v1', {})
 
@@ -300,31 +306,73 @@ class Client(object):
         params.update(kwargs)
 
     def list_events(self, keywords=None, start_date=None, end_date=None,
-                    country_code=None, city=None, latitude=None,
+                    country_code=None, city_code=None, latitude=None,
                     longitude=None, radius=None, include_dead=False,
-                    include_non_live=False, order_by_popular=False, page=0,
-                    page_length=0, **kwargs):
+                    sort_order=None, page=0, page_length=0, **kwargs):
 
-        """
-        list events with the given parameters
+        """List events with the given parameters
+
+        Called with out arugments this method will return all live events
+        available to the user.
+
+        Args:
+            keywords (list, optional): list of keyword strings. For example:
+                ``keywords=['sadlers', 'nutcracker']``. Defaults to
+                :obj:`None`.
+            start_date (datetime.datetime, optional): only show events that
+                have a performance after this date. Defaults to :obj:`None`.
+            end_date (datetime.datetime, optional): only show events that have
+                a performance before this date. Defaults to :obj:`None`.
+            country_code (string, optional): only show events in this country.
+                the country is specified by it's ISO 3166-1 country code.
+                Defaults to :obj:`None`.
+            city_code: (string, optional): specified by the internal city code. As
+                a rule of thumb this is the lowercase city name followed by
+                a hyphen followed by the ISO 3166-1 country code. For example:
+                ``london-uk``, ``new_york-us``, ``berlin-de``.  Defaults to
+                :obj:`None`.
+            latitude (float, optional): only show events near this latitude.
+                valid only in combination with longitude and radius. Defaults
+                to :obj:`None`.
+            latitude (float, optional): only show events near this longitude.
+                valid only in combination with latitude and radius. Defaults
+                to :obj:`None`.
+            latitude (float, optional): only show events inside this radius
+                relative to the provided coordinates (latitude & longitude
+                above). Units are kilometers. Defaults to :obj:`None`.
+            include_dead (bool, optional): when true results will include all
+                events even if they are dead (are unavailable to purchase
+                from). Defaults to :obj:`False`.
+            sort_order (string, optional): order the returned events by the
+                specified metric. See
+                :ref:`sorting search results <sorting_search_results>`.
+                Defaults to :obj:`None`
+            page (int, optional): the page of a paginated response.
+            page_length (int, optional): how many performances are
+                returned per page.
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
+
+        Returns:
+            list: a list of :class:`Events <pyticketswitch.event.Event>`
         """
 
         params = {}
 
         if keywords:
-            params.update(s_keys=','.join(keywords))
+            params.update(keywords=','.join(keywords))
 
         if start_date or end_date:
-            params.update(s_dates=utils.date_range_str(start_date, end_date))
+            params.update(date_range=utils.date_range_str(start_date, end_date))
 
         if country_code:
-            params.update(s_coco=country_code)
+            params.update(country_code=country_code)
 
-        if city:
-            params.update(s_city=city)
+        if city_code:
+            params.update(city_code=city_code)
 
         if all([latitude, longitude, radius]):
-            params.update(s_geo='{lat}:{lon}:{rad}'.format(
+            params.update(circle='{lat}:{lon}:{rad}'.format(
                 lat=latitude,
                 lon=longitude,
                 rad=radius,
@@ -337,11 +385,8 @@ class Client(object):
         if include_dead:
             params.update(include_dead=True)
 
-        if include_non_live:
-            params.update(include_non_live=True)
-
-        if order_by_popular:
-            params.update(s_top=True)
+        if sort_order:
+            params.update(sort_order=sort_order)
 
         if page > 0:
             params.update(page_no=page)
@@ -430,7 +475,7 @@ class Client(object):
             page (int, optional): the page of a paginated response.
             page_length (int, optional): how many performances are
                 returned per page.
-            **kwargs: see :func:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
