@@ -257,12 +257,6 @@ class TestClient:
             'req_avail_details_with_perfs': True,
         }
 
-    def test_add_optional_kwargs_meta_components(self, client):
-        params = {}
-        client.add_optional_kwargs(params, meta_components=True)
-
-        params == {'req_meta_components': True}
-
     def test_list_events(self, client, monkeypatch):
         response = {
             'results': {
@@ -342,25 +336,25 @@ class TestClient:
         })
 
     def test_list_events_invalid_geolocation(self, client):
-        with pytest.raises(exceptions.InvalidGeoData):
+        with pytest.raises(exceptions.InvalidGeoParameters):
             client.list_events(
                 longitude=-0.10601562,
                 radius=10
             )
 
-        with pytest.raises(exceptions.InvalidGeoData):
+        with pytest.raises(exceptions.InvalidGeoParameters):
             client.list_events(
                 latitude=51.52961137,
                 radius=10
             )
 
-        with pytest.raises(exceptions.InvalidGeoData):
+        with pytest.raises(exceptions.InvalidGeoParameters):
             client.list_events(
                 latitude=51.52961137,
                 longitude=-0.10601562,
             )
 
-        with pytest.raises(exceptions.InvalidGeoData):
+        with pytest.raises(exceptions.InvalidGeoParameters):
             client.list_events(
                 radius=10
             )

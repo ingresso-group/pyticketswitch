@@ -22,7 +22,7 @@ class InvalidResponseError(PyticketswitchError):
     pass
 
 
-class InvalidGeoData(PyticketswitchError):
+class InvalidGeoParameters(PyticketswitchError):
     pass
 
 

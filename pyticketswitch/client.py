@@ -186,7 +186,7 @@ class Client(object):
     def test(self):
         """Test the connection
 
-        calls /f13/test.v1
+        Wraps `/f13/test.v1`_
 
         will return the running user on sucess and will raise an exception
         if the authentication details are invalid.
@@ -195,14 +195,9 @@ class Client(object):
         credentials, or checking on the health of the ticketswitch API.
 
         Returns:
-            :obj:`pyticketswitch.user.User`: details about the user calling the
-                API
+            :obj:`pyticketswitch.user.User`: details about the user calling the API
 
-        Example:.
-            >>> from pyticketswitch import Client
-            >>> client = Client('demo', 'demopass')
-            >>> client.test()
-            <User: demo>
+        .. _`/f13/test.v1`: https://ingresso-group.github.io/slate/#test
 
         """
         response = self.make_request('test.v1', {})
@@ -217,8 +212,7 @@ class Client(object):
                             cost_range=False, best_value_offer=False,
                             max_saving_offer=False, min_cost_offer=False,
                             top_price_offer=False, no_singles_data=False,
-                            cost_range_details=False, meta_components=False,
-                            **kwargs):
+                            cost_range_details=False, **kwargs):
         """Adds additional arguments to the requests.
 
         All client methods will take several optional arguments that will
@@ -226,25 +220,50 @@ class Client(object):
         objects.
 
         Generally these are applicable to objects that return events, however
-        some arguments will also augment performances such as ``availability``
-        and ``cost_range``.
+        some arguments will also augment performances, cost ranges, and
+        availability details.
+
+        `See the main F13 documentation for more details.
+        <https://ingresso-group.github.io/slate/#additional-parameters>`_
 
         Args:
             params (dict): The parameters dictionary into which any additional
                 paramters will be added
-            availability (:obj:`bool`, optional): Includes general information
+            availability (bool, optional): Includes general information
                 about availability of events and performances.
             availability_with_performances (:obj:`bool`, optional): Includes
                 detailed information about avilability of events and includes
                 performance information.
-            extra_info (:obj:`bool`, optional): Includes additional event
-                textual content.
-            reviews (:obj:`bool`, optional): Includes event reviews when
-                available.
-            media (:obj:`bool`, optional): Includes any media assets associated
-                with an event.
-            cost_range (:obj:`bool`): Include price range estimates
-
+            extra_info (bool, optional): Includes additional event
+                textual content. Defaults to :obj:`False`.
+            reviews (bool, optional): Includes event reviews when
+                available. Defaults to :obj:`False`.
+            media (bool, optional): Includes any media assets associated
+                with an event. Defaults to :obj:`False`.
+            cost_range (bool, optional): Include price range estimates.
+                Defaults to :obj:`False`.
+            best_value_offer (bool, optional): requires **cost_range**.
+                Includes the offer with the highest percentage saving in cost
+                range information. Defaults to :obj:`False`.
+            max_saving_offer (bool, optional): requires **cost_range**.
+                Includes the offer with the highest absolute saving in cost
+                range information. Defaults to :obj:`False`.
+            min_cost_offer (bool, optional): requires **cost_range**.
+                Includes the offer with the lowest cost in cost range
+                information. Defaults to :obj:`False`.
+            top_price_offer (bool, optional): requires **cost_range**.
+                Includes the offer with the highest cost in cost range
+                information. Defaults to :obj:`False`.
+            no_singles_data (bool, optional): requires **cost_range**.
+                This returns another cost range object that excludes
+                availability with only one consecutive seat available.
+                Defaults to :obj:`False`.
+            cost_range_details (bool, optional): Cost range information for
+                each available price band.  Defaults to :obj:`False`.
+            cost_range_details (bool, optional): Cost range information for
+                each available price band.  Defaults to :obj:`False`.
+            **kwargs: Additional or override parameters to send with the
+                request.
         """
 
         if extra_info:
@@ -300,9 +319,6 @@ class Client(object):
             params.update(req_avail_details=True,
                           req_avail_details_with_perfs=True)
 
-        if meta_components:
-            params.update(req_meta_components=True)
-
         params.update(kwargs)
 
     def list_events(self, keywords=None, start_date=None, end_date=None,
@@ -312,7 +328,9 @@ class Client(object):
 
         """List events with the given parameters
 
-        Called with out arugments this method will return all live events
+        Wraps `/f13/events.v1`_
+
+        Called with out arguments this method will return all live events
         available to the user.
 
         Args:
@@ -355,6 +373,15 @@ class Client(object):
 
         Returns:
             list: a list of :class:`Events <pyticketswitch.event.Event>`
+
+        Raises:
+            InvalidGeoParameters: when latitude, longitude, or radius is
+                specified without the rest of the required geographic
+                parameters.
+            InvalidResponse: when the response is in an unexpected format
+
+        .. _`/f13/events.v1`: https://ingresso-group.github.io/slate/#events-list
+
         """
 
         params = {}
@@ -378,7 +405,7 @@ class Client(object):
                 rad=radius,
             ))
         elif any([latitude, longitude, radius]):
-            raise exceptions.InvalidGeoData(
+            raise exceptions.InvalidGeoParameters(
                 'Geo data must include latitude, longitude, and radius',
             )
 
@@ -411,8 +438,24 @@ class Client(object):
         return events
 
     def get_events(self, event_ids, **kwargs):
-        """
-        Get events with the given id's
+        """Get events with the given id's
+
+        Wraps `/f13/events_by_id.v1`_
+
+        Args:
+            event_ids (list): list of event IDs
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
+
+        Returns:
+            dict: :class:`Events <pyticketswitch.event.Event>` indexed by event
+            ID.
+
+        Raises:
+            InvalidResponse: when the response is in an unexpected format
+
+        .. _`/f13/events_by_id.v1`: https://ingresso-group.github.io/slate/#events-by-id
+
         """
         params = {}
 
@@ -436,11 +479,52 @@ class Client(object):
         return events
 
     def get_event(self, event_id, **kwargs):
+        """Get a specific event by id
+
+        Helper method to avoid having to do something like this lots of times::
+
+            >>> client.get_events(['6IF'])['6IF']
+            <Event 6IF:Matthew Bourne's Nutcracker TEST>
+
+        Instead this interface is much less stuttery::
+
+            >>> client.get_event('6IF')
+            <Event 6IF:Matthew Bourne's Nutcracker TEST>
+
+        Args:
+            event_id (str): ID of the event to retrieve
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
+
+        Returns:
+            :class:`Event <pyticketswitch.event.Event>`: the target event
+
+            will return :obj:`None` if the event does not exist.
+
+        """
+
         events = self.get_events([event_id], **kwargs)
-        if events:
-            return events[event_id]
+        return events.get(event_id)
 
     def get_months(self, event_id, **kwargs):
+        """Returns a summary of availability accross months.
+
+        Wraps `/f13/months.v1`_
+
+        Args:
+            event_id (str): ID of the event to retrieve
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
+
+        Returns:
+            list: :class:`Months <pyticketswitch.month.Month>` ordered chronologically
+
+        Raises:
+            InvalidResponse: when the response is in an unexpected format
+
+        .. _`/f13/months.v1`: https://ingresso-group.github.io/slate/#months
+
+        """
         params = {'event_id': event_id}
 
         self.add_optional_kwargs(params, **kwargs)
@@ -466,6 +550,8 @@ class Client(object):
                           page_length=0, page=0, **kwargs):
         """List performances for a specified event
 
+        Wraps `/f13/performances.v1`_
+
         Args:
             event_id (str): identifier for the event.
             start_date (datetime.datetime, optional):
@@ -480,9 +566,14 @@ class Client(object):
 
         Returns:
             list, :class:`PerformanceMeta <pyticketswitch.performance.PerformanceMeta>`:
-                a list of :class:`Performances <pyticketswitch.performance.Performance>`
-                for the given event and meta information about the performances.
+            A list of
+            :class:`Performances <pyticketswitch.performance.Performance>`
+            for the given event and meta information about the performances.
 
+        Raises:
+            InvalidResponse: when the response is in an unexpected format
+
+        .. _`/f13/performances.v1`: https://ingresso-group.github.io/slate/#performances-list
         """
         params = {'event_id': event_id}
 
@@ -517,8 +608,24 @@ class Client(object):
         return performances, meta
 
     def get_performances(self, performance_ids, **kwargs):
-        """
-        Get performances retrieves performances with the specific given id's
+        """Get performances with the given ID's
+
+        Wraps `/f13/performances_by_id.v1`_
+
+        Args:
+            performance_ids (list): list of performance IDs to fetch.
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
+
+        Returns:
+            dict: :class:`Performances <pyticketswitch.performance.Performance>`
+            indexed by performance ID.
+
+        Raises:
+            InvalidResponse: when the response is in an unexpected format.
+
+        .. _`/f13/performances_by_id.v1`: https://ingresso-group.github.io/slate/#performances-by-id
+
         """
 
         params = {
@@ -543,14 +650,72 @@ class Client(object):
         return performances
 
     def get_performance(self, performance_id, **kwargs):
+        """Get a specific performance by id
+
+        Helper method to avoid having to do something like this lots of times::
+
+            >>> client.get_performances(['6IF-B1H'])['6IF-B1H']
+            <Performance 6IF-B1H: 2017-06-02T19:30:00+01:00>
+
+        Instead this interface is much less stuttery::
+
+            >>> client.get_performance('6IF-B1H')
+            <Performance 6IF-B1H: 2017-06-02T19:30:00+01:00>
+
+        Args:
+            performance_id (str): ID of the performance to retrieve
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
+
+        Returns:
+            :class:`Performance <pyticketswitch.event.Event>`: the target Performance
+
+            will return :obj:`None` if the performance does not exist.
+
+        """
         performances = self.get_performances([performance_id], **kwargs)
         return performances.get(performance_id)
 
     def get_availability(self, performance_id, number_of_seats=None,
                          discounts=False, example_seats=False,
                          seat_blocks=False, user_commission=False, **kwargs):
-        """
-        Fetch available tickets and prices for a given performance
+        """Fetch available tickets and prices for a given performance
+
+        Wraps `/f13/availability.v1`_
+
+        Args:
+            performance_id (string): identifier of the target performance.
+            number_of_seats (int, optional): number of seats that we after,
+                Defaults to :obj:`None`.
+            discounts (bool, optional): request all discount options for all
+                price bands in response. Defaults to :obj:`False`.
+
+            example_seats (bool, optional): request example seats for seated
+                events. Defaults to :obj:`False`.
+            seat_blocks (bool, optional): request seating information if
+                available. Defaults to :obj:`False`.
+            user_commission (bool, optional): request user commission for each
+                price band/discount. Defaults to :obj:`False`
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
+
+        .. note:: setting **discounts** or the **user_commission** arguments to
+                  :obj:`True` will increase the response time of your request.
+
+        Returns:
+           list, :class:`AvailabilityMeta <pyticketswitch.availability.AvailabilityMeta>`:
+           a list of :class:`TicketTypes <pyticketswitch.ticket_type.TicketType>`
+           and and meta data about the response.
+
+        Raises:
+            BackendBrokenError: when the backend system is responding but
+                may be under heavy load
+            BackendDownError: when the backend system is not responding
+            BackendThrottleError: when your call got throttled and timed out
+                while waiting for a response.
+            InvalidResponse: when the response is in an unexpected format.
+
+        .. _`/f13/availability.v1`: https://ingresso-group.github.io/slate/#availability33
         """
         params = {'perf_id': performance_id}
 
@@ -605,7 +770,23 @@ class Client(object):
         return availability, meta
 
     def get_send_methods(self, performance_id):
+        """Fetch available delivery methods for a given performance
 
+        Wraps `/f13/send_methods.v1`_
+
+        Args:
+            performance_id (string): identifier of the target performance.
+
+        Returns:
+           list, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+           a list of :class:`SendMethods <pyticketswitch.send_method.SendMethod>`
+           and information about the currencies of the prices in the response
+
+        Raises:
+            InvalidResponse: when the response is in an unexpected format.
+
+        .. _`/f13/send_methods.v1`: https://ingresso-group.github.io/slate/#send-methods
+        """
         params = {'perf_id': performance_id}
         response = self.make_request('send_methods.v1', params)
 
@@ -626,6 +807,26 @@ class Client(object):
         return send_methods, meta
 
     def get_discounts(self, performance_id, ticket_type_code, price_band_code):
+        """Fetch available discounts for a ticket_type/price band combination
+
+        Wraps `/f13/discounts.v1`_
+
+        Args:
+            performance_id (string): identifier of the target performance.
+            ticket_type_code (string): code for the target ticket type.
+            price_band_code (string): code for the target price band.
+
+        Returns:
+           list, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+           a list of :class:`Discounts <pyticketswitch.discount.Discount>`
+           and information about the currencies of the prices in the response.
+
+        Raises:
+            InvalidResponse: when the response is in an unexpected format.
+
+        .. _`/f13/discounts.v1`: https://ingresso-group.github.io/slate/#discounts
+        """
+
         params = {
             'perf_id': performance_id,
             'ticket_type_code': ticket_type_code,
@@ -654,6 +855,36 @@ class Client(object):
                        seats=None, send_codes=None, ticket_type_code=None,
                        performance_id=None, price_band_code=None,
                        item_numbers_to_remove=None, **kwargs):
+        """Handle arguments common to the
+        :meth:`Client.get_trolley <pyticketswitch.client.Client.get_trolley>`
+        and the
+        :meth:`Client.make_reservation <pyticketswitch.client.Client.make_reservation>`
+        methods.
+
+        These two methods accept identical arguments and these resolve
+        to identical parameters.
+
+        Args:
+            token (string, optional): trolley token from a previous trolley
+                call.
+            number_of_seats (int, optional): number of seats to add to the
+                trolley.
+            discounts (list, optional): list containing discount codes for each
+                requested seat.
+            seats (list, optional): list of seat id's.
+            send_codes (dict, optional): send codes indexed on backend source
+                code.
+            ticket_type_code: (string, optional): code of ticket type to add to
+                the trolley.
+            price_band_code: (string, optional): code of price band to add to
+                the trolley
+            item_numbers_to_remove: (list, optional): list of item numbers to
+                remove from trolley.
+            **kwargs 
+
+        """
+
+
         params = {}
 
         if token:
