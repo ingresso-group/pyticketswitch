@@ -83,17 +83,17 @@ def when_search_by_daterange(context, start_days, end_days):
 
 
 @when(u'a search for events in country with code "{country_code}" is performed')
-@vcr.use_cassette('fixtures/cassettes/search-country.yaml')
+@vcr.use_cassette('fixtures/cassettes/search-country.yaml', record_mode='new_episodes')
 def when_search_for_country(context, country_code):
     assert country_code
     context.events = context.client.list_events(country_code=country_code)
 
 
-@when(u'a search for events in city with code "{city}" is performed')
-@vcr.use_cassette('fixtures/cassettes/search-city.yaml')
-def when_search_for_city(context, city):
-    assert city
-    context.events = context.client.list_events(city=city)
+@when(u'a search for events in city with code "{city_code}" is performed')
+@vcr.use_cassette('fixtures/cassettes/search-city.yaml', record_mode='new_epidsodes')
+def when_search_for_city(context, city_code):
+    assert city_code
+    context.events = context.client.list_events(city_code=city_code)
 
 
 @when(u'a search for events within "{radius}"km of "{latitude}" lat and "{longitude}" long is performed')
