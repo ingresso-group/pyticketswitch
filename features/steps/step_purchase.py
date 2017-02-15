@@ -1,0 +1,84 @@
+import vcr
+from behave import given, when, then
+from pyticketswitch.payment_details import CardDetails
+from pyticketswitch.customer import Customer
+
+@given(u'an event with a card debitor')
+def step_impl(context):
+    context.event_id = '6IF'
+
+@given(u'I have reserved tickets for my customer for this event')
+@vcr.use_cassette('fixtures/cassettes/purchase-reservation.yaml', record_mode='new_episodes')
+def step_impl(context):
+    performances, _ = context.client.list_performances(context.event_id)
+    assert performances
+
+    performance = performances[2]
+    ticket_types, _ = context.client.get_availability(performance.id)
+    assert ticket_types
+
+    ticket_type = ticket_types[0]
+    assert ticket_type.price_bands
+
+    price_band = ticket_type.price_bands[0]
+
+    reservation = context.client.make_reservation(
+        performance_id=performance.id,
+        number_of_seats=2,
+        ticket_type_code=ticket_type.code,
+        price_band_code=price_band.code,
+    )
+
+    assert reservation
+    assert reservation.trolley.transaction_uuid
+    context.transaction_uuid = reservation.trolley.transaction_uuid
+
+
+@given(u'my user has provided valid customer information')
+def step_impl(context):
+    context.customer = Customer(
+        'Fred',
+        'Flintstone',
+        ['301 Cobblestone Way'],
+        'us',
+        email='f.flintstone@ingresso.co.uk',
+        phone='079000000000',
+        post_code='70777',
+        town='Bedrock City',
+        county='LA',
+    )
+
+@given(u'my user has provided valid credit card details')
+def step_impl(context):
+    context.card_details = CardDetails(
+        '4111 1111 1111 1111',
+        ccv2='123',
+        expiry_month=9,
+        expiry_year=2017
+    )
+
+@when(u'I purchase the tickets')
+@vcr.use_cassette('fixtures/cassettes/purchase-purchase.yaml', record_mode='new_episodes')
+def step_impl(context):
+    client = context.client
+
+    status = client.make_purchase(
+        context.transaction_uuid,
+        context.customer,
+        payment_details=context.card_details,
+    )
+
+    assert status
+    context.status = status
+
+@then(u'the purchase is succesful')
+def step_impl(context):
+    assert context.status.status == 'purchased'
+
+@then(u'I get a ticketswitch booking reference')
+def step_impl(context):
+    assert context.status.trolley.transaction_id
+
+@then(u'I get a booking reference from the backend system')
+def step_impl(context):
+    assert context.status.trolley.bundles[0].orders[0].backend_purchase_reference

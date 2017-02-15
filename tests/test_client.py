@@ -7,6 +7,8 @@ from pyticketswitch import exceptions
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.reservation import Reservation
 from pyticketswitch.user import User
+from pyticketswitch.customer import Customer
+from pyticketswitch.payment_details import CardDetails
 from pyticketswitch.status import Status
 
 
@@ -1095,3 +1097,41 @@ class TestClient:
         }, method=POST)
 
         assert released is True
+
+    def test_make_purchase(self, client, monkeypatch):
+        response = {
+            'transaction_status': 'purchased',
+            'trolley_contents': {
+                'transaction_uuid': 'DEF456'
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        customer = Customer('fred', 'flintstone', ['301 cobblestone way'], 'us')
+        card_details = CardDetails('4111 1111 1111 1111')
+        status = client.make_purchase(
+            'abc123',
+            customer,
+            payment_details=card_details
+        )
+
+        expected_params = {
+            'transaction_uuid': 'abc123',
+            'first_name': 'fred',
+            'last_name': 'flintstone',
+            'address_line_one': '301 cobblestone way',
+            'country_code': 'us',
+            'card_number': '4111 1111 1111 1111',
+        }
+
+        mock_make_request.assert_called_with(
+            'purchase.v1',
+            expected_params,
+            method=POST
+        )
+
+        assert isinstance(status, Status)
+        assert status.trolley.transaction_uuid == 'DEF456'
+        assert status.status == 'purchased'

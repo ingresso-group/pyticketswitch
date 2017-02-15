@@ -1,12 +1,20 @@
 import json
-from behave import then
+import vcr
+from behave import when, then
 from hamcrest import assert_that, equal_to
 
 
-@then(u'the event has cost range and no singles cost range')
-def the_event_has_cost_range_and_no_singles_cost_range(context):
+@when(u'we attempt to fetch events with the ID\'s "{event_ids}" requesting cost ranges')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
+def when_get_events_with_cost_range(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+    context.events = context.client.get_events(event_ids, cost_range=True)
+
+
+@then(u'the event has cost range')
+def the_event_has_cost_range(context):
     assert context.event.cost_range
-    assert context.event.no_singles_cost_range
 
 
 @then(u'the cost range min seatprice is "{price}"')
@@ -96,8 +104,3 @@ def then_the_cost_range_has_offers(context):
     expected = json.loads(context.text)
     for key, offer in expected.items():
         pass
-
-
-@then(u'the no singles cost range has offers')
-def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the no singles cost range has offers')

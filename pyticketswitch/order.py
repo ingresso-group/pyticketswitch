@@ -67,7 +67,8 @@ class Order(JSONMixin, object):
                  ticket_type_code=None, ticket_type_description=None,
                  ticket_orders=None, number_of_seats=None,
                  total_seatprice=None, total_surcharge=None,
-                 seat_request_status=None, requested_seats=None):
+                 seat_request_status=None, requested_seats=None,
+                 backend_purchase_reference=None):
         self.item = item
         self.event = event
         self.performance = performance
@@ -80,6 +81,7 @@ class Order(JSONMixin, object):
         self.total_surcharge = total_surcharge
         self.seat_request_status = seat_request_status
         self.requested_seats = requested_seats
+        self.backend_purchase_reference = backend_purchase_reference
 
     @classmethod
     def from_api_data(cls, data):
@@ -90,6 +92,7 @@ class Order(JSONMixin, object):
             'ticket_type_code': data.get('ticket_type_code'),
             'ticket_type_description': data.get('ticket_type_desc'),
             'seat_request_status': data.get('seat_request_status'),
+            'backend_purchase_reference': data.get('backend_purchase_reference'),
         }
 
         raw_event = data.get('event')
@@ -125,6 +128,7 @@ class Order(JSONMixin, object):
                 for seat in raw_requested_seats
             ]
             kwargs.update(requested_seats=requested_seats)
+
 
         return cls(**kwargs)
 

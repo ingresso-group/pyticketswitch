@@ -91,13 +91,24 @@ Seats
 .. autoclass:: pyticketswitch.seat.SeatBlock
 .. autoclass:: pyticketswitch.seat.Seat
 
+Payment Details
+---------------
+
+.. _payment_details_api:
+
+.. autoclass:: pyticketswitch.payment_details.PaymentDetails
+   :inherited-members:
+.. autoclass:: pyticketswitch.payment_details.CardDetails
+   :inherited-members:
+.. autoclass:: pyticketswitch.payment_details.StripeDetails
+   :inherited-members:
+
+
 Meta Objects
 ------------
 .. autoclass:: pyticketswitch.availability.AvailabilityMeta
 .. autoclass:: pyticketswitch.currency.CurrencyMeta
 .. autoclass:: pyticketswitch.performance.PerformanceMeta
-
-
 
 Utilities
 ---------
@@ -135,3 +146,4 @@ Miscellaneous
 .. autoclass:: pyticketswitch.address.Address
 .. autoclass:: pyticketswitch.country.Country
 .. autoclass:: pyticketswitch.user.User
+.. autoclass:: pyticketswitch.customer.Customer

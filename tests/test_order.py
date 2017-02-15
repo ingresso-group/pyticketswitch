@@ -45,6 +45,7 @@ class TestOrder:
     def test_from_api_data(self):
 
         data = {
+            "backend_purchase_reference": 'GHI098',
             "event": {
                 "event_id": "6IF",
             },
@@ -81,6 +82,7 @@ class TestOrder:
         assert order.total_seatprice == 51
         assert order.total_surcharge == 5.40
         assert order.seat_request_status == 'not_requested'
+        assert order.backend_purchase_reference == 'GHI098'
 
         assert isinstance(order.event, Event)
         assert order.event.id == '6IF'
@@ -94,3 +96,5 @@ class TestOrder:
         assert len(order.requested_seats) == 2
         assert order.requested_seats[0].id == 'ABC123'
         assert order.requested_seats[1].id == 'DEF456'
+
+

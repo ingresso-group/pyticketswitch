@@ -149,7 +149,7 @@ class Client(object):
         logger.debug(u'url: %s; endpoint: %s; params: %s', self.url, endpoint, params)
 
         if method == POST:
-            response = requests.post(url, params=params)
+            response = requests.post(url, data=params)
         else:
             response = requests.get(url, params=params)
 
@@ -1000,9 +1000,9 @@ class Client(object):
 
         response = self.make_request('reserve.v1', params, method=POST)
 
-        trolley = Reservation.from_api_data(response)
+        reservation = Reservation.from_api_data(response)
 
-        return trolley
+        return reservation
 
     def release_reservation(self, transaction_uuid):
         params = {'transaction_uuid': transaction_uuid}
@@ -1023,6 +1023,40 @@ class Client(object):
             params.update(add_external_sale_page=True)
 
         response = self.make_request('status.v1', params)
+
+        status = Status.from_api_data(response)
+
+        return status
+
+    def make_purchase(self, transaction_uuid, customer, payment_details=None):
+        """Purchase tickets for an existing reservation.
+
+        Args:
+            transaction_uuid (str): the identifier of the existing 
+                reservation/transaction
+            customer (:class:`Customer <pyticketswitch.customer.Customer>`):
+                information about the customer.
+            payment_details (:class:`PaymentDetails <pyticketswitch.payment_details.PaymentDetails>`):
+                the customers payment details. Can be
+                :class:`CardDetails <pyticketswitch.payment_details.CardDetails>`.
+
+        Returns:
+            :class:`Status <pyticketswitch.status.Status>`: the current status
+            of the transaction.
+        """
+
+        params = {'transaction_uuid': transaction_uuid}
+
+        customer_params = customer.as_api_parameters()
+        payment_params = payment_details.as_api_parameters()
+
+        if customer_params:
+            params.update(customer_params)
+
+        if payment_params:
+            params.update(payment_params)
+
+        response = self.make_request('purchase.v1', params, method=POST)
 
         status = Status.from_api_data(response)
 

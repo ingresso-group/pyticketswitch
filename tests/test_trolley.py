@@ -46,6 +46,7 @@ class TestTrolley:
                     {'bundle_source_code': 'foo'},
                     {'bundle_source_code': 'bar'},
                 ],
+                'transaction_id': 'T1000-0000',
                 'transaction_uuid': 'DEF456',
             },
         }
@@ -53,6 +54,7 @@ class TestTrolley:
         trolley = Trolley.from_api_data(data)
 
         assert trolley.transaction_uuid == 'DEF456'
+        assert trolley.transaction_id == 'T1000-0000'
 
         assert len(trolley.bundles) == 2
         assert trolley.bundles[0].source_code == 'foo'
