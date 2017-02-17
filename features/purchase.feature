@@ -7,7 +7,6 @@ Feature: purchase tickets
     Background: I am a developer
         Given an API client with valid credentials
 
-    @wip
     Scenario: card debitor
         Given an event with a card debitor
         And I have reserved tickets for my customer for this event

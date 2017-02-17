@@ -66,7 +66,7 @@ class Client(object):
         self.kwargs = kwargs
 
     def get_user_path(self):
-        """Creates the user path for use in the url from client attributes
+        """Create the user path for use in the url from client attributes
 
         Returns:
             str: the user path
@@ -1005,6 +1005,16 @@ class Client(object):
         return reservation
 
     def release_reservation(self, transaction_uuid):
+        """Release an existing reservation.
+
+        Args:
+            transaction_uuid (str): the identifier of the reservaiton.
+
+        Returns:
+            bool: :obj:`True` if the reservation was successfully released 
+            otherwise :obj:`False`.
+        """
+
         params = {'transaction_uuid': transaction_uuid}
         response = self.make_request('release.v1', params, method=POST)
 
@@ -1012,6 +1022,21 @@ class Client(object):
 
     def get_status(self, transaction_uuid, customer=False,
                    external_sale_page=False):
+        """Get the status of reservation, purchase or transaction.
+
+        Args:
+            transaction_uuid (str): identifier for the transaction.
+            customer (bool, optional): include customer information if 
+                available. Defaults to :obj:`False`.
+            external_sale_page (bool, optional): include the saved html of the
+                sale/confirmation page if you asked us to save it for you.
+                Defaults to :obj:`None`
+
+        Returns:
+            :class:`Status <pyticketswitch.status.Status>`: the current status
+            of the transaction.
+
+        """
         params = {
             'transaction_uuid': transaction_uuid,
         }

@@ -6,6 +6,7 @@ from pyticketswitch.misc import MONTH_NUMBERS
 
 
 class AvailabilityMeta(JSONMixin, object):
+    """Meta data about an availability response"""
 
     def __init__(self, can_leave_singles=True,
                  contiguous_seat_selection_only=True,
@@ -17,6 +18,7 @@ class AvailabilityMeta(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Takes API data and turns it into an AvailabilityMeta object"""
         quantity_options = data.get('quantity_options', {})
         valid_quantity_bitmask = quantity_options.get('valid_quantity_bitmask')
 
@@ -40,6 +42,7 @@ class AvailabilityMeta(JSONMixin, object):
 
 
 class AvailabilityDetails(JSONMixin, object):
+    """Details about the available tickets of a performance."""
 
     def __init__(self, ticket_type=None, price_band=None,
                  ticket_type_description=None, price_band_description=None,

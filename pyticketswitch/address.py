@@ -2,6 +2,7 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Address(JSONMixin, object):
+    """A postal address."""
 
     def __init__(self, lines=None, country_code=None, county=None,
                  email=None, home_phone=None, postcode=None, town=None,
@@ -18,6 +19,7 @@ class Address(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Takes API and initialises a new Address class."""
         kwargs = {
             'country_code': data.get('country_code'),
             'county': data.get('county'),

@@ -2,6 +2,7 @@ import vcr
 from behave import given, when, then
 from pyticketswitch.payment_details import CardDetails
 from pyticketswitch.customer import Customer
+from pyticketswitch.exceptions import PyticketswitchError
 
 @given(u'an event with a card debitor')
 def step_impl(context):
@@ -48,6 +49,15 @@ def step_impl(context):
         county='LA',
     )
 
+@given(u'my user has provided invalid customer information')
+def step_impl(context):
+    context.customer = Customer(
+        'Fred',
+        'Flinstone',
+        ['301 Cobblestone Way'],
+        'foobar',
+    )
+
 @given(u'my user has provided valid credit card details')
 def step_impl(context):
     context.card_details = CardDetails(
@@ -62,18 +72,36 @@ def step_impl(context):
 def step_impl(context):
     client = context.client
 
-    status = client.make_purchase(
-        context.transaction_uuid,
-        context.customer,
-        payment_details=context.card_details,
-    )
+    try:
+        status = client.make_purchase(
+            context.transaction_uuid,
+            context.customer,
+            payment_details=context.card_details,
+        )
+        assert status
+        context.exception = None
+        context.status = status
+    except PyticketswitchError as excp:
+        context.exception = excp
+        context.status = None
 
-    assert status
-    context.status = status
+
 
 @then(u'the purchase is succesful')
 def step_impl(context):
+    assert context.exception is None
     assert context.status.status == 'purchased'
+
+
+@then(u'the purchase fails')
+def step_impl(context):
+    assert context.exception
+
+
+@then(u'I get an error indicating that the customer details are incorrect')
+def step_impl(context):
+    assert context.exception.args[0] == "Country code 'foobar' in customer data is invalid"
+
 
 @then(u'I get a ticketswitch booking reference')
 def step_impl(context):
