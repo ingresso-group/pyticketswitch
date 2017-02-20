@@ -129,7 +129,6 @@ class Order(JSONMixin, object):
             ]
             kwargs.update(requested_seats=requested_seats)
 
-
         return cls(**kwargs)
 
     def get_seats(self):

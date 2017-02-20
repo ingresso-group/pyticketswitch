@@ -1,5 +1,6 @@
 from pyticketswitch.mixins import JSONMixin
 
+
 class Customer (JSONMixin, object):
 
     """Describes a cutomer to ticketswitch.
@@ -14,56 +15,56 @@ class Customer (JSONMixin, object):
         title (str, optional): customer title. For example "Mr.", "Mrs.",
             "Dr.", etc. Defaults to :obj:`None`.
         initials (str, optional): customer initials. Defaults to :obj:`None`.
-        suffix (str, optional): customer name suffix. For example "Jr." or 
+        suffix (str, optional): customer name suffix. For example "Jr." or
             "CPA". Defaults to :obj:`None`.
         email (str, optional): email address for contacting the customer.
-            Required when 
+            Required when
             :attr:`Reservation.needs_email_address <pyticketswitch.reservation.Reservation.needs_email_address>`
             is :obj:`True`. Defaults to :obj:`None`.
-        post_code (str, optional): post or ZIP code for the customers address. 
+        post_code (str, optional): post or ZIP code for the customers address.
             Defaults to :obj:`None`.
-        town (str, optional): town for the customers address. Defaults to 
+        town (str, optional): town for the customers address. Defaults to
             :obj:`None`.
         county (str, optional): the county or region of the customers address.
             Defaults to :obj:`None`.
-        country (str, optional): the country as a string for the customers 
-            address. Not required or used when sending cusomer data to 
+        country (str, optional): the country as a string for the customers
+            address. Not required or used when sending cusomer data to
             ticketswitch. Defaults to :obj:`None`.
         phone (str, optional): a contact phone number for the user. Not required
-            when **home_phone** or **work_phone** is specified. Defaults to 
+            when **home_phone** or **work_phone** is specified. Defaults to
             :obj:`None`.
         home_phone (str, optional): the customers home phone number. Defaults
             to :obj:`None`.
         work_phone (str, optional): the customers work phone number. Defaults
             to :obj:`None`.
-        agent_reference (str, optional): this can be anything you like. it's a 
+        agent_reference (str, optional): this can be anything you like. it's a
             field that will be returned to you wherever this customer is
             referenced.  it can be used to store a user identifier specific to
             your system.  Defaults to :obj:`None`.
         supplier_can_use_data (bool, optional): indicates that the supplier of
-            the tickets is allowed to access and use this data. Defaults to 
+            the tickets is allowed to access and use this data. Defaults to
             :obj:`False`.
         user_can_use_data (bool, optional): indicates that the user (you) can
             access and use this data. Defaults to :obj:`False`.
         world_can_use_data (bool, optional): indicates that pretty much anyone
             is allowed to access and use this data. Defaults to :obj:`False`
-        first_name_latin (str, optional): **first name** in latin characters. 
+        first_name_latin (str, optional): **first name** in latin characters.
             Defaults to :obj:`None`.
-        last_name_latin (str, optional): **last name** in latin characters. 
+        last_name_latin (str, optional): **last name** in latin characters.
             Defaults to :obj:`None`
-        address_lines_latin (list): list of :obj:`str` in latin characters. 
+        address_lines_latin (list): list of :obj:`str` in latin characters.
             Defaults to :obj:`None`
         title_latin (str, optional): **title** in latin characters
             Defaults to :obj:`None`.
-        initials_latin (str, optional): **initials** in latin characters. 
+        initials_latin (str, optional): **initials** in latin characters.
             Defaults to :obj:`None`.
-        suffix_latin (str, optional): **suffix** in latin characters. Defaults 
+        suffix_latin (str, optional): **suffix** in latin characters. Defaults
             to :obj:`None`.
-        post_code_latin (str, optional): **post_code** in latin characters. 
+        post_code_latin (str, optional): **post_code** in latin characters.
             Defaults to :obj:`None`.
         town_latin (str, optional): **town** in latin characters. Defaults
             to :obj:`None`.
-        county_latin (str, optional): **county** in latin characters. 
+        county_latin (str, optional): **county** in latin characters.
             Defaults to :obj:`None`.
         country_latin (str, optional): **country** in latin characters.
             Defaults to :obj:`None`.
@@ -81,7 +82,7 @@ class Customer (JSONMixin, object):
         initials (str): customer initials.
         suffix (str): customer name suffix.
         email (str): email address for contacting the customer.
-        post_code (str): post or ZIP code for the customers address. 
+        post_code (str): post or ZIP code for the customers address.
         town (str): town for the customers address.
         county (str): the county or region of the customers address.
         country (str): the country as a string for the customers address.
@@ -89,22 +90,22 @@ class Customer (JSONMixin, object):
         home_phone (str): the customers home phone number.
         work_phone (str): the customers work phone number.
         agent_reference (str): agent reference for the customer.
-        supplier_can_use_data (bool): indicates that the supplier of the 
+        supplier_can_use_data (bool): indicates that the supplier of the
             tickets is allowed to access and use this data.
-        user_can_use_data (bool): indicates that the user (you) can access and 
+        user_can_use_data (bool): indicates that the user (you) can access and
             use this data.
         world_can_use_data (bool): indicates that pretty much anyone is allowed
             to access and use this data.
-        first_name_latin (str): **first name** in latin characters. 
-        last_name_latin (str): **last name** in latin characters. 
-        address_lines_latin (list): list of :obj:`str` address lines in latin 
-            characters. 
+        first_name_latin (str): **first name** in latin characters.
+        last_name_latin (str): **last name** in latin characters.
+        address_lines_latin (list): list of :obj:`str` address lines in latin
+            characters.
         title_latin (str): **title** in latin characters
-        initials_latin (str): **initials** in latin characters. 
+        initials_latin (str): **initials** in latin characters.
         suffix_latin (str): **suffix** in latin characters.
-        post_code_latin (str): **post_code** in latin characters. 
+        post_code_latin (str): **post_code** in latin characters.
         town_latin (str): **town** in latin characters.
-        county_latin (str): **county** in latin characters. 
+        county_latin (str): **county** in latin characters.
         country_latin (str): **country** in latin characters.
         kwargs (dict): arbitrary keyword arguments to store along with this
             customer object.
@@ -139,7 +140,6 @@ class Customer (JSONMixin, object):
         self.suffix = suffix
         self.suffix_latin = suffix_latin
 
-
         self.country_code = country_code
         self.post_code = post_code
         self.post_code_latin = post_code_latin
@@ -162,7 +162,6 @@ class Customer (JSONMixin, object):
         self.world_can_use_data = world_can_use_data
         self.kwargs = kwargs
 
-
     @classmethod
     def from_api_data(cls, data):
         """Creates a new Customer object from API data from ticketswitch.
@@ -172,12 +171,11 @@ class Customer (JSONMixin, object):
                 that concerns a customer.
 
         Returns:
-            :class:`Customer <pyticketswitch.customer.Customer>`: a new 
-            :class:`Customer <pyticketswitch.customer.Customer>` object 
+            :class:`Customer <pyticketswitch.customer.Customer>`: a new
+            :class:`Customer <pyticketswitch.customer.Customer>` object
             populated with the data from the api.
 
         """
-
 
         kwargs = {
             'first_name': data.get('first_name'),

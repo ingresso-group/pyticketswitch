@@ -881,10 +881,10 @@ class Client(object):
                 the trolley
             item_numbers_to_remove: (list, optional): list of item numbers to
                 remove from trolley.
-            **kwargs 
+            **kwargs: arbitary additional raw keyword arguments to add the
+                parameters.
 
         """
-
 
         params = {}
 
@@ -1012,7 +1012,7 @@ class Client(object):
             transaction_uuid (str): the identifier of the reservaiton.
 
         Returns:
-            bool: :obj:`True` if the reservation was successfully released 
+            bool: :obj:`True` if the reservation was successfully released
             otherwise :obj:`False`.
         """
 
@@ -1027,7 +1027,7 @@ class Client(object):
 
         Args:
             transaction_uuid (str): identifier for the transaction.
-            customer (bool, optional): include customer information if 
+            customer (bool, optional): include customer information if
                 available. Defaults to :obj:`False`.
             external_sale_page (bool, optional): include the saved html of the
                 sale/confirmation page if you asked us to save it for you.
@@ -1058,13 +1058,13 @@ class Client(object):
         """Purchase tickets for an existing reservation.
 
         Args:
-            transaction_uuid (str): the identifier of the existing 
+            transaction_uuid (str): the identifier of the existing
                 reservation/transaction
             customer (:class:`Customer <pyticketswitch.customer.Customer>`):
                 information about the customer.
             payment_method (:class:`PaymentDetails <pyticketswitch.payment_methods.PaymentMethod>`):
                 the customers payment details. Can be
-                :class:`CardDetails <pyticketswitch.payment_details.CardDetails>` 
+                :class:`CardDetails <pyticketswitch.payment_details.CardDetails>`
                 or
                 :class:`RedirectionDetails <pyticketswitch.payment_details.RedirectionDetails>`.
 
