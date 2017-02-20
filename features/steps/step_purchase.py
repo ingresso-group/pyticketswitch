@@ -1,12 +1,22 @@
 import vcr
 from behave import given, when, then
-from pyticketswitch.payment_details import CardDetails
+from pyticketswitch import Client
+from pyticketswitch.payment_methods import CardDetails, RedirectionDetails
 from pyticketswitch.customer import Customer
 from pyticketswitch.exceptions import PyticketswitchError
 
-@given(u'an event with a card debitor')
+@given(u'my account is set up to use a card debitor')
+def step_impl(context):
+    context.client = Client('demo', 'demopass')
+
+@given(u'my account is set up to use a redirect debitor')
+def step_impl(context):
+    context.client = Client('demo-redirect', 'demopass')
+
+@given(u'an event with availability')
 def step_impl(context):
     context.event_id = '6IF'
+
 
 @given(u'I have reserved tickets for my customer for this event')
 @vcr.use_cassette('fixtures/cassettes/purchase-reservation.yaml', record_mode='new_episodes')
@@ -58,14 +68,19 @@ def step_impl(context):
         'foobar',
     )
 
+
 @given(u'my user has provided valid credit card details')
 def step_impl(context):
-    context.card_details = CardDetails(
+    context.payment_method = CardDetails(
         '4111 1111 1111 1111',
         ccv2='123',
         expiry_month=9,
         expiry_year=2017
     )
+
+@given(u'my user has provided invalid credit card details')
+def step_impl(context):
+    context.payment_method = CardDetails('LOLWOTISCREDITCARD!')
 
 @when(u'I purchase the tickets')
 @vcr.use_cassette('fixtures/cassettes/purchase-purchase.yaml', record_mode='new_episodes')
@@ -76,7 +91,7 @@ def step_impl(context):
         status = client.make_purchase(
             context.transaction_uuid,
             context.customer,
-            payment_details=context.card_details,
+            payment_method=context.payment_method,
         )
         assert status
         context.exception = None
@@ -99,6 +114,11 @@ def step_impl(context):
 
 
 @then(u'I get an error indicating that the customer details are incorrect')
+def step_impl(context):
+    assert context.exception.args[0] == "Country code 'foobar' in customer data is invalid"
+
+
+@then(u'I get an error indicating that the card details are incorrect')
 def step_impl(context):
     assert context.exception.args[0] == "Country code 'foobar' in customer data is invalid"
 

@@ -8,8 +8,9 @@ from pyticketswitch.trolley import Trolley
 from pyticketswitch.reservation import Reservation
 from pyticketswitch.user import User
 from pyticketswitch.customer import Customer
-from pyticketswitch.payment_details import CardDetails
+from pyticketswitch.payment_methods import CardDetails, RedirectionDetails
 from pyticketswitch.status import Status
+from pyticketswitch.callout import Callout
 
 
 @pytest.fixture
@@ -1098,7 +1099,7 @@ class TestClient:
 
         assert released is True
 
-    def test_make_purchase(self, client, monkeypatch):
+    def test_make_purchase_card_details(self, client, monkeypatch):
         response = {
             'transaction_status': 'purchased',
             'trolley_contents': {
@@ -1111,10 +1112,10 @@ class TestClient:
 
         customer = Customer('fred', 'flintstone', ['301 cobblestone way'], 'us')
         card_details = CardDetails('4111 1111 1111 1111')
-        status = client.make_purchase(
+        status, callout = client.make_purchase(
             'abc123',
             customer,
-            payment_details=card_details
+            payment_method=card_details
         )
 
         expected_params = {
@@ -1132,6 +1133,63 @@ class TestClient:
             method=POST
         )
 
+        assert callout is None
         assert isinstance(status, Status)
         assert status.trolley.transaction_uuid == 'DEF456'
         assert status.status == 'purchased'
+
+    def test_make_purchase_redirection(self, client, monkeypatch):
+        response = {
+            "callout": {
+                "debitor_integration_data": {
+                    "debit_amount": 76.5,
+                    "debit_base_amount": 7650,
+                    "debit_currency": "gbp",
+                    "debitor_specific_data": {
+                        "is_dummy_3d_secure": False
+                    },
+                    "debitor_type": "dummy"
+                },
+                "redirect_html_page_data": "some horribly insecure stuff here",
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        customer = Customer('fred', 'flintstone', ['301 cobblestone way'], 'us')
+
+        redirection_details = RedirectionDetails(
+            token='abc123',
+            url='https://myticketingco.biz/confirmation/abc123',
+            user_agent='Mozilla/5.0',
+            accept='text/html,text/plain,application/json',
+        )
+
+        status, callout = client.make_purchase(
+            'abc123',
+            customer,
+            payment_method=redirection_details
+        )
+
+        expected_params = {
+            'transaction_uuid': 'abc123',
+            'first_name': 'fred',
+            'last_name': 'flintstone',
+            'address_line_one': '301 cobblestone way',
+            'country_code': 'us',
+            'return_token': 'abc123',
+            'return_url': 'https://myticketingco.biz/confirmation/abc123',
+            'client_http_user_agent': 'Mozilla/5.0',
+            'client_http_accept': 'text/html,text/plain,application/json',
+        }
+
+        mock_make_request.assert_called_with(
+            'purchase.v1',
+            expected_params,
+            method=POST
+        )
+
+        assert status is None
+        assert isinstance(callout, Callout)
+        assert callout.html == 'some horribly insecure stuff here'

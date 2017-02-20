@@ -14,6 +14,7 @@ from pyticketswitch.reservation import Reservation
 from pyticketswitch.status import Status
 from pyticketswitch.user import User
 from pyticketswitch.currency import CurrencyMeta
+from pyticketswitch.callout import Callout
 
 
 logger = logging.getLogger(__name__)
@@ -1053,7 +1054,7 @@ class Client(object):
 
         return status
 
-    def make_purchase(self, transaction_uuid, customer, payment_details=None):
+    def make_purchase(self, transaction_uuid, customer, payment_method=None):
         """Purchase tickets for an existing reservation.
 
         Args:
@@ -1061,9 +1062,11 @@ class Client(object):
                 reservation/transaction
             customer (:class:`Customer <pyticketswitch.customer.Customer>`):
                 information about the customer.
-            payment_details (:class:`PaymentDetails <pyticketswitch.payment_details.PaymentDetails>`):
+            payment_method (:class:`PaymentDetails <pyticketswitch.payment_methods.PaymentMethod>`):
                 the customers payment details. Can be
-                :class:`CardDetails <pyticketswitch.payment_details.CardDetails>`.
+                :class:`CardDetails <pyticketswitch.payment_details.CardDetails>` 
+                or
+                :class:`RedirectionDetails <pyticketswitch.payment_details.RedirectionDetails>`.
 
         Returns:
             :class:`Status <pyticketswitch.status.Status>`: the current status
@@ -1073,16 +1076,22 @@ class Client(object):
         params = {'transaction_uuid': transaction_uuid}
 
         customer_params = customer.as_api_parameters()
-        payment_params = payment_details.as_api_parameters()
 
         if customer_params:
             params.update(customer_params)
 
-        if payment_params:
-            params.update(payment_params)
+        if payment_method:
+            params.update(payment_method.as_api_parameters())
 
         response = self.make_request('purchase.v1', params, method=POST)
 
-        status = Status.from_api_data(response)
+        callout_data = response.get('callout')
 
-        return status
+        if callout_data:
+            status = None
+            callout = Callout.from_api_data(callout_data)
+        else:
+            callout = None
+            status = Status.from_api_data(response)
+
+        return status, callout
