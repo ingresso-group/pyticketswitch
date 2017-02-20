@@ -1,7 +1,9 @@
+import six
 from abc import ABCMeta
 
 
-class PaymentMethod(metaclass=ABCMeta):
+@six.add_metaclass(ABCMeta)
+class PaymentMethod(object):
     """Abstract base class for payment methods"""
 
     def as_api_parameters(self):
