@@ -1,5 +1,4 @@
 import vcr
-import six
 from hashlib import md5
 from behave import given, when, then
 from hamcrest import assert_that, equal_to, none, not_none
@@ -50,8 +49,7 @@ def event_with_availability(context):
 def reserve_tickets_for_this_event(context):
 
     scenario = context.scenario.name
-    scenario = six.binary_type(scenario, 'utf-8')
-    key = md5(scenario).hexdigest()
+    key = md5(scenario.encode('utf-8')).hexdigest()
 
     reservation = context.client.make_reservation(
         performance_id=context.performance.id,
