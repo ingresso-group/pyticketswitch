@@ -8,7 +8,7 @@ init:
 	./venv/bin/pip install -e .
 
 clean:
-	rm -rf ./venv cassettes *.egg-info .tox .cache .coverage
+	rm -rf ./venv fixtures/cassettes *.egg-info .tox .cache .coverage
 	find . -name "*.pyc" -exec rm -rf {} \;
 
 test:

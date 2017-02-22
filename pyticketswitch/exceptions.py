@@ -33,13 +33,6 @@ class IntegrityError(PyticketswitchError):
         self.data = data
 
 
-class EndPointMissingError(PyticketswitchError):
-
-    def __init__(self, message, method, *args):
-        super(EndPointMissingError, self).__init__(message, *args)
-        self.method = method
-
-
 class BackendError(PyticketswitchError):
     pass
 

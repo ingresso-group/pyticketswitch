@@ -27,19 +27,6 @@ class CardDetails(object):
     Implements
     :class:`PaymentMethod <pyticketswitch.payment_methods.PaymentMethod>`.
 
-    Args:
-        card_number (str): the long credit card number
-        expiry_month (int, optional): the month the card expires in. Defaults
-            to :obj:`None`.
-        expiry_year (int, optional): the year the card expires in. :obj:`None`
-        start_month (int, optional): the month the card expires in. Defaults to
-            :obj:`None`.
-        start_year (int, optional): the year the card expires in. :obj:`None`
-        ccv2 (str, optional): credit card security code. Defaults
-            to :obj:`None`.
-        issue_number (str, optional): issue number of the card. Defaults
-            to :obj:`None`.
-
     Attributes:
         card_number (str): the long credit card number.
         expiry_month (int): the month the card expires in. Defaults to
@@ -109,23 +96,11 @@ class RedirectionDetails(object):
     Implements
     :class:`PaymentMethod <pyticketswitch.payment_methods.PaymentMethod>`.
 
-    Args:
-        token (str): a unique token that can be used by you to identify when
-            this callout returns to your website when the customer returns from
-            the payment provider.
-        url (str): the URL that the payment provider should redirect back to on
-            succes/failure of the customers payment. The URL should be unique.
-            The easy way to do this is to include the token in the URL address.
-            It's important that this doesn't include any query string
-            parameters.
-        user_agent (str): the customer's browser's User-Agent header.
-        accept (str): the customer's browser's Accept header.
-
     Attributes:
         token (str): a unique token that can be used by you to identify when
             this callout returns to your website.
         url (str): the URL that the payment provider should redirect back to on
-            succes/failure of the customers payment.
+            success/failure of the customers payment.
         user_agent (str): the customer's browser's User-Agent header.
         accept (str): the customer's browser's Accept header.
 

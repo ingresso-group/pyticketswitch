@@ -13,3 +13,8 @@ class TestCountry:
 
         assert country.code == 'uk'
         assert country.description == 'United Kingdom'
+
+    def test_repr(self):
+
+        country = Country('uk', description='United Kingdom')
+        assert repr(country) == '<Country uk:United Kingdom>'

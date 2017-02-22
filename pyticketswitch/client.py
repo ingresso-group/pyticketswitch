@@ -30,7 +30,7 @@ class Client(object):
     Client contains auth details and provides helper methods for calling
     the f13 endpoints.
 
-    Args:
+    Attributes:
         user (str): user id used to connect to the api.
         password (str): Password for the user used to connect to the api.
         url (:obj:`str`, optional): Root url for the API.
@@ -47,14 +47,6 @@ class Client(object):
         **kwargs: Additional arbitary key word arguments to keep with the
             object.
 
-    Attributes:
-        user (str): user id used to connect to the api.
-        password (str): Password for the user used to connect to the api.
-        url (str): Root url for the API.
-        sub_user (str): the sub user is used to idicate a
-        language (str): prefered IETF language tag
-        kwargs: Additional arbitary key word arguments.
-
     """
 
     def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
@@ -65,32 +57,6 @@ class Client(object):
         self.sub_user = sub_user
         self.language = language
         self.kwargs = kwargs
-
-    def get_user_path(self):
-        """Create the user path for use in the url from client attributes
-
-        Returns:
-            str: the user path
-
-            Takes the format of "/user/subuser/language"
-
-        """
-        if not self.user:
-            raise exceptions.AuthenticationError("no user provided")
-
-        user_path = '/{}'.format(self.user)
-
-        if self.sub_user and not self.language:
-            user_path = '/{}/{}'.format(self.user, self.sub_user)
-
-        if self.sub_user and self.language:
-            user_path = '/{}/{}/{}'.format(
-                self.user, self.sub_user, self.language)
-
-        if self.language and not self.sub_user:
-            user_path = '/{}/-/{}'.format(self.user, self.language)
-
-        return user_path
 
     def get_url(self, end_point):
         """Get the url for a given endpoint
@@ -486,8 +452,9 @@ class Client(object):
 
         events_by_id = response.get('events_by_id', {})
         events = {
-            event_id: Event.from_events_by_id_data(raw_event)
+            event_id: Event.from_api_data(raw_event.get('event'))
             for event_id, raw_event in events_by_id.items()
+            if raw_event.get('event')
         }
         return events
 
@@ -597,7 +564,7 @@ class Client(object):
             params.update(page_len=page_length)
 
         if start_date or end_date:
-            params.update(s_dates=utils.date_range_str(start_date, end_date))
+            params.update(date_range=utils.date_range_str(start_date, end_date))
 
         self.add_optional_kwargs(params, **kwargs)
 
@@ -1077,9 +1044,9 @@ class Client(object):
                 information about the customer.
             payment_method (:class:`PaymentDetails <pyticketswitch.payment_methods.PaymentMethod>`):
                 the customers payment details. Can be
-                :class:`CardDetails <pyticketswitch.payment_details.CardDetails>`
+                :class:`CardDetails <pyticketswitch.payment_methods.CardDetails>`
                 or
-                :class:`RedirectionDetails <pyticketswitch.payment_details.RedirectionDetails>`.
+                :class:`RedirectionDetails <pyticketswitch.payment_methods.RedirectionDetails>`.
 
         Returns:
             :class:`Status <pyticketswitch.status.Status>`,

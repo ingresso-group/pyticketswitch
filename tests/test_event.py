@@ -189,21 +189,6 @@ def data():
                     'price_band_desc': '',
                     'price_band_code': 'B',
                     'avail_detail': [{
-                        'quantity_options': {
-                            'valid_quantity_flags': [
-                                False,
-                                True,
-                                True,
-                                True,
-                                True,
-                                True,
-                                True,
-                                True,
-                                True,
-                                True,
-                                True
-                            ]
-                        },
                         'available_weekdays': {
                             'wed': True,
                             'sun': True,
@@ -240,24 +225,13 @@ def data():
                             'valid_quantity_mask': 2046
                         },
                         'day_mask': 21,
-                        'available_dates': {
-                            'last_yyyymmdd': '20161002',
-                            'first_yyyymmdd': '20160906'
-                        },
-                        'avail_currency': {
-                            'currency_factor': 100,
-                            'currency_places': 2,
-                            'currency_post_symbol': '',
-                            'currency_number': 826,
-                            'currency_pre_symbol': '\xa3',
-                            'currency_code': 'gbp'
-                        },
                         'seatprice': 57.5,
                         'surcharge': 11.25
                     }]
                 }]
             }]
-        }
+        },
+        'valid_quantities': [1, 2, 3, 4],
     }
 
 
@@ -312,6 +286,8 @@ class TestEvent:
         assert len(event.fields) == 2
         assert event.raw == data
 
+        assert event.valid_quantities == [1, 2, 3, 4]
+
     def test_from_api_data_with_no_event_id(self):
         data = {
             'foo': 'bar',
@@ -329,3 +305,7 @@ class TestEvent:
         event = Event.from_api_data(data)
 
         assert event.has_performances is False
+
+    def test_repr(self):
+        event = Event('abc123', description='Alpha Numeric')
+        assert repr(event) == '<Event abc123:Alpha Numeric>'

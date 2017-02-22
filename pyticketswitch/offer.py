@@ -16,6 +16,7 @@ class Offer(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+
         kwargs = {
             'absolute_saving': data.get('absolute_saving'),
             'percentage_saving': data.get('percentage_saving'),

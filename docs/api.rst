@@ -23,15 +23,25 @@ Core
 The follow are the core business objects.
 
 .. autoclass:: pyticketswitch.event.Event
+   :inherited-members:
 .. autoclass:: pyticketswitch.month.Month
+   :inherited-members:
 .. autoclass:: pyticketswitch.performance.Performance
+   :inherited-members:
 .. autoclass:: pyticketswitch.ticket_type.TicketType
+   :inherited-members:
 .. autoclass:: pyticketswitch.price_band.PriceBand
+   :inherited-members:
 .. autoclass:: pyticketswitch.discount.Discount
+   :inherited-members:
 .. autoclass:: pyticketswitch.send_method.SendMethod
+   :inherited-members:
 .. autoclass:: pyticketswitch.trolley.Trolley
+   :inherited-members:
 .. autoclass:: pyticketswitch.reservation.Reservation
+   :inherited-members:
 .. autoclass:: pyticketswitch.status.Status
+   :inherited-members:
 
 Bundles and Orders
 ------------------
@@ -43,8 +53,11 @@ which contain TicketOrder objects. These objects describe the products being
 purchased and the current state of those purchases within the purchase process.
 
 .. autoclass:: pyticketswitch.bundle.Bundle
+   :inherited-members:
 .. autoclass:: pyticketswitch.order.Order
+   :inherited-members:
 .. autoclass:: pyticketswitch.order.TicketOrder
+   :inherited-members:
 
 
 Pricing
@@ -66,9 +79,13 @@ These results will be generated from cached data and should not be considered
 100% accurate.
 
 .. autoclass:: pyticketswitch.currency.Currency
+   :inherited-members:
 .. autoclass:: pyticketswitch.cost_range.CostRange
+   :inherited-members:
 .. autoclass:: pyticketswitch.cost_range.CostRangeDetails
+   :inherited-members:
 .. autoclass:: pyticketswitch.offer.Offer
+   :inherited-members:
 
 Event Details
 -------------
@@ -79,9 +96,13 @@ These are additional details that are directly related to
 :class:`Event <pyticketswitch.event.Event>`
 
 .. autoclass:: pyticketswitch.content.Content
+   :inherited-members:
 .. autoclass:: pyticketswitch.field.Field
+   :inherited-members:
 .. autoclass:: pyticketswitch.media.Media
+   :inherited-members:
 .. autoclass:: pyticketswitch.review.Review
+   :inherited-members:
 
 Seats
 -----
@@ -89,26 +110,31 @@ Seats
 .. _seats_api:
 
 .. autoclass:: pyticketswitch.seat.SeatBlock
+   :inherited-members:
 .. autoclass:: pyticketswitch.seat.Seat
+   :inherited-members:
 
 Payment Details
 ---------------
 
 .. _payment_details_api:
 
-.. autoclass:: pyticketswitch.payment_details.PaymentDetails
+.. autoclass:: pyticketswitch.payment_methods.PaymentMethod
    :inherited-members:
-.. autoclass:: pyticketswitch.payment_details.CardDetails
+.. autoclass:: pyticketswitch.payment_methods.CardDetails
    :inherited-members:
-.. autoclass:: pyticketswitch.payment_details.StripeDetails
+.. autoclass:: pyticketswitch.payment_methods.RedirectionDetails
    :inherited-members:
 
 
 Meta Objects
 ------------
 .. autoclass:: pyticketswitch.availability.AvailabilityMeta
+   :inherited-members:
 .. autoclass:: pyticketswitch.currency.CurrencyMeta
+   :inherited-members:
 .. autoclass:: pyticketswitch.performance.PerformanceMeta
+   :inherited-members:
 
 Utilities
 ---------
@@ -144,6 +170,10 @@ Miscellaneous
 .. _misc_api:
 
 .. autoclass:: pyticketswitch.address.Address
+   :inherited-members:
 .. autoclass:: pyticketswitch.country.Country
+   :inherited-members:
 .. autoclass:: pyticketswitch.user.User
+   :inherited-members:
 .. autoclass:: pyticketswitch.customer.Customer
+   :inherited-members:

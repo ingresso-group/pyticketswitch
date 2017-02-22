@@ -60,3 +60,7 @@ class TestDiscount:
         discount = Discount('bar', non_offer_surcharge=6.78)
         with pytest.raises(AssertionError):
             discount.non_offer_combined_price()
+
+    def test_repr(self):
+        discount = Discount('A', description='Adult')
+        assert repr(discount) == '<Discount A:Adult>'

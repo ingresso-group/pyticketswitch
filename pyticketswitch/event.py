@@ -6,7 +6,6 @@ from pyticketswitch.media import Media
 from pyticketswitch.review import Review
 from pyticketswitch.availability import AvailabilityDetails
 from pyticketswitch.field import Field
-from pyticketswitch.utils import bitmask_to_numbered_list
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -220,21 +219,11 @@ class Event(JSONMixin, object):
 
             'availability_details': availability_details,
             'meta_events': meta_events,
+            'valid_quantities': data.get('valid_quantities'),
             'raw': data,
         }
 
         return cls(**kwargs)
-
-    @classmethod
-    def from_events_by_id_data(cls, data):
-        event = cls.from_api_data(data.get('event'))
-
-        quantity_options = data.get('quantity_options', {})
-        valid_quantities = quantity_options.get('valid_quantity_bitmask')
-        if valid_quantities:
-            event.valid_quantities = bitmask_to_numbered_list(valid_quantities)
-
-        return event
 
     def __repr__(self):
         return u'<Event {}:{}>'.format(self.id, self.description)

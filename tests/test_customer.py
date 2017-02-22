@@ -88,6 +88,61 @@ class TestCustomer:
 
         assert customer.agent_reference == 'foobar123'
 
-        assert customer.supplier_can_use_data == True
-        assert customer.user_can_use_data == True
-        assert customer.world_can_use_data == True
+        assert customer.supplier_can_use_data is True
+        assert customer.user_can_use_data is True
+        assert customer.world_can_use_data is True
+
+    def test_as_api_parameters(self):
+        customer = Customer(
+            first_name='Test',
+            first_name_latin='TEST',
+            last_name='Tester',
+            last_name_latin='TESTER',
+            address_lines=['Metro Building', '1 Butterwick'],
+            address_lines_latin=['METRO BUILDING', '1 BUTTERWICK'],
+            country_code='uk',
+            title='rt.hon',
+            title_latin='RT.HON',
+            initials='l.o.l',
+            initials_latin='L.O.L',
+            suffix='esq',
+            suffix_latin='ESQ',
+            email='tester@gmail.com',
+            post_code='w6 8dl',
+            post_code_latin='W6 8DL',
+            town='Hammersmith',
+            town_latin='HAMMERSMITH',
+            county='London',
+            county_latin='LONDON',
+            country='United Kingdom',
+            country_latin='UNITED KINGDOM',
+            phone='079000000000',
+            home_phone='0203 137 7420',
+            work_phone='079888888888',
+            agent_reference='foobar123',
+            supplier_can_use_data=True,
+            user_can_use_data=True,
+            world_can_use_data=True,
+        )
+
+        assert customer.as_api_parameters() == {
+            'first_name': 'Test',
+            'last_name': 'Tester',
+            'address_line_one': 'Metro Building',
+            'address_line_two': '1 Butterwick',
+            'country_code': 'uk',
+            'title': 'rt.hon',
+            'initials': 'l.o.l',
+            'suffix': 'esq',
+            'email_addr': 'tester@gmail.com',
+            'postcode': 'w6 8dl',
+            'town': 'Hammersmith',
+            'county': 'London',
+            'phone': '079000000000',
+            'home_phone': '0203 137 7420',
+            'work_phone': '079888888888',
+            'agent_ref': 'foobar123',
+            'dp_supplier': True,
+            'dp_user': True,
+            'dp_world': True,
+        }

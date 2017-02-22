@@ -84,3 +84,9 @@ class TestBundle(object):
         events = bundle.get_event_ids()
 
         assert events == {'abc123', 'def456'}
+
+    def test_repr(self):
+
+        bundle = Bundle('tests')
+
+        assert repr(bundle) == '<Bundle tests>'

@@ -113,6 +113,12 @@ Valid values for this attribute are as follows:
 The default sort order is ``alphabetic``. The secondary sorting metric is
 always ``alphabetic``.
 
+Taking payments
+===============
+
+.. _taking_payments:
+
+
 Handling callouts
 =================
 

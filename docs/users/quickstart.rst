@@ -338,7 +338,7 @@ us know that we were at least somewhat successful in our reservation attempt.
 It's a unique identifier that will allow us to get the status of our
 reservation/transaction going forwards::
 
-    >>> trolley.transaction_uuid
+    >>> transaction_uuid = trolley.transaction_uuid
     'ee39656e-ecc9-11e6-87c4-0025903268a0'
 
 
@@ -414,4 +414,79 @@ identifies our reservation, so make a note of it.
 Making a Purchase
 =================
 
-TODO:
+The final step in the transaction process is actually give us money and for us
+to tell the supplier to put a hold on the requested tickets permanently.
+
+There are a number of different payment methods available but for the time 
+being we will focus on the most common; *credit*. This where we take nothing
+from you at the time of purchase and invoice you at a later date for the amount
+you owe! This also happens to be the simplest payment method.
+
+.. note:: There are other payment methods that you might come across. So it's a
+          good idea to read :ref:`Taking payments <taking_payments>` before 
+          going live.
+
+Before we can continue we need to gather some information about the customer
+that we are selling to::
+
+    >>> from pyticketswitch.customer import Customer
+    >>> customer = Customer(
+    ...     first_name='Fred',
+    ...     last_name='Flintstone',
+    ...     address_lines=['301 Cobble stone road', 'Bolder Lane'],
+    ...     country_code='us',
+    ...     email='fred@slate-rock-gravel.com',
+    ...     post_code='70777',
+    ...     town='Bedrock',
+    ...     county='LA',
+    ...     phone='0110134345'
+    ...)
+
+The required fields are 
+the customers :attr:`first <pyticketswitch.customer.Customer.first_name>` and
+:attr:`last <pyticketswitch.customer.Customer.last_name>` name,
+at least one line of a  
+:attr:`postal address <pyticketswitch.customer.Customer.address_lines>`,
+the :attr:`country code <pyticketswitch.customer.Customer.address_lines>` for 
+the postal address,
+a contact :attr:`phone number <pyticketswitch.customer.Customer.address_lines>`
+and unless otherwise specified by the 
+:attr:`Reservation.needs_email_address <pyticketswitch.reservation.Reservation.needs_email_address>`
+field a :attr:`valid email address <pyticketswitch.customer.Customer.email>`.
+
+You may provide additional information about the customer as you see fit, but 
+the more information we have the easier it will be for us or the venue to 
+contact them in case of a problem, and it also allows us to protect both you
+and us from fraudulent transactions. `Here is our privacy policy`_. 
+
+You can also specify who we can send this information to with the 
+:attr:`supplier_can_use_data <pyticketswitch.customer.Customer.supplier_can_use_data>` 
+(generally recommened),
+:attr:`user_can_use_data <pyticketswitch.customer.Customer.supplier_can_use_data>` 
+(this is your organisation, for example in reporting, or by email),
+:attr:`world_can_use_data <pyticketswitch.customer.Customer.supplier_can_use_data>`
+(in my opinion this should always be off), flags.
+
+.. _`Here is our privacy policy`: https://ingresso.co.uk/privacy_policy
+
+With our customer object in hand we can now make the purchase::
+
+    >>> status, callback = client.make_purchase(
+    ...     transaction_uuid,
+    ...     customer,
+    ...)
+
+For the time being we can can ignore the callback, just check that we don't 
+have one::
+
+    >>> assert not callback
+
+
+Assuming no errors were raised, that's it! Your tickets are booked!
+
+The status object should contain information about your purchase::
+
+    >>> status.status
+    'purchased'
+
+

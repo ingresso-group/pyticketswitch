@@ -41,16 +41,6 @@ class Discount(JSONMixin, object):
 
         return cls(**kwargs)
 
-    def is_available(self, no_of_tickets=None, seat_number=None):
-
-        if no_of_tickets and no_of_tickets > self.available:
-            return False
-
-        if seat_number and bool(self.disallowed_mask >> seat_number & 1):
-            return False
-
-        return True
-
     def combined_price(self):
         """
         This method assumes that we have both a seatprice and surcharge.

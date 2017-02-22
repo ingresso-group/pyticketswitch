@@ -85,33 +85,6 @@ class FakeResponse(object):
 
 class TestClient:
 
-    def test_get_user_path(self, client):
-        user_path = client.get_user_path()
-        assert user_path == "/bilbo"
-
-    def test_get_user_path_without_user(self):
-        client = Client(user="", password="baggins")
-        with pytest.raises(exceptions.AuthenticationError):
-            client.get_user_path()
-
-    def test_get_user_path_with_subuser(self):
-        client = Client(user="bilbo", password="baggins", sub_user="frodo")
-        user_path = client.get_user_path()
-        assert user_path == "/bilbo/frodo"
-
-    def test_get_user_path_with_subuser_and_language(self):
-        client = Client(
-            user="bilbo", password="baggins", sub_user="frodo",
-            language='ELV'
-        )
-        user_path = client.get_user_path()
-        assert user_path == "/bilbo/frodo/ELV"
-
-    def test_get_user_path_with_language_and_without_subuser(self):
-        client = Client(user="bilbo", password="baggins", language='ELV')
-        user_path = client.get_user_path()
-        assert user_path == "/bilbo/-/ELV"
-
     @pytest.mark.integration
     def test_get_url(self, client):
         url = client.get_url('events.v1')
@@ -139,6 +112,43 @@ class TestClient:
                 'Accept-Language': 'en-GB',
             }
         )
+
+    @pytest.mark.integration
+    def test_make_request_with_post(self, client, monkeypatch):
+        fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
+        fake_post = Mock(return_value=fake_response)
+        monkeypatch.setattr('requests.post', fake_post)
+        params = {
+            'foo': 'bar',
+        }
+        client.language='en-GB'
+        response = client.make_request('events.v1', params, method=POST)
+        assert response == {'lol': 'beans'}
+        fake_post.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            data={
+                'foo': 'bar',
+                'user_id': 'bilbo',
+                'user_passwd': 'baggins',
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            }
+        )
+
+    def test_make_request_bad_response_with_auth_error(self, client, monkeypatch):
+        fake_response = FakeResponse(status_code=400, json={
+            'error_code': 3,
+            'error_desc': 'User authorisation failure',
+        })
+        fake_get = Mock(return_value=fake_response)
+        monkeypatch.setattr('requests.get', fake_get)
+        with pytest.raises(exceptions.APIError) as excinfo:
+            client.make_request('test.v1', {})
+
+        assert excinfo.value.msg == 'User authorisation failure'
+        assert excinfo.value.code == 3
+        assert excinfo.value.response is fake_response
 
     def test_make_request_bad_response_with_error(self, client, monkeypatch):
         fake_response = FakeResponse(status_code=400, json={
@@ -638,6 +648,42 @@ class TestClient:
             'page_len': 20,
         })
 
+    def test_list_performances_with_start_date(self, client, mock_make_request):
+        client.list_performances(
+            'ABC123',
+            start_date=datetime(2016, 7, 23, 0, 7, 25)
+        )
+
+        mock_make_request.assert_called_with('performances.v1', {
+            'event_id': 'ABC123',
+            'date_range': '20160723:',
+        })
+
+    def test_list_performancess_with_end_date(self, client, mock_make_request):
+        client.list_performances(
+            'ABC123',
+            end_date=datetime(2016, 7, 23, 0, 7, 25)
+        )
+
+        mock_make_request.assert_called_with('performances.v1', {
+            'event_id': 'ABC123',
+            'date_range': ':20160723',
+        })
+
+    def test_list_performances_with_start_and_end_date(self, client, mock_make_request):
+        client.list_performances(
+            'ABC123',
+            start_date=datetime(2015, 3, 11, 0, 9, 45),
+            end_date=datetime(2016, 7, 23, 0, 7, 25)
+        )
+
+        mock_make_request.assert_called_with('performances.v1', {
+            'event_id': 'ABC123',
+            'date_range': '20150311:20160723',
+        })
+
+
+
     def test_list_performances_misc_kwargs(self, client, mock_make_request):
         client.list_performances('ABC123', foobar='lolbeans')
 
@@ -645,6 +691,7 @@ class TestClient:
             'event_id': 'ABC123',
             'foobar': 'lolbeans',
         })
+
 
     def test_get_performances(self, client, monkeypatch):
         response = {
@@ -1198,6 +1245,81 @@ class TestClient:
 
         mock_make_request.assert_called_with(
             'purchase.v1',
+            expected_params,
+            method=POST
+        )
+
+        assert status is None
+        assert isinstance(callout, Callout)
+        assert callout.html == 'some horribly insecure stuff here'
+
+    def test_next_callout(self, client, monkeypatch):
+        response = {
+            'transaction_status': 'purchased',
+            'trolley_contents': {
+                'transaction_uuid': 'DEF456'
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        status, callout = client.next_callout(
+            'abc123',
+            'def456',
+            {'foo': 'bar'},
+            lol='beans',
+        )
+
+        expected_params = {
+            'foo': 'bar',
+            'lol': 'beans',
+        }
+
+        mock_make_request.assert_called_with(
+            'callback.v1/this.abc123/next.def456',
+            expected_params,
+            method=POST
+        )
+
+        assert callout is None
+        assert isinstance(status, Status)
+        assert status.trolley.transaction_uuid == 'DEF456'
+        assert status.status == 'purchased'
+
+    def test_next_callout_with_addtional_callout(self, client, monkeypatch):
+        response = {
+            "callout": {
+                "debitor_integration_data": {
+                    "debit_amount": 76.5,
+                    "debit_base_amount": 7650,
+                    "debit_currency": "gbp",
+                    "debitor_specific_data": {
+                        "is_dummy_3d_secure": False
+                    },
+                    "debitor_type": "dummy"
+                },
+                "redirect_html_page_data": "some horribly insecure stuff here",
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        status, callout = client.next_callout(
+            'abc123',
+            'def456',
+            {'foo': 'bar'},
+            lol='beans',
+        )
+
+        expected_params = {
+            'foo': 'bar',
+            'lol': 'beans',
+        }
+
+        mock_make_request.assert_called_with(
+            'callback.v1/this.abc123/next.def456',
             expected_params,
             method=POST
         )

@@ -90,14 +90,6 @@ class PerformanceMeta(JSONMixin, object):
     PerformanceMeta contains meta information about a list of
     :class:`Performances <pyticketswitch.performance.Performance>`.
 
-
-    Args:
-        auto_select (bool, optional): indicates that the performance
-            list will contain only one performance and this performance should
-            be automatically selected for the customer.
-        has_names: (bool, optional): indicates that the related
-            performances have names
-
     Attributes:
         auto_select (bool): indicates that the performance list will contain
             only one performance and this performance should be automatically

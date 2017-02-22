@@ -3,6 +3,20 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Currency(JSONMixin, object):
+    """Information about the currency prices are described in.
+
+    This information can be used to create human readable prices.
+
+    Attributes:
+        code (str): ISO 4217 currency code.
+        places (int): precision of decimal numbers.
+        pre_symbol (str): a symbol to place before the digits of a price.
+        post_symbol (str): a symbol to place after the digits of a price.
+        factor (int): arbitary scale factor, can be used to roughly convert
+            from one currency to another.
+        number (int): internal identifier.
+
+    """
 
     def __init__(self, code, factor=None, places=None, number=None,
                  pre_symbol=None, post_symbol=None):
@@ -15,7 +29,9 @@ class Currency(JSONMixin, object):
         self.number = number
 
     def __eq__(self, other):
-
+        """
+        FIXME: do we need this anywhere other than tests?
+        """
         if not other:
             return False
 
@@ -44,6 +60,15 @@ class Currency(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Convert data from the API into a native object.
+
+        Args:
+            data (dict): API data describing a currency.
+
+        Returns:
+            :class:`Currency <pyticketswitch.currency.Currency>`: the currency.
+
+        """
 
         kwargs = {
             'factor': data.get('currency_factor'),
@@ -56,6 +81,25 @@ class Currency(JSONMixin, object):
         return cls(data.get('currency_code'), **kwargs)
 
     def price_as_string(self, price):
+        """Generates a human readble string for a price.
+
+        Args:
+            price (float): a price
+
+        Returns:
+            str: the price with the correct number of places with pre and post
+            symbols attached
+
+        Example:
+
+            >>> from pyticketswitch.currency import Currency
+            >>> usd = Currency('usd', pre_symbol='$', places=2)
+            >>> usd.price_as_string(5)
+            u'$5.00'
+            >>> usd.price_as_string(12.34567)
+            u'$12.34'
+
+        """
         price = price if price else 0
         format_string = six.text_type('{pre}{price:.' + str(self.places) + 'f}{post}')
         return format_string.format(
@@ -69,6 +113,16 @@ class Currency(JSONMixin, object):
 
 
 class CurrencyMeta(JSONMixin, object):
+    """Currency information for another object.
+
+    Attributes:
+        currency (:class:`Currency <pytickectswitch.currency.Currency>`): the
+            currency that all prices in the related object are in.
+        desired_currency (:class:`Currency <pytickectswitch.currency.Currency>`):
+            the currency that the user account is expecting. Useful for
+            conversions.
+
+    """
 
     def __init__(self, currency, desired_currency=None):
         self.currency = currency
@@ -76,6 +130,17 @@ class CurrencyMeta(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Convert data from the API into a native object.
+
+        Args:
+            data (dict): API data describing the currencies of a related
+                object.
+
+        Returns:
+            :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`: the
+                currency meta data.
+
+        """
         currency_data = data.get('currency')
         if not currency_data:
             return

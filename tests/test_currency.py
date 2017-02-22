@@ -111,6 +111,10 @@ class TestCurrency:
         price = currency.price_as_string(13.1)
         assert price == six.text_type(u'\xa313.10')
 
+    def test_repr(self):
+        currency = Currency('fjd')
+        assert repr(currency) == '<Currency fjd>'
+
 
 class TestCurrencyMeta:
 
@@ -144,3 +148,20 @@ class TestCurrencyMeta:
         meta = CurrencyMeta.from_api_data(data)
 
         assert meta is None
+
+    def test_from_api_data_with_no_desired_currency(self):
+
+        data = {
+            'currency': {
+                'currency_code': 'GBP',
+            },
+        }
+
+        meta = CurrencyMeta.from_api_data(data)
+
+        assert isinstance(meta, CurrencyMeta)
+
+        assert isinstance(meta.currency, Currency)
+        assert meta.currency.code == 'GBP'
+
+        assert meta.desired_currency is None
