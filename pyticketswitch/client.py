@@ -105,11 +105,9 @@ class Client(object):
 
         """
 
-        user_path = self.get_user_path()
-        url = "{url}/f13/{end_point}{user_path}/".format(
+        url = "{url}/f13/{end_point}/".format(
             url=self.url,
             end_point=end_point,
-            user_path=user_path,
         )
         return url
 
@@ -123,7 +121,19 @@ class Client(object):
             dict: auth params that passed to requests
 
         """
-        return {'user_passwd': self.password}
+        return {'user_id': self.user, 'user_passwd': self.password}
+
+    def get_headers(self):
+        """Generate common headers to send with all requests
+
+        Returns:
+            dict: key value map of headers
+
+        """
+        headers = {}
+        if self.language:
+            headers.update({'Accept-Language': self.language})
+        return headers
 
     def make_request(self, endpoint, params, method=GET):
         """Makes actual requests to the API
@@ -149,10 +159,12 @@ class Client(object):
 
         logger.debug(u'url: %s; endpoint: %s; params: %s', self.url, endpoint, params)
 
+        headers = self.get_headers()
+
         if method == POST:
-            response = requests.post(url, data=params)
+            response = requests.post(url, data=params, headers=headers)
         else:
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, headers=headers)
 
         logger.debug(six.u(response.content))
 
@@ -1054,7 +1066,8 @@ class Client(object):
 
         return status
 
-    def make_purchase(self, transaction_uuid, customer, payment_method=None):
+    def make_purchase(self, transaction_uuid, customer, payment_method=None,
+                      **kwargs):
         """Purchase tickets for an existing reservation.
 
         Args:
@@ -1069,8 +1082,20 @@ class Client(object):
                 :class:`RedirectionDetails <pyticketswitch.payment_details.RedirectionDetails>`.
 
         Returns:
-            :class:`Status <pyticketswitch.status.Status>`: the current status
-            of the transaction.
+            :class:`Status <pyticketswitch.status.Status>`,
+            :class:`Callout <pyticketswitch.callout.Callout>`: the current
+            status of the transaction and/or a potential callout to redirect
+            the customer to.
+
+            This method should only ever return either a status or a callout,
+            never both.
+
+            If this method generates a
+            :class:`Callout <pyticketswitch.callout.Callout>` then the customer
+            should be redirected to the specified third party payment provider.
+
+            See :ref:`Handling callouts <handling_callouts>` for more information.
+
         """
 
         params = {'transaction_uuid': transaction_uuid}
@@ -1083,7 +1108,54 @@ class Client(object):
         if payment_method:
             params.update(payment_method.as_api_parameters())
 
+        params.update(kwargs)
+
         response = self.make_request('purchase.v1', params, method=POST)
+
+        callout_data = response.get('callout')
+
+        if callout_data:
+            status = None
+            callout = Callout.from_api_data(callout_data)
+        else:
+            callout = None
+            status = Status.from_api_data(response)
+
+        return status, callout
+
+    def next_callout(self, this_token, next_token, returned_data, **kwargs):
+        """Gets the next callout in a callout chain.
+
+        At the end of the callout chain the call will return the status of
+        the transaction.
+
+        See :ref:`Handling callouts <handling_callouts>` for more information.
+
+        Args:
+            this_token (str): the token for the current redirect.
+            next_token (str): the token for the potential next redirect.
+            returned_data (dict): dictionary of query string paramters appended
+                to your return url.
+            **kwarg: arbitary keyword arguments to send with the request.
+
+        Returns:
+            :class:`Status <pyticketswitch.status.Status>`,
+            :class:`Callout <pyticketswitch.callout.Callout>`: the current
+            status of the transaction and/or a potential callout to redirect
+            the customer to.
+
+            This method should only ever return either a status or a callout,
+            never both.
+
+
+        """
+
+        endpoint = "callback.v1/this.{}/next.{}".format(this_token, next_token)
+
+        params = returned_data
+        params.update(kwargs)
+
+        response = self.make_request(endpoint, params, method=POST)
 
         callout_data = response.get('callout')
 

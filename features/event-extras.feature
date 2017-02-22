@@ -86,5 +86,5 @@ Feature: add additional information to request
         And the event has cost range
         And the cost range min seatprice is "18.0"
         And the cost range max seatprice is "47.0"
-        And the cost range min surcharge is "0.0"
-        And the cost range max surcharge is "0.0"
+        And the cost range min surcharge is "3.0"
+        And the cost range max surcharge is "5.0"

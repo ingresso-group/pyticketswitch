@@ -115,7 +115,7 @@ class TestClient:
     @pytest.mark.integration
     def test_get_url(self, client):
         url = client.get_url('events.v1')
-        assert url == 'https://api.ticketswitch.com/f13/events.v1/bilbo/'
+        assert url == 'https://api.ticketswitch.com/f13/events.v1/'
 
     @pytest.mark.integration
     def test_make_request(self, client, monkeypatch):
@@ -125,13 +125,18 @@ class TestClient:
         params = {
             'foo': 'bar',
         }
+        client.language='en-GB'
         response = client.make_request('events.v1', params)
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
-            'https://api.ticketswitch.com/f13/events.v1/bilbo/',
+            'https://api.ticketswitch.com/f13/events.v1/',
             params={
                 'foo': 'bar',
+                'user_id': 'bilbo',
                 'user_passwd': 'baggins',
+            },
+            headers={
+                'Accept-Language': 'en-GB',
             }
         )
 
@@ -1111,7 +1116,11 @@ class TestClient:
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         customer = Customer('fred', 'flintstone', ['301 cobblestone way'], 'us')
-        card_details = CardDetails('4111 1111 1111 1111')
+        card_details = CardDetails(
+            '4111 1111 1111 1111',
+            expiry_year=17,
+            expiry_month=3,
+        )
         status, callout = client.make_purchase(
             'abc123',
             customer,
@@ -1125,6 +1134,7 @@ class TestClient:
             'address_line_one': '301 cobblestone way',
             'country_code': 'us',
             'card_number': '4111 1111 1111 1111',
+            'expiry_date': '0317'
         }
 
         mock_make_request.assert_called_with(
@@ -1164,6 +1174,7 @@ class TestClient:
             url='https://myticketingco.biz/confirmation/abc123',
             user_agent='Mozilla/5.0',
             accept='text/html,text/plain,application/json',
+            remote_site='myticketingco.biz',
         )
 
         status, callout = client.make_purchase(
@@ -1182,6 +1193,7 @@ class TestClient:
             'return_url': 'https://myticketingco.biz/confirmation/abc123',
             'client_http_user_agent': 'Mozilla/5.0',
             'client_http_accept': 'text/html,text/plain,application/json',
+            'remote_site': 'myticketingco.biz',
         }
 
         mock_make_request.assert_called_with(

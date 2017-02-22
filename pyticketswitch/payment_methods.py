@@ -1,5 +1,6 @@
 import six
 from abc import ABCMeta
+from pyticketswitch.exceptions import InvalidParametersError
 
 
 @six.add_metaclass(ABCMeta)
@@ -69,20 +70,31 @@ class CardDetails(object):
             'card_number': self.card_number,
         }
 
-        if self.expiry_month:
-            params.update(expiry_month=self.expiry_month)
+        missing_expiry_year = not self.expiry_year
+        missing_expiry_month = not self.expiry_month
 
-        if self.expiry_year:
-            params.update(expiry_year=self.expiry_year)
+        if missing_expiry_year or missing_expiry_month:
+            raise InvalidParametersError(
+                'both expiry_year and expiry_month must be specified')
 
-        if self.start_month:
-            params.update(start_month=self.start_month)
+        params.update(
+            expiry_date='{:0>2}{:0>2}'.format(
+                self.expiry_month,
+                self.expiry_year
+            )
+        )
 
-        if self.start_year:
-            params.update(start_year=self.start_year)
+        missing_start_year = not self.start_year
+        missing_start_month = not self.start_month
+
+        specifying_start_date = self.start_year or self.start_month
+
+        if specifying_start_date and (missing_start_year or missing_start_month):
+            raise InvalidParametersError(
+                'both start_year and start_month must be specified or neither specified')
 
         if self.ccv2:
-            params.update(ccv2=self.ccv2)
+            params.update(cv_two=self.ccv2)
 
         if self.issue_number:
             params.update(issue_number=self.issue_number)
@@ -119,11 +131,12 @@ class RedirectionDetails(object):
 
     """
 
-    def __init__(self, token, url, user_agent, accept):
+    def __init__(self, token, url, user_agent, accept, remote_site):
         self.token = token
         self.url = url
         self.user_agent = user_agent
         self.accept = accept
+        self.remote_site = remote_site
 
     def as_api_parameters(self):
         """Generate API keyword args for these details.
@@ -137,6 +150,7 @@ class RedirectionDetails(object):
             'return_url': self.url,
             'client_http_user_agent': self.user_agent,
             'client_http_accept': self.accept,
+            'remote_site': self.remote_site,
         }
 
 

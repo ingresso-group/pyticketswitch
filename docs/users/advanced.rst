@@ -112,3 +112,10 @@ Valid values for this attribute are as follows:
 
 The default sort order is ``alphabetic``. The secondary sorting metric is
 always ``alphabetic``.
+
+Handling callouts
+=================
+
+.. _handling_callouts:
+
+
