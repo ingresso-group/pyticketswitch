@@ -5,6 +5,39 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class PriceBand(JSONMixin, object):
+    """Describes a set of tickets with the same ticket type and price.
+
+    Attributes:
+        code (str): the price band identifier.
+        default_discount (:class:`Discount <pyticketswitch.discount.Discount>`):
+            this is the discount that will be assumed if no other discount
+            is specified at reservation time. It holds the prices for the price
+            band.
+        description (str): human readable description of the price band if
+            available.
+        cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+            summary data for the price band including offers.
+            **TODO: this seems to be in the wrong place check what we are
+            using this for**
+        no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+            summary data for the price band including offers.
+            **TODO: this seems to be in the wrong place check what we are
+            using this for**
+        example_seats (list): list of :class:`Seats <pyticketswitch.seat.Seat>`
+            that can be used as examples of what the user might get when they
+            reserved tickets in this price band.
+        example_seats_are_real (bool): when :obj:`True` this field indicates
+            that the example seats are in fact real seats and will be the ones
+            we attempt to reserve at the reservation stage. When :obj:`False`
+            these seats merely examples retrieved from cached data, and have
+            likely already been purchased.
+        seat_blocks (list): list of
+            :class:`SeatBlocks <pyticketswitch.seat.SeatBlock>`. When available
+            this are the contiguous seats that are available for purchase.
+            :class:`SeatBlocks <pyticketswitch.seat.SeatBlock>` contain
+            :class:`Seats <pyticketswitch.seat.Seat>`.
+
+    """
 
     def __init__(self, code, default_discount, description=None,
                  cost_range=None, no_singles_cost_range=None,
@@ -22,6 +55,18 @@ class PriceBand(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new **PriceBand** object from API data from ticketswitch.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a price band.
+
+        Returns:
+            :class:`PriceBand <pyticketswitch.order.PriceBand>`: a new
+            :class:`PriceBand <pyticketswitch.order.PriceBand>` object
+            populated with the data from the api.
+
+        """
         api_cost_range = data.get('cost_range', {})
         api_no_singles_cost_range = api_cost_range.get('no_singles_cost_range', {})
         cost_range = None

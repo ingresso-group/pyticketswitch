@@ -1,6 +1,7 @@
 from pyticketswitch.event import Event
 from pyticketswitch.performance import Performance
 from pyticketswitch.order import TicketOrder, Order
+from pyticketswitch.seat import Seat
 
 
 class TestTicketOrder:
@@ -9,7 +10,6 @@ class TestTicketOrder:
         data = {
             'discount_code': 'ADULT',
             'discount_desc': 'Adult standard',
-            'discount_disallowed_seat_no_bitmask': 123,
             'no_of_seats': 2,
             'sale_seatprice': 25,
             'sale_surcharge': 2.50,
@@ -34,10 +34,13 @@ class TestTicketOrder:
         assert ticket_order.total_seatprice == 50.0
         assert isinstance(ticket_order.total_surcharge, float)
         assert ticket_order.total_surcharge == 5.0
-        assert ticket_order.disallowed_mask == 123
         assert len(ticket_order.seats) == 2
         assert ticket_order.seats[0].id == 'ABC123'
         assert ticket_order.seats[1].id == 'DEF456'
+
+    def test_repr(self):
+        ticket_order = TicketOrder('abc123')
+        assert repr(ticket_order) == '<TicketOrder abc123>'
 
 
 class TestOrder:
@@ -97,4 +100,26 @@ class TestOrder:
         assert order.requested_seats[0].id == 'ABC123'
         assert order.requested_seats[1].id == 'DEF456'
 
+    def test_get_seats(self):
+        ticket_order_one = TicketOrder('a', seats=[
+            Seat('A1'), Seat('A2'), Seat('A3'),
+        ])
 
+        ticket_order_two = TicketOrder('b', seats=[
+            Seat('B1'), Seat('B2'), Seat('B3'),
+        ])
+
+        order = Order(1, ticket_orders=[ticket_order_one, ticket_order_two])
+
+        seats = order.get_seats()
+        assert [seat.id for seat in seats] == [
+            'A1', 'A2', 'A3', 'B1', 'B2', 'B3',
+        ]
+
+    def test_get_seats_with_no_ticket_orders(self):
+        order = Order(1, ticket_orders=[])
+        assert order.get_seats() == []
+
+    def test_repr(self):
+        order = Order(1, ticket_orders=[])
+        assert repr(order) == '<Order 1>'

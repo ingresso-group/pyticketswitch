@@ -1009,34 +1009,34 @@ class TestClient:
             client.get_discounts('ABC123-1', 'STALLS', 'A/pool')
 
     def test_trolley_params_with_trolley_token(self, client):
-        params = client.trolley_params(token='DEF456')
+        params = client._trolley_params(token='DEF456')
 
         assert params == {'trolley_token': 'DEF456'}
 
     def test_trolley_params_with_performance_id(self, client):
-        params = client.trolley_params(performance_id='6IF-A8B')
+        params = client._trolley_params(performance_id='6IF-A8B')
 
         assert params == {'perf_id': '6IF-A8B'}
 
     def test_trolley_params_with_number_of_seats(self, client):
-        params = client.trolley_params(number_of_seats=3)
+        params = client._trolley_params(number_of_seats=3)
 
         assert params == {'no_of_seats': 3}
 
     def test_trolley_params_with_ticket_type_code(self, client):
-        params = client.trolley_params(ticket_type_code='STALLS')
+        params = client._trolley_params(ticket_type_code='STALLS')
 
         assert params == {'ticket_type_code': 'STALLS'}
 
     def test_trolley_params_with_price_band_code(self, client):
-        params = client.trolley_params(price_band_code='A')
+        params = client._trolley_params(price_band_code='A')
 
         assert params == {
             'price_band_code': 'A'
         }
 
     def test_trolley_params_with_item_numbers_to_remove(self, client):
-        params = client.trolley_params(item_numbers_to_remove=[1, 2, 3], token='ABC123')
+        params = client._trolley_params(item_numbers_to_remove=[1, 2, 3], token='ABC123')
 
         assert params == {
             'trolley_token': 'ABC123',
@@ -1045,10 +1045,10 @@ class TestClient:
 
     def test_trolley_params_with_item_numbers_to_remove_with_no_token(self, client):
         with pytest.raises(exceptions.InvalidParametersError):
-            client.trolley_params(item_numbers_to_remove=[1, 2, 3])
+            client._trolley_params(item_numbers_to_remove=[1, 2, 3])
 
     def test_trolley_params_with_seats(self, client):
-        params = client.trolley_params(seats=['A12', 'B13', 'C14'])
+        params = client._trolley_params(seats=['A12', 'B13', 'C14'])
 
         assert params == {
             'seat0': 'A12',
@@ -1057,7 +1057,7 @@ class TestClient:
         }
 
     def test_trolley_params_with_discounts(self, client):
-        params = client.trolley_params(discounts=['ADULT', 'CHILD', 'SENIOR'])
+        params = client._trolley_params(discounts=['ADULT', 'CHILD', 'SENIOR'])
 
         assert params == {
             'disc0': 'ADULT',
@@ -1066,7 +1066,7 @@ class TestClient:
         }
 
     def test_trolley_params_with_send_codes(self, client):
-        params = client.trolley_params(send_codes={'nimax': 'POST', 'see': 'COBO'})
+        params = client._trolley_params(send_codes={'nimax': 'POST', 'see': 'COBO'})
 
         assert params == {
             'nimax_send_code': 'POST',
@@ -1075,7 +1075,7 @@ class TestClient:
 
     def test_trolley_params_with_invalid_send_codes(self, client):
         with pytest.raises(exceptions.InvalidParametersError):
-            client.trolley_params(send_codes=['POST', 'COBO'])
+            client._trolley_params(send_codes=['POST', 'COBO'])
 
     def test_get_trolley(self, client, monkeypatch):
         response = {'trolley_contents': {}, 'trolley_token': 'DEF456'}

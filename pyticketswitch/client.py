@@ -66,8 +66,8 @@ class Client(object):
                 performances.v1
 
         Returns:
-            str: the full url for the given endpoint, contains the base url,
-                user path and endpoint
+            str: the full url for the given endpoint, contains the base url and
+            endpoint
 
         """
 
@@ -831,10 +831,10 @@ class Client(object):
 
         return discounts, meta
 
-    def trolley_params(self, token=None, number_of_seats=None, discounts=None,
-                       seats=None, send_codes=None, ticket_type_code=None,
-                       performance_id=None, price_band_code=None,
-                       item_numbers_to_remove=None, **kwargs):
+    def _trolley_params(self, token=None, number_of_seats=None, discounts=None,
+                        seats=None, send_codes=None, ticket_type_code=None,
+                        performance_id=None, price_band_code=None,
+                        item_numbers_to_remove=None, **kwargs):
         """Handle arguments common to the
         :meth:`Client.get_trolley <pyticketswitch.client.Client.get_trolley>`
         and the
@@ -861,6 +861,10 @@ class Client(object):
             item_numbers_to_remove: (list, optional): list of item numbers to
                 remove from trolley.
             **kwargs: arbitary additional raw keyword arguments to add the
+                parameters.
+
+        Raises:
+            InvalidParametersError: when there is an issue with the provided
                 parameters.
 
         """
@@ -928,25 +932,46 @@ class Client(object):
                     performance_id=None, price_band_code=None,
                     item_numbers_to_remove=None, **kwargs):
 
+        """Retrieve the contents of a trolley from the API.
+
+        Wraps `/f13/trolley.v1`_
+
+        This endpoint is stateless and deterministic. Given the same arguments
+        it will always return with the same response. It makes no additional
+        calls to verify the validity of it's contents.
+
+        Args:
+            token (string, optional): trolley token from a previous trolley
+                call.
+            number_of_seats (int, optional): number of seats to add to the
+                trolley.
+            discounts (list, optional): list containing discount codes for each
+                requested seat.
+            seats (list, optional): list of seat id's.
+            send_codes (dict, optional): send codes indexed on backend source
+                code.
+            ticket_type_code: (string, optional): code of ticket type to add to
+                the trolley.
+            price_band_code: (string, optional): code of price band to add to
+                the trolley
+            item_numbers_to_remove: (list, optional): list of item numbers to
+                remove from trolley.
+            **kwargs: arbitary additional raw keyword arguments to add the
+                parameters.
+
+        Returns:
+            :class:`Trolley <pyticketswitch.trolley.Trolley>`: the contents of
+            the trolley.
+
+        Raises:
+            InvalidParametersError: when there is an issue with the provided
+                parameters.
+
+        .. _`/f13/trolley.v1`: https://ingresso-group.github.io/slate/#trolley
+
         """
-        The resource that is being retrieved here is primarily a trolley token.
-        Along with that we also get information about what that trolley token
-        contains, and we reutrn that as a Trolley object.
 
-        The trolley.v1 endpoint isn't really a resource GET in the same way as
-        as you might think of a GET request in a REST API. There is no state on
-        the server side that we are retrieving. Instead this endpoint will
-        consistantly generate a token based on the arugments given. If a
-        trolley token is provided and additional arguments are given then the
-        server will mutate the passed in token as if alterations have been made
-        to a trolley's state, again no state has acutally changed and this
-        mutation should be consistantly repeatable
-
-        It looks odd and the phrasing around this is inconsistant with the rest
-        of this wrapper so far. I would welcome suggestions on improving this.
-        """
-
-        params = self.trolley_params(
+        params = self._trolley_params(
             token=token, number_of_seats=number_of_seats, discounts=discounts,
             seats=seats, send_codes=send_codes,
             ticket_type_code=ticket_type_code, performance_id=performance_id,
@@ -964,14 +989,54 @@ class Client(object):
                          performance_id=None, price_band_code=None,
                          item_numbers_to_remove=None, **kwargs):
 
-        """
-        This call takes the same arguments as the `get_trolley` call and returns
-        a `Trolley` object. However this method actually attempts to
-        reserve the tickets in the backend system, and it's results are immutable.
-        TODO: check if results are actually immutable.
+        """Attempt to reserve all the items in the given trolley
+
+        Wraps `/f13/reserve.v1`_
+
+        This method will take all the same arguments as
+        :func:`get_trolley <pyticketswitch.client.Client.get_trolley>`. You can
+        either build a trolley via the
+        :func:`get_trolley <pyticketswitch.client.Client.get_trolley>` method
+        and pass the returned trolley token into the reservation call, or
+        alternatively you can provide the trolley parameters directly to this
+        method.
+
+        .. note:: If you are interested in bundling multiple orders into a
+                  single purchase then see the :ref:`Basketing <basketing>`
+                  documentation for more details.
+
+        Args:
+            token (string, optional): trolley token from a previous trolley
+                call.
+            number_of_seats (int, optional): number of seats to add to the
+                trolley.
+            discounts (list, optional): list containing discount codes for each
+                requested seat.
+            seats (list, optional): list of seat id's.
+            send_codes (dict, optional): send codes indexed on backend source
+                code.
+            ticket_type_code: (string, optional): code of ticket type to add to
+                the trolley.
+            price_band_code: (string, optional): code of price band to add to
+                the trolley
+            item_numbers_to_remove: (list, optional): list of item numbers to
+                remove from trolley.
+            **kwargs: arbitary additional raw keyword arguments to add the
+                parameters.
+
+        Returns:
+            :class:`Trolley <pyticketswitch.trolley.Trolley>`: the contents of
+            the trolley.
+
+        Raises:
+            InvalidParametersError: when there is an issue with the provided
+                parameters.
+
+        .. _`/f13/reserve.v1`: https://ingresso-group.github.io/slate/#reserve
+
         """
 
-        params = self.trolley_params(
+        params = self._trolley_params(
             token=token, number_of_seats=number_of_seats, discounts=discounts,
             seats=seats, send_codes=send_codes,
             ticket_type_code=ticket_type_code, performance_id=performance_id,
@@ -987,12 +1052,17 @@ class Client(object):
     def release_reservation(self, transaction_uuid):
         """Release an existing reservation.
 
+        Wraps `/f13/release.v1`_
+
         Args:
             transaction_uuid (str): the identifier of the reservaiton.
 
         Returns:
             bool: :obj:`True` if the reservation was successfully released
             otherwise :obj:`False`.
+
+        .. _`/f13/release.v1`: https://ingresso-group.github.io/slate/#release
+
         """
 
         params = {'transaction_uuid': transaction_uuid}
@@ -1003,6 +1073,8 @@ class Client(object):
     def get_status(self, transaction_uuid, customer=False,
                    external_sale_page=False):
         """Get the status of reservation, purchase or transaction.
+
+        Wraps `/f13/status.v1`_
 
         Args:
             transaction_uuid (str): identifier for the transaction.
@@ -1015,6 +1087,8 @@ class Client(object):
         Returns:
             :class:`Status <pyticketswitch.status.Status>`: the current status
             of the transaction.
+
+        .. _`/f13/status.v1`: https://ingresso-group.github.io/slate/#status
 
         """
         params = {
@@ -1036,6 +1110,8 @@ class Client(object):
     def make_purchase(self, transaction_uuid, customer, payment_method=None,
                       **kwargs):
         """Purchase tickets for an existing reservation.
+
+        Wraps `/f13/purchase.v1`_
 
         Args:
             transaction_uuid (str): the identifier of the existing
@@ -1062,6 +1138,8 @@ class Client(object):
             should be redirected to the specified third party payment provider.
 
             See :ref:`Handling callouts <handling_callouts>` for more information.
+
+        .. _`/f13/purchase.v1`: https://ingresso-group.github.io/slate/#purchase
 
         """
 
@@ -1093,6 +1171,8 @@ class Client(object):
     def next_callout(self, this_token, next_token, returned_data, **kwargs):
         """Gets the next callout in a callout chain.
 
+        Wraps `/f13/callback.v1`_
+
         At the end of the callout chain the call will return the status of
         the transaction.
 
@@ -1114,6 +1194,7 @@ class Client(object):
             This method should only ever return either a status or a callout,
             never both.
 
+        .. _`/f13/callback.v1`: https://ingresso-group.github.io/slate/#purchasing-with-redirect
 
         """
 

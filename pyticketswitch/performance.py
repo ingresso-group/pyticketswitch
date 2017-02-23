@@ -5,11 +5,44 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Performance(JSONMixin, object):
+    """Describes and occurance of an :class:`Event <pyticketswitch.event.Event>`.
+
+    The performance will have either a **date_time** or a **name**.
+
+    Attributes:
+        id (str): identifier for the performance.
+        event_id (str): identifier for the event.
+        date_time (:obj:`datetime.datetime`): the localised date and time for
+            the performance.
+            .. note:: this is a timezone aware datetime. localised for the
+                      venue and not the user.
+        date_desc (str): a human readable description of the date of the
+            performance.
+        time_desc (str): a human readable description of the time of the
+            performance.
+        has_pool_seats (bool): the performance has pool seats available.
+        is_limited (bool): the performance has limited availability.
+        cached_max_seats (int): the maximum number of seats available to book
+            in a single order. This value is cached and may not be accurate.
+        cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+            pricing summary, may also include offers.
+        no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+            pricing summary when no leaving single seats, may also include
+            offers.
+        is_ghost (bool): the performance is a ghost performance and is nolonger
+            available.
+        name (str): the name of the performance.
+        running_time (int): the number of minutes the performance is expected
+            to run for.
+        availability_details (:class:`AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`):
+            summerised availability data for the performance. This data is
+            cached from previous availability calls and may not be accurate.
+
+    """
 
     def __init__(self, id_, event_id, date_time=None,
-                 date_desc=None, time_desc=None, required_info=None,
-                 has_pool_seats=False, is_limited=False,
-                 cached_max_seats=None, cost_range=None,
+                 date_desc=None, time_desc=None, has_pool_seats=False,
+                 is_limited=False, cached_max_seats=None, cost_range=None,
                  no_singles_cost_range=None, is_ghost=False, name=None,
                  running_time=None, availability_details=None):
 
@@ -18,7 +51,6 @@ class Performance(JSONMixin, object):
         self.date_time = date_time
         self.date_desc = date_desc
         self.time_desc = time_desc
-        self.required_info = required_info
         self.has_pool_seats = has_pool_seats
         self.is_limited = is_limited
         self.cached_max_seats = cached_max_seats
@@ -31,6 +63,18 @@ class Performance(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new **Performance** object from API data from ticketswitch.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a performance.
+
+        Returns:
+            :class:`Performance <pyticketswitch.order.Performance>`: a new
+            :class:`Performance <pyticketswitch.order.Performance>` object
+            populated with the data from the api.
+
+        """
         id_ = data.get('perf_id')
         event_id = data.get('event_id')
 
@@ -40,7 +84,6 @@ class Performance(JSONMixin, object):
 
         date_desc = data.get('date_desc')
         time_desc = data.get('time_desc')
-        required_info = data.get('required_info')
 
         api_cost_range = data.get('cost_range', {})
         api_no_singles_cost_range = api_cost_range.get('no_singles_cost_range', {})
@@ -65,7 +108,6 @@ class Performance(JSONMixin, object):
             'date_time': date_time,
             'date_desc': date_desc,
             'time_desc': time_desc,
-            'required_info': required_info,
             'running_time': data.get('running_time'),
             'name': data.get('perf_name'),
             'has_pool_seats': data.get('has_pool_seats', False),
@@ -103,7 +145,18 @@ class PerformanceMeta(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new **PerformanceMeta** object from API data from ticketswitch.
 
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns some performance meta data.
+
+        Returns:
+            :class:`PerformanceMeta <pyticketswitch.order.PerformanceMeta>`: a
+            new :class:`PerformanceMeta <pyticketswitch.order.PerformanceMeta>`
+            object populated with the data from the api.
+
+        """
         auto_select = data.get('autoselect_this_performance', False)
         has_names = data.get('results', {}).get('has_perf_names', False)
 

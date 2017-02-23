@@ -53,6 +53,12 @@ class CardDetails(object):
         self.issue_number = issue_number
 
     def as_api_parameters(self):
+        """Generates a dictionary of parameters to be passed back to the API.
+
+        Returns:
+            dict: a set of parameters describing the card details to the API.
+
+        """
         params = {
             'card_number': self.card_number,
         }
@@ -80,6 +86,14 @@ class CardDetails(object):
             raise InvalidParametersError(
                 'both start_year and start_month must be specified or neither specified')
 
+        if specifying_start_date:
+            params.update(
+                start_date='{:0>2}{:0>2}'.format(
+                    self.start_month,
+                    self.start_year
+                )
+            )
+
         if self.ccv2:
             params.update(cv_two=self.ccv2)
 
@@ -103,6 +117,8 @@ class RedirectionDetails(object):
             success/failure of the customers payment.
         user_agent (str): the customer's browser's User-Agent header.
         accept (str): the customer's browser's Accept header.
+        remote_site (str): the remote site's domain must match the domain of the
+            return_url.
 
     """
 
