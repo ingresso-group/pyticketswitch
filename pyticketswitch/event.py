@@ -10,6 +10,79 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Event(JSONMixin, object):
+    """Describes a product in the ticketswitch system.
+
+    Attributes:
+        id (str): the identifier for the event.
+        status (str): status of the event.
+        description (str): human readable name for the event.
+        source (str): the backend system from wich the event originates.
+        event_type (str): the type of the event.
+        venue (str): a human readable description of the venue.
+        classes (list): a list of classes that the event belongs to.
+        filters (list): a list of filters that the event belongs to.
+        postcode (str): venue post code.
+        city (str): venue city.
+        country (str): human readable country name.
+        country_code (str): ISO 3166-1 country code.
+        latitude (float): latitude of the venue.
+        longitude (float): longitude of the venue.
+        max_running_time (int): maximum running time of a performance in
+            minutes.
+        min_running_time (int): minimum running time of a performance in
+            minutes.
+        show_performance_time (bool): indicates that the performance time
+            for this event is relevant and should be shown.
+        has_performances (bool): indicates that the event has performances.
+        is_seated (bool): indicates the event is seated.
+        needs_departure_date (bool): indicates that ticket purchases for this
+            event will require a departure date.
+        needs_duration (bool): indicates that ticket purchases for this
+            event will require a duration.
+        needs_performance (bool): indicates that ticket purchases for this
+            event will require a performance id.
+        upsell_list (list): list of event id's.
+        cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+            pricing summary from cached availability. Only present when
+            requested.
+        no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+            pricining summary from cached availability. Only present when
+            requested.
+        cost_range_details (:class:`CostRangeDetails <pyticketswitch.cost_range.CostRangeDetails>`)
+            summary pricing information broken down by availability. This is
+            cached data. Only present when requested.
+        content (dict): dictionary of
+            :class:`Content <pyticketswitch.content.Content>` objects
+            indexed on content name. Only present when requested.
+        fields (dict): dictionary of
+            :class:`Field <pyticketswitch.content.Content>` objects
+            indexed on field name. Only present when requested.
+        event_info (str): event info in plain text. Only present when
+            requested.
+        event_info (str): event info as HTML. Only present when requested.
+        venue_addr (str): venue address in plain text. Only present when
+            requested.
+        venue_addr (str): venue address as HTML. Only present when requested.
+        venue_info (str): venue info in plain text. Only present when
+            requested.
+        venue_info (str): venue info as HTML. Only present when requested.
+        media (dict): dictionary of :class:`Media <pyticketswitch.media.Media>`
+            objects indexed on media name. Only present when requested.
+        reviews (list): list of :class:`Reviews <pyticketswitch.review.Review>`
+            objects. Only present when requested.
+        critic_review_percent (float): summary of critic review star rating.
+            rated from 1 (lowest) to 5 (highest).
+        availability_details (:class:`AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`):
+            summary of availability details from cached data. Only present when
+            requested.
+        meta_events (list): list of :class:`Events <pyticketswitch.event.Event>`
+            objects that comprise a meta event.
+        valid_quantities (list): list of valid quanities available for
+            purchase. from cached data, only available when requested by
+            **get_events** or **get_event**.
+        raw (dict): the raw data used to generate the object.
+
+    """
 
     def __init__(self, id_, status=None, event_type=None, source=None,
                  venue=None, description=None, postcode=None, classes=None,
@@ -82,6 +155,18 @@ class Event(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new Event object from API data from ticketswitch.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a event.
+
+        Returns:
+            :class:`Event <pyticketswitch.event.Event>`: a new
+            :class:`Event <pyticketswitch.event.Event>` object
+            populated with the data from the api.
+
+        """
 
         id_ = data.get('event_id')
 
