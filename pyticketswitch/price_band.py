@@ -17,12 +17,8 @@ class PriceBand(JSONMixin, object):
             available.
         cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             summary data for the price band including offers.
-            **TODO: this seems to be in the wrong place check what we are
-            using this for**
         no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             summary data for the price band including offers.
-            **TODO: this seems to be in the wrong place check what we are
-            using this for**
         example_seats (list): list of :class:`Seats <pyticketswitch.seat.Seat>`
             that can be used as examples of what the user might get when they
             reserved tickets in this price band.
@@ -111,7 +107,12 @@ class PriceBand(JSONMixin, object):
         return cls(**kwargs)
 
     def get_seats(self):
+        """Get all seats in child seat blocks
 
+        Returns:
+            list: list of :class:`Seats <pyticketswitch.seat.Seat>`.
+
+        """
         if not self.seat_blocks:
             return []
 

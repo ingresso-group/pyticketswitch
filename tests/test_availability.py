@@ -347,7 +347,7 @@ class TestAvailabilityDetails:
         details = AvailabilityDetails.from_api_data(data)
         assert len(details) == 1
 
-        assert details[0].weekday_mask == 63
+        assert details[0]._weekday_mask == 63
 
     def test_from_api_data_adds_valid_quantities(self):
         data = {
@@ -407,15 +407,6 @@ class TestAvailabilityDetails:
         assert avail_details.is_available(2016, 12, 3) is False
         assert avail_details.is_available(2016, 12, 10) is False
         assert avail_details.is_available(2016, 12, 17) is False
-
-    def test_get_month_mask_valid_year_month(self, avail_details):
-        assert avail_details.get_month_mask(2016, 12) == 1065287163
-
-    def test_get_month_mask_invalid_year(self, avail_details):
-        assert avail_details.get_month_mask(2019, 12) is 0
-
-    def test_get_month_mask_invalid_month(self, avail_details):
-        assert avail_details.get_month_mask(2016, 6) is 0
 
     def test_on_weekday(self):
         """

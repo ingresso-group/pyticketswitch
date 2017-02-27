@@ -4,6 +4,22 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Bundle(JSONMixin, object):
+    """A collection of orders into the same backend system
+
+    Attributes:
+        source_code (str): the identifier of the backend system.
+        orders (list): the orders.
+        description (str): description of the backend system.
+        total_seatprice (float): the total cost of the seats/tickets in the
+            bundle.
+        total_surcharge (float): the total additional charges for the bundle.
+        total_send_cost (float): the total postage fee for the bundle.
+        total (float): the total amount of money required to purchase this
+            bundle.
+        currency (:class:`Currency <pyticketswitch.currency.Currency>`): the
+            currency that the prices are in.
+
+    """
 
     def __init__(self, source_code, orders=None, description=None,
                  total_seatprice=None, total_surcharge=None,
@@ -19,6 +35,18 @@ class Bundle(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new Bundle object from API data from ticketswitch.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a bundle.
+
+        Returns:
+            :class:`Bundle <pyticketswitch.bundle.Bundle>`: a new
+            :class:`Bundle <pyticketswitch.bundle.Bundle>` object
+            populated with the data from the api.
+
+        """
 
         kwargs = {
             'source_code': data.get('bundle_source_code'),
@@ -57,6 +85,11 @@ class Bundle(JSONMixin, object):
         return cls(**kwargs)
 
     def get_events(self):
+        """Get the events in the bundle.
+
+        Returns:
+            list: list of :class:`Event <pyticketswitch.event.Event>` objects.
+        """
         if not self.orders:
             return []
         return [
@@ -66,6 +99,12 @@ class Bundle(JSONMixin, object):
         ]
 
     def get_event_ids(self):
+        """Get the event ids of the events in the bundle.
+
+        Returns:
+            set: set of events IDs (str).
+
+        """
         return {event.id for event in self.get_events()}
 
     def __repr__(self):

@@ -2,30 +2,56 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Address(JSONMixin, object):
-    """A postal address."""
+    """A postal address.
+
+    TODO: this is very similar the Customer object. consider combining them,
+    or subclassing one from the other, or a base class of some sort.
+
+    Attributes:
+        lines (list): list of address lines.
+        town (str): town for the address.
+        county (str): the county or region of the address.
+        country_code (str): ISO 3166-1 country code.
+        post_code (str): post or ZIP code for the address.
+        email (str): a contact email address.
+        home_phone (str): a contact home phone number.
+        work_phone (str): a contact work phone number.
+
+    """
 
     def __init__(self, lines=None, country_code=None, county=None,
-                 email=None, home_phone=None, postcode=None, town=None,
+                 email=None, home_phone=None, post_code=None, town=None,
                  work_phone=None):
 
         self.lines = lines
-        self.country_code = country_code
+        self.town = town
         self.county = county
+        self.country_code = country_code
+        self.post_code = post_code
         self.email = email
         self.home_phone = home_phone
-        self.postcode = postcode
-        self.town = town
         self.work_phone = work_phone
 
     @classmethod
     def from_api_data(cls, data):
-        """Takes API and initialises a new Address class."""
+        """Creates a new Address object from API data from ticketswitch.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns an address.
+
+        Returns:
+            :class:`Address <pyticketswitch.address.Address>`: a new
+            :class:`Address <pyticketswitch.address.Address>` object
+            populated with the data from the api.
+
+        """
         kwargs = {
             'country_code': data.get('country_code'),
             'county': data.get('county'),
             'email': data.get('email_address'),
             'home_phone': data.get('home_phone'),
-            'postcode': data.get('postcode'),
+            'post_code': data.get('postcode'),
             'town': data.get('town'),
             'work_phone': data.get('work_phone'),
             'lines': [

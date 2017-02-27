@@ -2,6 +2,14 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Content(JSONMixin, object):
+    """Plain text and HTML content
+
+    Attributes:
+        name (str): the identifier of the content
+        value (str): plain text content.
+        html (str): html content.
+
+    """
 
     def __init__(self, name=None, value=None, value_html=None):
 
@@ -11,6 +19,18 @@ class Content(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new Content object from API data from ticketswitch.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns some content..
+
+        Returns:
+            :class:`Content <pyticketswitch.customer.Customer>`: a new
+            :class:`Content <pyticketswitch.customer.Customer>` object
+            populated with the data from the api.
+
+        """
 
         kwargs = {
             'name': data.get('name'),

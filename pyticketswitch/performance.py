@@ -9,13 +9,14 @@ class Performance(JSONMixin, object):
 
     The performance will have either a **date_time** or a **name**.
 
+    .. note:: The **date_time** field is a timezone aware datetime and it is
+              localised for the venue and not the user.
+
     Attributes:
         id (str): identifier for the performance.
         event_id (str): identifier for the event.
         date_time (:obj:`datetime.datetime`): the localised date and time for
             the performance.
-            .. note:: this is a timezone aware datetime. localised for the
-                      venue and not the user.
         date_desc (str): a human readable description of the date of the
             performance.
         time_desc (str): a human readable description of the time of the

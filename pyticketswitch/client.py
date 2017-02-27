@@ -89,19 +89,19 @@ class Client(object):
         """
         return {'user_id': self.user, 'user_passwd': self.password}
 
-    def get_headers(self):
+    def get_headers(self, headers):
         """Generate common headers to send with all requests
 
         Returns:
             dict: key value map of headers
 
         """
-        headers = {}
         if self.language:
             headers.update({'Accept-Language': self.language})
+
         return headers
 
-    def make_request(self, endpoint, params, method=GET):
+    def make_request(self, endpoint, params, method=GET, headers={}):
         """Makes actual requests to the API
 
         Args:
@@ -125,12 +125,12 @@ class Client(object):
 
         logger.debug(u'url: %s; endpoint: %s; params: %s', self.url, endpoint, params)
 
-        headers = self.get_headers()
+        raw_headers = self.get_headers(headers)
 
         if method == POST:
-            response = requests.post(url, data=params, headers=headers)
+            response = requests.post(url, data=params, headers=raw_headers)
         else:
-            response = requests.get(url, params=params, headers=headers)
+            response = requests.get(url, params=params, headers=raw_headers)
 
         logger.debug(six.u(response.content))
 

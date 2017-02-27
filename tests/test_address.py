@@ -21,7 +21,7 @@ class TestAddress:
         assert address.lines[0] == 'Metro Building'
         assert address.lines[1] == '1 Butterwick'
         assert address.town == 'Hammersmith, London'
-        assert address.postcode == 'W6 8DL'
+        assert address.post_code == 'W6 8DL'
         assert address.country_code == 'uk'
         assert address.county == 'London'
         assert address.email == 'lol@beans.com'

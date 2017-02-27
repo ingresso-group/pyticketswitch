@@ -6,8 +6,20 @@ from pyticketswitch.misc import MONTH_NUMBERS
 
 
 class AvailabilityMeta(JSONMixin, object):
-    """Meta data about an availability response"""
+    """Meta data about an availability response
 
+    Attributes:
+        can_leave_singles (bool): indicates that the backend system will allow
+            customers to leave a single seat with no neighbours.
+        contiguous_seat_selection_only (bool): indicates that the backend
+            system will only allow seats to be selected that are in a
+            contiguous line.
+        currency (:class:`Currency <pyticketswitch.currency.Currency>`): the
+            currency of the prices in the response.
+        valid_quantities (list): list of valid number of tickets available for
+            selection.
+
+    """
     def __init__(self, can_leave_singles=True,
                  contiguous_seat_selection_only=True,
                  currency=None, valid_quantities=None):
@@ -18,7 +30,18 @@ class AvailabilityMeta(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
-        """Takes API data and turns it into an AvailabilityMeta object"""
+        """Creates a new AvailabilityMeta object from API data from ticketswitch.
+
+        Args:
+            data (dict): the whole response from the availability call.
+
+        Returns:
+            :class:`AvailabilityMeta <pyticketswitch.availability.AvailabilityMeta>`:
+            a new
+            :class:`AvailabilityMeta <pyticketswitch.availability.AvailabilityMeta>`
+            object populated with the data from the api.
+
+        """
         quantity_options = data.get('quantity_options', {})
         valid_quantity_bitmask = quantity_options.get('valid_quantity_bitmask')
 
@@ -42,7 +65,27 @@ class AvailabilityMeta(JSONMixin, object):
 
 
 class AvailabilityDetails(JSONMixin, object):
-    """Details about the available tickets of a performance."""
+    """Details about the available tickets of a performance.
+
+    Attributes:
+        ticket_type_code (str): identifier of the ticket type.
+        ticket_type_description (str): human readable description of the ticket
+            type.
+        price_band_code (str): identifier of the price band.
+        price_band_description (str): human readable description of the price
+            band.
+        seatprice (float): price of an individual seat.
+        surcharge (float): additional charges per seat.
+        currency (:class:`Currency <pyticketswitch.currency.Currency>`): the
+            currency of the prices.
+        first_date (datetime.datetime): the first date and time this
+            combination of ticket type and price band is available from.
+        last_date (datetime.datetime): the latest date and time this
+            combination of ticket type and price band is available from.
+        valid_quantities (list): list of valid number of tickets available for
+            selection.
+
+    """
 
     def __init__(self, ticket_type=None, price_band=None,
                  ticket_type_description=None, price_band_description=None,
@@ -60,11 +103,23 @@ class AvailabilityDetails(JSONMixin, object):
         self.first_date = first_date
         self.last_date = last_date
         self._calendar_masks = calendar_masks
-        self.weekday_mask = weekday_mask
+        self._weekday_mask = weekday_mask
         self.valid_quanities = valid_quanities
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates AvailabilityDetails from API data from ticketswitch.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns availability details.
+
+        Returns:
+            list: a list of
+            :class:`AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`
+            objects populated with the data from the api.
+
+        """
         details = []
 
         for ticket_type in data.get('ticket_type', []):
@@ -130,9 +185,20 @@ class AvailabilityDetails(JSONMixin, object):
         return details
 
     def is_available(self, year, month=None, day=None):
-        """
-        Check if this combination of ticket_type and price band is available
-        on a given year/month/day.
+        """Check availablity on a given year/month/day.
+
+        Args:
+            year (int): the year to check. E.G.: 2005, 2016, 2222, etc
+            month (int, optional): the month to check. 1 == jan, 12 == dec, etc
+            day (int, optional): the day of the month, zero indexed.
+
+        Returns:
+            bool: :obj:`True` when availble inside the given parameters, other
+            wise :obj:`False`.
+
+        Raises:
+            ValueError: when a day is specified but not the month.
+
         """
         if day and not month:
             raise ValueError('a month must be specified to specify a day')
@@ -157,25 +223,25 @@ class AvailabilityDetails(JSONMixin, object):
 
         return True
 
-    def get_month_mask(self, year, month):
-        """
-        Retrieve the available days mask for a year and month. If a mask is not
-        available then it will return 0
-        """
-        year_data = self._calendar_masks.get(year, {})
-        return year_data.get(month, 0)
-
     def on_weekday(self, day):
         """
         Check if this combination of ticket_type and price band is available
         on a given day of the week, where 0 is monday and sunday is 6.
 
-        NOTE: the api uses sunday as day 0 where as python uses monday. I've
-        made a concious decision here to use the python numbers to keep it
-        consistant with anything written against this. (also a sunday day 0 is
-        silly)
+        .. note:: the api uses sunday as day 0 where as python uses monday.
+                  I've made a concious decision here to use the python numbers
+                  to keep it consistant with anything written against this.
+                  (also sunday as day 0 is silly)
+
+        Args:
+            day: the day of the week zero indexed from monday.
+
+        Returns:
+            bool: :obj:`True` when available on the given day of the week,
+            otherwise :obj:`False`.
+
         """
 
         adjusted_day = day + 1 if day < 6 else 0
 
-        return bool(self.weekday_mask >> adjusted_day & 1)
+        return bool(self._weekday_mask >> adjusted_day & 1)

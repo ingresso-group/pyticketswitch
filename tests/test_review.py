@@ -18,9 +18,9 @@ class TestReview:
 
         review = Review.from_api_data(data)
         assert review.body == 'BODY'
-        assert review.date_and_time.date().year == 2013
-        assert review.date_and_time.date().month == 3
-        assert review.date_and_time.date().day == 30
+        assert review.date_time.date().year == 2013
+        assert review.date_time.date().month == 3
+        assert review.date_time.date().day == 30
         assert review.star_rating == 4
         assert review.language == 'en'
         assert review.author == "What's on Stage"

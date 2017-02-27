@@ -6,6 +6,32 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Reservation(JSONMixin, object):
+    """Describes some tickets currently being held for purchase
+
+    Attributes:
+        trolley (:class:`Trolley <pyticketswitch.trolley.Trolley`): the contents
+            of the reservation trolley.
+        unreserved_orders (list): list of :class:`Orders
+            <pyticketswitch.order.Order`>` that failed to reserve.
+        prefilled_address (:class:`Address <pyticketswitch.address.Address>`):
+            some address information that should be used to prefill any
+            customer address fields. This is primarily used on B2B accounts.
+        needs_payment_card (bool): When :obj:`True` indicates that this
+            reservation will require :class:`CardDetails
+            <pyticketswitch.payment_methods.CardDetails>` as the payment method
+            at purchase time.
+        needs_email_address (bool): When :obj:`True` indicates that the
+            customer needs to provide a valid email address at purchase time.
+        needs_agent_reference (bool): When :obj:`True` indicates that an agent
+            reference should be provided at purchase time.
+        can_edit_address (bool): When :obj:`False` indicates that the prefilled
+            customer address provided by **prefilled_address** should not be
+            edited.
+        allowed_countries (list): list of :class:`Countries
+            <pyticketswitch.country.Country>` that are acceptable for the
+            customers postal address to be from.
+
+    """
 
     def __init__(self, trolley=None, unreserved_orders=None, prefilled_address=None,
                  needs_payment_card=False, needs_email_address=False,
@@ -23,6 +49,18 @@ class Reservation(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new **Reservation** object from ticketswitch API data.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a reservation.
+
+        Returns:
+            :class:`Reservation <pyticketswitch.order.Reservation>`: a new
+            :class:`Reservation <pyticketswitch.order.Reservation>` object
+            populated with the data from the api.
+
+        """
 
         kwargs = {
             'can_edit_address': data.get('can_edit_address'),
