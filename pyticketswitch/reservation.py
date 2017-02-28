@@ -30,13 +30,15 @@ class Reservation(JSONMixin, object):
         allowed_countries (list): list of :class:`Countries
             <pyticketswitch.country.Country>` that are acceptable for the
             customers postal address to be from.
+        minutes_left (float): the number of minutes left before a reservation
+            expires.
 
     """
 
     def __init__(self, trolley=None, unreserved_orders=None, prefilled_address=None,
                  needs_payment_card=False, needs_email_address=False,
                  needs_agent_reference=False, can_edit_address=False,
-                 allowed_countries=None):
+                 allowed_countries=None, minutes_left=None):
 
         self.trolley = trolley
         self.unreserved_orders = unreserved_orders
@@ -46,6 +48,7 @@ class Reservation(JSONMixin, object):
         self.needs_agent_reference = needs_agent_reference
         self.can_edit_address = can_edit_address
         self.allowed_countries = allowed_countries
+        self.minutes_left = minutes_left
 
     @classmethod
     def from_api_data(cls, data):
@@ -67,6 +70,7 @@ class Reservation(JSONMixin, object):
             'needs_agent_reference': data.get('needs_agent_reference'),
             'needs_email_address': data.get('needs_email_address'),
             'needs_payment_card': data.get('needs_payment_card'),
+            'minutes_left': data.get('minutes_left_on_reserve'),
         }
 
         allowed_countries = data.get('allowed_countries')

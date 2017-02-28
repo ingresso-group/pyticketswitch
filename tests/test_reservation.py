@@ -34,11 +34,11 @@ class TestReservation:
                         'order': [{'item_number': 1}],
                     }
                 ],
-                'minutes_left_on_reserve': 15,
                 'random_index': '5d3928de-c923-11e6-b2f6-0025903268a0',
                 'trolley_bundle_count': 1,
                 'trolley_order_count': 1
             },
+            'minutes_left_on_reserve': 15,
             "unreserve_orders": [{'item_number': 2}],
         }
 
@@ -58,3 +58,4 @@ class TestReservation:
         assert reservation.allowed_countries[1].code == 'ae'
 
         assert len(reservation.unreserved_orders) == 1
+        assert reservation.minutes_left == 15

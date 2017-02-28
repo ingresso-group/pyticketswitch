@@ -1,3 +1,8 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 def before_all(context):
     context.url = context.config.userdata.get('url', 'https://api.ticketswitch.com')
     context.config.setup_logging()
@@ -19,10 +24,12 @@ def clean_up_pending_transactions(context):
         return
 
     if status.status == 'reserved':
+        logger.info('cleaning up left over reservation')
         context.client.release_reservation(context.transaction_uuid)
         return
 
     if status.status == 'attempting':
+        logger.info('cleaning up left over transaction')
         next_token = context.transaction_uuid + '99'
         context.client.next_callout(
             context.this_token,
