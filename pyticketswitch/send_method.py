@@ -3,17 +3,41 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class SendMethod(JSONMixin, object):
+    """Describes a method of sending tickets to a customer.
+
+    Attributes:
+        code (str): identifier for the send method.
+        cost (float): additional cost to the customer for this send method.
+        description (str): human readable description of the send method.
+        type (str): indicates the type of the send method.
+        permitted_countries (list): list of
+            :class:`Countries <pyticketswitch.country.Country>` in which the
+            customer lives where this send method is permitted.
+
+    """
 
     def __init__(self, code, cost=None, description=None, typ=None,
                  permitted_countries=None):
         self.code = code
         self.cost = cost
         self.description = description
-        self.typ = typ
+        self.type = typ
         self.permitted_countries = permitted_countries
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new SendMethod object from API data from ticketswitch.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a send method.
+
+        Returns:
+            :class:`SendMethod <pyticketswitch.send_method.SendMethod>`: a new
+            :class:`SendMethod <pyticketswitch.send_method.SendMethod>` object
+            populated with the data from the api.
+
+        """
         kwargs = {
             'code': data.get('send_code'),
             'description': data.get('send_desc'),

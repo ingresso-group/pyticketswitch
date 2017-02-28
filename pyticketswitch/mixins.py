@@ -53,7 +53,7 @@ class JSONMixin(object):
             hide_none (bool, optional): when :obj:`True` the returned
                 dictionary will not include attributes who's value is
                 :obj:`None`.
-            hide_empty (bool, optional): when :object:`True` the returned
+            hide_empty (bool, optional): when :obj:`True` the returned
                 dictionary will not include attributes who's value is iterable
                 and has a length of zero.
 
@@ -70,10 +70,10 @@ class JSONMixin(object):
             hide_none (bool, optional): when :obj:`True` the returned
                 dictionary will not include attributes who's value is
                 :obj:`None`.
-            hide_empty (bool, optional): when :object:`True` the returned
+            hide_empty (bool, optional): when :obj:`True` the returned
                 dictionary will not include attributes who's value is iterable
                 and has a length of zero.
-            **kwargs: passed to :py:`json.dumps`.
+            **kwargs: passed to :py:func:`json.dumps`.
 
         Returns:
             str: a json representation of an object

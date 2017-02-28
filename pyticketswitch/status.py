@@ -5,6 +5,27 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Status(JSONMixin, object):
+    """Describes the current state of a transaction
+
+    Attributes:
+        status (str): the currency status of the transaction.
+        reserved_at (datetime.datetime): the date and time when the transaction
+            was reserved.
+        purchased_at (datetime.datetime): the date and time when the transaction
+            was purchased.
+        trolley (:class:`Trolley <pyticketswitch.trolley.Trolley>`): the
+            contents of the transactions trolley.
+        external_sale_page (str): the page that was rendered to the customer
+            after the transaction was completed. This is only available if
+            it was passed into the API at purchase time.
+        languages (list): list of IETF language tags relevant to the
+            transaction.
+        remote_site (str): the remote site the transaction was reserved and
+            purchased under.
+        reserve_user (:class:`User <pyticketswitch.user.User>`): the user that
+            was used to reserve the transaction.
+
+    """
 
     def __init__(self, status=None, reserved_at=None, trolley=None,
                  purchased_at=None, external_sale_page=None,
@@ -20,7 +41,18 @@ class Status(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new Status object from API data from ticketswitch.
 
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a transactions state.
+
+        Returns:
+            :class:`Status <pyticketswitch.status.Status>`: a new
+            :class:`Status <pyticketswitch.status.Status>` object
+            populated with the data from the api.
+
+        """
         kwargs = {
             'status': data.get('transaction_status'),
             'trolley': Trolley.from_api_data(data),

@@ -4,6 +4,23 @@ from pyticketswitch.exceptions import InvalidParametersError
 
 
 def date_range_str(start_date, end_date):
+    """Convert a set of dates to string readable by the API
+
+    Args:
+        start_date (datetime.date): the start of the date range.
+        end_date (datetime.date): the end of the date range.
+
+    Returns:
+        str: a date range in the format of "YYYYMMDD:YYYYMMDD".
+
+        Missing either or both dates is acceptable and will return
+        "YYYYMMDD:", ":YYYYMMDD", ":".
+
+    Raises:
+        InvalidParametersError: when a start_date or end_date is specified and
+            it is not a datetime.date object.
+
+    """
     if start_date and not isinstance(start_date, date):
         raise InvalidParametersError("start_date is not a datetime instance")
     if end_date and not isinstance(end_date, date):
@@ -28,6 +45,19 @@ def date_range_str(start_date, end_date):
 
 
 def isostr_to_datetime(date_str):
+    """Convert an iso datetime string to a :py:class:`datetime.datetime` object.
+
+    Args:
+        date_str (str): the string to convert.
+
+    Returns:
+        :py:class:`datetime.datetime`: the python representation of the date
+            and time.
+
+    Raises:
+        ValueError: when the date_str is empty or None.
+
+    """
     if not date_str:
         raise ValueError('{} is not a valid datetime string'.format(date_str))
 
@@ -36,6 +66,17 @@ def isostr_to_datetime(date_str):
 
 
 def yyyymmdd_to_date(date_str):
+    """Convert a YYYYMMDDD formated date to python :py:class:`datetime.date` object.
+
+    Args:
+        date_str (str): the string to convert.
+
+    Returns:
+        :py:class:`datetime.date`: the python representation of the date.
+
+    Raises:
+        ValueError: when the date_str is empty or None.
+    """
     if not date_str:
         raise ValueError('{} is not a valid datetime string'.format(date_str))
 
@@ -63,6 +104,15 @@ def specific_dates_from_api_data(dates):
 
 
 def bitmask_to_boolean_list(mask):
+    """Convert a bitmask to boolean list
+
+    Args:
+        mask (int): the mask returned by the API
+
+    Returns:
+        list: list of booleans.
+
+    """
     of_length = max(1, mask.bit_length())
     return [
         bool(mask >> i & 1)
@@ -71,6 +121,15 @@ def bitmask_to_boolean_list(mask):
 
 
 def bitmask_to_numbered_list(mask):
+    """Convert a bitmask to a numbered list
+
+    Args:
+        mask (int): the mask returned by the API
+
+    Returns:
+        list: list of integers
+
+    """
     if mask is None:
         return []
 

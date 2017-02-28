@@ -4,7 +4,25 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Trolley(JSONMixin, object):
+    """Describes a collection of products that are being purchased.
 
+    Attributes:
+        token (str): a token that represents the current state of the trolley.
+        transaction_uuid (str): unique identifier for this trolley. Only
+            present after reservation.
+        transaction_id (str): unique identifier for this trolley. Only present
+            after purchase. This supposed to be an identifer that is easily
+            readable/recognisable by a human being.
+        bundles (list): list of :class:`Bundles <pyticketswitch.bundle.Bundle>`
+            objects that break down the items to be purchased by their source
+            systems.
+        discarded_orders (list): list of
+            :class:`Orders <pyticketswitch.order.Order>` objects that were in
+            the trolley in the past but have been removed.
+        minutes_left (float): the number of minutes left before a reservation
+            expires.
+
+        """
     def __init__(self, token=None, transaction_uuid=None, transaction_id=None,
                  bundles=None, discarded_orders=None, minutes_left=None):
         self.token = token
@@ -16,7 +34,18 @@ class Trolley(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new Trolley object from API data from ticketswitch.
 
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a trolley.
+
+        Returns:
+            :class:`Trolley <pyticketswitch.trolley.Trolley>`: a new
+            :class:`Trolley <pyticketswitch.trolley.Trolley>` object
+            populated with the data from the api.
+
+        """
         raw_contents = data.get('trolley_contents', {})
 
         if not raw_contents:
@@ -51,6 +80,11 @@ class Trolley(JSONMixin, object):
         return cls(**kwargs)
 
     def get_events(self):
+        """Get the events in the trolley.
+
+        Returns:
+            list: list of :class:`Event <pyticketswitch.event.Event>` objects.
+        """
         if not self.bundles:
             return []
         return [
@@ -61,6 +95,12 @@ class Trolley(JSONMixin, object):
         ]
 
     def get_event_ids(self):
+        """Get the event ids of the events in the trolley.
+
+        Returns:
+            set: set of events IDs (str).
+
+        """
         return {event.id for event in self.get_events()}
 
     def __repr__(self):

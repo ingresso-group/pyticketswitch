@@ -29,7 +29,7 @@ class TestSendMethod:
         assert method.code == 'POST'
         assert method.cost == 3.5
         assert method.description == 'Post (UK & Ireland only)'
-        assert method.typ == 'post'
+        assert method.type == 'post'
         assert len(method.permitted_countries) == 2
 
     def test_from_api_data_without_permitted_countries(self):
@@ -46,5 +46,5 @@ class TestSendMethod:
         assert method.code == 'COBO'
         assert method.cost == 1.5
         assert method.description == 'Collect from the venue'
-        assert method.typ == 'collect'
+        assert method.type == 'collect'
         assert method.permitted_countries is None

@@ -2,7 +2,6 @@ from pyticketswitch.mixins import JSONMixin
 
 
 class Customer (JSONMixin, object):
-
     """Describes a cutomer to ticketswitch.
 
     Attributes:
