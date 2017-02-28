@@ -488,5 +488,28 @@ The status object should contain information about your purchase::
 
     >>> status.status
     'purchased'
+    >>> status.trolley.transaction_id
+    'T000-0000-8MU2-Z5E4'
+    >>> status.trolley.bundles[0].total
+    118.5
+    >>> status.trolley.bundles[0].orders[0].backend_purchase_reference
+    'PURCHASE-17461-1'
+    >>> status.trolley.bundles[0].orders[0].get_seats()
+    [<Seat GB506>, <Seat GB505>, <Seat GB504>]
 
 
+Retrieving Transactions
+=======================
+
+If at any point in the process you need to retrieve the status of a transaction
+or reservation you can do so using the :meth:`Client.get_status
+<pyticketswitch.client.Client.get_status>` call and the **transaction_uuid**::
+
+    >>> status = client.get_status('ee39656e-ecc9-11e6-87c4-0025903268a0')
+    >>> status.status
+    'purchased'
+
+
+-----------------------
+
+Ready for more? Check out the :ref:`advanced <advanced>` section.
