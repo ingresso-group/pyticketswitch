@@ -247,8 +247,7 @@ def then_the_availability_details_has_performance_info(context):
     now = datetime.datetime.now()
     next_month = now + datetime.timedelta(days=30)
     details = context.availability_details
-    print(details[0]._calendar_masks)
-    assert details[0].get_month_mask(
+    assert details[0].is_available(
         next_month.year,
         next_month.month,
     )

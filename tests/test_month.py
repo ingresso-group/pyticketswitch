@@ -17,8 +17,8 @@ class TestMonth:
         assert month.month == 11
         assert month.year == 2018
         assert month.description == 'November'
-        assert month.dates_bitmask == 1065254912
-        assert month.weekday_bitmask == 63
+        assert month._dates_bitmask == 1065254912
+        assert month._weekday_bitmask == 63
 
     def test_is_available(self):
         # 1065254912 == 111111011111101000000000000000
