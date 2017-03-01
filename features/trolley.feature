@@ -1,0 +1,56 @@
+Feature: add tickets to the trolley
+    In order for my customer to purchase multiple products
+    As a Developer
+    I want to be able to add items to a trolley.
+
+    @wip
+    Scenario: create a trolley
+        Given an API client with valid credentials
+        And my customer wants tickets to "6IF"
+        When I add the tickets to the trolley
+        Then I get a trolley token
+
+    @wip
+    Scenario: create a trolley with discounts
+        Given an API client with valid credentials
+        And my customer wants tickets to "6IF"
+        And my customer has requested some discounts
+        When I add the tickets to the trolley
+        Then I get a trolley token
+        And my trolley has some discounts
+
+    @wip
+    Scenario: create a trolley with send method
+        Given an API client with valid credentials
+        And my customer wants tickets to "6IF"
+        And my customer wants the tickets posted to them
+        When I add the tickets to the trolley
+        Then I get a trolley token
+        And my trolley has some discounts
+
+    @wip
+    Scenario: create a trolley with seats
+        Given an API client with valid credentials
+        And my customer wants tickets to "3CVF"
+        And my customer is requesting specific seats
+        When I add the tickets to my trolley
+        Then I get a trolley token
+        And I get the requested seats
+
+    @wip
+    Scenario: create a trolley with unavailble seats
+        Given an API client with valid credentials
+        And my customer wants tickets to "3CVF"
+        And my customer is requesting unavailable specific seats
+        When I add the tickets to my trolley
+        Then I get a trolley token
+        And I get the requested seats
+
+    @wip
+    Scenario: add item to an existing trolley
+        Given an API client with valid credentials
+        And I have an existing trolley with items from "6IF" in it
+        And my customer wants tickets to "6IE"
+        When I add the tickets to my trolley
+        Then I get a trolley token
+        And I get the requested seats

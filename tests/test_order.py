@@ -100,6 +100,21 @@ class TestOrder:
         assert order.requested_seats[0].id == 'ABC123'
         assert order.requested_seats[1].id == 'DEF456'
 
+    def test_from_api_data_with_send_method(self):
+
+        data = {
+            'item_number': 1,
+            "send_method": {
+                "send_code": "COBO",
+            },
+        }
+
+        order = Order.from_api_data(data)
+
+        assert order.send_method.code == 'COBO'
+
+
+
     def test_get_seats(self):
         ticket_order_one = TicketOrder('a', seats=[
             Seat('A1'), Seat('A2'), Seat('A3'),

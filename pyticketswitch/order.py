@@ -1,27 +1,24 @@
 from pyticketswitch.event import Event
 from pyticketswitch.performance import Performance
 from pyticketswitch.seat import Seat
+from pyticketswitch.send_method import SendMethod
 from pyticketswitch.mixins import JSONMixin
 
 
 class TicketOrder(JSONMixin, object):
     """Describes a set of identical priced tickets.
 
-    Args:
+    Attributes:
         code (str): the discount code.
-        seats (list, optional): list of seat IDs. Defaults to :obj:`None`.
-        number_of_seats (int, optional): number of seats of this type the ticket
-            order represents. Defaults to :obj:`None`.
-        description (str, optional): the discount description. Defaults to
-            :obj:`None`.
-        seatprice (float, optional): price of individual seat in this ticket
-            order. Defaults to :obj:`None`.
-        surcharge (float, optional): additional surcharge added per seat in this
-            ticket order. Defaults to :obj:`None`.
-        total_seatprice (float, optional): seatprice for all tickets in the
-            ticket order. Defaults to :obj:`None`.
-        total_seatprice (float, optional): seatprice for all tickets in the
-            ticket order. Defaults to :obj:`None`.
+        seats (list): list of seat IDs.
+        number_of_seats (int): number of seats of this type the ticket
+            order represents.
+        description (str): the discount description.
+        seatprice (float): price of individual seat in this ticket order.
+        surcharge (float): additional surcharge added per seat in this
+            ticket order.
+        total_seatprice (float): seatprice for all tickets in the ticket order.
+        total_seatprice (float): seatprice for all tickets in the ticket order.
 
     """
 
@@ -94,38 +91,34 @@ class TicketOrder(JSONMixin, object):
 class Order(JSONMixin, object):
     """Describes tickets for a specific event/performance.
 
-    Args:
+    Attributes:
         item (int): the item number within the trolley. If an order is removed
             from the trolley it will retain it's item number.
-        event (:class:`Event <pyticketswitch.event.Event>`, optional): the event
-            the order is for. Defaults to :obj:`None`.
-        performance (:class:`Performance <pyticketswitch.performance.Performance>`, optional):
-            the performance the order is for. Defaults to :obj:`None`.
-        price_band_code (str, optional): the price band identifier. Defaults to
-            :obj:`None`.
-        ticket_type_code (str, optional): the ticket type identifier. Defaults
-            to :obj:`None`.
-        ticket_type_description (str, optional): description of the ticket type.
-            Defaults to :obj:`None`.
-        ticket_orders (list, optional): list of
+        event (:class:`Event <pyticketswitch.event.Event>`): the event
+            the order is for.
+        performance (:class:`Performance <pyticketswitch.performance.Performance>`):
+            the performance the order is for.
+        price_band_code (str): the price band identifier.
+        ticket_type_code (str): the ticket type identifier.
+        ticket_type_description (str): description of the ticket type.
+        ticket_orders (list): list of
             :class:`TicketOrders <pyticketswitch.order.TicketOrder>` that
-            provide information on the specific tickets in the order. Defaults
-            to :obj:`None`.
-        number_of_seats (int, optional): total number of seats/tickets in the
-            order. Defaults to :obj:`None`.
-        total_seatprice (float, optional): total seat price of the order.
-            Defaults to :obj:`None`
-        total_surcharge (float, optional): total additional surcharges for the
-            order. Defaults to :obj:`None`.
-        seat_request_status (str, optional): when specifying seats this field
+            provide information on the specific tickets in the order.
+        number_of_seats (int): total number of seats/tickets in the
+            order.
+        total_seatprice (float): total seat price of the order.
+        total_surcharge (float): total additional surcharges for the order.
+        seat_request_status (str): when specifying seats this field
             will indicate wether the chosen seats were successfully reserved.
-            otherwise will be ``not_requested``. Defaults to :obj:`None`.
-        requested_seats (list, optional): list of
+            otherwise will be ``not_requested``.
+        requested_seats (list): list of
             :class:`Seats <pyticketswitch.seat.Seat>` requested at reservation
-            time. Defaults to :obj:`None`.
-        backend_purchase_reference (str, optional): a reference from the source
+            time.
+        backend_purchase_reference (str): a reference from the source
             supplier for this order. This is generally empty until the order
-            has been successfully purchased. Defaults to :obj:`None`.
+            has been successfully purchased.
+        send_method (:class:`SendMethod <pyticketswitch.send_method.SendMethod>`):
+            method of ticket delivery. Only present when requested.
 
     """
 
@@ -134,7 +127,7 @@ class Order(JSONMixin, object):
                  ticket_orders=None, number_of_seats=None,
                  total_seatprice=None, total_surcharge=None,
                  seat_request_status=None, requested_seats=None,
-                 backend_purchase_reference=None):
+                 backend_purchase_reference=None, send_method=None):
 
         self.item = item
         self.event = event
@@ -149,6 +142,7 @@ class Order(JSONMixin, object):
         self.seat_request_status = seat_request_status
         self.requested_seats = requested_seats
         self.backend_purchase_reference = backend_purchase_reference
+        self.send_method = send_method
 
     @classmethod
     def from_api_data(cls, data):
@@ -207,6 +201,11 @@ class Order(JSONMixin, object):
                 for seat in raw_requested_seats
             ]
             kwargs.update(requested_seats=requested_seats)
+
+        raw_send_method = data.get('send_method')
+        if raw_send_method:
+            send_method = SendMethod.from_api_data(raw_send_method)
+            kwargs.update(send_method=send_method)
 
         return cls(**kwargs)
 

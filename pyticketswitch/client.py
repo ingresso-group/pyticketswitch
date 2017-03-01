@@ -1071,7 +1071,7 @@ class Client(object):
         return response.get('released_ok', False)
 
     def get_status(self, transaction_uuid, customer=False,
-                   external_sale_page=False):
+                   external_sale_page=False, **kwargs):
         """Get the status of reservation, purchase or transaction.
 
         Wraps `/f13/status.v1`_
@@ -1083,6 +1083,7 @@ class Client(object):
             external_sale_page (bool, optional): include the saved html of the
                 sale/confirmation page if you asked us to save it for you.
                 Defaults to :obj:`None`
+            **kwargs: arbitary keyword parameters to pass directly to the API.
 
         Returns:
             :class:`Status <pyticketswitch.status.Status>`: the current status
@@ -1100,6 +1101,8 @@ class Client(object):
 
         if external_sale_page:
             params.update(add_external_sale_page=True)
+
+        params.update(kwargs)
 
         response = self.make_request('status.v1', params)
 
