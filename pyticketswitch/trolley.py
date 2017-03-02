@@ -51,6 +51,9 @@ class Trolley(JSONMixin, object):
         if not raw_contents:
             raw_contents = data.get('reserved_trolley', {})
 
+        if not raw_contents:
+            raw_contents = data.get('trolley_token_contents', {})
+
         raw_bundles = raw_contents.get('bundle', [])
 
         bundles = [

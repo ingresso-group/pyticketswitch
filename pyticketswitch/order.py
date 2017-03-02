@@ -108,9 +108,9 @@ class Order(JSONMixin, object):
             order.
         total_seatprice (float): total seat price of the order.
         total_surcharge (float): total additional surcharges for the order.
-        seat_request_status (str): when specifying seats this field
-            will indicate wether the chosen seats were successfully reserved.
-            otherwise will be ``not_requested``.
+        got_requested_seats (bool): indicates whether the chosen seats were
+            successfully reserved or alternatives were provided. If seats were
+            not specified this will always be :obj:`False`.
         requested_seats (list): list of
             :class:`Seats <pyticketswitch.seat.Seat>` requested at reservation
             time.
@@ -126,7 +126,7 @@ class Order(JSONMixin, object):
                  ticket_type_code=None, ticket_type_description=None,
                  ticket_orders=None, number_of_seats=None,
                  total_seatprice=None, total_surcharge=None,
-                 seat_request_status=None, requested_seats=None,
+                 got_requested_seats=False, requested_seats=None,
                  backend_purchase_reference=None, send_method=None):
 
         self.item = item
@@ -139,7 +139,7 @@ class Order(JSONMixin, object):
         self.number_of_seats = number_of_seats
         self.total_seatprice = total_seatprice
         self.total_surcharge = total_surcharge
-        self.seat_request_status = seat_request_status
+        self.got_requested_seats = got_requested_seats
         self.requested_seats = requested_seats
         self.backend_purchase_reference = backend_purchase_reference
         self.send_method = send_method
@@ -164,7 +164,7 @@ class Order(JSONMixin, object):
             'price_band_code': data.get('price_band_code'),
             'ticket_type_code': data.get('ticket_type_code'),
             'ticket_type_description': data.get('ticket_type_desc'),
-            'seat_request_status': data.get('seat_request_status'),
+            'got_requested_seats': data.get('got_requested_seats', False),
             'backend_purchase_reference': data.get('backend_purchase_reference'),
         }
 
@@ -222,8 +222,8 @@ class Order(JSONMixin, object):
         return [
             seat
             for ticket_order in self.ticket_orders
-            for seat in ticket_order.seats
             if ticket_order.seats
+            for seat in ticket_order.seats
         ]
 
     def __repr__(self):

@@ -46,3 +46,11 @@ Feature: reserve tickets
         When I reserve the tickets
         Then my reservation is successful
         And I get different seats than requested
+
+    @wip
+    @dirty
+    Scenario: reserve a previously described trolley
+        Given an API client with valid credentials
+        And I have an existing trolley with items from "6IF" in it
+        When I reserve the tickets
+        Then my reservation is successful

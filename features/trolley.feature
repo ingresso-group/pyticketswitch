@@ -3,54 +3,52 @@ Feature: add tickets to the trolley
     As a Developer
     I want to be able to add items to a trolley.
 
-    @wip
     Scenario: create a trolley
         Given an API client with valid credentials
         And my customer wants tickets to "6IF"
         When I add the tickets to the trolley
         Then I get a trolley token
+        And my trolley contains tickets for "6IF"
 
-    @wip
     Scenario: create a trolley with discounts
         Given an API client with valid credentials
         And my customer wants tickets to "6IF"
         And my customer has requested some discounts
         When I add the tickets to the trolley
         Then I get a trolley token
+        And my trolley contains tickets for "6IF"
         And my trolley has some discounts
 
-    @wip
-    Scenario: create a trolley with send method
-        Given an API client with valid credentials
-        And my customer wants tickets to "6IF"
-        And my customer wants the tickets posted to them
-        When I add the tickets to the trolley
-        Then I get a trolley token
-        And my trolley has some discounts
-
-    @wip
     Scenario: create a trolley with seats
         Given an API client with valid credentials
         And my customer wants tickets to "3CVF"
         And my customer is requesting specific seats
-        When I add the tickets to my trolley
+        When I add the tickets to the trolley
         Then I get a trolley token
-        And I get the requested seats
+        And my trolley contains the requested seats
 
-    @wip
     Scenario: create a trolley with unavailble seats
         Given an API client with valid credentials
         And my customer wants tickets to "3CVF"
         And my customer is requesting unavailable specific seats
-        When I add the tickets to my trolley
+        When I add the tickets to the trolley
         Then I get a trolley token
-        And I get the requested seats
+        And the trolley falls back to best available
 
-    @wip
     Scenario: add item to an existing trolley
         Given an API client with valid credentials
         And I have an existing trolley with items from "6IF" in it
         And my customer wants tickets to "6IE"
-        When I add the tickets to my trolley
+        When I add the tickets to the trolley
         Then I get a trolley token
-        And I get the requested seats
+        And my trolley contains tickets for "6IF"
+        And my trolley contains tickets for "6IE"
+
+    Scenario: remove item from an existing trolley
+        Given an API client with valid credentials
+        And I have an existing trolley with items from "6IF" in it
+        And I have an existing trolley with items from "6IE" in it
+        When I remove some tickets for "6IE" from the trolley
+        Then I get a trolley token
+        And my trolley contains tickets for "6IF"
+        And my trolley does not contain tickets for "6IE"

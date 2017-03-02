@@ -134,7 +134,7 @@ def i_purchase_the_tickets(context):
 def the_purchase_is_succesful(context):
     assert_that(context.status, not_none())
     assert_that(context.exception, none())
-    assert context.status.status == 'purchased'
+    assert_that(context.status.status, equal_to('purchased'))
 
 
 @then(u'the purchase fails')
