@@ -47,7 +47,6 @@ Feature: reserve tickets
         Then my reservation is successful
         And I get different seats than requested
 
-    @wip
     @dirty
     Scenario: reserve a previously described trolley
         Given an API client with valid credentials
