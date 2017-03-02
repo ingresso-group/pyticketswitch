@@ -3,7 +3,6 @@ Feature: release a reservation
     As a Developer
     I want to be able to release my reservation.
 
-    @wip
     Scenario: release a reservation
         Given an API client with valid credentials
         And an event with availability
