@@ -25,9 +25,9 @@ pip install pyticketswitch
 Contribute
 ----------
 
-- Issue Tracker: github.com/ingresso-group/pyticketswitch/issues
-- Source Code: github.com/ingresso-group/pyticketswitch
-- F13 API Documentation: http://ingresso-group.github.io/slate
+- Issue Tracker: https://github.com/ingresso-group/pyticketswitch/issues
+- Source Code: https://github.com/ingresso-group/pyticketswitch
+- F13 API Documentation: https://ingresso-group.github.io/slate
 
 ### How to contribute ###
 
