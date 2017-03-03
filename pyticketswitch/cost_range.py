@@ -1,5 +1,6 @@
 from pyticketswitch.offer import Offer
 from pyticketswitch.mixins import JSONMixin
+from pyticketswitch import utils
 
 
 class CostRange(JSONMixin, object):
@@ -49,45 +50,23 @@ class CostRange(JSONMixin, object):
 
     @classmethod
     def from_api_data(cls, data):
+        """Creates a new CostRange object from API data from ticketswitch.
 
-        api_best_value_offer = data.get('best_value_offer')
-        best_value_offer = None
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a cost range.
 
-        if api_best_value_offer:
-            best_value_offer = Offer.from_api_data(api_best_value_offer)
+        Returns:
+            :class:`CostRange <pyticketswitch.cost_range.CostRange>`: a new
+            :class:`CostRange <pyticketswitch.cost_range.CostRange>` object
+            populated with the data from the api.
 
-        api_max_saving_offer = data.get('max_saving_offer')
-        max_saving_offer = None
+        """
 
-        if api_max_saving_offer:
-            max_saving_offer = Offer.from_api_data(api_max_saving_offer)
-
-        api_min_cost_offer = data.get('min_cost_offer')
-        min_cost_offer = None
-
-        if api_min_cost_offer:
-            min_cost_offer = Offer.from_api_data(api_min_cost_offer)
-
-        api_top_price_offer = data.get('top_price_offer')
-        top_price_offer = None
-
-        if api_top_price_offer:
-            top_price_offer = Offer.from_api_data(api_top_price_offer)
-
-        min_seatprice = data.get('min_seatprice')
-        min_surcharge = data.get('min_surcharge')
-        max_seatprice = data.get('max_seatprice')
-        max_surcharge = data.get('max_surcharge')
-
-        # checking explictly for is not none, as zero is a legit value.
-        if min_seatprice is not None:
-            min_seatprice = float(min_seatprice)
-        if max_seatprice is not None:
-            max_seatprice = float(max_seatprice)
-        if min_surcharge is not None:
-            min_surcharge = float(min_surcharge)
-        if max_surcharge is not None:
-            max_surcharge = float(max_surcharge)
+        min_seatprice = utils.get_price(data, 'min_seatprice')
+        min_surcharge = utils.get_price(data, 'min_surcharge')
+        max_seatprice = utils.get_price(data, 'max_seatprice')
+        max_surcharge = utils.get_price(data, 'max_surcharge')
 
         kwargs = {
             'valid_quantities': data.get('valid_quantities'),
@@ -97,11 +76,28 @@ class CostRange(JSONMixin, object):
             'max_seatprice': max_seatprice,
             'allows_singles': data.get('singles', True),
             'currency': data.get('range_currency_code'),
-            'best_value_offer': best_value_offer,
-            'max_saving_offer': max_saving_offer,
-            'min_cost_offer': min_cost_offer,
-            'top_price_offer': top_price_offer,
         }
+
+        best_value_offer = data.get('best_value_offer')
+        if best_value_offer:
+            best_value_offer = Offer.from_api_data(best_value_offer)
+            kwargs.update(best_value_offer=best_value_offer)
+
+        max_saving_offer = data.get('max_saving_offer')
+        if max_saving_offer:
+            max_saving_offer = Offer.from_api_data(max_saving_offer)
+            kwargs.update(max_saving_offer=max_saving_offer)
+
+        min_cost_offer = data.get('min_cost_offer')
+        if min_cost_offer:
+            min_cost_offer = Offer.from_api_data(min_cost_offer)
+            kwargs.update(min_cost_offer=min_cost_offer)
+
+        top_price_offer = data.get('top_price_offer')
+        if top_price_offer:
+            top_price_offer = Offer.from_api_data(top_price_offer)
+            kwargs.update(top_price_offer=top_price_offer)
+
         return cls(**kwargs)
 
     def has_offer(self):

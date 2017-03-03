@@ -168,3 +168,97 @@ class TestBitmaskToNumberedList:
 
     def test_with_none(self):
         assert utils.bitmask_to_numbered_list(None) == []
+
+
+class TestGetPrice:
+
+    def test_with_keys(self):
+
+        data = {
+            'min_price': 12.40,
+            'max_price': 22.00,
+        }
+
+        min_price = utils.get_price(data, 'min_price')
+        assert min_price == 12.40
+
+        max_price = utils.get_price(data, 'max_price')
+        assert max_price == 22.00
+
+    def test_with_float(self):
+
+        data = {'price': 12.40}
+
+        price = utils.get_price(data, 'price')
+        assert isinstance(price, float)
+        assert price == 12.40
+
+    def test_with_ints(self):
+
+        data = {'price': 12}
+
+        price = utils.get_price(data, 'price')
+        assert isinstance(price, float)
+        assert price == 12.0
+
+    def test_with_str_int(self):
+
+        data = {'price': '12'}
+
+        price = utils.get_price(data, 'price')
+        assert isinstance(price, float)
+        assert price == 12.0
+
+    def test_with_str_float(self):
+
+        data = {'price': '12.40'}
+
+        price = utils.get_price(data, 'price')
+        assert isinstance(price, float)
+        assert price == 12.40
+
+    def test_with_None(self):
+
+        data = {'price': None}
+
+        price = utils.get_price(data, 'price')
+        assert price is None
+
+    def test_with_missing_key(self):
+
+        data = {'price': 12.40}
+
+        max_price = utils.get_price(data, 'max_price')
+        assert max_price is None
+
+    def test_with_zero(self):
+
+        data = {'price': 0}
+
+        price = utils.get_price(data, 'price')
+        assert isinstance(price, float)
+        assert price == 0.0
+
+    def test_with_str_zero(self):
+
+        data = {'price': '0'}
+
+        price = utils.get_price(data, 'price')
+        assert isinstance(price, float)
+        assert price == 0
+
+
+class TestFilterNoneFromParameters:
+
+    def test_with_parameters(self):
+
+        params = {
+            'foo': 'bar',
+            'thing': None,
+            'lol': 'beans',
+        }
+
+        assert utils.filter_none_from_parameters(params) == {
+            'foo': 'bar',
+            'lol': 'beans',
+        }

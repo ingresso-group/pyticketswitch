@@ -138,3 +138,41 @@ def bitmask_to_numbered_list(mask):
         for i in range(mask.bit_length())
         if bool(mask >> i & 1)
     ]
+
+
+def get_price(data, key):
+    """Extracts a price as a float from some data
+
+    Args:
+        data (dict): the data containing the price
+        key (str): the key of the target price.
+
+    Returns:
+        float: the price as a float.
+
+        When the dictionary is missing the requested key, returns :obj:`None`
+    """
+
+    price = data.get(key)
+    if price is not None:
+        price = float(price)
+
+    return price
+
+
+def filter_none_from_parameters(params):
+    """Removes parameters whos value is :obj:None
+
+    Args:
+        params (dict): dictionary of parameters to be passed to the API.
+
+    Returns:
+        dict: the original parameters with any parameters whos value was
+        :obj:`None` removed.
+
+    """
+    return {
+        key: value
+        for key, value in params.items()
+        if value is not None
+    }

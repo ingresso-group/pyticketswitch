@@ -682,8 +682,6 @@ class TestClient:
             'date_range': '20150311:20160723',
         })
 
-
-
     def test_list_performances_misc_kwargs(self, client, mock_make_request):
         client.list_performances('ABC123', foobar='lolbeans')
 
@@ -691,7 +689,6 @@ class TestClient:
             'event_id': 'ABC123',
             'foobar': 'lolbeans',
         })
-
 
     def test_get_performances(self, client, monkeypatch):
         response = {
@@ -1181,7 +1178,10 @@ class TestClient:
             'address_line_one': '301 cobblestone way',
             'country_code': 'us',
             'card_number': '4111 1111 1111 1111',
-            'expiry_date': '0317'
+            'expiry_date': '0317',
+            'dp_supplier': False,
+            'dp_user': False,
+            'dp_world': False,
         }
 
         mock_make_request.assert_called_with(
@@ -1241,6 +1241,9 @@ class TestClient:
             'client_http_user_agent': 'Mozilla/5.0',
             'client_http_accept': 'text/html,text/plain,application/json',
             'remote_site': 'myticketingco.biz',
+            'dp_supplier': False,
+            'dp_user': False,
+            'dp_world': False,
         }
 
         mock_make_request.assert_called_with(

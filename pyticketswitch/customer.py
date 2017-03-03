@@ -1,4 +1,5 @@
 from pyticketswitch.mixins import JSONMixin
+from pyticketswitch import utils
 
 
 class Customer (JSONMixin, object):
@@ -187,6 +188,20 @@ class Customer (JSONMixin, object):
             'first_name': self.first_name,
             'last_name': self.last_name,
             'country_code': self.country_code,
+            'title': self.title,
+            'initials': self.initials,
+            'suffix': self.suffix,
+            'postcode': self.post_code,
+            'town': self.town,
+            'county': self.county,
+            'email_addr': self.email,
+            'phone': self.phone,
+            'work_phone': self.work_phone,
+            'home_phone': self.home_phone,
+            'agent_ref': self.agent_reference,
+            'dp_supplier': self.supplier_can_use_data,
+            'dp_user': self.user_can_use_data,
+            'dp_world': self.world_can_use_data,
         }
 
         if self.address_lines and len(self.address_lines) == 1:
@@ -198,46 +213,5 @@ class Customer (JSONMixin, object):
                 address_line_two=self.address_lines[1],
             )
 
-        if self.title:
-            params.update(title=self.title)
-
-        if self.initials:
-            params.update(initials=self.initials)
-
-        if self.suffix:
-            params.update(suffix=self.suffix)
-
-        if self.post_code:
-            params.update(postcode=self.post_code)
-
-        if self.town:
-            params.update(town=self.town)
-
-        if self.county:
-            params.update(county=self.county)
-
-        if self.email:
-            params.update(email_addr=self.email)
-
-        if self.phone:
-            params.update(phone=self.phone)
-
-        if self.work_phone:
-            params.update(work_phone=self.work_phone)
-
-        if self.home_phone:
-            params.update(home_phone=self.home_phone)
-
-        if self.supplier_can_use_data:
-            params.update(dp_supplier=self.supplier_can_use_data)
-
-        if self.user_can_use_data:
-            params.update(dp_user=self.user_can_use_data)
-
-        if self.world_can_use_data:
-            params.update(dp_world=self.world_can_use_data)
-
-        if self.agent_reference:
-            params.update(agent_ref=self.agent_reference)
-
+        params = utils.filter_none_from_parameters(params)
         return params
