@@ -90,9 +90,10 @@ class PriceBand(JSONMixin, object):
 
         example_seats_data = data.get('example_seats')
         if example_seats_data:
+            print(example_seats_data)
             example_seats = [
                 Seat.from_api_data(seat)
-                for seat in example_seats_data.get('id_details', [])
+                for seat in example_seats_data
             ]
             kwargs.update(example_seats=example_seats)
 
