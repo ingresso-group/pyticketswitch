@@ -20,6 +20,7 @@ class TestTrolley:
                 ]
             },
             'trolley_token': 'ABC123',
+            'trolley_order_count': 8,
         }
 
         trolley = Trolley.from_api_data(data)
@@ -33,6 +34,7 @@ class TestTrolley:
         assert len(trolley.discarded_orders) == 2
         assert trolley.discarded_orders[0].item == 3
         assert trolley.discarded_orders[1].item == 6
+        assert trolley.order_count == 8
 
     def test_from_api_data_with_reservation_data(self):
         data = {

@@ -21,16 +21,19 @@ class Trolley(JSONMixin, object):
             the trolley in the past but have been removed.
         minutes_left (float): the number of minutes left before a reservation
             expires.
+        order_count (int): the number of orders in the trolley.
 
-        """
+    """
     def __init__(self, token=None, transaction_uuid=None, transaction_id=None,
-                 bundles=None, discarded_orders=None, minutes_left=None):
+                 bundles=None, discarded_orders=None, minutes_left=None,
+                 order_count=None):
         self.token = token
         self.transaction_uuid = transaction_uuid
         self.transaction_id = transaction_id
         self.bundles = bundles
         self.discarded_orders = discarded_orders
         self.minutes_left = minutes_left
+        self.order_count = order_count
 
     @classmethod
     def from_api_data(cls, data):
@@ -73,7 +76,8 @@ class Trolley(JSONMixin, object):
             'bundles': bundles,
             'discarded_orders': discarded_orders,
             'transaction_uuid': raw_contents.get('transaction_uuid'),
-            'transaction_id': raw_contents.get('transaction_id')
+            'transaction_id': raw_contents.get('transaction_id'),
+            'order_count': data.get('trolley_order_count'),
         }
 
         minutes = data.get('minutes_left_on_reserve')
