@@ -106,17 +106,15 @@ def data_meta():
         "backend_throttle_failed": False,
         "can_leave_singles": True,
         "contiguous_seat_selection_only": True,
-        "currency": {
-            "currency_code": "gbp",
-            "currency_factor": 100,
-            "currency_number": 826,
-            "currency_places": 2,
-            "currency_post_symbol": "",
-            "currency_pre_symbol": "#"
+        "currency_code": 'gbp',
+        'currency_details': {
+            "gbp": {
+                "currency_code": "gbp",
+            },
         },
-        "quantity_options": {
-            "valid_quantity_bitmask": 105,
-        }
+        "valid_quantities": [
+            1, 4, 6, 7
+        ],
     }
 
     return data
@@ -130,10 +128,7 @@ class TestAvailabilityMeta:
 
         assert meta.can_leave_singles is True
         assert meta.contiguous_seat_selection_only is True
-        assert meta.currency == Currency(
-            'gbp', factor=100, places=2, number=826, post_symbol='',
-            pre_symbol='#'
-        )
+        assert meta.default_currency_code == 'gbp'
         assert meta.valid_quantities == [1, 4, 6, 7]
 
 

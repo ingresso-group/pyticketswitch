@@ -431,8 +431,9 @@ class Client(object):
                 for more info.
 
         Returns:
-            dict: :class:`Events <pyticketswitch.event.Event>` indexed by event
-            ID.
+            dict, :class:`EventMeta <pyticketswitch.event.EventMeta>`:
+            :class:`Events <pyticketswitch.event.Event>` indexed by event
+            ID and meta information for those events.
 
         Raises:
             InvalidResponse: when the response is in an unexpected format
@@ -483,7 +484,8 @@ class Client(object):
                 for more info.
 
         Returns:
-            :class:`Event <pyticketswitch.event.Event>`: the target event
+            :class:`Event <pyticketswitch.event.Event>`, :class:`EventMeta <pyticketswitch.event.EventMeta>`: 
+            the target event and meta information about the event.
 
             will return :obj:`None` if the event does not exist.
 
@@ -604,8 +606,10 @@ class Client(object):
                 for more info.
 
         Returns:
-            dict: :class:`Performances <pyticketswitch.performance.Performance>`
-            indexed by performance ID.
+            dict, :class:`PerformanceMeta <pyticketswitch.performance.PerformanceMeta>`:
+            :class:`Performances <pyticketswitch.performance.Performance>`
+            indexed by performance ID and meta information about the
+            performances.
 
         Raises:
             InvalidResponse: when the response is in an unexpected format.
@@ -656,7 +660,8 @@ class Client(object):
                 for more info.
 
         Returns:
-            :class:`Performance <pyticketswitch.event.Event>`: the target Performance
+            :class:`Performance <pyticketswitch.event.Event>`, :class:`PerformanceMeta <pyticketswitch.performance.PerformanceMeta>`:
+            the target Performance and meta information about the performance.
 
             will return :obj:`None` if the performance does not exist.
 

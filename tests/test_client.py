@@ -845,12 +845,13 @@ class TestClient:
             'backend_throttle_failed': False,
             'can_leave_singles': True,
             'contiguous_seat_selection_only': True,
-            'currency': {
-                'currency_code': "gbp"
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
             },
-            'quantity_options': {
-                'valid_quantity_bitmask': 126
-            },
+            'valid_quantities': [2, 3, 4, 5, 6, 7],
         }
 
         mock_make_request = Mock(return_value=response)
@@ -864,7 +865,7 @@ class TestClient:
 
         assert meta.can_leave_singles is True
         assert meta.contiguous_seat_selection_only is True
-        assert meta.currency.code == 'gbp'
+        assert meta.default_currency_code == 'gbp'
         assert meta.valid_quantities == [2, 3, 4, 5, 6, 7]
 
         assert len(availability) == 2

@@ -1,11 +1,11 @@
 import datetime
 from pyticketswitch.utils import bitmask_to_numbered_list
 from pyticketswitch.mixins import JSONMixin
-from pyticketswitch.currency import Currency
+from pyticketswitch.currency import CurrencyMeta
 from pyticketswitch.misc import MONTH_NUMBERS
 
 
-class AvailabilityMeta(JSONMixin, object):
+class AvailabilityMeta(CurrencyMeta):
     """Meta data about an availability response
 
     Attributes:
@@ -14,19 +14,26 @@ class AvailabilityMeta(JSONMixin, object):
         contiguous_seat_selection_only (bool): indicates that the backend
             system will only allow seats to be selected that are in a
             contiguous line.
-        currency (:class:`Currency <pyticketswitch.currency.Currency>`): the
-            currency of the prices in the response.
         valid_quantities (list): list of valid number of tickets available for
             selection.
+        currencies (dict): dictionary of
+            :class:`Currency <pytickectswitch.currency.Currency>`) objects
+            indexed on currency code.
+        default_currency_code (str): unless other wise specified all prices in
+            the related response will be in this currency.
+        desired_currency_code (str):
+            the currency that the user account is expecting. Useful for
+            conversions.
 
     """
     def __init__(self, can_leave_singles=True,
-                 contiguous_seat_selection_only=True,
-                 currency=None, valid_quantities=None):
+                 contiguous_seat_selection_only=True, currency=None,
+                 valid_quantities=None, *args, **kwargs):
         self.can_leave_singles = can_leave_singles
         self.contiguous_seat_selection_only = contiguous_seat_selection_only
         self.currency = currency
         self.valid_quantities = valid_quantities
+        super(AvailabilityMeta, self).__init__(*args, **kwargs)
 
     @classmethod
     def from_api_data(cls, data):
@@ -42,26 +49,13 @@ class AvailabilityMeta(JSONMixin, object):
             object populated with the data from the api.
 
         """
-        quantity_options = data.get('quantity_options', {})
-        valid_quantity_bitmask = quantity_options.get('valid_quantity_bitmask')
+        inst = super(AvailabilityMeta, cls).from_api_data(data)
 
-        if valid_quantity_bitmask:
-            valid_quantities = bitmask_to_numbered_list(valid_quantity_bitmask)
-        else:
-            valid_quantities = None
+        inst.valid_quantities = data.get('valid_quantities')
+        inst.can_leave_singles = data.get('can_leave_singles', False)
+        inst.contiguous_seat_selection_only = data.get('contiguous_seat_select_only', True)
 
-        kwargs = {
-            'can_leave_singles': data.get('can_leave_singles', True),
-            'contiguous_seat_selection_only':
-                data.get('contiguous_seat_selection_only', True),
-            'valid_quantities': valid_quantities,
-        }
-
-        if 'currency' in data:
-            currency = Currency.from_api_data(data.get('currency'))
-            kwargs.update(currency=currency)
-
-        return cls(**kwargs)
+        return inst
 
 
 class AvailabilityDetails(JSONMixin, object):
