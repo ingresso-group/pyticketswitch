@@ -72,7 +72,7 @@ def given_an_existing_trolley(context, event_id):
     if hasattr(context, 'trolley_token'):
         trolley_token = context.trolley_token
 
-    trolley = context.client.get_trolley(
+    trolley, _ = context.client.get_trolley(
         token=trolley_token,
         performance_id=performance.id,
         ticket_type_code=ticket_type.code,
@@ -147,7 +147,7 @@ def when_i_reserve_the_tickets(context):
     if hasattr(context, 'trolley_token'):
         token = context.trolley_token
 
-    reservation = context.client.make_reservation(
+    reservation, _ = context.client.make_reservation(
         token=token,
         performance_id=context.performance_id,
         number_of_seats=context.no_of_tickets,
@@ -172,7 +172,7 @@ def when_i_add_tickets_to_my_trolley(context):
     if hasattr(context, 'trolley_token'):
         token = context.trolley_token
 
-    trolley = context.client.get_trolley(
+    trolley, _ = context.client.get_trolley(
         token=token,
         performance_id=context.performance.id,
         number_of_seats=context.no_of_tickets,
@@ -201,7 +201,7 @@ def when_i_remove_some_tickets_from_the_trolley(context, event_id):
 
     assert item_number
 
-    trolley = context.client.get_trolley(
+    trolley, _ = context.client.get_trolley(
         token=context.trolley.token,
         item_numbers_to_remove=[item_number],
     )
@@ -263,7 +263,7 @@ def then_the_trolley_falls_back_to_best_available(context):
 @vcr.use_cassette('fixtures/cassettes/reserve-status.yaml', record_mode='new_episodes')
 def then_my_send_method_is_the_one_i_requested(context):
 
-    status = context.client.get_status(
+    status, _ = context.client.get_status(
         context.transaction_uuid,
         # FIXME: this is an internal hack to display send codes for the time
         # being until is part of the default behaviour.

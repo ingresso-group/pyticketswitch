@@ -84,3 +84,42 @@ class JSONMixin(object):
             self.as_dict_for_json(hide_none=hide_none, hide_empty=hide_empty),
             **kwargs
         )
+
+
+class PaginationMixin(object):
+    """Adds pagination information to a responses meta data.
+
+    Attributes:
+        page_length (int): the number of items per page.
+        page_number (int): the current page.
+        pages_remaining (int): the number of pages remaining.
+        results_remaining (int): the total number of remaining results after
+            the current page.
+        total_results (int): the total number of results.
+
+    """
+
+    def __init__(self, page_length=None, page_number=None, pages_remaining=None,
+                 total_results=None, *args, **kwargs):
+        self.page_length = page_length
+        self.page_number = page_number
+        self.pages_remaining = pages_remaining
+        self.total_results = total_results
+        super(PaginationMixin, self).__init__(*args, **kwargs)
+
+    @classmethod
+    def from_api_data(cls, data, *args, **kwargs):
+        inst = super(PaginationMixin, cls).from_api_data(data)
+
+        if inst is None:
+            return None
+
+        paging_data = data.get('paging_status', {})
+
+        inst.page_length = paging_data.get('page_length')
+        inst.page_number = paging_data.get('page_number')
+        inst.pages_remaining = paging_data.get('pages_remaining')
+        inst.results_remaining = paging_data.get('results_remaining')
+        inst.total_results = paging_data.get('total_unpaged_results')
+
+        return inst

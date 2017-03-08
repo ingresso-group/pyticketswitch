@@ -75,16 +75,12 @@ def data():
                 'quantity_options': {
                     'valid_quantity_bitmask': 126
                 },
-                'range_currency': {
-                    'currency_code': 'gbp'
-                }
+                'range_currency_code': 'gbp',
             },
             'quantity_options': {
                 'valid_quantity_bitmask': 126
             },
-            'range_currency': {
-                'currency_code': 'gbp'
-            }
+            'range_currency_code': 'gbp',
         },
         'cost_range_details': {
             'ticket_type': [
@@ -99,14 +95,7 @@ def data():
                                 },
                                 'max_surcharge': 11.65,
                                 'max_seatprice': 59.5,
-                                'range_currency': {
-                                    'currency_factor': 100,
-                                    'currency_places': 2,
-                                    'currency_post_symbol': '',
-                                    'currency_number': 826,
-                                    'currency_pre_symbol': '\xa3',
-                                    'currency_code': 'gbp'
-                                },
+                                'range_currency_code': 'gbp',
                                 'min_surcharge': 11.25,
                                 'no_singles_cost_range': {
                                     'quantity_options': {
@@ -114,14 +103,7 @@ def data():
                                     },
                                     'max_surcharge': 11.65,
                                     'max_seatprice': 59.5,
-                                    'range_currency': {
-                                        'currency_factor': 100,
-                                        'currency_places': 2,
-                                        'currency_post_symbol': '',
-                                        'currency_number': 826,
-                                        'currency_pre_symbol': '\xa3',
-                                        'currency_code': 'gbp'
-                                    },
+                                    'range_currency_code': 'gbp',
                                     'min_surcharge': 11.25,
                                     'min_seatprice': 57.5
                                 },
@@ -211,14 +193,7 @@ def data():
                                 'day_18': True,
                             },
                         },
-                        'avail_currency': {
-                            'currency_factor': 100,
-                            'currency_places': 2,
-                            'currency_post_symbol': '',
-                            'currency_number': 826,
-                            'currency_pre_symbol': '\xa3',
-                            'currency_code': 'gbp'
-                        },
+                        'avail_currency_code': 'gbp',
                         'seatprice': 57.5,
                         'surcharge': 11.25,
                         'quantity_options': {

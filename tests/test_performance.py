@@ -218,6 +218,15 @@ class TestPerformanceMeta:
                 'performance': [
                     {'perf_id': '6IF-B1H', 'event_id': '6IF'}
                 ]
+            },
+            'paging_status': {
+                'total_unpaged_results': 1,
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
             }
         }
 
@@ -225,3 +234,6 @@ class TestPerformanceMeta:
 
         assert meta.auto_select is True
         assert meta.has_names is True
+        assert meta.total_results == 1
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'

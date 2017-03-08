@@ -9,7 +9,7 @@ def given_i_have_a_completed_transaction(context):
 
 @when('I fetch the status of the transaction')
 def when_i_fetch_the_status_of_the_transaction(context):
-    status = context.client.get_status(context.transaction_uuid)
+    status, _ = context.client.get_status(context.transaction_uuid)
     context.status = status
 
 

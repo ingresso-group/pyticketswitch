@@ -2,7 +2,7 @@ import requests
 import logging
 import six
 from pyticketswitch import exceptions, utils
-from pyticketswitch.event import Event
+from pyticketswitch.event import Event, EventMeta
 from pyticketswitch.performance import Performance, PerformanceMeta
 from pyticketswitch.availability import AvailabilityMeta
 from pyticketswitch.ticket_type import TicketType
@@ -351,7 +351,9 @@ class Client(object):
                 for more info.
 
         Returns:
-            list: a list of :class:`Events <pyticketswitch.event.Event>`
+            list, :class:`EventMeta <pyticketswitch.event.EventMeta>`: a list
+            of :class:`Events <pyticketswitch.event.Event>` objects and meta
+            information for those events.
 
         Raises:
             InvalidGeoParameters: when latitude, longitude, or radius is
@@ -414,7 +416,9 @@ class Client(object):
             Event.from_api_data(data)
             for data in raw_events
         ]
-        return events
+
+        meta = EventMeta.from_api_data(response)
+        return events, meta
 
     def get_events(self, event_ids, **kwargs):
         """Get events with the given id's
@@ -456,7 +460,9 @@ class Client(object):
             for event_id, raw_event in events_by_id.items()
             if raw_event.get('event')
         }
-        return events
+
+        meta = EventMeta.from_api_data(response)
+        return events, meta
 
     def get_event(self, event_id, **kwargs):
         """Get a specific event by id
@@ -483,8 +489,8 @@ class Client(object):
 
         """
 
-        events = self.get_events([event_id], **kwargs)
-        return events.get(event_id)
+        events, meta = self.get_events([event_id], **kwargs)
+        return events.get(event_id), meta
 
     def get_months(self, event_id, **kwargs):
         """Returns a summary of availability accross months.
@@ -627,7 +633,9 @@ class Client(object):
             for performance_id, data in raw_performances.items()
         }
 
-        return performances
+        meta = PerformanceMeta.from_api_data(response)
+
+        return performances, meta
 
     def get_performance(self, performance_id, **kwargs):
         """Get a specific performance by id
@@ -653,8 +661,8 @@ class Client(object):
             will return :obj:`None` if the performance does not exist.
 
         """
-        performances = self.get_performances([performance_id], **kwargs)
-        return performances.get(performance_id)
+        performances, meta = self.get_performances([performance_id], **kwargs)
+        return performances.get(performance_id), meta
 
     def get_availability(self, performance_id, number_of_seats=None,
                          discounts=False, example_seats=False,
@@ -981,8 +989,9 @@ class Client(object):
         response = self.make_request('trolley.v1', params)
 
         trolley = Trolley.from_api_data(response)
+        meta = CurrencyMeta.from_api_data(response)
 
-        return trolley
+        return trolley, meta
 
     def make_reservation(self, token=None, number_of_seats=None, discounts=None,
                          seats=None, send_codes=None, ticket_type_code=None,
@@ -1046,8 +1055,9 @@ class Client(object):
         response = self.make_request('reserve.v1', params, method=POST)
 
         reservation = Reservation.from_api_data(response)
+        meta = CurrencyMeta.from_api_data(response)
 
-        return reservation
+        return reservation, meta
 
     def release_reservation(self, transaction_uuid):
         """Release an existing reservation.
@@ -1107,8 +1117,9 @@ class Client(object):
         response = self.make_request('status.v1', params)
 
         status = Status.from_api_data(response)
+        meta = CurrencyMeta.from_api_data(response)
 
-        return status
+        return status, meta
 
     def make_purchase(self, transaction_uuid, customer, payment_method=None,
                       **kwargs):
@@ -1169,7 +1180,9 @@ class Client(object):
             callout = None
             status = Status.from_api_data(response)
 
-        return status, callout
+        meta = CurrencyMeta.from_api_data(response)
+
+        return status, callout, meta
 
     def next_callout(self, this_token, next_token, returned_data, **kwargs):
         """Gets the next callout in a callout chain.
@@ -1217,4 +1230,6 @@ class Client(object):
             callout = None
             status = Status.from_api_data(response)
 
-        return status, callout
+        meta = CurrencyMeta.from_api_data(response)
+
+        return status, callout, meta

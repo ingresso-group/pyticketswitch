@@ -76,8 +76,7 @@ class AvailabilityDetails(JSONMixin, object):
             band.
         seatprice (float): price of an individual seat.
         surcharge (float): additional charges per seat.
-        currency (:class:`Currency <pyticketswitch.currency.Currency>`): the
-            currency of the prices.
+        currency (str): the currency of the prices.
         first_date (datetime.datetime): the first date and time this
             combination of ticket type and price band is available from.
         last_date (datetime.datetime): the latest date and time this
@@ -143,10 +142,8 @@ class AvailabilityDetails(JSONMixin, object):
                 if 'surcharge' in raw_details:
                     kwargs['surcharge'] = raw_details['surcharge']
 
-                if 'avail_currency' in raw_details:
-                    kwargs['currency'] = Currency.from_api_data(
-                        raw_details.get('avail_currency')
-                    )
+                if 'avail_currency_code' in raw_details:
+                    kwargs['currency'] = raw_details.get('avail_currency_code')
 
                 available_dates = raw_details.get('available_dates', {})
                 if 'first_yyyymmdd' in available_dates:

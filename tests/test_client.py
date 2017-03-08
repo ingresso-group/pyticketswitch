@@ -283,11 +283,20 @@ class TestClient:
                     {'event_id': 'DEF456'},
                 ],
             },
+            'paging_status': {
+                'total_unpaged_results': 10,
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
         }
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        events = client.list_events()
+        events, meta = client.list_events()
 
         mock_make_request.assert_called_with('events.v1', {})
 
@@ -296,6 +305,10 @@ class TestClient:
 
         assert event_one.id =='ABC123'
         assert event_two.id == 'DEF456'
+
+        assert meta.total_results == 10
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
 
     def test_list_events_with_keywords(self, client, mock_make_request):
         client.list_events(keywords=['awesome', 'stuff'])
@@ -423,12 +436,18 @@ class TestClient:
                     'event': {'event_id': 'DEF456'},
                 }
             },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
         }
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        events = client.get_events(['ABC123', 'DEF456'])
+        events, meta = client.get_events(['ABC123', 'DEF456'])
 
         mock_make_request.assert_called_with(
             'events_by_id.v1',
@@ -440,6 +459,9 @@ class TestClient:
 
         assert event_one.id == 'ABC123'
         assert event_two.id == 'DEF456'
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
 
     def test_get_events_event_list(self, client, mock_make_request_for_events):
         client.get_events(['6IF', '25DR', '3ENO'])
@@ -469,18 +491,26 @@ class TestClient:
                     'event': {'event_id': 'ABC123'},
                 },
             },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
         }
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        event = client.get_event('ABC123')
+        event, meta = client.get_event('ABC123')
 
         mock_make_request.assert_called_with(
             'events_by_id.v1',
             {'event_id_list': 'ABC123'},
         )
         assert event.id =='ABC123'
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
 
     def test_get_months(self, client, monkeypatch):
         response = {
@@ -547,6 +577,15 @@ class TestClient:
                     {'perf_id': 'ABC123-3', 'event_id': 'ABC123'},
                 ]
             },
+            'paging_status': {
+                'total_unpaged_results': 10,
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
         }
 
         mock_make_request = Mock(return_value=response)
@@ -571,6 +610,10 @@ class TestClient:
         assert performance_three.event_id == 'ABC123'
 
         assert meta.has_names is False
+        assert meta.total_results == 10
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
 
     def test_list_performances_cost_range(self, client, mock_make_request):
         client.list_performances('ABC123', cost_range=True)
@@ -702,12 +745,18 @@ class TestClient:
                     'event_id': 'DEF456',
                 }
             },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
         }
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        performances = client.get_performances(['ABC123-1', 'DEF456-2'])
+        performances, meta = client.get_performances(['ABC123-1', 'DEF456-2'])
 
         mock_make_request.assert_called_with('performances_by_id.v1', {
             'perf_id_list': 'ABC123-1,DEF456-2',
@@ -721,6 +770,9 @@ class TestClient:
 
         assert performance_one.event_id == 'ABC123'
         assert performance_two.event_id == 'DEF456'
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
 
     def test_get_performances_no_performances(self, client, monkeypatch, fake_func):
         response = {}
@@ -745,18 +797,27 @@ class TestClient:
                     'event_id': 'ABC123',
                 },
             },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
         }
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        performance = client.get_performance('ABC123-1')
+        performance, meta = client.get_performance('ABC123-1')
 
         mock_make_request.assert_called_with(
             'performances_by_id.v1',
             {'perf_id_list': 'ABC123-1'},
         )
         assert performance.id =='ABC123-1'
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
 
     def test_get_availability(self, client, monkeypatch):
         response = {
@@ -927,11 +988,11 @@ class TestClient:
 
     def test_get_send_methods(self, client, monkeypatch):
         response = {
-            'currency': {
-                'currency_code': 'GBP',
-            },
-            'desired_currency': {
-                'currency_code': 'USD',
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
             },
             'send_methods': {
                 'send_method': [
@@ -954,8 +1015,7 @@ class TestClient:
         assert send_methods[0].code == 'COBO'
         assert send_methods[1].code == 'POST'
 
-        assert meta.currency.code == 'GBP'
-        assert meta.desired_currency.code == 'USD'
+        assert meta.get_currency().code == 'gbp'
 
     def test_get_send_methods_bad_data(self, client, monkeypatch):
         mock_make_request = Mock(return_value={})
@@ -966,11 +1026,11 @@ class TestClient:
 
     def test_get_discounts(self, client, monkeypatch):
         response = {
-            'currency': {
-                'currency_code': 'GBP',
-            },
-            'desired_currency': {
-                'currency_code': 'USD',
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
             },
             'discounts': {
                 'discount': [
@@ -995,8 +1055,7 @@ class TestClient:
         assert discounts[0].code == 'ADULT'
         assert discounts[1].code == 'CHILD'
 
-        assert meta.currency.code == 'GBP'
-        assert meta.desired_currency.code == 'USD'
+        assert meta.get_currency().code == 'gbp'
 
     def test_get_discounts_bad_data(self, client, monkeypatch):
         mock_make_request = Mock(return_value={})
@@ -1075,38 +1134,73 @@ class TestClient:
             client._trolley_params(send_codes=['POST', 'COBO'])
 
     def test_get_trolley(self, client, monkeypatch):
-        response = {'trolley_contents': {}, 'trolley_token': 'DEF456'}
+        response = {
+            'trolley_contents': {},
+            'trolley_token': 'DEF456',
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        trolley = client.get_trolley()
+        trolley, meta = client.get_trolley()
 
         mock_make_request.assert_called_with('trolley.v1', {})
 
         assert isinstance(trolley, Trolley)
         assert trolley.token == 'DEF456'
 
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
+
     def test_make_reservation(self, client, monkeypatch):
-        response = {'reserved_trolley': {'transaction_uuid': 'DEF456'}}
+        response = {
+            'reserved_trolley': {
+                'transaction_uuid': 'DEF456'
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        reservation = client.make_reservation()
+        reservation, meta = client.make_reservation()
 
         mock_make_request.assert_called_with('reserve.v1', {}, method=POST)
 
         assert isinstance(reservation, Reservation)
         assert reservation.trolley.transaction_uuid == 'DEF456'
 
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
+
     def test_get_status(self, client, monkeypatch):
-        response = {'trolley_contents': {'transaction_uuid': 'DEF456'}}
+        response = {
+            'trolley_contents': {
+                'transaction_uuid': 'DEF456'
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        status = client.get_status(
+        status, meta = client.get_status(
             transaction_uuid='DEF456',
             customer=True,
             external_sale_page=True,
@@ -1120,6 +1214,9 @@ class TestClient:
 
         assert isinstance(status, Status)
         assert status.trolley.transaction_uuid == 'DEF456'
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
 
     def test_test(self, client, monkeypatch):
         response = {'user_id': 'foobar'}
@@ -1153,6 +1250,12 @@ class TestClient:
             'transaction_status': 'purchased',
             'trolley_contents': {
                 'transaction_uuid': 'DEF456'
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
             }
         }
 
@@ -1165,7 +1268,7 @@ class TestClient:
             expiry_year=17,
             expiry_month=3,
         )
-        status, callout = client.make_purchase(
+        status, callout, meta = client.make_purchase(
             'abc123',
             customer,
             payment_method=card_details
@@ -1195,6 +1298,9 @@ class TestClient:
         assert status.trolley.transaction_uuid == 'DEF456'
         assert status.status == 'purchased'
 
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
+
     def test_make_purchase_redirection(self, client, monkeypatch):
         response = {
             "callout": {
@@ -1208,6 +1314,12 @@ class TestClient:
                     "debitor_type": "dummy"
                 },
                 "redirect_html_page_data": "some horribly insecure stuff here",
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
             }
         }
 
@@ -1224,7 +1336,7 @@ class TestClient:
             remote_site='myticketingco.biz',
         )
 
-        status, callout = client.make_purchase(
+        status, callout, meta = client.make_purchase(
             'abc123',
             customer,
             payment_method=redirection_details
@@ -1256,18 +1368,27 @@ class TestClient:
         assert isinstance(callout, Callout)
         assert callout.html == 'some horribly insecure stuff here'
 
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
+
     def test_next_callout(self, client, monkeypatch):
         response = {
             'transaction_status': 'purchased',
             'trolley_contents': {
                 'transaction_uuid': 'DEF456'
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
             }
         }
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        status, callout = client.next_callout(
+        status, callout, meta = client.next_callout(
             'abc123',
             'def456',
             {'foo': 'bar'},
@@ -1290,7 +1411,10 @@ class TestClient:
         assert status.trolley.transaction_uuid == 'DEF456'
         assert status.status == 'purchased'
 
-    def test_next_callout_with_addtional_callout(self, client, monkeypatch):
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
+
+    def test_next_callout_with_additional_callout(self, client, monkeypatch):
         response = {
             "callout": {
                 "debitor_integration_data": {
@@ -1303,13 +1427,19 @@ class TestClient:
                     "debitor_type": "dummy"
                 },
                 "redirect_html_page_data": "some horribly insecure stuff here",
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
             }
         }
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        status, callout = client.next_callout(
+        status, callout, meta = client.next_callout(
             'abc123',
             'def456',
             {'foo': 'bar'},
@@ -1330,3 +1460,6 @@ class TestClient:
         assert status is None
         assert isinstance(callout, Callout)
         assert callout.html == 'some horribly insecure stuff here'
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'

@@ -121,23 +121,32 @@ class TestCurrencyMeta:
     def test_from_api_data(self):
 
         data = {
-            'currency': {
-                'currency_code': 'GBP',
+            'currency_details': {
+                'usd': {
+                    "currency_code": "usd",
+                },
+                'gbp': {
+                    "currency_code": "gbp",
+                }
             },
-            'desired_currency': {
-                'currency_code': 'USD',
-            },
+            'currency_code': "gbp",
+            'desired_currency_code': "usd",
         }
 
         meta = CurrencyMeta.from_api_data(data)
 
         assert isinstance(meta, CurrencyMeta)
 
-        assert isinstance(meta.currency, Currency)
-        assert meta.currency.code == 'GBP'
+        gbp = meta.currencies['gbp']
+        assert isinstance(gbp, Currency)
+        assert gbp.code == 'gbp'
 
-        assert isinstance(meta.desired_currency, Currency)
-        assert meta.desired_currency.code == 'USD'
+        usd = meta.currencies['usd']
+        assert isinstance(usd, Currency)
+        assert usd.code == 'usd'
+
+        assert meta.desired_currency_code == 'usd'
+        assert meta.default_currency_code == 'gbp'
 
     def test_from_api_data_with_no_currency_data(self):
 
@@ -147,21 +156,4 @@ class TestCurrencyMeta:
 
         meta = CurrencyMeta.from_api_data(data)
 
-        assert meta is None
-
-    def test_from_api_data_with_no_desired_currency(self):
-
-        data = {
-            'currency': {
-                'currency_code': 'GBP',
-            },
-        }
-
-        meta = CurrencyMeta.from_api_data(data)
-
-        assert isinstance(meta, CurrencyMeta)
-
-        assert isinstance(meta.currency, Currency)
-        assert meta.currency.code == 'GBP'
-
-        assert meta.desired_currency is None
+        assert meta.currencies == {}

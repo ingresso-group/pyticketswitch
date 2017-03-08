@@ -232,14 +232,7 @@ class TestAvailabilityDetails:
                             'price_band_code': 'PLB',
                             'price_band_desc': 'Plebians',
                             'avail_detail': [{
-                                'avail_currency': {
-                                    'currency_code': 'gbp',
-                                    'currency_factor': 100,
-                                    'currency_number': 826,
-                                    'currency_places': 2,
-                                    'currency_post_symbol': 'GBP',
-                                    'currency_pre_symbol': '#'
-                                },
+                                'avail_currency_code': 'gbp',
                             }],
                         },
                     ]
@@ -249,12 +242,7 @@ class TestAvailabilityDetails:
         details = AvailabilityDetails.from_api_data(data)
         assert len(details) == 1
 
-        assert details[0].currency.code == 'gbp'
-        assert details[0].currency.factor == 100
-        assert details[0].currency.number == 826
-        assert details[0].currency.places ==2
-        assert details[0].currency.post_symbol == 'GBP'
-        assert details[0].currency.pre_symbol =='#'
+        assert details[0].currency == 'gbp'
 
     def test_from_api_data_adds_first_last_dates(self):
         data = {

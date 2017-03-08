@@ -21,7 +21,7 @@ def clean_up_pending_transactions(context):
     if hasattr(context, 'status'):
         status = context.status
     else:
-        status = context.client.get_status(context.transaction_uuid)
+        status, _ = context.client.get_status(context.transaction_uuid)
 
     if not status:
         return

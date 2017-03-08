@@ -9,7 +9,7 @@ from hamcrest import assert_that, equal_to
 def when_get_events_with_cost_range(context, event_ids):
     event_ids = event_ids.split(', ')
     assert event_ids
-    context.events = context.client.get_events(event_ids, cost_range=True)
+    context.events, _ = context.client.get_events(event_ids, cost_range=True)
 
 
 @then(u'the event has cost range')

@@ -6,7 +6,8 @@ from pyticketswitch.media import Media
 from pyticketswitch.review import Review
 from pyticketswitch.availability import AvailabilityDetails
 from pyticketswitch.field import Field
-from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.mixins import JSONMixin, PaginationMixin
+from pyticketswitch.currency import CurrencyMeta
 
 
 class Event(JSONMixin, object):
@@ -312,3 +313,25 @@ class Event(JSONMixin, object):
 
     def __repr__(self):
         return u'<Event {}:{}>'.format(self.id, self.description)
+
+
+class EventMeta(PaginationMixin, CurrencyMeta):
+    """Meta information about a set of events
+
+    Attributes:
+        currencies (dict): dictionary of
+            :class:`Currency <pytickectswitch.currency.Currency>`) objects
+            indexed on currency code.
+        default_currency_code (str): unless other wise specified all prices in
+            the related response will be in this currency.
+        desired_currency_code (str):
+            the currency that the user account is expecting. Useful for
+            conversions.
+        page_length (int): the number of items per page.
+        page_number (int): the current page.
+        pages_remaining (int): the number of pages remaining.
+        results_remaining (int): the total number of remaining results after
+            the current page.
+        total_results (int): the total number of results.
+    """
+    pass

@@ -18,7 +18,7 @@ def given_i_have_a_list_of_performances(context, event_id):
 @vcr.use_cassette('fixtures/cassettes/get-performance.yaml', record_mode='new_episodes')
 def when_i_fetch_a_performance(context):
     context.performance_id = context.event_performances['6IF'][3].id
-    context.performance = context.client.get_performance(context.performance_id)
+    context.performance, _ = context.client.get_performance(context.performance_id)
 
 
 @when('I fetch multiple performances')
@@ -28,7 +28,7 @@ def when_i_fetch_multiple_performance(context):
         context.event_performances['6IF'][3].id,
         context.event_performances['6IF'][4].id,
     ]
-    context.performances = context.client.get_performances(context.performance_ids)
+    context.performances, _ = context.client.get_performances(context.performance_ids)
 
 
 @when('I fetch performances for the event "{event_id}"')

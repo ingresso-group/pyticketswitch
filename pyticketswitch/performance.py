@@ -1,7 +1,8 @@
 from pyticketswitch import utils
 from pyticketswitch.cost_range import CostRange
 from pyticketswitch.availability import AvailabilityDetails
-from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.mixins import JSONMixin, PaginationMixin
+from pyticketswitch.currency import CurrencyMeta
 
 
 class Performance(JSONMixin, object):
@@ -128,7 +129,7 @@ class Performance(JSONMixin, object):
         return u'<Performance {}>'.format(self.id)
 
 
-class PerformanceMeta(JSONMixin, object):
+class PerformanceMeta(PaginationMixin, CurrencyMeta, object):
     """
     PerformanceMeta contains meta information about a list of
     :class:`Performances <pyticketswitch.performance.Performance>`.
@@ -140,9 +141,10 @@ class PerformanceMeta(JSONMixin, object):
         has_names: (bool): indicates that the related performances have names
     """
 
-    def __init__(self, auto_select=False, has_names=False):
+    def __init__(self, auto_select=False, has_names=False, *args, **kwargs):
         self.auto_select = auto_select
         self.has_names = has_names
+        super(PerformanceMeta, self).__init__(*args, **kwargs)
 
     @classmethod
     def from_api_data(cls, data):
@@ -158,7 +160,8 @@ class PerformanceMeta(JSONMixin, object):
             object populated with the data from the api.
 
         """
-        auto_select = data.get('autoselect_this_performance', False)
-        has_names = data.get('results', {}).get('has_perf_names', False)
+        inst = super(PerformanceMeta, cls).from_api_data(data)
+        inst.auto_select = data.get('autoselect_this_performance', False)
+        inst.has_names = data.get('results', {}).get('has_perf_names', False)
 
-        return cls(auto_select=auto_select, has_names=has_names)
+        return inst

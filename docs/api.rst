@@ -129,6 +129,11 @@ Payment Details
 
 Meta Objects
 ------------
+.. autoclass:: pyticketswitch.event.EventMeta
+   :members:
+   :inherited-members:
+.. autoclass:: pyticketswitch.performance.PerformanceMeta
+   :inherited-members:
 .. autoclass:: pyticketswitch.availability.AvailabilityMeta
    :inherited-members:
 .. autoclass:: pyticketswitch.currency.CurrencyMeta

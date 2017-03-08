@@ -116,17 +116,22 @@ class CurrencyMeta(JSONMixin, object):
     """Currency information for another object.
 
     Attributes:
-        currency (:class:`Currency <pytickectswitch.currency.Currency>`): the
-            currency that all prices in the related object are in.
-        desired_currency (:class:`Currency <pytickectswitch.currency.Currency>`):
+        currencies (dict) dictionary of
+            :class:`Currency <pytickectswitch.currency.Currency>`) objects
+            indexed on currency code.
+        default_currency_code (str): unless other wise specified all prices in
+            the related response will be in this currency.
+        desired_currency_code (str):
             the currency that the user account is expecting. Useful for
             conversions.
 
     """
 
-    def __init__(self, currency, desired_currency=None):
-        self.currency = currency
-        self.desired_currency = desired_currency
+    def __init__(self, currencies, default_currency_code=None,
+                 desired_currency_code=None):
+        self.currencies = currencies
+        self.default_currency_code = default_currency_code
+        self.desired_currency_code = desired_currency_code
 
     @classmethod
     def from_api_data(cls, data):
@@ -141,16 +146,58 @@ class CurrencyMeta(JSONMixin, object):
                 currency meta data.
 
         """
-        currency_data = data.get('currency')
+        currency_data = data.get('currency_details')
         if not currency_data:
-            return
+            return cls(currencies={})
 
-        currency = Currency.from_api_data(currency_data)
+        currencies = {
+            code: Currency.from_api_data(value)
+            for code, value in currency_data.items()
+        }
 
-        desired_currency_data = data.get('desired_currency')
-        if desired_currency_data:
-            desired_currency = Currency.from_api_data(desired_currency_data)
-        else:
-            desired_currency = None
+        default_currency_code = data.get('currency_code')
+        desired_currency_code = data.get('desired_currency_code')
 
-        return cls(currency, desired_currency=desired_currency)
+        return cls(
+            currencies=currencies,
+            default_currency_code=default_currency_code,
+            desired_currency_code=desired_currency_code,
+        )
+
+    def get_currency(self, code=None):
+        """Get the :class:`Currency <pyticketswitch.currency.Currency>` object for the given code.
+
+        Args:
+            code (str, optional): ISO 4217 currency code.
+
+        Returns:
+            :class:`Currency <pyticketswitch.currency.Currency>`: The currency
+            for the given code.
+
+            If no code is specified, return the default currency as specified
+            by :attr:`CurrencyMeta.default_currency_code <pyticketswitch.currency.CurrencyMeta.default_currency_code>`.
+
+            If no default currency is specified return :obj:`None`.
+
+        """
+        if not code:
+            code = self.default_currency_code
+
+        if not code:
+            return None
+
+        return self.currencies.get(code)
+
+    def get_desired_currency(self):
+        """Get the :class:`Currency <pyticketswitch.currency.Currency>` object for the desired currency.
+
+        Returns:
+            :class:`Currency <pyticketswitch.currency.Currency>`: The currency
+            for the desired currency.
+
+            If no desired currency is specified return :obj:`None`.
+        """
+        if not self.desired_currency_code:
+            return None
+
+        return self.currencies.get(self.desired_currency_code)

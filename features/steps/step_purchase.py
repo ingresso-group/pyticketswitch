@@ -51,7 +51,7 @@ def reserve_tickets_for_this_event(context):
     scenario = context.scenario.name
     key = md5(scenario.encode('utf-8')).hexdigest()
 
-    reservation = context.client.make_reservation(
+    reservation, _ = context.client.make_reservation(
         performance_id=context.performance.id,
         number_of_seats=2,
         ticket_type_code=context.ticket_type.code,
@@ -116,7 +116,7 @@ def i_purchase_the_tickets(context):
     callout = None
 
     try:
-        status, callout = client.make_purchase(
+        status, callout, _ = client.make_purchase(
             context.transaction_uuid,
             context.customer,
             payment_method=context.payment_method,
@@ -190,7 +190,7 @@ def i_get_a_callout(context):
 @given(u'I have returned from a successful external payment')
 @vcr_post.use_cassette('fixtures/cassettes/purchase-callout.yaml', record_mode='new_episodes')
 def i_have_returned_from_a_succesfull_callout(context):
-    status, callout = context.client.make_purchase(
+    status, callout, _ = context.client.make_purchase(
         context.transaction_uuid,
         context.customer,
         payment_method=context.payment_method,
@@ -205,7 +205,7 @@ def i_have_returned_from_a_succesfull_callout(context):
 @given(u'I have returned from a failed external payment')
 @vcr_post.use_cassette('fixtures/cassettes/purchase-failed-callout.yaml', record_mode='new_episodes')
 def i_have_returned_from_a_failed_callout(context):
-    status, callout = context.client.make_purchase(
+    status, callout, _ = context.client.make_purchase(
         context.transaction_uuid,
         context.customer,
         payment_method=context.payment_method,
@@ -224,7 +224,7 @@ def i_ask_for_the_next_redirect(context):
     context.redirect_counter += 1
     next_token = '{}.{}'.format(context.transaction_uuid, context.redirect_counter)
 
-    status, callout = context.client.next_callout(
+    status, callout, _ = context.client.next_callout(
         context.this_token,
         next_token,
         context.callout_return_params
