@@ -45,12 +45,10 @@ class TestPriceBand:
             },
             'price_band_code': 'B',
             'discount_code': 'ABC123',
-            'example_seats': {
-                'id_details': [
-                    {'full_id': 'ZZ-TOP'},
-                    {'full_id': 'ZZ-BOTTOM'},
-                ]
-            },
+            'example_seats': [
+                {'full_id': 'ZZ-TOP'},
+                {'full_id': 'ZZ-BOTTOM'},
+            ],
             'example_seats_are_real': False,
             'free_seat_blocks': {
                 'seat_block': [
