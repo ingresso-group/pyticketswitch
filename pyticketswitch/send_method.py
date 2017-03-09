@@ -62,4 +62,5 @@ class SendMethod(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<SendMethod {}:{}>'.format(self.code, self.description)
+        return u'<SendMethod {}:{}>'.format(
+            self.code, self.description.encode('ascii', 'ignore'))

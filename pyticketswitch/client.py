@@ -484,7 +484,7 @@ class Client(object):
                 for more info.
 
         Returns:
-            :class:`Event <pyticketswitch.event.Event>`, :class:`EventMeta <pyticketswitch.event.EventMeta>`: 
+            :class:`Event <pyticketswitch.event.Event>`, :class:`EventMeta <pyticketswitch.event.EventMeta>`:
             the target event and meta information about the event.
 
             will return :obj:`None` if the event does not exist.

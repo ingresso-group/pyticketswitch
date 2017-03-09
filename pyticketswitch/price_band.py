@@ -124,5 +124,6 @@ class PriceBand(JSONMixin, object):
 
     def __repr__(self):
         if self.description:
-            return u'<PriceBand {}:{}>'.format(self.code, self.description)
+            return u'<PriceBand {}:{}>'.format(
+                self.code, self.description.encode('ascii', 'ignore'))
         return u'<PriceBand {}>'.format(self.code)

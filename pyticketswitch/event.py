@@ -312,7 +312,8 @@ class Event(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<Event {}:{}>'.format(self.id, self.description)
+        return u'<Event {}:{}>'.format(
+            self.id, self.description.encode('ascii', 'ignore'))
 
 
 class EventMeta(PaginationMixin, CurrencyMeta):

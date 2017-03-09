@@ -143,11 +143,3 @@ class TestPriceBand:
         seats = price_band.get_seats()
 
         assert seats == []
-
-    def test_repr(self):
-        price_band = PriceBand('A/pool', Discount('ADULT'))
-        assert repr(price_band) == '<PriceBand A/pool>'
-
-    def test_repr_with_description(self):
-        price_band = PriceBand('A/pool', Discount('ADULT'), description='LOLOL')
-        assert repr(price_band) == '<PriceBand A/pool:LOLOL>'

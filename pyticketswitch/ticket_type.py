@@ -66,4 +66,5 @@ class TicketType(JSONMixin, object):
         ]
 
     def __repr__(self):
-        return u'<TicketType {}: {}>'.format(self.code, self.description)
+        return u'<TicketType {}: {}>'.format(
+            self.code, self.description.encode('ascii', 'ignore'))

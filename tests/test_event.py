@@ -280,7 +280,3 @@ class TestEvent:
         event = Event.from_api_data(data)
 
         assert event.has_performances is False
-
-    def test_repr(self):
-        event = Event('abc123', description='Alpha Numeric')
-        assert repr(event) == '<Event abc123:Alpha Numeric>'

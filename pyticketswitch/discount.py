@@ -122,4 +122,5 @@ class Discount(JSONMixin, object):
         return self.non_offer_seatprice + self.non_offer_surcharge
 
     def __repr__(self):
-        return u'<Discount {}:{}>'.format(self.code, self.description)
+        return u'<Discount {}:{}>'.format(
+            self.code, self.description.encode('ascii', 'ignore'))
