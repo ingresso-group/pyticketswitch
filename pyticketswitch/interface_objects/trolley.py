@@ -287,7 +287,7 @@ class Trolley(InterfaceObject):
     def debitor_choices(self):
 
         debitor_choices = {
-            debitor['debitor_name']: debitor
+            debitor['debitor_type']: debitor
             for bundle in self.bundles
             for debitor in bundle._core_bundle.debitor_choices
         }
