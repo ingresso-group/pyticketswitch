@@ -973,8 +973,9 @@ class Client(object):
                 parameters.
 
         Returns:
-            :class:`Trolley <pyticketswitch.trolley.Trolley>`: the contents of
-            the trolley.
+            :class:`Trolley <pyticketswitch.trolley.Trolley>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            the contents of the trolley and meta data associated with the
+            trolley.
 
         Raises:
             InvalidParametersError: when there is an issue with the provided
@@ -1039,8 +1040,9 @@ class Client(object):
                 parameters.
 
         Returns:
-            :class:`Trolley <pyticketswitch.trolley.Trolley>`: the contents of
-            the trolley.
+            :class:`Reservation <pyticketswitch.reservation.Reservation>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            Information about the reservation and meta data asscociated with
+            the reservation.
 
         Raises:
             InvalidParametersError: when there is an issue with the provided
