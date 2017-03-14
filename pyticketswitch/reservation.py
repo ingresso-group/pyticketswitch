@@ -1,16 +1,27 @@
-from pyticketswitch.trolley import Trolley
-from pyticketswitch.address import Address
-from pyticketswitch.country import Country
 from pyticketswitch.order import Order
-from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.status import Status
 
 
-class Reservation(JSONMixin, object):
+class Reservation(Status):
     """Describes some tickets currently being held for purchase
 
     Attributes:
-        trolley (:class:`Trolley <pyticketswitch.trolley.Trolley`): the contents
-            of the reservation trolley.
+        status (str): the currency status of the transaction.
+        reserved_at (datetime.datetime): the date and time when the transaction
+            was reserved.
+        purchased_at (datetime.datetime): the date and time when the transaction
+            was purchased.
+        trolley (:class:`Trolley <pyticketswitch.trolley.Trolley>`): the
+            contents of the transactions trolley.
+        external_sale_page (str): the page that was rendered to the customer
+            after the transaction was completed. This is only available if
+            it was passed into the API at purchase time.
+        languages (list): list of IETF language tags relevant to the
+            transaction.
+        remote_site (str): the remote site the transaction was reserved and
+            purchased under.
+        reserve_user (:class:`User <pyticketswitch.user.User>`): the user that
+            was used to reserve the transaction.
         unreserved_orders (list): list of :class:`Orders
             <pyticketswitch.order.Order`>` that failed to reserve.
         prefilled_address (:class:`Address <pyticketswitch.address.Address>`):
@@ -35,20 +46,9 @@ class Reservation(JSONMixin, object):
 
     """
 
-    def __init__(self, trolley=None, unreserved_orders=None, prefilled_address=None,
-                 needs_payment_card=False, needs_email_address=False,
-                 needs_agent_reference=False, can_edit_address=False,
-                 allowed_countries=None, minutes_left=None):
-
-        self.trolley = trolley
+    def __init__(self, unreserved_orders=None, *args, **kwargs):
+        super(Reservation, self).__init__(*args, **kwargs)
         self.unreserved_orders = unreserved_orders
-        self.prefilled_address = prefilled_address
-        self.needs_payment_card = needs_payment_card
-        self.needs_email_address = needs_email_address
-        self.needs_agent_reference = needs_agent_reference
-        self.can_edit_address = can_edit_address
-        self.allowed_countries = allowed_countries
-        self.minutes_left = minutes_left
 
     @classmethod
     def from_api_data(cls, data):
@@ -65,29 +65,7 @@ class Reservation(JSONMixin, object):
 
         """
 
-        kwargs = {
-            'can_edit_address': data.get('can_edit_address'),
-            'needs_agent_reference': data.get('needs_agent_reference'),
-            'needs_email_address': data.get('needs_email_address'),
-            'needs_payment_card': data.get('needs_payment_card'),
-            'minutes_left': data.get('minutes_left_on_reserve'),
-        }
-
-        allowed_countries = data.get('allowed_countries')
-        if allowed_countries is not None:
-            countries = [
-                Country(key, description=description)
-                for key, description in allowed_countries.items()
-            ]
-            countries.sort(key=lambda x: x.code)
-            kwargs.update(allowed_countries=countries)
-
-        address = data.get('prefilled_address')
-        if address is not None:
-            kwargs.update(prefilled_address=Address.from_api_data(address))
-
-        trolley = Trolley.from_api_data(data)
-        kwargs.update(trolley=trolley)
+        inst = super(Reservation, cls).from_api_data(data)
 
         raw_unreserved_orders = data.get('unreserve_orders')
         if raw_unreserved_orders:
@@ -95,9 +73,9 @@ class Reservation(JSONMixin, object):
                 Order.from_api_data(order)
                 for order in raw_unreserved_orders
             ]
-            kwargs.update(unreserved_orders=unreserved_orders)
+            inst.unreserved_orders=unreserved_orders
 
-        return cls(**kwargs)
+        return inst
 
     def __repr__(self):
         if self.trolley and self.trolley.transaction_uuid:
