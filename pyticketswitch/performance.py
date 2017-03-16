@@ -18,9 +18,9 @@ class Performance(JSONMixin, object):
         event_id (str): identifier for the event.
         date_time (:obj:`datetime.datetime`): the localised date and time for
             the performance.
-        date_desc (str): a human readable description of the date of the
+        date_description (str): a human readable description of the date of the
             performance.
-        time_desc (str): a human readable description of the time of the
+        time_description (str): a human readable description of the time of the
             performance.
         has_pool_seats (bool): the performance has pool seats available.
         is_limited (bool): the performance has limited availability.
@@ -43,7 +43,7 @@ class Performance(JSONMixin, object):
     """
 
     def __init__(self, id_, event_id, date_time=None,
-                 date_desc=None, time_desc=None, has_pool_seats=False,
+                 date_description=None, time_description=None, has_pool_seats=False,
                  is_limited=False, cached_max_seats=None, cost_range=None,
                  no_singles_cost_range=None, is_ghost=False, name=None,
                  running_time=None, availability_details=None):
@@ -51,8 +51,8 @@ class Performance(JSONMixin, object):
         self.id = id_
         self.event_id = event_id
         self.date_time = date_time
-        self.date_desc = date_desc
-        self.time_desc = time_desc
+        self.date_description = date_description
+        self.time_description = time_description
         self.has_pool_seats = has_pool_seats
         self.is_limited = is_limited
         self.cached_max_seats = cached_max_seats
@@ -108,8 +108,8 @@ class Performance(JSONMixin, object):
             'id_': id_,
             'event_id': event_id,
             'date_time': date_time,
-            'date_desc': date_desc,
-            'time_desc': time_desc,
+            'date_description': date_desc,
+            'time_description': time_desc,
             'running_time': data.get('running_time'),
             'name': data.get('perf_name'),
             'has_pool_seats': data.get('has_pool_seats', False),
