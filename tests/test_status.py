@@ -65,7 +65,7 @@ class TestStatus:
         assert status.allowed_countries[0].code == 'ad'
         assert status.allowed_countries[1].code == 'ae'
 
-        assert len(status.accepted_payment_cards) == 2
+        assert len(status.accepted_cards) == 2
         assert status.accepted_cards[0].code == 'amex'
         assert status.accepted_cards[0].description == 'American Express'
         assert status.accepted_cards[1].code == 'visa'

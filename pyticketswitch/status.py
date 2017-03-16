@@ -76,7 +76,7 @@ class Status(JSONMixin, object):
         self.can_edit_address = can_edit_address
         self.allowed_countries = allowed_countries
         self.minutes_left = minutes_left
-        self.support_billing_address = supports_billing_address
+        self.supports_billing_address = supports_billing_address
         self.accepted_cards = accepted_cards
 
     @classmethod
