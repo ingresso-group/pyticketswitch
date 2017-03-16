@@ -1,6 +1,6 @@
-from pyticketswitch.currency import Currency
 from pyticketswitch.order import Order
 from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.debitor import Debitor
 
 
 class Bundle(JSONMixin, object):
@@ -16,8 +16,7 @@ class Bundle(JSONMixin, object):
         total_send_cost (float): the total postage fee for the bundle.
         total (float): the total amount of money required to purchase this
             bundle.
-        currency (:class:`Currency <pyticketswitch.currency.Currency>`): the
-            currency that the prices are in.
+        currency_code (str): the currency that the prices are in.
         debitor (:class:`Debitor <pyticketswitch.debitor.Debitor>`):
             information about an external debitor that will be used to take
             payment for this bundle. When you are selling on credit, or the
@@ -27,7 +26,8 @@ class Bundle(JSONMixin, object):
 
     def __init__(self, source_code, orders=None, description=None,
                  total_seatprice=None, total_surcharge=None,
-                 total_send_cost=None, total=None, currency=None):
+                 total_send_cost=None, total=None, currency_code=None,
+                 debitor=None):
         self.source_code = source_code
         self.orders = orders
         self.description = description
@@ -35,7 +35,8 @@ class Bundle(JSONMixin, object):
         self.total_surcharge = total_surcharge
         self.total_send_cost = total_send_cost
         self.total = total
-        self.currency = currency
+        self.currency_code = currency_code
+        self.debitor = debitor
 
     @classmethod
     def from_api_data(cls, data):
@@ -55,12 +56,8 @@ class Bundle(JSONMixin, object):
         kwargs = {
             'source_code': data.get('bundle_source_code'),
             'description': data.get('bundle_source_desc'),
+            'currency_code': data.get('currency_code'),
         }
-
-        raw_currency = data.get('currency')
-        if raw_currency:
-            currency = Currency.from_api_data(raw_currency)
-            kwargs.update(currency=currency)
 
         raw_orders = data.get('order')
         if raw_orders:
@@ -85,6 +82,11 @@ class Bundle(JSONMixin, object):
         total = data.get('bundle_total_cost')
         if total is not None:
             kwargs.update(total=float(total))
+
+        raw_debitor = data.get('debitor')
+        if raw_debitor:
+            debitor = Debitor.from_api_data(raw_debitor)
+            kwargs.update(debitor=debitor)
 
         return cls(**kwargs)
 
