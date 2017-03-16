@@ -4,6 +4,7 @@ from pyticketswitch.utils import isostr_to_datetime
 from pyticketswitch.country import Country
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.address import Address
+from pyticketswitch.card_type import CardType
 
 
 class Status(JSONMixin, object):
@@ -45,16 +46,20 @@ class Status(JSONMixin, object):
             customers postal address to be from.
         minutes_left (float): the number of minutes left before a reservation
             expires.
-
+        supports_billing_address (bool): this transaction will support supplying
+            a secondary billing address that is differnet to the customer
+            address.
+        accepted_cards (list): acceptable debit/credit card types when API
+            takes card details from the customer.
     """
-
     def __init__(self, status=None, reserved_at=None, trolley=None,
                  purchased_at=None, external_sale_page=None,
                  languages=None, remote_site=None, reserve_user=None,
                  prefilled_address=None, needs_payment_card=False,
                  needs_email_address=False, needs_agent_reference=False,
                  can_edit_address=False, allowed_countries=None,
-                 minutes_left=None):
+                 minutes_left=None, supports_billing_address=False,
+                 accepted_cards=None):
 
         self.status = status
         self.reserved_at = reserved_at
@@ -71,6 +76,8 @@ class Status(JSONMixin, object):
         self.can_edit_address = can_edit_address
         self.allowed_countries = allowed_countries
         self.minutes_left = minutes_left
+        self.support_billing_address = supports_billing_address
+        self.accepted_cards = accepted_cards
 
     @classmethod
     def from_api_data(cls, data):
@@ -86,6 +93,12 @@ class Status(JSONMixin, object):
             populated with the data from the api.
 
         """
+
+        accepted_cards = [
+            CardType(code=key, description=value)
+            for key, value in data.get('accepted_payment_cards', {}).items()
+        ]
+
         kwargs = {
             'status': data.get('transaction_status'),
             'trolley': Trolley.from_api_data(data),
@@ -95,6 +108,8 @@ class Status(JSONMixin, object):
             'needs_email_address': data.get('needs_email_address'),
             'needs_payment_card': data.get('needs_payment_card'),
             'minutes_left': data.get('minutes_left_on_reserve'),
+            'supports_billing_address': data.get('supports_billing_address'),
+            'accepted_cards': accepted_cards,
         }
 
         reserved_raw = data.get('reserve_iso8601_date_and_time')

@@ -18,6 +18,10 @@ class Bundle(JSONMixin, object):
             bundle.
         currency (:class:`Currency <pyticketswitch.currency.Currency>`): the
             currency that the prices are in.
+        debitor (:class:`Debitor <pyticketswitch.debitor.Debitor>`):
+            information about an external debitor that will be used to take
+            payment for this bundle. When you are selling on credit, or the
+            source system is taking payment, this will be :obj:`None`.
 
     """
 
