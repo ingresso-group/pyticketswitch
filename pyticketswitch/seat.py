@@ -60,12 +60,13 @@ class Seat(JSONMixin, object):
     """
 
     def __init__(self, id_=None, column=None, row=None, is_restricted=False,
-                 seat_text_code=None, separator=None):
+                 seat_text_code=None, seat_text=None, separator=None):
         self.id = id_
         self.column = column
         self.row = row
         self.separator = separator
         self.is_restricted = is_restricted
+        self.seat_text = seat_text
         self.seat_text_code = seat_text_code
 
     @classmethod
@@ -82,13 +83,13 @@ class Seat(JSONMixin, object):
             populated with the data from the api.
 
         """
-
         kwargs = {
             'id_': data.get('full_id'),
             'column': data.get('col_id'),
             'row': data.get('row_id'),
-            'is_restricted': data.get('is_restricted', False),
+            'is_restricted': data.get('is_restricted_view', False),
             'seat_text_code': data.get('seat_text_code'),
+            'seat_text': data.get('seat_text'),
             'separator': data.get('separator', ''),
         }
 

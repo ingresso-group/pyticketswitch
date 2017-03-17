@@ -7,7 +7,7 @@ class Content(JSONMixin, object):
     Attributes:
         name (str): the identifier of the content
         value (str): plain text content.
-        html (str): html content.
+        value_html (str): html content.
 
     """
 

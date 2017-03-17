@@ -63,7 +63,7 @@ class Event(JSONMixin, object):
         event_info (str): event info as HTML. Only present when requested.
         venue_addr (str): venue address in plain text. Only present when
             requested.
-        venue_addr (str): venue address as HTML. Only present when requested.
+        venue_addr_html (str): venue address as HTML. Only present when requested.
         venue_info (str): venue info in plain text. Only present when
             requested.
         venue_info (str): venue info as HTML. Only present when requested.
