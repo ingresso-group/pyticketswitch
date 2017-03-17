@@ -25,7 +25,7 @@ class CostRange(JSONMixin, object):
             with the highest percentage saving.
         max_saving_offer (:class:`Offer <pyticketswitch.offer.Offer>`): offer
             with the highest absolute saving.
-        max_cost_offer (:class:`Offer <pyticketswitch.offer.Offer>`): offer
+        min_cost_offer (:class:`Offer <pyticketswitch.offer.Offer>`): offer
             with the lowest cost.
         top_price_offer (:class:`Offer <pyticketswitch.offer.Offer>`): offer
             with the top price.
