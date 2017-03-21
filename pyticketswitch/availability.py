@@ -82,8 +82,10 @@ class AvailabilityDetails(JSONMixin, object):
 
     def __init__(self, ticket_type=None, price_band=None,
                  ticket_type_description=None, price_band_description=None,
-                 seatprice=None, surcharge=None, currency=None,
-                 first_date=None, last_date=None, calendar_masks=None,
+                 seatprice=None, surcharge=None, full_seatprice=None,
+                 full_surcharge=None, currency=None, first_date=None,
+                 percentage_saving=None, absolute_saving=None,
+                 last_date=None, calendar_masks=None,
                  weekday_mask=None, valid_quanities=None):
 
         self.ticket_type = ticket_type
@@ -92,6 +94,10 @@ class AvailabilityDetails(JSONMixin, object):
         self.price_band_description = price_band_description
         self.seatprice = seatprice
         self.surcharge = surcharge
+        self.full_seatprice = full_seatprice
+        self.full_surcharge = full_surcharge
+        self.percentage_saving = percentage_saving
+        self.absolute_saving = absolute_saving
         self.currency = currency
         self.first_date = first_date
         self.last_date = last_date
@@ -128,52 +134,58 @@ class AvailabilityDetails(JSONMixin, object):
                 )
 
                 raw_details_list = price_band.get('avail_detail', [{}])
-                raw_details = raw_details_list[0]
 
-                if 'seatprice' in raw_details:
-                    kwargs['seatprice'] = raw_details['seatprice']
+                for raw_details in raw_details_list:
 
-                if 'surcharge' in raw_details:
-                    kwargs['surcharge'] = raw_details['surcharge']
-
-                if 'avail_currency_code' in raw_details:
+                    kwargs['seatprice'] = raw_details.get('seatprice', 0.0)
+                    kwargs['full_seatprice'] = raw_details.get('full_seatprice', 0.0)
+                    kwargs['surcharge'] = raw_details.get('surcharge', 0.0)
+                    kwargs['full_surcharge'] = raw_details.get('full_surcharge', 0.0)
+                    kwargs['percentage_saving'] = raw_details.get('percentage_saving', 0.0)
+                    kwargs['absolute_saving'] = raw_details.get('absolute_saving', 0.0)
                     kwargs['currency'] = raw_details.get('avail_currency_code')
 
-                available_dates = raw_details.get('available_dates', {})
-                if 'first_yyyymmdd' in available_dates:
-                    first = datetime.datetime.strptime(
-                        available_dates['first_yyyymmdd'],
-                        '%Y%m%d'
-                    )
-                    kwargs['first_date'] = first.date()
+                    available_dates = raw_details.get('available_dates', {})
+                    if 'first_yyyymmdd' in available_dates:
+                        first = datetime.datetime.strptime(
+                            available_dates['first_yyyymmdd'],
+                            '%Y%m%d'
+                        )
+                        kwargs['first_date'] = first.date()
 
-                if 'last_yyyymmdd' in available_dates:
-                    last = datetime.datetime.strptime(
-                        available_dates['last_yyyymmdd'],
-                        '%Y%m%d'
-                    )
-                    kwargs['last_date'] = last.date()
+                    if 'last_yyyymmdd' in available_dates:
+                        last = datetime.datetime.strptime(
+                            available_dates['last_yyyymmdd'],
+                            '%Y%m%d'
+                        )
+                        kwargs['last_date'] = last.date()
 
-                kwargs['calendar_masks'] = {
-                    int(year[5:]): {
-                        MONTH_NUMBERS[month[:3]]: mask
-                        for month, mask in month_masks.items()
+                    kwargs['calendar_masks'] = {
+                        int(year[5:]): {
+                            MONTH_NUMBERS[month[:3]]: mask
+                            for month, mask in month_masks.items()
+                        }
+                        for year, month_masks in available_dates.items()
+                        if year.startswith('year_')
                     }
-                    for year, month_masks in available_dates.items()
-                    if year.startswith('year_')
-                }
 
-                if 'available_weekdays_bitmask' in raw_details:
-                    kwargs['weekday_mask'] = raw_details['available_weekdays_bitmask']
+                    if 'available_weekdays_bitmask' in raw_details:
+                        kwargs['weekday_mask'] = raw_details['available_weekdays_bitmask']
 
-                if 'valid_quantity_bitmask' in raw_details:
-                    kwargs['valid_quanities'] = bitmask_to_numbered_list(
-                        raw_details['valid_quantity_bitmask']
-                    )
+                    if 'valid_quantity_bitmask' in raw_details:
+                        kwargs['valid_quanities'] = bitmask_to_numbered_list(
+                            raw_details['valid_quantity_bitmask']
+                        )
+                    avail_details = AvailabilityDetails(**kwargs)
 
-                details.append(AvailabilityDetails(**kwargs))
+                    if avail_details._weekday_mask:
+                        weekday_list = []
+                        for day in range(0, 7):
+                            weekday_list.append(avail_details.on_weekday(day))
+                        avail_details.weekday_list = weekday_list
+                    details.append(avail_details)
 
-        return details
+        return sorted(details, key=lambda x: (x.ticket_type_description, x.combined_price()))
 
     def is_available(self, year, month=None, day=None):
         """Check availablity on a given year/month/day.
@@ -236,3 +248,9 @@ class AvailabilityDetails(JSONMixin, object):
         adjusted_day = day + 1 if day < 6 else 0
 
         return bool(self._weekday_mask >> adjusted_day & 1)
+
+    def combined_price(self):
+        return self.seatprice + self.surcharge
+
+    def combined_full_price(self):
+        return self.full_seatprice + self.full_surcharge

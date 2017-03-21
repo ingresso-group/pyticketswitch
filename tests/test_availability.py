@@ -171,25 +171,25 @@ class TestAvailabilityDetails:
         details = AvailabilityDetails.from_api_data(data)
         assert len(details) == 4
 
-        assert details[0].ticket_type == 'FOO'
-        assert details[0].ticket_type_description == 'Foo'
-        assert details[0].price_band == 'PLB'
-        assert details[0].price_band_description == 'Plebians'
+        assert details[2].ticket_type == 'FOO'
+        assert details[2].ticket_type_description == 'Foo'
+        assert details[2].price_band == 'PLB'
+        assert details[2].price_band_description == 'Plebians'
 
-        assert details[1].ticket_type == 'FOO'
-        assert details[1].ticket_type_description == 'Foo'
-        assert details[1].price_band == 'TRG'
-        assert details[1].price_band_description == 'Troglodites'
+        assert details[3].ticket_type == 'FOO'
+        assert details[3].ticket_type_description == 'Foo'
+        assert details[3].price_band == 'TRG'
+        assert details[3].price_band_description == 'Troglodites'
 
-        assert details[2].ticket_type == 'BAR'
-        assert details[2].ticket_type_description == 'Bar'
-        assert details[2].price_band == 'VIP'
-        assert details[2].price_band_description == 'Very Important People'
+        assert details[0].ticket_type == 'BAR'
+        assert details[0].ticket_type_description == 'Bar'
+        assert details[0].price_band == 'VIP'
+        assert details[0].price_band_description == 'Very Important People'
 
-        assert details[3].ticket_type == 'BAR'
-        assert details[3].ticket_type_description == 'Bar'
-        assert details[3].price_band == 'CBH'
-        assert details[3].price_band_description == 'Chinese Billionaire Heiress'
+        assert details[1].ticket_type == 'BAR'
+        assert details[1].ticket_type_description == 'Bar'
+        assert details[1].price_band == 'CBH'
+        assert details[1].price_band_description == 'Chinese Billionaire Heiress'
 
     def test_from_api_data_adds_prices_availability(self):
         data = {
