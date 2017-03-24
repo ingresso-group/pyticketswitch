@@ -25,8 +25,8 @@ Feature: add additional information to request
             """
             {
                 "address": {
-                    "value": "Roseberry Avenue\r\nIslington\r\nLondon\r\nUK",
-                    "value_html": "<p>Roseberry Avenue\r\nIslington\r\nLondon\r\nUK</p>"
+                    "value": "Roseberry Avenue Islington London UK\n",
+                    "value_html": "<p>Roseberry Avenue Islington London UK</p>"
                 }
             }
             """
@@ -40,8 +40,8 @@ Feature: add additional information to request
         And the event has venue information
             """
             {
-                "value": "Roseberry Avenue\r\nIslington\r\nLondon\r\nUK",
-                "value_html": "<div><p>Roseberry Avenue\r\nIslington\r\nLondon\r\nUK</p></div>\n"
+                "value": "Roseberry Avenue Islington London UK\n",
+                "value_html": "<div><p>Roseberry Avenue Islington London UK</p></div>\n"
             }
             """
 
@@ -62,7 +62,7 @@ Feature: add additional information to request
                 "caption": "",
                 "caption_html": "",
                 "name": "square",
-                "url": "https://d1wx4w35ubmdix.cloudfront.net/shared/event_media/cropper/5e/5e004f25b5aab6f432cd7e6839b70942d8a5f17b.jpg",
+                "url": "https://d1wx4w35ubmdix.cloudfront.net/media/event/6IF/matthew-bournes-nutcracker-test-square-Z0Jk.jpg?versionId=09daZJn.14RH7.84cRKXK2FfODDmFYpC",
                 "secure": true,
                 "width": null,
                 "height": null

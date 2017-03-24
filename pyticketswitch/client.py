@@ -1103,8 +1103,9 @@ class Client(object):
             **kwargs: arbitary keyword parameters to pass directly to the API.
 
         Returns:
-            :class:`Status <pyticketswitch.status.Status>`: the current status
-            of the transaction.
+            :class:`Status <pyticketswitch.status.Status>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            the current status of the transaction and acompanying meta
+            information.
 
         .. _`/f13/status.v1`: https://ingresso-group.github.io/slate/#status
 

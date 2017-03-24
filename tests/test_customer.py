@@ -134,7 +134,7 @@ class TestCustomer:
             'title': 'rt.hon',
             'initials': 'l.o.l',
             'suffix': 'esq',
-            'email_addr': 'tester@gmail.com',
+            'email_address': 'tester@gmail.com',
             'postcode': 'w6 8dl',
             'town': 'Hammersmith',
             'county': 'London',

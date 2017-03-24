@@ -194,7 +194,7 @@ class Customer (JSONMixin, object):
             'postcode': self.post_code,
             'town': self.town,
             'county': self.county,
-            'email_addr': self.email,
+            'email_address': self.email,
             'phone': self.phone,
             'work_phone': self.work_phone,
             'home_phone': self.home_phone,

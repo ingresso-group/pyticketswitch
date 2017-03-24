@@ -32,6 +32,15 @@ class Debitor(JSONMixin, object):
     :ref:`See front end integrations for more information
     <front_end_integrations>`
 
+    Attributes:
+        type (str): all debitors with the same type can be assumed to integrate
+            in the same manor, however their parameters and integration data
+            might be different.
+        name (str): name of the specific implementation of the debitor.
+        description (str): human readable description of the debitor.
+        integration_data (dict): data used to do front end integrations. For
+            the format of this data please consult :ref:`the documentation for
+            the relevant debitor type <frontend_integrations>`.
     """
 
     def __init__(self, typ=None, name=None, description=None, integration_data=None):

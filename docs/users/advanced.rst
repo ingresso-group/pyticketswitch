@@ -118,10 +118,21 @@ Taking payments
 
 .. _taking_payments:
 
+SHOW ME THE MONEY
+
 
 Handling callouts
 =================
 
 .. _handling_callouts:
+
+London calling.... hello?
+
+Frontend Integrations
+=====================
+
+.. _frontend_integrations
+
+doing all the stripe and the paypals and the meta debitings etc.
 
 
