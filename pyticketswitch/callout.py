@@ -1,4 +1,6 @@
+from collections import OrderedDict
 from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.debitor import Debitor
 
 
 class Integration(JSONMixin, object):
@@ -51,18 +53,40 @@ class Callout(JSONMixin, object):
     """Information about a redirection required by a 3rd party the payment provider.
 
     Attributes:
+        code (str): the identifier for the source system of the
+            bundle this callout will be paying for.
+        description: the human readable description for the source
+            system.
+        total (float): the total amount of money that will be payable.
+        type (str): the HTTP method that should be used to send the customer
+            to the destination.
+        destination (str): the destination url to send your user to.
+        parameters (:py:class:`collections.OrderedDict`): dictionary of key
+            value pairs that the 3rd party is expecting as query string
+            parameters or form parameters.
         html (str): a blob of HTML that can be rendered to produce either the
             required redirect or the form to continue with the transaction.
-        integration (:class:`Integration <pyticketswitch.callout.Integration>`):
+        integration_data (dict):
             data relevant to the debitor that the customer will be redirected
-            to.
-
+            to. This *may* provide a opertunity to integrate directly. Consult
+            documentation for more details.
+        debitor (:class:`Debitor <pyticketswitch.debitor.Debitor>`): the debitor
+            information that can be used for a front end integration.
     """
 
-    def __init__(self, html=None, integration=None):
+    def __init__(self, code=None, description=None, total=None, typ=None,
+                 destination=None, parameters=None, integration_data=None,
+                 debitor=None, currency_code=None):
 
-        self.html = html
-        self.integration = integration
+        self.code = code
+        self.description = description
+        self.total = total
+        self.type = typ
+        self.destination = destination
+        self.parameters = parameters
+        self.integration_data = integration_data
+        self.debitor = debitor
+        self.currency_code = currency_code
 
     @classmethod
     def from_api_data(cls, data):
@@ -80,12 +104,37 @@ class Callout(JSONMixin, object):
         """
 
         kwargs = {
-            'html': data.get('redirect_html_page_data')
+            'code': data.get('bundle_source_code'),
+            'description': data.get('bundle_source_desc'),
+            'total': data.get('bundle_total_cost'),
+            'destination': data.get('callout_destination_url'),
+            'typ': data.get('callout_type'),
+            'currency_code': data.get('currency_code'),
         }
 
-        integration = data.get('debitor_integration_data')
+        integration_data = data.get('callout_integration_data')
 
-        if integration:
-            kwargs.update(integration=Integration.from_api_data(integration))
+        if integration_data:
+            kwargs.update(integration_data=integration_data)
+
+        raw_debitor = data.get('debitor')
+        if raw_debitor:
+            debitor = Debitor.from_api_data(raw_debitor)
+            kwargs.update(debitor=debitor)
+
+        raw_parameters = data.get('callout_parameters')
+        parameter_order = data.get('callout_parameters_order')
+
+        if raw_parameters:
+            if parameter_order:
+                ordered_parameters = (
+                    [key, raw_parameters[key]]
+                    for key in parameter_order
+                )
+                parameters = OrderedDict(ordered_parameters)
+            else:
+                parameters = OrderedDict(raw_parameters.items())
+
+            kwargs.update(parameters=parameters)
 
         return cls(**kwargs)

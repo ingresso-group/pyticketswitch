@@ -1305,18 +1305,8 @@ class TestClient:
     def test_make_purchase_redirection(self, client, monkeypatch):
         response = {
             "callout": {
-                "debitor_integration_data": {
-                    "debit_amount": 76.5,
-                    "debit_base_amount": 7650,
-                    "debit_currency": "gbp",
-                    "debitor_specific_data": {
-                        "is_dummy_3d_secure": False
-                    },
-                    "debitor_type": "dummy"
-                },
-                "redirect_html_page_data": "some horribly insecure stuff here",
+                "bundle_source_code": "ext_test0",
             },
-            'currency_code': 'gbp',
             'currency_details': {
                 'gbp': {
                     'currency_code': 'gbp',
@@ -1367,10 +1357,10 @@ class TestClient:
 
         assert status is None
         assert isinstance(callout, Callout)
-        assert callout.html == 'some horribly insecure stuff here'
+        assert callout.code == 'ext_test0'
 
         assert 'gbp' in meta.currencies
-        assert meta.default_currency_code == 'gbp'
+        assert meta.default_currency_code is None
 
     def test_next_callout(self, client, monkeypatch):
         response = {
@@ -1418,16 +1408,7 @@ class TestClient:
     def test_next_callout_with_additional_callout(self, client, monkeypatch):
         response = {
             "callout": {
-                "debitor_integration_data": {
-                    "debit_amount": 76.5,
-                    "debit_base_amount": 7650,
-                    "debit_currency": "gbp",
-                    "debitor_specific_data": {
-                        "is_dummy_3d_secure": False
-                    },
-                    "debitor_type": "dummy"
-                },
-                "redirect_html_page_data": "some horribly insecure stuff here",
+                "bundle_source_code": "ext_test0",
             },
             'currency_code': 'gbp',
             'currency_details': {
@@ -1460,7 +1441,7 @@ class TestClient:
 
         assert status is None
         assert isinstance(callout, Callout)
-        assert callout.html == 'some horribly insecure stuff here'
+        assert callout.code == 'ext_test0'
 
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code == 'gbp'
