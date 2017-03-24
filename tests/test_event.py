@@ -256,7 +256,7 @@ class TestEvent:
         assert len(event.media) == 2
         assert len(event.reviews) == 1
 
-        assert len(event.meta_events) == 1
+        assert len(event.component_events) == 1
 
         assert len(event.fields) == 2
         assert event.raw == data

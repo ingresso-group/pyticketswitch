@@ -76,7 +76,7 @@ class Event(JSONMixin, object):
         availability_details (:class:`AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`):
             summary of availability details from cached data. Only present when
             requested.
-        meta_events (list): list of :class:`Events <pyticketswitch.event.Event>`
+        component_events (list): list of :class:`Events <pyticketswitch.event.Event>`
             objects that comprise a meta event.
         valid_quantities (list): list of valid quanities available for
             purchase. from cached data, only available when requested by
@@ -98,7 +98,7 @@ class Event(JSONMixin, object):
                  venue_addr_html=None, venue_addr=None, venue_info=None,
                  venue_info_html=None, media=None, reviews=None,
                  critic_review_percent=None, availability_details=None,
-                 meta_events=None, valid_quantities=None, fields=None,
+                 component_events=None, valid_quantities=None, fields=None,
                  raw=None):
 
         self.id = id_
@@ -149,7 +149,7 @@ class Event(JSONMixin, object):
 
         self.availability_details = availability_details
 
-        self.meta_events = meta_events
+        self.component_events = component_events
 
         self.valid_quantities = valid_quantities
         self.raw = raw
@@ -247,10 +247,10 @@ class Event(JSONMixin, object):
         availability_details = AvailabilityDetails.from_api_data(
             data.get('avail_details', {}))
 
-        api_meta_events = data.get('meta_event_component_events', {})
-        meta_events = [
+        api_component_events = data.get('meta_event_component_events', {})
+        component_events = [
             Event.from_api_data(meta_event)
-            for meta_event in api_meta_events.get('event', [])
+            for meta_event in api_component_events.get('event', [])
         ]
 
         kwargs = {
@@ -304,7 +304,7 @@ class Event(JSONMixin, object):
             'critic_review_percent': data.get('critic_review_percent'),
 
             'availability_details': availability_details,
-            'meta_events': meta_events,
+            'component_events': component_events,
             'valid_quantities': data.get('valid_quantities'),
             'raw': data,
         }
