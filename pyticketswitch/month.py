@@ -1,5 +1,8 @@
+import datetime
+
 from pyticketswitch.misc import MONTH_NUMBERS
 from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.utils import bitmask_to_numbered_list
 
 
 class Month(JSONMixin, object):
@@ -75,3 +78,19 @@ class Month(JSONMixin, object):
         """
         adjusted_day = day + 1 if day < 6 else 0
         return bool(self._weekday_bitmask >> adjusted_day & 1)
+
+    def start_date(self):
+        num_list = bitmask_to_numbered_list(self._dates_bitmask)
+        if not num_list:
+            return
+        first_day = num_list[0]
+        howdy = datetime.date(year=self.year, month=self.month, day=first_day)
+        return howdy
+
+    def end_date(self):
+        num_list = bitmask_to_numbered_list(self._dates_bitmask)
+        if not num_list:
+            return
+        last_day = num_list[-1]
+        howdy = datetime.date(year=self.year, month=self.month, day=last_day)
+        return howdy

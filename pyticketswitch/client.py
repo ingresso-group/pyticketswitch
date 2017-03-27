@@ -490,7 +490,7 @@ class Client(object):
             will return :obj:`None` if the event does not exist.
 
         """
-
+        kwargs.update(req_meta_components=True)
         events, meta = self.get_events([event_id], **kwargs)
         return events.get(event_id), meta
 

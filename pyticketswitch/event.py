@@ -246,7 +246,6 @@ class Event(JSONMixin, object):
 
         availability_details = AvailabilityDetails.from_api_data(
             data.get('avail_details', {}))
-
         api_component_events = data.get('meta_event_component_events', {})
         component_events = [
             Event.from_api_data(meta_event)
