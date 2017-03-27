@@ -506,7 +506,7 @@ class TestClient:
 
         mock_make_request.assert_called_with(
             'events_by_id.v1',
-            {'event_id_list': 'ABC123', 'req_meta_components': True},
+            {'event_id_list': 'ABC123'},
         )
         assert event.id =='ABC123'
         assert 'gbp' in meta.currencies
