@@ -145,5 +145,39 @@ class RedirectionDetails(object):
         }
 
 
+class StripeDetails(object):
+    """For use with self generated stripe tokens
+
+    Can be used to provide stripe tokens directly to the API at purchase time
+    avoiding a callout/callback cycle.
+
+    Implements
+    :class:`PaymentMethod <pyticketswitch.payment_methods.PaymentMethod>`.
+
+    Attributes:
+        tokens (dict): dictionary of stripe card tokens indexed on bundle source
+            code. If there are multiple bundles in the trolley, then a unique
+            stripe token must be provided for each of the bundles you wish to
+            purchase with stripe.
+    """
+
+    def __init__(self, tokens):
+        self.tokens = tokens
+
+    def as_api_parameters(self):
+        """Generate API keyword args for these details.
+
+        Returns:
+            dict: the stripe details in a format the API will understand.
+
+        """
+
+        return {
+            '{}_callback/stripe_token'.format(source): token
+            for source, token in self.tokens.items()
+        }
+
+
 PaymentMethod.register(CardDetails)
 PaymentMethod.register(RedirectionDetails)
+PaymentMethod.register(StripeDetails)

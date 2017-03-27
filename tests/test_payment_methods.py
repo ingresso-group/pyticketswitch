@@ -1,7 +1,8 @@
 import pytest
 from pyticketswitch.exceptions import InvalidParametersError
 from pyticketswitch.payment_methods import (
-    PaymentMethod, CardDetails, RedirectionDetails)
+    PaymentMethod, CardDetails, RedirectionDetails, StripeDetails,
+)
 
 
 class TestCardDetails:
@@ -111,5 +112,20 @@ class TestRedirectionDetails:
             'return_url': 'https://foobar.com/payment/abc123',
             'client_http_user_agent': 'iceweasle 9000',
             'client_http_accept': 'application/json',
-            'remote_site': 'foobar.com',
+            'remote_site': 'foobar.com'
+        }
+
+
+class TestStripeDetails:
+
+    def test_is_payment_method(self):
+        stripe_details = StripeDetails({'foo': 'abc123', 'bar': 'def456'})
+        assert isinstance(stripe_details, PaymentMethod)
+
+    def test_as_api_parameters(self):
+        stripe_details = StripeDetails({'foo': 'abc123', 'bar': 'def456'})
+        params = stripe_details.as_api_parameters()
+        assert params == {
+            'foo_callback/stripe_token': 'abc123',
+            'bar_callback/stripe_token': 'def456',
         }
