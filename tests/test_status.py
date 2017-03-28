@@ -38,7 +38,7 @@ class TestStatus:
                 "transaction_uuid": "6a2f2e03-08e8-11e7-a86b-d0bf9c45f5c0",
             },
             "reserve_user": {"user_id": "foobar"},
-
+            "pending_callout": {"bundle_source_code": "ext_test0"},
         }
 
         status = Status.from_api_data(data)
@@ -70,3 +70,5 @@ class TestStatus:
         assert any(x.code == 'visa' for x in status.accepted_cards)
         assert any(x.description == 'Visa' for x in status.accepted_cards)
         assert any(x.description == 'American Express' for x in status.accepted_cards)
+
+        assert status.pending_callout.code == 'ext_test0'

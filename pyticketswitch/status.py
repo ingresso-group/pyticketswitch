@@ -5,6 +5,7 @@ from pyticketswitch.country import Country
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.address import Address
 from pyticketswitch.card_type import CardType
+from pyticketswitch.callout import Callout
 
 
 class Status(JSONMixin, object):
@@ -51,6 +52,9 @@ class Status(JSONMixin, object):
             address.
         accepted_cards (list): acceptable debit/credit card types when API
             takes card details from the customer.
+        pending_callout (:class:`Callout <pyticketswitch.callout.Callout>`):
+            if the transaction is mid purchase then this will hold information
+            about how to reenter the purchase process.
     """
     def __init__(self, status=None, reserved_at=None, trolley=None,
                  purchased_at=None, external_sale_page=None,
@@ -59,7 +63,7 @@ class Status(JSONMixin, object):
                  needs_email_address=False, needs_agent_reference=False,
                  can_edit_address=False, allowed_countries=None,
                  minutes_left=None, supports_billing_address=False,
-                 accepted_cards=None):
+                 accepted_cards=None, pending_callout=None):
 
         self.status = status
         self.reserved_at = reserved_at
@@ -78,6 +82,7 @@ class Status(JSONMixin, object):
         self.minutes_left = minutes_left
         self.supports_billing_address = supports_billing_address
         self.accepted_cards = accepted_cards
+        self.pending_callout = pending_callout
 
     @classmethod
     def from_api_data(cls, data):
@@ -145,5 +150,9 @@ class Status(JSONMixin, object):
         address = data.get('prefilled_address')
         if address is not None:
             kwargs.update(prefilled_address=Address.from_api_data(address))
+
+        pending_callout = data.get('pending_callout')
+        if pending_callout:
+            kwargs.update(pending_callout=Callout.from_api_data(pending_callout))
 
         return cls(**kwargs)
