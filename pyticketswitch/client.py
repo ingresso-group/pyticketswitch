@@ -904,7 +904,6 @@ class Client(object):
             raise exceptions.InvalidParametersError(
                 'got item_numbers_to_remove but no token specified'
             )
-
         if item_numbers_to_remove:
             params.update(
                 remove_items_list=','.join(

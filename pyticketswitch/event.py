@@ -23,7 +23,8 @@ class Event(JSONMixin, object):
         classes (list): a list of classes that the event belongs to.
         filters (list): a list of filters that the event belongs to.
         postcode (str): venue post code.
-        city (str): venue city.
+        city (str): human readable venue city.
+        city_code (str): venue city code
         country (str): human readable country name.
         country_code (str): ISO 3166-1 country code.
         latitude (float): latitude of the venue.
@@ -86,10 +87,11 @@ class Event(JSONMixin, object):
     """
 
     def __init__(self, id_, status=None, event_type=None, source=None,
-                 venue=None, description=None, postcode=None, classes=None,
-                 filters=None, upsell_list=None, city=None, city_code=None,
-                 country=None, country_code=None, latitude=None, longitude=None,
-                 needs_departure_date=False, needs_duration=False,
+                 source_code=None, venue=None, description=None, postcode=None,
+                 classes=None, filters=None, upsell_list=None, city=None,
+                 city_code=None, country=None, country_code=None,
+                 latitude=None, longitude=None, needs_departure_date=False,
+                 needs_duration=False,
                  needs_performance=False, has_performances=False,
                  is_seated=False, show_performance_time=False,
                  min_running_time=None, max_running_time=None, cost_range=None,
@@ -105,6 +107,7 @@ class Event(JSONMixin, object):
         self.status = status
         self.description = description
         self.source = source
+        self.source_code = source_code
         self.event_type = event_type
         self.venue = venue
 
@@ -258,6 +261,7 @@ class Event(JSONMixin, object):
             'description': data.get('event_desc', None),
             'status': data.get('event_status'),
             'event_type': data.get('event_type'),
+            'source_code': data.get('source_code'),
             'source': data.get('source_desc'),
             'venue': data.get('venue_desc'),
 
