@@ -87,8 +87,8 @@ class Event(JSONMixin, object):
 
     def __init__(self, id_, status=None, event_type=None, source=None,
                  venue=None, description=None, postcode=None, classes=None,
-                 filters=None, upsell_list=None, city=None, country=None,
-                 country_code=None, latitude=None, longitude=None,
+                 filters=None, upsell_list=None, city=None, city_code=None,
+                 country=None, country_code=None, latitude=None, longitude=None,
                  needs_departure_date=False, needs_duration=False,
                  needs_performance=False, has_performances=False,
                  is_seated=False, show_performance_time=False,
@@ -113,6 +113,7 @@ class Event(JSONMixin, object):
 
         self.postcode = postcode
         self.city = city
+        self.city_code = city_code
         self.country = country
         self.country_code = country_code
         self.latitude = latitude
@@ -267,6 +268,7 @@ class Event(JSONMixin, object):
 
             'postcode': data.get('postcode'),
             'city': data.get('city_desc'),
+            'city_code': data.get('city_code'),
             'country': data.get('country_desc'),
             'country_code': data.get('country_code'),
 
