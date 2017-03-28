@@ -126,6 +126,6 @@ class TestStripeDetails:
         stripe_details = StripeDetails({'foo': 'abc123', 'bar': 'def456'})
         params = stripe_details.as_api_parameters()
         assert params == {
-            'foo_callback/stripe_token': 'abc123',
-            'bar_callback/stripe_token': 'def456',
+            'foo_callback/stripeToken': 'abc123',
+            'bar_callback/stripeToken': 'def456',
         }

@@ -173,7 +173,7 @@ class StripeDetails(object):
         """
 
         return {
-            '{}_callback/stripe_token'.format(source): token
+            '{}_callback/stripeToken'.format(source): token
             for source, token in self.tokens.items()
         }
 
