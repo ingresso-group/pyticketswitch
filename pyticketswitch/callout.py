@@ -72,11 +72,13 @@ class Callout(JSONMixin, object):
             documentation for more details.
         debitor (:class:`Debitor <pyticketswitch.debitor.Debitor>`): the debitor
             information that can be used for a front end integration.
+        return_token (str): return token specified in the last purchase or
+            callback call.
     """
 
     def __init__(self, code=None, description=None, total=None, typ=None,
                  destination=None, parameters=None, integration_data=None,
-                 debitor=None, currency_code=None):
+                 debitor=None, currency_code=None, return_token=None):
 
         self.code = code
         self.description = description
@@ -87,6 +89,7 @@ class Callout(JSONMixin, object):
         self.integration_data = integration_data
         self.debitor = debitor
         self.currency_code = currency_code
+        self.return_token = return_token
 
     @classmethod
     def from_api_data(cls, data):
@@ -110,6 +113,7 @@ class Callout(JSONMixin, object):
             'destination': data.get('callout_destination_url'),
             'typ': data.get('callout_type'),
             'currency_code': data.get('currency_code'),
+            'return_token': data.get('return_token'),
         }
 
         integration_data = data.get('callout_integration_data')

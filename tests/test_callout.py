@@ -27,7 +27,8 @@ class TestCallout:
             "currency_code": "gbp",
             "debitor": {
                 "debitor_type": "dummy"
-            }
+            },
+            "return_token": "abc123"
         }
 
         callout = Callout.from_api_data(data)
@@ -51,3 +52,4 @@ class TestCallout:
         }
         assert callout.debitor.type == 'dummy'
         assert callout.currency_code == 'gbp'
+        assert callout.return_token == 'abc123'
