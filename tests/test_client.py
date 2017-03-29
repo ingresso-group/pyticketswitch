@@ -275,6 +275,14 @@ class TestClient:
             'req_avail_details_with_perfs': True,
         }
 
+    def test_add_optional_kwargs_source_info(self, client):
+        params = {}
+        client.add_optional_kwargs(params, source_info=True)
+
+        params == {
+            'req_src_info': True,
+        }
+
     def test_list_events(self, client, monkeypatch):
         response = {
             'results': {

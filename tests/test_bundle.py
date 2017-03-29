@@ -22,12 +22,15 @@ class TestBundle(object):
             "debitor": {
                 "debitor_type": "dummy"
             },
+            "source_t_and_c": 'some legal stuff',
         }
 
         bundle = Bundle.from_api_data(data)
 
         assert bundle.source_code == 'ext_test0'
         assert bundle.currency_code == 'gbp'
+        assert bundle.terms_and_conditions == 'some legal stuff'
+
         assert len(bundle.orders) == 2
         assert bundle.orders[0].item == 1
         assert bundle.orders[1].item == 2

@@ -191,7 +191,8 @@ class Client(object):
                             cost_range=False, best_value_offer=False,
                             max_saving_offer=False, min_cost_offer=False,
                             top_price_offer=False, no_singles_data=False,
-                            cost_range_details=False, **kwargs):
+                            cost_range_details=False, source_info=False,
+                            **kwargs):
         """Adds additional arguments to the requests.
 
         All client methods will take several optional arguments that will
@@ -241,6 +242,8 @@ class Client(object):
                 each available price band.  Defaults to :obj:`False`.
             cost_range_details (bool, optional): Cost range information for
                 each available price band.  Defaults to :obj:`False`.
+            source_info (bool, optional): Includes information on the source
+                system. Defaults to :obj:`False`.
             **kwargs: Additional or override parameters to send with the
                 request.
         """
@@ -297,6 +300,9 @@ class Client(object):
         if availability_with_performances:
             params.update(req_avail_details=True,
                           req_avail_details_with_perfs=True)
+
+        if source_info:
+            params.update(req_src_info=True)
 
         params.update(kwargs)
 
@@ -934,7 +940,7 @@ class Client(object):
                 for source_code, send_code in send_codes.items()
             })
 
-        params.update(kwargs)
+        self.add_optional_kwargs(params, **kwargs)
 
         return params
 
@@ -1118,7 +1124,7 @@ class Client(object):
         if external_sale_page:
             params.update(add_external_sale_page=True)
 
-        params.update(kwargs)
+        self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('status.v1', params)
 

@@ -21,13 +21,15 @@ class Bundle(JSONMixin, object):
             information about an external debitor that will be used to take
             payment for this bundle. When you are selling on credit, or the
             source system is taking payment, this will be :obj:`None`.
+        terms_and_conditions (str): supplier terms and conditions. Only
+            availabile when requested with the optional ``source_info`` flag.
 
     """
 
     def __init__(self, source_code, orders=None, description=None,
                  total_seatprice=None, total_surcharge=None,
                  total_send_cost=None, total=None, currency_code=None,
-                 debitor=None):
+                 debitor=None, terms_and_conditions=None):
         self.source_code = source_code
         self.orders = orders
         self.description = description
@@ -37,6 +39,7 @@ class Bundle(JSONMixin, object):
         self.total = total
         self.currency_code = currency_code
         self.debitor = debitor
+        self.terms_and_conditions = terms_and_conditions
 
     @classmethod
     def from_api_data(cls, data):
@@ -57,6 +60,7 @@ class Bundle(JSONMixin, object):
             'source_code': data.get('bundle_source_code'),
             'description': data.get('bundle_source_desc'),
             'currency_code': data.get('currency_code'),
+            'terms_and_conditions': data.get('source_t_and_c'),
         }
 
         raw_orders = data.get('order')
