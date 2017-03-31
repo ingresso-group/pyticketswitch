@@ -51,10 +51,18 @@ class TestPriceBand:
             ],
             'example_seats_are_real': False,
             'free_seat_blocks': {
-                'seat_block': [
-                    {'block_length': 10},
-                    {'block_length': 20},
-                ]
+                'blocks_by_row': {
+                    'A': [['A1', 'A2'], ['A4', 'A5']],
+                    'B': [['B-1', 'B-2'], ['B-4', 'B-5']],
+                },
+                'separators_by_row': {
+                    'A': '',
+                    'B': '-',
+                },
+                'seats_by_text_message': {
+                    'Death Trap': ['A1', 'B-2'],
+                },
+                'restricted_view_seats': ['A1', 'B-2'],
             }
         }
 
@@ -69,9 +77,8 @@ class TestPriceBand:
         assert price_band.example_seats[1].id == 'ZZ-BOTTOM'
         assert price_band.example_seats_are_real is False
 
-        assert len(price_band.seat_blocks) == 2
-        assert price_band.seat_blocks[0].length == 10
-        assert price_band.seat_blocks[1].length == 20
+        assert len(price_band.seat_blocks) == 4
+        assert price_band.seat_blocks[0].length == 2
 
     def test_get_seats(self):
 

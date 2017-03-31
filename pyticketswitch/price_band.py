@@ -97,11 +97,27 @@ class PriceBand(JSONMixin, object):
             kwargs.update(example_seats=example_seats)
 
         seat_block_data = data.get('free_seat_blocks')
+
         if seat_block_data:
-            seat_blocks = [
-                SeatBlock.from_api_data(seat_block)
-                for seat_block in seat_block_data.get('seat_block', [])
-            ]
+            separators_by_row = seat_block_data.get('separators_by_row')
+            restricted_view_seats = seat_block_data.get('restricted_view_seats')
+            seats_by_text_message = seat_block_data.get('seats_by_text_message')
+            blocks_by_row = seat_block_data.get('blocks_by_row')
+
+            seat_blocks = []
+            if blocks_by_row:
+                for row_id, row in blocks_by_row.items():
+                    for block in row:
+                        separator = separators_by_row.get(row_id)
+                        seat_block = SeatBlock.from_api_data(
+                            block=block,
+                            row_id=row_id,
+                            separator=separator,
+                            restricted_view_seats=restricted_view_seats,
+                            seats_by_text_message=seats_by_text_message,
+                        )
+                        seat_blocks.append(seat_block)
+
             kwargs.update(seat_blocks=seat_blocks)
 
         return cls(**kwargs)

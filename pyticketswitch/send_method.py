@@ -10,19 +10,22 @@ class SendMethod(JSONMixin, object):
         cost (float): additional cost to the customer for this send method.
         description (str): human readable description of the send method.
         type (str): indicates the type of the send method.
-        permitted_countries (list): list of
-            :class:`Countries <pyticketswitch.country.Country>` in which the
-            customer lives where this send method is permitted.
-
+        can_generate_self_print (bool): indicates if the send method can
+            self print a voucher
+        self_print_voucher_url (str): url for the client to download their
+            voucher from
     """
 
     def __init__(self, code, cost=None, description=None, typ=None,
-                 permitted_countries=None):
+                 permitted_countries=None, can_generate_self_print=False,
+                 self_print_voucher_url=None):
         self.code = code
         self.cost = cost
         self.description = description
         self.type = typ
         self.permitted_countries = permitted_countries
+        self.can_generate_self_print = can_generate_self_print
+        self.self_print_voucher_url = self_print_voucher_url
 
     @classmethod
     def from_api_data(cls, data):
@@ -42,6 +45,8 @@ class SendMethod(JSONMixin, object):
             'code': data.get('send_code'),
             'description': data.get('send_desc'),
             'typ': data.get('send_type'),
+            'can_generate_self_print': data.get('can_generate_self_print'),
+            'self_print_voucher_url': data.get('self_print_voucher_url'),
         }
 
         cost = data.get('send_cost', 0.0)

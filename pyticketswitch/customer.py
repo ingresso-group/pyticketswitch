@@ -110,7 +110,6 @@ class Customer (JSONMixin, object):
             populated with the data from the api.
 
         """
-
         kwargs = {
             'first_name': data.get('first_name'),
             'first_name_latin': data.get('first_name_latin'),

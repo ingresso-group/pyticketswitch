@@ -2,6 +2,7 @@ from pyticketswitch.trolley import Trolley
 from pyticketswitch.user import User
 from pyticketswitch.utils import isostr_to_datetime
 from pyticketswitch.country import Country
+from pyticketswitch.customer import Customer
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.address import Address
 from pyticketswitch.card_type import CardType
@@ -63,7 +64,7 @@ class Status(JSONMixin, object):
                  needs_email_address=False, needs_agent_reference=False,
                  can_edit_address=False, allowed_countries=None,
                  minutes_left=None, supports_billing_address=False,
-                 accepted_cards=None, pending_callout=None):
+                 accepted_cards=None, pending_callout=None, customer=None):
 
         self.status = status
         self.reserved_at = reserved_at
@@ -83,6 +84,7 @@ class Status(JSONMixin, object):
         self.supports_billing_address = supports_billing_address
         self.accepted_cards = accepted_cards
         self.pending_callout = pending_callout
+        self.customer = customer
 
     @classmethod
     def from_api_data(cls, data):
@@ -98,11 +100,15 @@ class Status(JSONMixin, object):
             populated with the data from the api.
 
         """
-
         accepted_cards = [
             CardType(code=key, description=value)
             for key, value in data.get('accepted_payment_cards', {}).items()
         ]
+
+        customer = None
+        customer_api_data = data.get('customer')
+        if customer_api_data:
+            customer = Customer.from_api_data(customer_api_data)
 
         kwargs = {
             'status': data.get('transaction_status'),
@@ -115,6 +121,7 @@ class Status(JSONMixin, object):
             'minutes_left': data.get('minutes_left_on_reserve'),
             'supports_billing_address': data.get('supports_billing_address'),
             'accepted_cards': accepted_cards,
+            'customer': customer,
         }
 
         reserved_raw = data.get('reserve_iso8601_date_and_time')

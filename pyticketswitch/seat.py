@@ -16,7 +16,8 @@ class SeatBlock(JSONMixin, object):
         self.seats = seats
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, block, row_id=None, separator='',
+                      restricted_view_seats=None, seats_by_text_message=None):
         """Creates a new Customer object from API data from ticketswitch.
 
         Args:
@@ -29,18 +30,36 @@ class SeatBlock(JSONMixin, object):
             populated with the data from the api.
 
         """
-        kwargs = {
-            'length': data.get('block_length'),
-        }
 
-        seats_data = data.get('id_details')
-        if seats_data:
-            seats = [
-                Seat.from_api_data(seat)
-                for seat in seats_data
-            ]
-            kwargs.update(seats=seats)
+        seats = []
+        for seat_id in block:
 
+            column = None
+            delimiter = separator
+
+            if not delimiter:
+                delimiter = row_id
+
+            split_id = seat_id.split(delimiter)
+            column = split_id[1]
+
+            restricted = False
+            restricted_text = ''
+
+            if seat_id in restricted_view_seats:
+                restricted = True
+
+            for seat_text, list_of_seats in seats_by_text_message.items():
+                if seat_id in list_of_seats:
+                    restricted_text = seat_text
+            seat = Seat(
+                id_=seat_id, row=row_id, column=column,
+                separator=separator, is_restricted=restricted,
+                seat_text=restricted_text
+            )
+            seats.append(seat)
+
+        kwargs = {'seats': seats, 'length': len(seats)}
         return cls(**kwargs)
 
 
@@ -56,6 +75,7 @@ class Seat(JSONMixin, object):
         is_restricted (bool): indicates that the seat has a restricted view.
         seat_text_code (str): code indicating text that should be displayed
             with the seat when preseting seat information.
+        seat_text (str): readable explanation of the seats description
 
     """
 
