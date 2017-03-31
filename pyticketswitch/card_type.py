@@ -13,3 +13,6 @@ class CardType(JSONMixin, object):
     def __init__(self, code=None, description=None):
         self.code = code
         self.description = description
+
+    def __repr__(self):
+        return u'<CardType {}: {}>'.format(self.code, self.description)
