@@ -1091,14 +1091,16 @@ class Client(object):
 
         return response.get('released_ok', False)
 
-    def get_status(self, transaction_uuid, customer=False,
-                   external_sale_page=False, **kwargs):
+    def get_status(self, transaction_uuid=None, transaction_id=None,
+                   customer=False, external_sale_page=False, **kwargs):
         """Get the status of reservation, purchase or transaction.
 
         Wraps `/f13/status.v1`_
 
         Args:
-            transaction_uuid (str): identifier for the transaction.
+            transaction_uuid (str, optional): identifier for the transaction.
+            transaction_id (str, optional): identifier for the old transaction ids.
+                Note: one of these two must be set.
             customer (bool, optional): include customer information if
                 available. Defaults to :obj:`False`.
             external_sale_page (bool, optional): include the saved html of the
@@ -1114,9 +1116,7 @@ class Client(object):
         .. _`/f13/status.v1`: https://ingresso-group.github.io/slate/#status
 
         """
-        params = {
-            'transaction_uuid': transaction_uuid,
-        }
+        params = {}
 
         if customer:
             params.update(add_customer=True)
@@ -1126,7 +1126,12 @@ class Client(object):
 
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('status.v1', params)
+        if transaction_id:
+            params.update(transaction_id=transaction_id)
+            response = self.make_request('trans_id_status.v1', params)
+        else:
+            params.update(transaction_uuid=transaction_uuid)
+            response = self.make_request('status.v1', params)
 
         status = Status.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
