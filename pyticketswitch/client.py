@@ -134,25 +134,33 @@ class Client(object):
 
         logger.debug(six.u(response.content))
 
-        if not response.status_code == 200:
-
+        try:
             contents = response.json()
+        except ValueError:
+            raise exceptions.InvalidResponseError(
+                ("Unable to parse json data from {} response with status "
+                 "code `{}`").format(
+                    endpoint,
+                    response.status_code,
+                )
+            )
 
-            if 'error_code' in contents:
+        if 'error_code' in contents:
 
-                if contents['error_code'] == 3:
-                    raise exceptions.AuthenticationError(
-                        contents['error_desc'],
-                        contents['error_code'],
-                        response,
-                    )
-
-                raise exceptions.APIError(
+            if contents['error_code'] == 3:
+                raise exceptions.AuthenticationError(
                     contents['error_desc'],
                     contents['error_code'],
                     response,
                 )
 
+            raise exceptions.APIError(
+                contents['error_desc'],
+                contents['error_code'],
+                response,
+            )
+
+        if response.status_code != 200:
             raise exceptions.InvalidResponseError(
                 "got status code `{}` from {}".format(
                     response.status_code,
@@ -160,7 +168,7 @@ class Client(object):
                 )
             )
 
-        return response.json()
+        return contents
 
     def test(self):
         """Test the connection
