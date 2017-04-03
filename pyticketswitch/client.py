@@ -1103,6 +1103,11 @@ class Client(object):
                    customer=False, external_sale_page=False, **kwargs):
         """Get the status of reservation, purchase or transaction.
 
+        .. note:: The **transaction_id** field is for backwards compatability
+            with the old XML API. You can use either **transaction_id** or
+            **transaction_uuid**, however please use the **transaction_uuid** as
+            **transaction_id** will be deprecated shortly.
+
         Wraps `/f13/status.v1`_
 
         Args:
