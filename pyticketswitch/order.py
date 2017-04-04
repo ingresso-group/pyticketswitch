@@ -285,6 +285,19 @@ class Order(JSONMixin, object):
         """
         return [seat.id for seat in self.get_seats()]
 
+    def unique_seat_text(self):
+        """Get the unique seat text for all seats in an order
+
+        Returns:
+            string: string combining all seat texts for the order
+
+        """
+        text_set = {
+            seat.seat_text_code: seat.seat_text
+            for seat in self.get_seats() if seat.seat_text_code
+        }
+        return ', '.join(seat_text for seat_text in text_set.values())
+
     def total_including_send_cost(self):
         return self.total_seatprice + self.total_surcharge + self.send_method.cost
 
