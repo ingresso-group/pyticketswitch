@@ -18,7 +18,7 @@ class TicketOrder(JSONMixin, object):
         surcharge (float): additional surcharge added per seat in this
             ticket order.
         total_seatprice (float): seatprice for all tickets in the ticket order.
-        total_seatprice (float): seatprice for all tickets in the ticket order.
+        total_surcharge (float): surcharge for all tickets in the ticket order.
 
     """
 
@@ -284,6 +284,9 @@ class Order(JSONMixin, object):
 
         """
         return [seat.id for seat in self.get_seats()]
+
+    def total_including_send_cost(self):
+        return self.total_seatprice + self.total_surcharge + self.send_method.cost
 
     def __repr__(self):
         return u'<Order {}>'.format(self.item)

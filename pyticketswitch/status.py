@@ -13,7 +13,7 @@ class Status(JSONMixin, object):
     """Describes the current state of a transaction
 
     Attributes:
-        status (str): the currency status of the transaction.
+        status (str): the current status of the transaction.
         reserved_at (datetime.datetime): the date and time when the transaction
             was reserved.
         purchased_at (datetime.datetime): the date and time when the transaction
