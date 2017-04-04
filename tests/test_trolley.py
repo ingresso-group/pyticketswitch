@@ -21,6 +21,7 @@ class TestTrolley:
             },
             'trolley_token': 'ABC123',
             'trolley_order_count': 8,
+            "purchase_result": {'success': True}
         }
 
         trolley = Trolley.from_api_data(data)
@@ -35,6 +36,7 @@ class TestTrolley:
         assert trolley.discarded_orders[0].item == 3
         assert trolley.discarded_orders[1].item == 6
         assert trolley.order_count == 8
+        assert trolley.purchase_result.success is True
 
     def test_from_api_data_with_reservation_data(self):
         data = {

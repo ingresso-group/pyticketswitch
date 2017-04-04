@@ -1,6 +1,7 @@
 from pyticketswitch.bundle import Bundle
 from pyticketswitch.order import Order
 from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.purchase_result import PurchaseResult
 
 
 class Trolley(JSONMixin, object):
@@ -22,11 +23,13 @@ class Trolley(JSONMixin, object):
         minutes_left (float): the number of minutes left before a reservation
             expires.
         order_count (int): the number of orders in the trolley.
+        purchase_result (:class:`PurchaseResult <pyticketswitch.callout.Callout>`):
+            the result of the purchase attempt when available.
 
     """
     def __init__(self, token=None, transaction_uuid=None, transaction_id=None,
                  bundles=None, discarded_orders=None, minutes_left=None,
-                 order_count=None):
+                 order_count=None, purchase_result=None):
         self.token = token
         self.transaction_uuid = transaction_uuid
         self.transaction_id = transaction_id
@@ -34,6 +37,7 @@ class Trolley(JSONMixin, object):
         self.discarded_orders = discarded_orders
         self.minutes_left = minutes_left
         self.order_count = order_count
+        self.purchase_result = purchase_result
 
     @classmethod
     def from_api_data(cls, data):
@@ -83,6 +87,11 @@ class Trolley(JSONMixin, object):
         minutes = data.get('minutes_left_on_reserve')
         if minutes is not None:
             kwargs.update(minutes_left=float(minutes))
+
+        purchase_result = data.get('purchase_result')
+        if purchase_result:
+            kwargs.update(
+                purchase_result=PurchaseResult.from_api_data(purchase_result))
 
         return cls(**kwargs)
 

@@ -39,7 +39,6 @@ class TestStatus:
             },
             "reserve_user": {"user_id": "foobar"},
             "pending_callout": {"bundle_source_code": "ext_test0"},
-            "purchase_result": {'success': True}
         }
 
         status = Status.from_api_data(data)
@@ -73,5 +72,3 @@ class TestStatus:
         assert any(x.description == 'American Express' for x in status.accepted_cards)
 
         assert status.pending_callout.code == 'ext_test0'
-
-        assert status.purchase_result.success is True

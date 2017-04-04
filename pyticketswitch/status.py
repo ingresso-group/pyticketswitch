@@ -7,7 +7,6 @@ from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.address import Address
 from pyticketswitch.card_type import CardType
 from pyticketswitch.callout import Callout
-from pyticketswitch.purchase_result import PurchaseResult
 
 
 class Status(JSONMixin, object):
@@ -57,8 +56,6 @@ class Status(JSONMixin, object):
         pending_callout (:class:`Callout <pyticketswitch.callout.Callout>`):
             if the transaction is mid purchase then this will hold information
             about how to reenter the purchase process.
-        purchase_result (:class:`PurchaseResult <pyticketswitch.callout.Callout>`):
-            the result of the purchase attempt when available.
     """
     def __init__(self, status=None, reserved_at=None, trolley=None,
                  purchased_at=None, external_sale_page=None,
@@ -166,10 +163,5 @@ class Status(JSONMixin, object):
         pending_callout = data.get('pending_callout')
         if pending_callout:
             kwargs.update(pending_callout=Callout.from_api_data(pending_callout))
-
-        purchase_result = data.get('purchase_result')
-        if purchase_result:
-            kwargs.update(
-                purchase_result=PurchaseResult.from_api_data(purchase_result))
 
         return cls(**kwargs)
