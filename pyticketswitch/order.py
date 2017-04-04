@@ -293,8 +293,8 @@ class Order(JSONMixin, object):
 
         """
         text_set = {
-            seat.seat_text_code: seat.seat_text
-            for seat in self.get_seats() if seat.seat_text_code
+            seat.seat_text: seat.seat_text
+            for seat in self.get_seats() if seat.seat_text
         }
         return ', '.join(seat_text for seat_text in text_set.values())
 
