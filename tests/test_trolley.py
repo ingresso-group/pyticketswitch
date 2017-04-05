@@ -17,11 +17,11 @@ class TestTrolley:
                 'bundle': [
                     {'bundle_source_code': 'foo'},
                     {'bundle_source_code': 'bar'},
-                ]
+                ],
+                "purchase_result": {'success': True},
             },
             'trolley_token': 'ABC123',
             'trolley_order_count': 8,
-            "purchase_result": {'success': True}
         }
 
         trolley = Trolley.from_api_data(data)

@@ -27,3 +27,24 @@ class TestAddress:
         assert address.email == 'lol@beans.com'
         assert address.home_phone == '020810101010101'
         assert address.work_phone == '020801010101010'
+
+    def test_as_api_billing_address_parameters(self):
+
+        address = Address(
+            lines=['1303 Boulder Lane', 'Landslide district'],
+            country_code='us',
+            county='Louisana',
+            town='Bedrock',
+            post_code='70777',
+        )
+
+        params = address.as_api_billing_address_parameters()
+
+        assert params == {
+            'billing_address_line_one': '1303 Boulder Lane',
+            'billing_address_line_two': 'Landslide district',
+            'billing_country_code': 'us',
+            'billing_county': 'Louisana',
+            'billing_town': 'Bedrock',
+            'billing_postcode': '70777',
+        }

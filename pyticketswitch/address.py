@@ -61,3 +61,22 @@ class Address(JSONMixin, object):
         }
 
         return cls(**kwargs)
+
+    def as_api_billing_address_parameters(self):
+
+        params = {
+            'billing_country_code': self.country_code,
+            'billing_postcode': self.post_code,
+            'billing_town': self.town,
+            'billing_county': self.county,
+        }
+
+        if self.lines and len(self.lines) == 1:
+            params.update(billing_address_line_one=self.lines[0])
+
+        if self.lines and len(self.lines) > 1:
+            params.update(
+                billing_address_line_one=self.lines[0],
+                billing_address_line_two=self.lines[1],
+            )
+        return params
