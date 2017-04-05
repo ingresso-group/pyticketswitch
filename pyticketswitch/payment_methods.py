@@ -37,12 +37,15 @@ class CardDetails(object):
         start_year (int): the year the card expires in. :obj:`None`.
         ccv2 (str): credit card security code. Defaults to :obj:`None`.
         issue_number (str): issue number of the card. Defaults to :obj:`None`.
+        billing_address (:class:`Address <pyticketswitch.address.Address>`):
+            used when the customer wishes to use an alternate billing address.
+            when not specified the customer address will be used.
 
     """
 
     def __init__(self, card_number, expiry_month=None, expiry_year=None,
                  start_month=None, start_year=None, ccv2=None,
-                 issue_number=None):
+                 issue_number=None, billing_address=None):
 
         self.card_number = card_number
         self.expiry_month = expiry_month
@@ -51,6 +54,7 @@ class CardDetails(object):
         self.start_year = start_year
         self.ccv2 = ccv2
         self.issue_number = issue_number
+        self.billing_address = billing_address
 
     def as_api_parameters(self):
         """Generates a dictionary of parameters to be passed back to the API.
@@ -99,6 +103,11 @@ class CardDetails(object):
 
         if self.issue_number:
             params.update(issue_number=self.issue_number)
+
+        if self.billing_address:
+            params.update(
+                **self.billing_address.as_api_billing_address_parameters()
+            )
 
         return params
 

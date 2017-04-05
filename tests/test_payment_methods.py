@@ -1,5 +1,6 @@
 import pytest
 from pyticketswitch.exceptions import InvalidParametersError
+from pyticketswitch.address import Address
 from pyticketswitch.payment_methods import (
     PaymentMethod, CardDetails, RedirectionDetails, StripeDetails,
 )
@@ -82,6 +83,34 @@ class TestCardDetails:
 
         with pytest.raises(InvalidParametersError):
             card_details.as_api_parameters()
+
+    def test_as_api_parameters_with_billing_address(self):
+        billing_address = Address(
+            lines=['1303 Boulder Lane', 'Landslide district'],
+            country_code='us',
+            county='Louisana',
+            town='Bedrock',
+            post_code='70777',
+        )
+        card_details = CardDetails(
+            '4111 1111 1111 1111',
+            expiry_month=5,
+            expiry_year=45,
+            billing_address=billing_address,
+        )
+
+        params = card_details.as_api_parameters()
+
+        assert params == {
+            'card_number': '4111 1111 1111 1111',
+            'expiry_date': '0545',
+            'billing_address_line_one': '1303 Boulder Lane',
+            'billing_address_line_two': 'Landslide district',
+            'billing_country_code': 'us',
+            'billing_county': 'Louisana',
+            'billing_town': 'Bedrock',
+            'billing_postcode': '70777',
+        }
 
 
 class TestRedirectionDetails:
