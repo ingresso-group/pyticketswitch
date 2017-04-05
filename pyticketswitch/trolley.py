@@ -88,7 +88,7 @@ class Trolley(JSONMixin, object):
         if minutes is not None:
             kwargs.update(minutes_left=float(minutes))
 
-        purchase_result = data.get('purchase_result')
+        purchase_result = raw_contents.get('purchase_result')
         if purchase_result:
             kwargs.update(
                 purchase_result=PurchaseResult.from_api_data(purchase_result))
