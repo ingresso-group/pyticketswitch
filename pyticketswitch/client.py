@@ -744,21 +744,6 @@ class Client(object):
 
         response = self.make_request('availability.v1', params)
 
-        if response.get('backend_is_broken'):
-            raise exceptions.BackendBrokenError(
-                'Error returned from upstream backend system'
-            )
-
-        if response.get('backend_is_down'):
-            raise exceptions.BackendDownError(
-                'Unable to contact upstream backend system'
-            )
-
-        if response.get('backend_throttle_failed'):
-            raise exceptions.BackendThrottleError(
-                'The call timed out while being queued for throttling'
-            )
-
         if 'availability' not in response:
             raise exceptions.InvalidResponseError(
                 "got no availability key in json response"

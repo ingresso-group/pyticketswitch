@@ -24,15 +24,27 @@ class AvailabilityMeta(CurrencyMeta):
         desired_currency_code (str):
             the currency that the user account is expecting. Useful for
             conversions.
+        backend_is_broken (bool): indicates that the backend system is presently
+            marked as broken.
+        backend_is_down (bool): indicates that we are not currently able to
+            contact the backend system.
+        backend_throttle_failed (bool): indicates that your call was throttled
+            and failed to get a slot inside a viable timeframe. When true this
+            indicates that the backend system is under heavy load.
 
     """
     def __init__(self, can_leave_singles=True,
                  contiguous_seat_selection_only=True, currency=None,
-                 valid_quantities=None, *args, **kwargs):
+                 valid_quantities=None, backend_is_down=False,
+                 backend_is_broken=False, backend_throttle_failed=False,
+                 *args, **kwargs):
         self.can_leave_singles = can_leave_singles
         self.contiguous_seat_selection_only = contiguous_seat_selection_only
         self.currency = currency
         self.valid_quantities = valid_quantities
+        self.backend_is_broken = backend_is_broken
+        self.backend_is_down = backend_is_down
+        self.backend_throttle_failed = backend_throttle_failed
         super(AvailabilityMeta, self).__init__(*args, **kwargs)
 
     @classmethod
@@ -54,6 +66,9 @@ class AvailabilityMeta(CurrencyMeta):
         inst.valid_quantities = data.get('valid_quantities')
         inst.can_leave_singles = data.get('can_leave_singles', False)
         inst.contiguous_seat_selection_only = data.get('contiguous_seat_select_only', True)
+        inst.backend_is_broken = data.get('backend_is_broken')
+        inst.backend_is_down = data.get('backend_is_down')
+        inst.backend_throttle_failed = data.get('backend_throttle_failed')
 
         return inst
 

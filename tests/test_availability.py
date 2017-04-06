@@ -130,6 +130,23 @@ class TestAvailabilityMeta:
         assert meta.contiguous_seat_selection_only is True
         assert meta.default_currency_code == 'gbp'
         assert meta.valid_quantities == [1, 4, 6, 7]
+        assert meta.backend_is_broken is False
+        assert meta.backend_is_down is False
+        assert meta.backend_throttle_failed is False
+
+    def test_from_api_data_with_backend_issues(self):
+
+        data = {
+            'backend_is_broken': True,
+            'backend_is_down': True,
+            'backend_throttle_failed': True,
+        }
+
+        meta = AvailabilityMeta.from_api_data(data)
+
+        assert meta.backend_is_broken is True
+        assert meta.backend_is_down is True
+        assert meta.backend_throttle_failed is True
 
 
 class TestAvailabilityDetails:

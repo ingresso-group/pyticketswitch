@@ -953,48 +953,6 @@ class TestClient:
         with pytest.raises(exceptions.InvalidResponseError):
             _, _ = client.get_availability('ABC123-1')
 
-    def test_get_availability_backend_is_broken(self, client, monkeypatch):
-        response = {
-            'availability': {},
-            'backend_is_broken': True,
-            'backend_is_down': False,
-            'backend_throttle_failed': False,
-        }
-
-        mock_make_request = Mock(return_value=response)
-        monkeypatch.setattr(client, 'make_request', mock_make_request)
-
-        with pytest.raises(exceptions.BackendBrokenError):
-            _, _ = client.get_availability('ABC123-1')
-
-    def test_get_availability_backend_is_down(self, client, monkeypatch):
-        response = {
-            'availability': {},
-            'backend_is_broken': False,
-            'backend_is_down': True,
-            'backend_throttle_failed': False,
-        }
-
-        mock_make_request = Mock(return_value=response)
-        monkeypatch.setattr(client, 'make_request', mock_make_request)
-
-        with pytest.raises(exceptions.BackendDownError):
-            _, _ = client.get_availability('ABC123-1')
-
-    def test_get_availability_backend_throttle_failed(self, client, monkeypatch):
-        response = {
-            'availability': {},
-            'backend_is_broken': False,
-            'backend_is_down': False,
-            'backend_throttle_failed': True,
-        }
-
-        mock_make_request = Mock(return_value=response)
-        monkeypatch.setattr(client, 'make_request', mock_make_request)
-
-        with pytest.raises(exceptions.BackendThrottleError):
-            _, _ = client.get_availability('ABC123-1')
-
     def test_get_send_methods(self, client, monkeypatch):
         response = {
             'currency_code': 'gbp',
