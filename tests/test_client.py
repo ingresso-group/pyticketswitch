@@ -1294,6 +1294,7 @@ class TestClient:
             'dp_supplier': False,
             'dp_user': False,
             'dp_world': False,
+            'send_confirmation_email': True,
         }
 
         mock_make_request.assert_called_with(
@@ -1355,6 +1356,7 @@ class TestClient:
             'dp_supplier': False,
             'dp_user': False,
             'dp_world': False,
+            'send_confirmation_email': True,
         }
 
         mock_make_request.assert_called_with(
@@ -1369,6 +1371,103 @@ class TestClient:
 
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code is None
+
+    def test_make_purchase_credit(self, client, monkeypatch):
+        response = {
+            'transaction_status': 'purchased',
+            'trolley_contents': {
+                'transaction_uuid': 'DEF456'
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        customer = Customer('fred', 'flintstone', ['301 cobblestone way'], 'us')
+
+        status, callout, meta = client.make_purchase('abc123', customer)
+
+        expected_params = {
+            'transaction_uuid': 'abc123',
+            'first_name': 'fred',
+            'last_name': 'flintstone',
+            'address_line_one': '301 cobblestone way',
+            'country_code': 'us',
+            'dp_supplier': False,
+            'dp_user': False,
+            'dp_world': False,
+            'send_confirmation_email': True,
+        }
+
+        mock_make_request.assert_called_with(
+            'purchase.v1',
+            expected_params,
+            method=POST
+        )
+
+        assert callout is None
+        assert isinstance(status, Status)
+        assert status.trolley.transaction_uuid == 'DEF456'
+        assert status.status == 'purchased'
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
+
+    def test_make_purchase_opting_out_of_confirmation_email(self, client, monkeypatch):
+        response = {
+            'transaction_status': 'purchased',
+            'trolley_contents': {
+                'transaction_uuid': 'DEF456'
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        customer = Customer('fred', 'flintstone', ['301 cobblestone way'], 'us')
+
+        status, callout, meta = client.make_purchase(
+            'abc123',
+            customer,
+            send_confirmation_email=False
+        )
+
+        expected_params = {
+            'transaction_uuid': 'abc123',
+            'first_name': 'fred',
+            'last_name': 'flintstone',
+            'address_line_one': '301 cobblestone way',
+            'country_code': 'us',
+            'dp_supplier': False,
+            'dp_user': False,
+            'dp_world': False,
+        }
+
+        mock_make_request.assert_called_with(
+            'purchase.v1',
+            expected_params,
+            method=POST
+        )
+
+        assert callout is None
+        assert isinstance(status, Status)
+        assert status.trolley.transaction_uuid == 'DEF456'
+        assert status.status == 'purchased'
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
 
     def test_next_callout(self, client, monkeypatch):
         response = {

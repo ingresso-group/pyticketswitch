@@ -1152,7 +1152,7 @@ class Client(object):
         return status, meta
 
     def make_purchase(self, transaction_uuid, customer, payment_method=None,
-                      **kwargs):
+                      send_confirmation_email=True, **kwargs):
         """Purchase tickets for an existing reservation.
 
         Wraps `/f13/purchase.v1`_
@@ -1167,6 +1167,11 @@ class Client(object):
                 :class:`CardDetails <pyticketswitch.payment_methods.CardDetails>`
                 or
                 :class:`RedirectionDetails <pyticketswitch.payment_methods.RedirectionDetails>`.
+            send_confimation_email (bool): on a successful purchase, when this
+                parameter is :obj:`True`, then we will send the customer a
+                confirmation email. If you would prefer to send your own
+                confirmation email then you can set this parameter to
+                :obj:`False`.
 
         Returns:
             :class:`Status <pyticketswitch.status.Status>`,
@@ -1188,6 +1193,9 @@ class Client(object):
         """
 
         params = {'transaction_uuid': transaction_uuid}
+
+        if send_confirmation_email:
+            params.update(send_confirmation_email=True)
 
         customer_params = customer.as_api_parameters()
 
