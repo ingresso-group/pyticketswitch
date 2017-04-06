@@ -16,7 +16,10 @@ def given_customer_wants_tickets(context, event_id):
 
     assert performances
 
-    performance = performances[14]
+    if event_id == '7AB':
+        performance = performances[1]
+    else:
+        performance = performances[14]
 
     context.performances = performances
     context.performance_meta = meta
@@ -54,7 +57,10 @@ def given_an_existing_trolley(context, event_id):
 
     assert performances
 
-    performance = performances[14]
+    if event_id == '7AB':
+        performance = performances[1]
+    else:
+        performance = performances[14]
 
     ticket_types, meta = context.client.get_availability(
         performance.id, seat_blocks=True

@@ -32,7 +32,7 @@ Feature: reserve tickets
     @dirty
     Scenario: seated event with seats
         Given an API client with valid credentials
-        And my customer wants tickets to "3CVF"
+        And my customer wants tickets to "7AB"
         And my customer is requesting specific seats
         When I reserve the tickets
         Then my reservation is successful
@@ -41,7 +41,7 @@ Feature: reserve tickets
     @dirty
     Scenario: seated event with unavailable seats
         Given an API client with valid credentials
-        And my customer wants tickets to "3CVF"
+        And my customer wants tickets to "7AB"
         And my customer is requesting unavailable specific seats
         When I reserve the tickets
         Then my reservation is successful
