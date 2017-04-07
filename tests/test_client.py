@@ -171,6 +171,14 @@ class TestClient:
         with pytest.raises(exceptions.InvalidResponseError):
             client.make_request('trolley.v1', {})
 
+    def test_make_request_410_gone_response(self, client, monkeypatch):
+        response_json = {'error_code': 8, 'error_desc': 'transaction failed'}
+        fake_response = FakeResponse(status_code=410, json=response_json)
+        fake_get = Mock(return_value=fake_response)
+        monkeypatch.setattr('requests.get', fake_get)
+        with pytest.raises(exceptions.CallbackGoneError):
+            client.make_request('callback.v1', {})
+
     def test_add_optional_kwargs_extra_info(self, client):
         params = {}
         client.add_optional_kwargs(params, extra_info=True)

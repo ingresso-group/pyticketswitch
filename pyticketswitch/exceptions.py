@@ -47,3 +47,7 @@ class BackendDownError(BackendError):
 
 class BackendThrottleError(BackendError):
     pass
+
+
+class CallbackGoneError(APIError):
+    pass

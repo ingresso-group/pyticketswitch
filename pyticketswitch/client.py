@@ -154,6 +154,13 @@ class Client(object):
                     response,
                 )
 
+            if response.status_code == 410:
+                raise exceptions.CallbackGoneError(
+                    contents['error_desc'],
+                    contents['error_code'],
+                    response,
+                )
+
             raise exceptions.APIError(
                 contents['error_desc'],
                 contents['error_code'],
