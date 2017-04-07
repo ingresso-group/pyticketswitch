@@ -93,7 +93,7 @@ Sorting search results
 .. _sorting_search_results:
 
 The ``sort_order`` argument of the 
-:meth:`Client.list_events <pyticketswitch.client.Client.list_events>`
+:func:`Client.list_events <pyticketswitch.client.Client.list_events>`
 method will sort returned events by the specified metric.
 
 Valid values for this attribute are as follows:
@@ -131,7 +131,7 @@ London calling.... hello?
 Frontend Integrations
 =====================
 
-.. _frontend_integrations
+.. _frontend_integrations:
 
 doing all the stripe and the paypals and the meta debitings etc.
 
