@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - A new wrapper for the JSON API.
 - Comprehensive unit and behavioural tests.
-- Up to date docs.
+- Up-to-date docs.
 
 ### Removed
 - The XML API has been deprecated in favour of the new JSON API. As such we
