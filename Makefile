@@ -4,7 +4,7 @@ DOCS_TO_BRANCH=gh-pages
 DOCS_FROM_BRANCH=v2-dev
 
 init:
-	virtualenv venv
+	virtualenv venv -p python3
 	./venv/bin/pip install pip --upgrade
 	./venv/bin/pip install -r requirements/test.txt
 	./venv/bin/pip install -r requirements/docs.txt
