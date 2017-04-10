@@ -82,14 +82,10 @@ class TestCallout:
 
         callout = Callout.from_api_data(data)
 
-        assert callout.parameters == OrderedDict(
-            [
-                ('fours', 4),
-                ('twos', 222),
-                ('threes', 33),
-                ('ones', 1),
-            ]
-        )
+        assert callout.parameters['fours'] == 4
+        assert callout.parameters['threes'] == 33
+        assert callout.parameters['twos'] == 222
+        assert callout.parameters['ones'] == 1
 
 
 class TestIntegration:
