@@ -119,6 +119,26 @@ class Trolley(JSONMixin, object):
         """
         return {event.id for event in self.get_events()}
 
+    def get_bundle(self, source_code):
+        """Find a bundle with a specific source code
+
+        Returns:
+            :class:`Bundle <pyticketswitch.bundle.Bundle>`: the bundle with the
+            requested source code.
+
+            When no bundle with that source code is present returns :obj:`None`.
+
+        """
+
+        if not self.bundles:
+            return None
+
+        for bundle in self.bundles:
+            if bundle.source_code == source_code:
+                return bundle
+
+        return None
+
     def __repr__(self):
         if self.transaction_id:
             return u'<Trolley id:{}>'.format(self.transaction_id)

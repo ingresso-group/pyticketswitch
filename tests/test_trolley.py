@@ -135,3 +135,16 @@ class TestTrolley:
         events = trolley.get_event_ids()
 
         assert events == {'abc123', 'def456', 'ghi789'}
+
+    def test_get_bundle(self):
+
+        # state
+        bundle_one = Bundle('tests')
+        bundle_two = Bundle('tests_two')
+        trolley = Trolley(bundles=[bundle_one, bundle_two])
+
+        # action
+        bundle = trolley.get_bundle('tests_two')
+
+        # results
+        assert bundle is bundle_two
