@@ -209,7 +209,8 @@ class TestOrder:
         order = Order(1, ticket_orders=[ticket_order_one, ticket_order_two])
 
         seat_text = order.unique_seat_text()
-        assert seat_text == 'Hell bad, Hell good'
+        assert 'Hell bad' in seat_text
+        assert 'Hell good' in seat_text
 
     def test_get_seats_with_no_ticket_orders(self):
         order = Order(1, ticket_orders=[])
