@@ -133,6 +133,10 @@ class TestOrder:
         order = Order(1, ticket_orders=[])
         assert order.get_seats() == []
 
+    def test_get_requested_seat_ids(self):
+        order = Order(1, requested_seats=[Seat('A1'), Seat('A2'), Seat('A3')])
+        assert order.get_requested_seat_ids() == ['A1', 'A2', 'A3']
+
     def test_repr(self):
         order = Order(1, ticket_orders=[])
         assert repr(order) == '<Order 1>'

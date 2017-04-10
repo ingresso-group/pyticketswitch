@@ -285,6 +285,15 @@ class Order(JSONMixin, object):
         """
         return [seat.id for seat in self.get_seats()]
 
+    def get_requested_seat_ids(self):
+        """Get all seat ids from requested seats
+
+        Returns:
+            list: list of seat ids.
+        """
+
+        return [seat.id for seat in self.requested_seats]
+
     def unique_seat_text(self):
         """Get the unique seat text for all seats in an order
 
