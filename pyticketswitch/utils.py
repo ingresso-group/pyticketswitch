@@ -135,7 +135,7 @@ def bitmask_to_numbered_list(mask):
 
     return [
         i+1
-        for i in range(mask.bit_length())
+        for i in range(mask.bit_length() + 1)
         if bool(mask >> i & 1)
     ]
 

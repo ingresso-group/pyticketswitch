@@ -85,6 +85,8 @@ class AvailabilityDetails(JSONMixin, object):
             band.
         seatprice (float): price of an individual seat.
         surcharge (float): additional charges per seat.
+        full_seatprice (float): the non-offer price of an individual seat.
+        full_surcharge (float): the non-offer additional charges per seat.
         currency (str): the currency of the prices.
         first_date (datetime.datetime): the first date and time this
             combination of ticket type and price band is available from.

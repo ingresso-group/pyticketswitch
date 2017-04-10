@@ -148,3 +148,27 @@ class TestTrolley:
 
         # results
         assert bundle is bundle_two
+
+    def test_get_bundle_when_none(self):
+
+        # state
+        trolley = Trolley(bundles=[])
+
+        # action
+        bundle = trolley.get_bundle('tests_two')
+
+        # results
+        assert bundle is None
+
+    def test_get_bundle_when_no_match(self):
+
+        # state
+        bundle_one = Bundle('tests')
+        bundle_two = Bundle('tests_two')
+        trolley = Trolley(bundles=[bundle_one, bundle_two])
+
+        # action
+        bundle = trolley.get_bundle('tests_three')
+
+        # results
+        assert bundle is None

@@ -1,1 +1,2 @@
-
+[report]
+exclude_lines = def __repr__

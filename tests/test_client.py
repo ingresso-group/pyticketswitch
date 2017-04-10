@@ -83,6 +83,20 @@ class FakeResponse(object):
         return json.dumps(self._json)
 
 
+class FakeResponseRaisesValueError(object):
+
+    def __init__(self, status_code=200, json=None):
+        self.status_code = status_code
+        self._json = json
+
+    def json(self):
+        raise ValueError("ERROR")
+
+    @property
+    def content(self):
+        return json.dumps(self._json)
+
+
 class TestClient:
 
     @pytest.mark.integration
@@ -178,6 +192,14 @@ class TestClient:
         monkeypatch.setattr('requests.get', fake_get)
         with pytest.raises(exceptions.CallbackGoneError):
             client.make_request('callback.v1', {})
+
+    def test_make_request_no_contents_raises(self, client, monkeypatch):
+        response_json = {'data': 'some data'}
+        fake_response = FakeResponseRaisesValueError(status_code=200, json=response_json)
+        fake_get = Mock(return_value=fake_response)
+        monkeypatch.setattr('requests.get', fake_get)
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.make_request('test.v1', {})
 
     def test_add_optional_kwargs_extra_info(self, client):
         params = {}
@@ -1189,6 +1211,40 @@ class TestClient:
 
         assert isinstance(status, Status)
         assert status.trolley.transaction_uuid == 'DEF456'
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
+
+    def test_get_status_with_trans(self, client, monkeypatch):
+        response = {
+            'trolley_contents': {
+                'transaction_id': 'DEF456'
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        status, meta = client.get_status(
+            transaction_id='DEF456',
+            customer=True,
+            external_sale_page=True,
+        )
+
+        mock_make_request.assert_called_with('trans_id_status.v1', {
+            'transaction_id': 'DEF456',
+            'add_customer': True,
+            'add_external_sale_page': True,
+        })
+
+        assert isinstance(status, Status)
+        assert status.trolley.transaction_id == 'DEF456'
 
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code == 'gbp'

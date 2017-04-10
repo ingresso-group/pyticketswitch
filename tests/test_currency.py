@@ -157,3 +157,43 @@ class TestCurrencyMeta:
         meta = CurrencyMeta.from_api_data(data)
 
         assert meta.currencies == {}
+
+    def test_get_currency(self):
+        data = {
+            'currency_details': {
+            },
+            'desired_currency_code': "usd",
+        }
+
+        meta = CurrencyMeta.from_api_data(data)
+        currency = meta.get_currency()
+        assert currency is None
+
+    def test_get_desired_currency_with_no_data(self):
+        data = {
+            'currency_details': {
+            },
+            'desired_currency_code': "usd",
+        }
+
+        meta = CurrencyMeta.from_api_data(data)
+        currency = meta.get_desired_currency()
+        assert currency is None
+
+    def test_get_desired_currency(self):
+        data = {
+            'currency_details': {
+                'usd': {
+                    "currency_code": "usd",
+                },
+                'gbp': {
+                    "currency_code": "gbp",
+                }
+            },
+            'currency_code': "gbp",
+            'desired_currency_code': "usd",
+        }
+
+        meta = CurrencyMeta.from_api_data(data)
+        currency = meta.get_desired_currency()
+        assert currency.code == 'usd'

@@ -48,3 +48,23 @@ class TestAddress:
             'billing_town': 'Bedrock',
             'billing_postcode': '70777',
         }
+
+    def test_as_api_billing_address_parameters_single(self):
+
+        address = Address(
+            lines=['1303 Boulder Lane'],
+            country_code='us',
+            county='Louisana',
+            town='Bedrock',
+            post_code='70777',
+        )
+
+        params = address.as_api_billing_address_parameters()
+
+        assert params == {
+            'billing_address_line_one': '1303 Boulder Lane',
+            'billing_country_code': 'us',
+            'billing_county': 'Louisana',
+            'billing_town': 'Bedrock',
+            'billing_postcode': '70777',
+        }

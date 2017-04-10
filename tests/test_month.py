@@ -1,3 +1,4 @@
+import datetime
 from pyticketswitch.month import Month
 
 
@@ -36,3 +37,20 @@ class TestMonth:
         assert Month(0, 0, weekday_bitmask=85).on_weekday(1) is True
         assert Month(0, 0, weekday_bitmask=85).on_weekday(2) is False
         assert Month(0, 0, weekday_bitmask=85).on_weekday(3) is True
+
+    def test_start_date(self):
+        # 1065254912 == 111111011111101000000000000000, and we add one to the index so monday is 0 rather than
+        # sunday like in the api
+        sixteenth_of_january = datetime.date(2020, 1, 16)
+        assert Month(1, 2020, dates_bitmask=1065254912).start_date() == sixteenth_of_january
+
+    def test_start_date_with_none(self):
+        assert Month(1, 2020, dates_bitmask=None).start_date() is None
+
+    def test_end_date(self):
+        # 2130509824 == 1111110111111010000000000000000
+        thirty_first_of_march = datetime.date(2020, 3, 31)
+        assert Month(3, 2020, dates_bitmask=2130509824).end_date() == thirty_first_of_march
+
+    def test_end_date_with_none(self):
+        assert Month(1, 2020, dates_bitmask=None).end_date() is None

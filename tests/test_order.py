@@ -42,6 +42,40 @@ class TestTicketOrder:
         ticket_order = TicketOrder('abc123')
         assert repr(ticket_order) == '<TicketOrder abc123>'
 
+    def test_combined_price(self):
+        data = {
+            'discount_code': 'ADULT',
+            'discount_desc': 'Adult standard',
+            'no_of_seats': 2,
+            'sale_seatprice': 25,
+            'sale_surcharge': 2.50,
+            'total_sale_seatprice': 50,
+            'total_sale_surcharge': 5,
+            'seats': [
+                {'full_id': 'ABC123'},
+                {'full_id': 'DEF456'},
+            ]
+        }
+        ticket_order = TicketOrder.from_api_data(data)
+        assert ticket_order.combined_price() == 27.50
+
+    def test_total_combined_price(self):
+        data = {
+            'discount_code': 'ADULT',
+            'discount_desc': 'Adult standard',
+            'no_of_seats': 2,
+            'sale_seatprice': 25,
+            'sale_surcharge': 2.50,
+            'total_sale_seatprice': 50,
+            'total_sale_surcharge': 5,
+            'seats': [
+                {'full_id': 'ABC123'},
+                {'full_id': 'DEF456'},
+            ]
+        }
+        ticket_order = TicketOrder.from_api_data(data)
+        assert ticket_order.total_combined_price() == 55.0
+
 
 class TestOrder:
 
@@ -73,6 +107,24 @@ class TestOrder:
                 {'full_id': 'ABC123'},
                 {'full_id': 'DEF456'},
             ],
+            'send_method': {
+                'send_code': 'POST',
+                'send_cost': 3.5,
+                'send_desc': 'Post (UK & Ireland only)',
+                'send_type': 'post',
+                'permitted_countries': {
+                    'country': [
+                        {
+                            'country_code': 'ie',
+                            'country_desc': 'Ireland'
+                        },
+                        {
+                            'country_code': 'uk',
+                            'country_desc': 'United Kingdom'
+                        }
+                    ]
+                }
+            }
         }
 
         order = Order.from_api_data(data)
@@ -99,6 +151,8 @@ class TestOrder:
         assert len(order.requested_seats) == 2
         assert order.requested_seats[0].id == 'ABC123'
         assert order.requested_seats[1].id == 'DEF456'
+
+        assert order.total_including_send_cost() == (51 + 5.40 + 3.5)
 
     def test_from_api_data_with_send_method(self):
 
@@ -128,6 +182,34 @@ class TestOrder:
         assert [seat.id for seat in seats] == [
             'A1', 'A2', 'A3', 'B1', 'B2', 'B3',
         ]
+
+    def test_get_seat_ids(self):
+        ticket_order_one = TicketOrder('a', seats=[
+            Seat('A1'), Seat('A2'), Seat('A3'),
+        ])
+
+        ticket_order_two = TicketOrder('b', seats=[
+            Seat('B1'), Seat('B2'), Seat('B3'),
+        ])
+
+        order = Order(1, ticket_orders=[ticket_order_one, ticket_order_two])
+
+        seat_ids = order.get_seat_ids()
+        assert seat_ids == ['A1', 'A2', 'A3', 'B1', 'B2', 'B3']
+
+    def test_unique_seat_text(self):
+        ticket_order_one = TicketOrder('a', seats=[
+            Seat('A1', seat_text='Hell bad'), Seat('A2'), Seat('A3'),
+        ])
+
+        ticket_order_two = TicketOrder('b', seats=[
+            Seat('B1', seat_text='Hell good'), Seat('B2'), Seat('B3'),
+        ])
+
+        order = Order(1, ticket_orders=[ticket_order_one, ticket_order_two])
+
+        seat_text = order.unique_seat_text()
+        assert seat_text == 'Hell bad, Hell good'
 
     def test_get_seats_with_no_ticket_orders(self):
         order = Order(1, ticket_orders=[])
