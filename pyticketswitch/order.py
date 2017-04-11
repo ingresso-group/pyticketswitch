@@ -283,7 +283,7 @@ class Order(JSONMixin, object):
             list: list of seat ids.
 
         """
-        return [seat.id for seat in self.get_seats()]
+        return [seat.id for seat in self.get_seats() if seat.id]
 
     def get_requested_seat_ids(self):
         """Get all seat ids from requested seats

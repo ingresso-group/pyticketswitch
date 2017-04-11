@@ -197,6 +197,20 @@ class TestOrder:
         seat_ids = order.get_seat_ids()
         assert seat_ids == ['A1', 'A2', 'A3', 'B1', 'B2', 'B3']
 
+    def test_get_seat_ids_where_ids_are_missing(self):
+        ticket_order_one = TicketOrder('a', seats=[
+            Seat('A1'), Seat('A2'), Seat(None),
+        ])
+
+        ticket_order_two = TicketOrder('b', seats=[
+            Seat('B1'), Seat(None), Seat('B3'),
+        ])
+
+        order = Order(1, ticket_orders=[ticket_order_one, ticket_order_two])
+
+        seat_ids = order.get_seat_ids()
+        assert seat_ids == ['A1', 'A2', 'B1', 'B3']
+
     def test_unique_seat_text(self):
         ticket_order_one = TicketOrder('a', seats=[
             Seat('A1', seat_text='Hell bad'), Seat('A2'), Seat('A3'),
