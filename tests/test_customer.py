@@ -142,7 +142,7 @@ class TestCustomer:
             'home_phone': '0203 137 7420',
             'work_phone': '079888888888',
             'agent_ref': 'foobar123',
-            'dp_supplier': True,
-            'dp_user': True,
-            'dp_world': True,
+            'supplier_can_use_customer_data': True,
+            'user_can_use_customer_data': True,
+            'world_can_use_customer_data': True,
         }

@@ -1313,9 +1313,9 @@ class TestClient:
             'country_code': 'us',
             'card_number': '4111 1111 1111 1111',
             'expiry_date': '0317',
-            'dp_supplier': False,
-            'dp_user': False,
-            'dp_world': False,
+            'supplier_can_use_customer_data': False,
+            'user_can_use_customer_data': False,
+            'world_can_use_customer_data': False,
             'send_confirmation_email': True,
         }
 
@@ -1375,9 +1375,9 @@ class TestClient:
             'client_http_user_agent': 'Mozilla/5.0',
             'client_http_accept': 'text/html,text/plain,application/json',
             'remote_site': 'myticketingco.biz',
-            'dp_supplier': False,
-            'dp_user': False,
-            'dp_world': False,
+            'supplier_can_use_customer_data': False,
+            'user_can_use_customer_data': False,
+            'world_can_use_customer_data': False,
             'send_confirmation_email': True,
         }
 
@@ -1421,9 +1421,9 @@ class TestClient:
             'last_name': 'flintstone',
             'address_line_one': '301 cobblestone way',
             'country_code': 'us',
-            'dp_supplier': False,
-            'dp_user': False,
-            'dp_world': False,
+            'supplier_can_use_customer_data': False,
+            'user_can_use_customer_data': False,
+            'world_can_use_customer_data': False,
             'send_confirmation_email': True,
         }
 
@@ -1472,9 +1472,9 @@ class TestClient:
             'last_name': 'flintstone',
             'address_line_one': '301 cobblestone way',
             'country_code': 'us',
-            'dp_supplier': False,
-            'dp_user': False,
-            'dp_world': False,
+            'supplier_can_use_customer_data': False,
+            'user_can_use_customer_data': False,
+            'world_can_use_customer_data': False,
         }
 
         mock_make_request.assert_called_with(

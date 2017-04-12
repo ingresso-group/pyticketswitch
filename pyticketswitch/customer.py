@@ -198,9 +198,9 @@ class Customer (JSONMixin, object):
             'work_phone': self.work_phone,
             'home_phone': self.home_phone,
             'agent_ref': self.agent_reference,
-            'dp_supplier': self.supplier_can_use_data,
-            'dp_user': self.user_can_use_data,
-            'dp_world': self.world_can_use_data,
+            'supplier_can_use_customer_data': self.supplier_can_use_data,
+            'user_can_use_customer_data': self.user_can_use_data,
+            'world_can_use_customer_data': self.world_can_use_data,
         }
 
         if self.address_lines and len(self.address_lines) == 1:
