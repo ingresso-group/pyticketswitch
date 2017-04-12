@@ -153,7 +153,18 @@ class Trolley(JSONMixin, object):
             specified
 
         """
-        pass
+        if not self.bundles:
+            return None
+
+        for bundle in self.bundles:
+            if not bundle.orders:
+                continue
+
+            for order in bundle.orders:
+                if order.item == item_number:
+                    return order
+
+        return None
 
     def __repr__(self):
         if self.transaction_id:

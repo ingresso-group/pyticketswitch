@@ -172,3 +172,22 @@ class TestTrolley:
 
         # results
         assert bundle is None
+
+    def test_get_item(self):
+
+        #state
+        order_one = Order(1)
+        order_two = Order(2)
+        order_three = Order(3)
+        order_four = Order(4)
+        bundle_one = Bundle('tests', orders=[order_one, order_three])
+        bundle_two = Bundle('tests_two', orders=[order_two, order_four])
+        trolley = Trolley(bundles=[bundle_one, bundle_two])
+
+        # results
+        order = trolley.get_item(3)
+        assert order is order_three
+
+        # results
+        order = trolley.get_item(2)
+        assert order is order_two
