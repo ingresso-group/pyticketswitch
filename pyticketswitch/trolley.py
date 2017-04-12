@@ -122,6 +122,9 @@ class Trolley(JSONMixin, object):
     def get_bundle(self, source_code):
         """Find a bundle with a specific source code
 
+        Args:
+            source_code (str): the source code for the target bundle.
+
         Returns:
             :class:`Bundle <pyticketswitch.bundle.Bundle>`: the bundle with the
             requested source code.
@@ -138,6 +141,19 @@ class Trolley(JSONMixin, object):
                 return bundle
 
         return None
+
+    def get_item(self, item_number):
+        """Find an order with the given item number
+
+        Args:
+            item_number (int): the item number of the target order
+
+        Returns:
+            :class:`Order <pyticketswitch.order.order>`: the order with the
+            specified
+
+        """
+        pass
 
     def __repr__(self):
         if self.transaction_id:

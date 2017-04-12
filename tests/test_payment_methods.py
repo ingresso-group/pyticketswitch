@@ -112,6 +112,56 @@ class TestCardDetails:
             'billing_postcode': '70777',
         }
 
+    def test_as_api_parameters_with_return_url_and_token(self):
+        card_details = CardDetails(
+            '4111 1111 1111 1111',
+            expiry_month=5,
+            expiry_year=45,
+            return_url='https://acmetickets.com/checkout/',
+            return_token='abc123',
+        )
+
+        params = card_details.as_api_parameters()
+
+        assert params == {
+            'card_number': '4111 1111 1111 1111',
+            'expiry_date': '0545',
+            'return_url': 'https://acmetickets.com/checkout/',
+            'return_token': 'abc123',
+        }
+
+    def test_as_api_parameters_with_user_agent_header(self):
+        card_details = CardDetails(
+            '4111 1111 1111 1111',
+            expiry_month=5,
+            expiry_year=45,
+            user_agent='iceweasle',
+        )
+
+        params = card_details.as_api_parameters()
+
+        assert params == {
+            'card_number': '4111 1111 1111 1111',
+            'expiry_date': '0545',
+            'client_http_user_agent': 'iceweasle',
+        }
+
+    def test_as_api_parameters_with_accept_header(self):
+        card_details = CardDetails(
+            '4111 1111 1111 1111',
+            expiry_month=5,
+            expiry_year=45,
+            accept='application/json',
+        )
+
+        params = card_details.as_api_parameters()
+
+        assert params == {
+            'card_number': '4111 1111 1111 1111',
+            'expiry_date': '0545',
+            'client_http_accept': 'application/json',
+        }
+
 
 class TestRedirectionDetails:
 

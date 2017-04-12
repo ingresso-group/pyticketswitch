@@ -40,12 +40,26 @@ class CardDetails(object):
         billing_address (:class:`Address <pyticketswitch.address.Address>`):
             used when the customer wishes to use an alternate billing address.
             when not specified the customer address will be used.
-
+        return_url (str): some card debitors may decide that they need to
+            redirect the user to a third party for verification (for example
+            3d secure). These parties need a location to return a customer to.
+            When available, it's recomended to provide it. In the situation
+            where a return url is required but not provided, then the payment
+            will fail.
+        return_token (str): a unique token that can be used by you to identify
+            when a card debitor returns to you.
+        user_agent (str): the customer's browser's User-Agent header.
+            only nessicary when providing a return url.
+        accept (str): the customer's browser's Accept header.
+        remote_site (str): the remote site's domain. must match the domain of
+            the return_url.
     """
 
-    def __init__(self, card_number, expiry_month=None, expiry_year=None,
-                 start_month=None, start_year=None, ccv2=None,
-                 issue_number=None, billing_address=None):
+    def __init__(self, card_number, expiry_month=None,
+                 expiry_year=None, start_month=None, start_year=None,
+                 ccv2=None, issue_number=None, billing_address=None,
+                 return_url=None, return_token=None, user_agent=None,
+                 accept=None, remote_site=None):
 
         self.card_number = card_number
         self.expiry_month = expiry_month
@@ -55,6 +69,11 @@ class CardDetails(object):
         self.ccv2 = ccv2
         self.issue_number = issue_number
         self.billing_address = billing_address
+        self.return_url = return_url
+        self.return_token = return_token
+        self.user_agent = user_agent
+        self.accept = accept
+        self.remote_site = remote_site
 
     def as_api_parameters(self):
         """Generates a dictionary of parameters to be passed back to the API.
@@ -108,6 +127,21 @@ class CardDetails(object):
             params.update(
                 **self.billing_address.as_api_billing_address_parameters()
             )
+
+        if self.return_url:
+            params.update(return_url=self.return_url)
+
+        if self.return_token:
+            params.update(return_token=self.return_token)
+
+        if self.user_agent:
+            params.update(client_http_user_agent=self.user_agent)
+
+        if self.accept:
+            params.update(client_http_accept=self.accept)
+
+        if self.remote_site:
+            params.update(remote_site=self.remote_site)
 
         return params
 
