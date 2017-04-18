@@ -156,15 +156,29 @@ class Trolley(JSONMixin, object):
         if not self.bundles:
             return None
 
-        for bundle in self.bundles:
-            if not bundle.orders:
-                continue
-
-            for order in bundle.orders:
-                if order.item == item_number:
-                    return order
+        for order in self.get_orders():
+            if order.item == item_number:
+                return order
 
         return None
+
+    def get_orders(self):
+        """Get all orders in all bundles in a trolley
+
+        Returns:
+            list: orders from all bundles in the the trolley
+
+        """
+
+        if not self.bundles:
+            return []
+
+        return [
+            order
+            for bundle in self.bundles
+            if bundle.orders
+            for order in bundle.orders
+        ]
 
     def __repr__(self):
         if self.transaction_id:

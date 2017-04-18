@@ -191,3 +191,18 @@ class TestTrolley:
         # results
         order = trolley.get_item(2)
         assert order is order_two
+
+    def test_get_orders(self):
+
+        #state
+        order_one = Order(1)
+        order_two = Order(2)
+        order_three = Order(3)
+        order_four = Order(4)
+        bundle_one = Bundle('tests', orders=[order_one, order_three])
+        bundle_two = Bundle('tests_two', orders=[order_two, order_four])
+        trolley = Trolley(bundles=[bundle_one, bundle_two])
+
+        # results
+        orders = trolley.get_orders()
+        assert orders == [order_one, order_three, order_two, order_four]
