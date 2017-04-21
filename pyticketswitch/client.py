@@ -352,10 +352,10 @@ class Client(object):
             latitude (float, optional): only show events near this latitude.
                 valid only in combination with longitude and radius. Defaults
                 to :obj:`None`.
-            latitude (float, optional): only show events near this longitude.
+            longitude (float, optional): only show events near this longitude.
                 valid only in combination with latitude and radius. Defaults
                 to :obj:`None`.
-            latitude (float, optional): only show events inside this radius
+            radius (float, optional): only show events inside this radius
                 relative to the provided coordinates (latitude & longitude
                 above). Units are kilometers. Defaults to :obj:`None`.
             include_dead (bool, optional): when true results will include all
