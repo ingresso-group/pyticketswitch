@@ -12,43 +12,70 @@ Demo User Events
 .. _demo_events:
 
 At the time of writing this documentation the demo user has access to the
-following events::
+following events:
 
-    2HJD Test Event - Type 1
-    3CVA Test Event - Type 1
-    3CVB Test Event - Type 10 (d)
-    3CVD Test Event - Type 14 (e)
-    3CVE Test Event - Type 15 (e)
-    3CVF Test Event - Type 9
-    3CVG Test Event - Type 13
-    3P5L The Matt Allpress Fanclub!
-    6IE Matthew Bourne's Swan Lake test
-    6IF Matthew Bourne's Nutcracker TEST
-    6KF V&A Memberships
-    6KS 1-Day Ticket
-    6KT 3-Day Hopper
-    6KU Family Ticket
-    6KV Individual Ticket
-    6L9 La Femme
-    9XW Five Day Park Hopper Ticket
-    9XY Two day Parkhopper
-    AG8 1デーパスポート (One Day Passport)
-    DBZ Moulin Rouge (Dinner Show)
-    DP9 Imperial Helicopter Tour
-    DPB North Canyon Helicopter Tour
-    GVA Souvenir DVD
-    I3R MGM Grand Accomodation
-    I3S Athenaeum
-    I3T Corus Hyde Park
-    I3U Hilton Kensington
-    I3V St Ermin's
-
-The three letter events (ie. 6IF, 9XW, DPB, GVA, etc) are fake events, their
-responses are generated programatically, and they tend to exhibit a specific 
-feature or oddity to simulate a feature of the API. The four letter events 
-(i.e. 2HJD, 3CVA, 3P5L) are demonstration events tied to a real backend system
-and allow us to simulate parts of our system that require more persistant data
-such as individual seats and reporting.
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| id  | description                                       | additional attributes                                                                                                                         |
++=====+===================================================+===============================================================================================================================================+
+| 6IE | Matthew Bourne's Swan Lake test                   | - seated                                                                                                                                      |
+|     |                                                   | - default discounts only                                                                                                                      |
+|     |                                                   | - reservations for tuesday performances                                                                                                       |
+|     |                                                   | - has restricted view seats on ticket 2 and 3 on thursdays                                                                                    |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| 6IF | Matthew Bourne's Nutcracker TEST                  | - seated                                                                                                                                      |
+|     |                                                   | - maximum of 3 mixed discounts                                                                                                                |
+|     |                                                   | - no availability on Saturday nights                                                                                                          |
+|     |                                                   | - no discounts in the stalls on the 1st of the month                                                                                          |
+|     |                                                   | - no OPA or STUDENT discounts in price band B                                                                                                 |
+|     |                                                   | - collect from the venue and post dispatch methods available                                                                                  |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| 6KF | V&A Memberships                                   | - subscription                                                                                                                                |
+|     |                                                   | - has only single performance that must be selected                                                                                           |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| 6KS | 1-Day Ticket                                      | - attraction                                                                                                                                  |
+| 6KT | 3-Day Hopper                                      | - not valid on mondays                                                                                                                        |
+| 6KU | Family Ticket                                     |                                                                                                                                               |
+| 6KV | Individual Ticket                                 |                                                                                                                                               |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| 6L9 | La Femme                                          | - seated                                                                                                                                      |
+|     |                                                   | - blanket discounts                                                                                                                           |
+|     |                                                   | - special offer                                                                                                                               |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| 7AA | Toy Story - The Opera                             | - seated                                                                                                                                      |
+|     |                                                   | - seat selection                                                                                                                              |
+|     |                                                   | - seating plan data available                                                                                                                 |
+|     |                                                   | - contiguous seat selection only                                                                                                              |
+|     |                                                   | - cannot leave single seats                                                                                                                   |
+|     |                                                   | - self print vouchers                                                                                                                         |
+|     |                                                   | - reservations including seat H10 will always fail                                                                                            |
+|     |                                                   | - reservations including seat D7 will return a different seat selection from the same block of seats (as if that seat had become unavailable) |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| 7AB | The Unremarkable Incident of the Cat at Lunchtime | - seated                                                                                                                                      |
+|     |                                                   | - seat selection                                                                                                                              |
+|     |                                                   | - seating plan data available                                                                                                                 |
+|     |                                                   | - allows discontiguous seat selection                                                                                                         |
+|     |                                                   | - self print vouchers with barcodes                                                                                                           |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| 9XW | Five Day Park Hopper Ticket                       | - attraction                                                                                                                                  |
+| 9XY | Two day Parkhopper                                | - is post only (can be used to generate ‘no sends’ if you select a performance date within the next few days)                                 |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| AG8 | 1デーパスポート (One Day Passport)                | - attraction                                                                                                                                  |
+|     |                                                   | - text in japanese (useful for testing unicode support)                                                                                       |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| DBZ | Moulin Rouge (Dinner Show)                        | - seated                                                                                                                                      |
+|     |                                                   | - priced in euros                                                                                                                             |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| DP9 | Imperial Helicopter Tour                          | - tour                                                                                                                                        |
+| DPB | North Canyon Helicopter Tour                      | - many performances (useful for testing pagination, calendars, etc)                                                                           |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| GVA | Souvenir DVD                                      | - merchandise                                                                                                                                 |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
+| I3R | MGM Grand Accomodation                            | - hotel                                                                                                                                       |
+| I3S | Athenaeum                                         |                                                                                                                                               |
+| I3T | Corus Hyde Park                                   |                                                                                                                                               |
+| I3U | Hilton Kensington                                 |                                                                                                                                               |
+| I3V | St Ermin's                                        |                                                                                                                                               |
++-----+---------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 
 
 Searching for an Event
