@@ -120,3 +120,17 @@ class PaginationMixin(object):
         inst.total_results = paging_data.get('total_unpaged_results')
 
         return inst
+
+    def is_paginated(self):
+        """Indicates that the response is paginated
+
+        Returns:
+            bool: :obj:`True` when the response is omitting results due to
+            pagination otherwise :obj:``False``
+
+        """
+
+        if self.total_results < self.page_length:
+            return False
+
+        return True

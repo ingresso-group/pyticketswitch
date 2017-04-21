@@ -1,6 +1,6 @@
 import datetime
 from dateutil.tz import tzoffset
-from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.mixins import JSONMixin, PaginationMixin
 
 
 class TestJSONMixin:
@@ -101,3 +101,36 @@ class TestJSONMixin:
         obj = self.Foo('hello world!')
         result = obj.as_dict_for_json()
         assert result == {'bar': 'hello world!'}
+
+
+class TestPaginationMixin:
+
+    def test_is_paginated_pages_remaining(self):
+        meta = PaginationMixin(
+            page_length=50,
+            page_number=1,
+            pages_remaining=15,
+            total_results=750,
+        )
+
+        assert meta.is_paginated() is True
+
+    def test_is_paginated_with_less_results_than_page(self):
+        meta = PaginationMixin(
+            page_length=50,
+            page_number=1,
+            pages_remaining=0,
+            total_results=30,
+        )
+
+        assert meta.is_paginated() is False
+
+    def test_is_paginated_on_last_page(self):
+        meta = PaginationMixin(
+            page_length=50,
+            page_number=15,
+            pages_remaining=0,
+            total_results=750,
+        )
+
+        assert meta.is_paginated() is True
