@@ -150,6 +150,30 @@ class TestClient:
             }
         )
 
+    def test_make_request_with_subuser(self, monkeypatch):
+        client = Client(user="beatles", password="lovemedo", sub_user="ringo")
+        fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
+        fake_get = Mock(return_value=fake_response)
+        monkeypatch.setattr('requests.get', fake_get)
+        params = {
+            'foo': 'bar',
+        }
+        client.language='en-GB'
+        response = client.make_request('events.v1', params)
+        assert response == {'lol': 'beans'}
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            params={
+                'foo': 'bar',
+                'user_id': 'beatles',
+                'user_passwd': 'lovemedo',
+                'sub_user': 'ringo',
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            }
+        )
+
     def test_make_request_bad_response_with_auth_error(self, client, monkeypatch):
         fake_response = FakeResponse(status_code=400, json={
             'error_code': 3,

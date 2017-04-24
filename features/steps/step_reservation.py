@@ -253,16 +253,9 @@ def then_my_trolley_does_not_contain_tickets_for_event(context, event_id):
 @then('my trolley contains the requested seats')
 def then_my_trolley_contains_the_requested_seats(context):
     order = context.trolley.bundles[0].orders[0]
-    seat_ids = [seat.id for seat in order.requested_seats]
+    seat_ids = order.requested_seat_ids
 
     assert_that(seat_ids, has_items(*context.seats))
-
-
-@then('the trolley falls back to best available')
-def then_the_trolley_falls_back_to_best_available(context):
-    order = context.trolley.bundles[0].orders[0]
-
-    assert_that(order.requested_seats, is_(None))
 
 
 @then('my send method is the one I requested')
@@ -287,7 +280,7 @@ def then_i_get_the_requested_seats(context):
     order = context.reservation.trolley.bundles[0].orders[0]
     seat_ids = [seat.id for seat in order.get_seats()]
 
-    assert_that(order.got_requested_seats, is_(True))
+    assert_that(order.seat_request_status, equal_to('got_all'))
     assert_that(seat_ids, has_items(*context.seats))
 
 
@@ -296,7 +289,7 @@ def then_i_get_different_seats_than_requested(context):
     order = context.reservation.trolley.bundles[0].orders[0]
     seat_ids = [seat.id for seat in order.get_seats()]
 
-    assert_that(order.got_requested_seats, is_(False))
+    assert_that(order.seat_request_status, is_not(equal_to('got_all')))
     assert_that(seat_ids, has_length(context.no_of_tickets))
 
 

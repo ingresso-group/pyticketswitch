@@ -91,7 +91,7 @@ class TestOrder:
                 "perf_id": "6IF-A7N",
             },
             "price_band_code": "C/pool",
-            "got_requested_seats": True,
+            "seat_request_status": "got_all",
             "ticket_orders": {
                 "ticket_order": [
                     {"discount_code": "ADULT"},
@@ -103,9 +103,9 @@ class TestOrder:
             "total_no_of_seats": 3,
             "total_sale_seatprice": 51,
             "total_sale_surcharge": 5.40,
-            "requested_seats": [
-                {'full_id': 'ABC123'},
-                {'full_id': 'DEF456'},
+            "requested_seat_ids": [
+                'ABC123',
+                'DEF456',
             ],
             'send_method': {
                 'send_code': 'POST',
@@ -136,7 +136,7 @@ class TestOrder:
         assert order.number_of_seats == 3
         assert order.total_seatprice == 51
         assert order.total_surcharge == 5.40
-        assert order.got_requested_seats is True
+        assert order.seat_request_status == "got_all"
         assert order.backend_purchase_reference == 'GHI098'
 
         assert isinstance(order.event, Event)
@@ -148,9 +148,9 @@ class TestOrder:
         assert order.ticket_orders[0].code == 'ADULT'
         assert order.ticket_orders[1].code == 'CHILD'
 
-        assert len(order.requested_seats) == 2
-        assert order.requested_seats[0].id == 'ABC123'
-        assert order.requested_seats[1].id == 'DEF456'
+        assert len(order.requested_seat_ids) == 2
+        assert order.requested_seat_ids[0] == 'ABC123'
+        assert order.requested_seat_ids[1] == 'DEF456'
 
         assert order.total_including_send_cost() == (51 + 5.40 + 3.5)
 
@@ -229,10 +229,6 @@ class TestOrder:
     def test_get_seats_with_no_ticket_orders(self):
         order = Order(1, ticket_orders=[])
         assert order.get_seats() == []
-
-    def test_get_requested_seat_ids(self):
-        order = Order(1, requested_seats=[Seat('A1'), Seat('A2'), Seat('A3')])
-        assert order.get_requested_seat_ids() == ['A1', 'A2', 'A3']
 
     def test_repr(self):
         order = Order(1, ticket_orders=[])
