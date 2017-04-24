@@ -43,7 +43,8 @@ The top level object exposed by the API is the
 finding events is 
 :func:`list_events() <pyticketswitch.client.Client.list_events()>`::
 
-    >>> client.list_events()
+    >>> events, meta = client.list_events()
+    >>> events
     [
         <Event 6KS: 1-Day Ticket>,
         <Event 6IF: Matthew Bourne's Nutcracker TEST>,
@@ -90,7 +91,8 @@ To see available performances for a given event we can use the
 :func:`list_performances(event_id) <pyticketswitch.client.Client.list_performances>`
 client method::
     
-    >>> client.list_performances('6IF')
+    >>> performances, meta = client.list_performances('6IF')
+    >>> performances
     [<Performance 6IF-A86: 2017-02-03T19:30:00+00:00>,
      <Performance 6IF-A88: 2017-02-05T19:30:00+00:00>,
      ...,
@@ -309,7 +311,7 @@ discounts and send method calls::
     'ADULT'
     >>> child.code
     'CHILD'
-    >>> reservation = client.make_reservation(
+    >>> reservation, meta = client.make_reservation(
     ...     performance_id=performance.id,
     ...     ticket_type_code=ticket_type.code,
     ...     price_band_code=price_band.code,
@@ -505,7 +507,7 @@ If at any point in the process you need to retrieve the status of a transaction
 or reservation you can do so using the :meth:`Client.get_status
 <pyticketswitch.client.Client.get_status>` call and the **transaction_uuid**::
 
-    >>> status = client.get_status('ee39656e-ecc9-11e6-87c4-0025903268a0')
+    >>> status, meta = client.get_status('ee39656e-ecc9-11e6-87c4-0025903268a0')
     >>> status.status
     'purchased'
 

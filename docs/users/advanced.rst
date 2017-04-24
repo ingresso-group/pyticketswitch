@@ -181,7 +181,57 @@ fragmented into multiple "pages".
 Paginated responses will return meta data objects which inherit from the
 :class:`PaginationMixin <pyticketswitch.mixins.PaginationMixin>`::
 
+    >>> from pyticketswitch import Client
+    >>> client = Client(user='demo', password='demopass')
+    >>> events, meta = client.list_events()
+    >>> meta.is_paginated()
+    False
+    >>> meta.page_number
+    0
+    >>> meta.page_length
+    50
+    >>> meta.total_results
+    29
+    >>> meta.pages_remaining
+    0
+    >>> meta.results_remaining
+    0
+    >>> performances, meta = client.list_performances('DP9')
+    >>> meta.is_paginated()
+    True
+    >>> meta.page_number
+    0
+    >>> meta.page_length
+    50
+    >>> meta.total_results
+    360
+    >>> meta.results_remaining
+    310
+    >>> performances, meta = client.list_performances('DP9', page=1)
+    >>> meta.page_number
+    1
+    >>> meta.results_remaining
+    260
+    >>> meta.pages_remaining
+    6
+    >>> 
 
+you can specify both the page number and length as parameters to all calls::
+
+    >>> from pyticketswitch import Client
+    >>> client = Client(user='demo', password='demopass')
+    >>> performances, meta = client.list_performances('DP9', page_length=20, page=2)
+    >>> meta.page_number
+    2
+    >>> meta.page_length
+    20
+    >>> meta.total_results
+    360
+    >>> meta.results_remaining
+    300
+    >>> meta.pages_remaining
+    15
+    >>> 
 
 
 Requesting Seat Availability
@@ -189,7 +239,235 @@ Requesting Seat Availability
 
 .. _seated_availability:
 
-seats glorious seats
+The primary mode of sale for all seated backend systems is concept called 
+*"best available"* where you specify a ticket type and a price band and we (or
+more likely the backend system) picks the specific seats for you from the
+seats we have available.
+
+Most theatre backend systems can provide both a list of available seats at
+availabilty level and the abililty to reserve specific seats at the reservation
+level.
+
+Availability
+------------
+
+To request the available seats simply add the ``seats_blocks`` flag to the
+availabilty call::
+
+    >>> from pyticketswitch import Client
+    >>> client = Client(user='demo', password='demopass')
+    >>> ticket_types, meta = client.get_availability('7AA-4', seat_blocks=True)
+    >>> for ticket_type in ticket_types:
+    ...     for price_band in ticket_type.price_bands:
+    ...         for seat_block in price_band.seat_blocks:
+    ...             print('SeatBlock with length:', seat_block.length)
+    ...             for seat in seat_block.seats:
+    ...                 print(seat)
+    ...                 
+    ...             
+    ...         
+    ...     
+    ... 
+    SeatBlock with length: 10
+    <Seat A1>
+    <Seat A2>
+    <Seat A3>
+    <Seat A4>
+    <Seat A5>
+    <Seat A6>
+    <Seat A7>
+    <Seat A8>
+    <Seat A9>
+    <Seat A10>
+    SeatBlock with length: 8
+    <Seat B2>
+    <Seat B3>
+    <Seat B4>
+    <Seat B5>
+    <Seat B6>
+    <Seat B7>
+    <Seat B8>
+    <Seat B9>
+    SeatBlock with length: 4
+    <Seat C3>
+    <Seat C4>
+    <Seat C5>
+    <Seat C6>
+    SeatBlock with length: 6
+    <Seat D2>
+    <Seat D3>
+    <Seat D4>
+    <Seat D5>
+    <Seat D6>
+    <Seat D7>
+    SeatBlock with length: 2
+    <Seat E4>
+    <Seat E5>
+    SeatBlock with length: 3
+    <Seat E7>
+    <Seat E8>
+    <Seat E9>
+    SeatBlock with length: 3
+    <Seat F1>
+    <Seat F2>
+    <Seat F3>
+    SeatBlock with length: 4
+    <Seat G7>
+    <Seat G8>
+    <Seat G9>
+    <Seat G10>
+    SeatBlock with length: 4
+    <Seat H1>
+    <Seat H2>
+    <Seat H3>
+    <Seat H4>
+    SeatBlock with length: 4
+    <Seat H7>
+    <Seat H8>
+    <Seat H9>
+    <Seat H10>
+
+The results will contain a list of seat blocks (all seats in a seat block are
+adjacent to one another and can be considered to be *contiguous*, sort of like
+a linked list) and each seat block will contain a list of seats.
+
+If you don't care about the seat blocks you can just use the helper method on
+ticket type or price band::
+
+    >>> ticket_type = ticket_types[1]
+    >>> ticket_type.get_seats()
+    [<Seat E4>,
+     <Seat E5>,
+     <Seat E7>,
+     <Seat E8>,
+     <Seat E9>,
+     <Seat F1>,
+     <Seat F2>,
+     <Seat F3>,
+     <Seat G7>,
+     <Seat G8>,
+     <Seat G9>,
+     <Seat G10>,
+     <Seat H1>,
+     <Seat H2>,
+     <Seat H3>,
+     <Seat H4>,
+     <Seat H7>,
+     <Seat H8>,
+     <Seat H9>,
+     <Seat H10>]
+    >>> price_band = ticket_type.price_bands[1]
+    >>> price_band.get_seats()
+    [<Seat G7>,
+     <Seat G8>,
+     <Seat G9>,
+     <Seat G10>,
+     <Seat H1>,
+     <Seat H2>,
+     <Seat H3>,
+     <Seat H4>,
+     <Seat H7>,
+     <Seat H8>,
+     <Seat H9>,
+     <Seat H10>]
+    >>> 
+
+
+The :class:`AvailabilityMeta <pyticketswitch.availability.AvailabilityMeta>`
+object returned with your availability data includes some information on what
+seats can be selected::
+
+    >>> meta.can_leave_singles
+    False
+    >>> meta.contiguous_seat_selection_only
+    True
+    >>> meta.valid_quantities
+    [1, 2, 3, 4, 5, 6]
+    >>>
+
+When :attr:`can_leave_singles 
+<pyticketswitch.availability.AvailabilityMeta.can_leave_singles>` is 
+:obj:`False` then the backend system will not allow your customer to leave a
+single seat at the end of a row or inbetween two other seats. This a common
+restriction and something you should deffinately keep in mind when developing
+a seat selection application.
+
+When :class:`contiguous_seat_selection_only 
+<pyticketswitch.availability.AvailabilityMeta.contiguous_seat_selection_only>`
+flag is set then you may only select consecuative seats from a single seat
+block. Again this a common requirement and is something you should be aware of.
+
+Valid quantities indicates what number of tickets will be considered valid for
+a backend system. For example a system that required all tickets to be bought
+in pairs (think parent + child events perhaps) might return ``[2, 4, 6]``
+whereas a system that had a cap on the maximum tickets purchasable by one
+customer might return ``[1, 2, 3]``.
+
+Reservation
+-----------
+
+Once your customer has selected the seats they want you should reserve them
+for them with the ``seats`` argument to the :meth:`make_reservation
+<pyticketswitch.client.Client.make_reservation>` call::
+
+    >>> reservation, meta = client.make_reservation(
+    ...     performance_id='7AA-4',
+    ...     price_band_code='B/pool',
+    ...     ticket_type_code='CIRCLE',
+    ...     seats=['G7', 'G8'],
+    ...     number_of_seats=2
+    ... )
+    ...
+    >>>
+
+
+For each order you should then check that you got what you where expecting::
+
+    >>> # We only made one order so we extract it from the trolley
+    >>> order = reservation.trolley.get_orders()[0]
+    >>> order.requested_seat_ids
+    ['G7', 'G8']
+    >>> order.get_seat_ids()
+    ['G7', 'G8']
+    >>> order.seat_request_status
+    'got_all'
+    >>>
+
+It's possible that between being shown availability and making the reservation
+those seats were already taken by someone else. In this situation you would get
+a different seat_request_status and availabile seats from the same price band::
+
+    >>> reservation, meta = client.make_reservation(
+    ...     performance_id='7AA-4',
+    ...     price_band_code='B/pool',
+    ...     ticket_type_code='STALLS',
+    ...     seats=['D6', 'D7'],
+    ...     number_of_seats=2
+    ... )
+    ...
+    >>> order = reservation.trolley.get_orders()[0]
+    >>> order.requested_seat_ids
+    ['D6', 'D7']
+    >>> order.get_seat_ids()
+    ['D2', 'D3']
+    >>> order.seat_request_status
+    'got_none'
+
+
+The possible values for seat_request_status are ``got_all``, ``got_none``,
+``got_some``, and ``not_requested``.
+
+.. note:: When you were given seats you no longer want, please consider
+          releasing them so that someone else can have them.
+
+.. warning:: When releasing seated tickets there is no garentuee that the same
+             seats will be instantly available again. Someone else might have
+             taken them, or it may take some time for the backend system to
+             recycle them.
+
+Best available should be considered the common standard and you should be aware
+of it even if you only intend on implementing seat selection.
+
 
 Trollies, Bundles, Orders and Ticket orders
 ===========================================
