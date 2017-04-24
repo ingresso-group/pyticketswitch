@@ -287,7 +287,7 @@ def then_i_get_the_requested_seats(context):
     order = context.reservation.trolley.bundles[0].orders[0]
     seat_ids = [seat.id for seat in order.get_seats()]
 
-    assert_that(order.got_requested_seats, is_(True))
+    assert_that(order.seat_request_status, equal_to('got_all'))
     assert_that(seat_ids, has_items(*context.seats))
 
 
@@ -296,7 +296,7 @@ def then_i_get_different_seats_than_requested(context):
     order = context.reservation.trolley.bundles[0].orders[0]
     seat_ids = [seat.id for seat in order.get_seats()]
 
-    assert_that(order.got_requested_seats, is_(False))
+    assert_that(order.seat_request_status, is_not(equal_to('got_all')))
     assert_that(seat_ids, has_length(context.no_of_tickets))
 
 

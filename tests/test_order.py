@@ -91,7 +91,7 @@ class TestOrder:
                 "perf_id": "6IF-A7N",
             },
             "price_band_code": "C/pool",
-            "got_requested_seats": True,
+            "seat_request_status": "got_all",
             "ticket_orders": {
                 "ticket_order": [
                     {"discount_code": "ADULT"},
@@ -136,7 +136,7 @@ class TestOrder:
         assert order.number_of_seats == 3
         assert order.total_seatprice == 51
         assert order.total_surcharge == 5.40
-        assert order.got_requested_seats is True
+        assert order.seat_request_status == "got_all"
         assert order.backend_purchase_reference == 'GHI098'
 
         assert isinstance(order.event, Event)
