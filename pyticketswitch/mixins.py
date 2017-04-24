@@ -131,6 +131,9 @@ class PaginationMixin(object):
 
         """
 
+        if not self.total_results or not self.page_length:
+            return False
+
         if self.total_results < self.page_length:
             return False
 

@@ -182,6 +182,8 @@ Paginated responses will return meta data objects which inherit from the
 :class:`PaginationMixin <pyticketswitch.mixins.PaginationMixin>`::
 
 
+
+
 Requesting Seat Availability
 ============================
 

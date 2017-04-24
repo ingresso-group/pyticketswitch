@@ -165,3 +165,13 @@ class TestPaginationMixin:
         )
 
         assert meta.is_paginated() is True
+
+    def test_is_paginated_when_something_is_fucked(self):
+        meta = PaginationMixin(
+            page_length=None,
+            page_number=None,
+            pages_remaining=None,
+            total_results=None,
+        )
+
+        assert meta.is_paginated() is False
