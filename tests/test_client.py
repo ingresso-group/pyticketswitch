@@ -20,12 +20,6 @@ def client():
 
 
 @pytest.fixture
-def client_with_subuser():
-    client = Client(user="beatles", password="lovemedo", sub_user="ringo")
-    return client
-
-
-@pytest.fixture
 def fake_func():
     def wrapper(return_value):
         def fake(*args, **kwargs):
@@ -157,7 +151,7 @@ class TestClient:
         )
 
     def test_make_request_with_subuser(self, monkeypatch):
-        client = client_with_subuser()
+        client = Client(user="beatles", password="lovemedo", sub_user="ringo")
         fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
         fake_get = Mock(return_value=fake_response)
         monkeypatch.setattr('requests.get', fake_get)
