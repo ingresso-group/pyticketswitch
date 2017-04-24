@@ -217,10 +217,10 @@ class TestPerformanceMeta:
                 'has_perf_names': True,
                 'performance': [
                     {'perf_id': '6IF-B1H', 'event_id': '6IF'}
-                ]
-            },
-            'paging_status': {
-                'total_unpaged_results': 1,
+                ],
+                'paging_status': {
+                    'total_unpaged_results': 1,
+                },
             },
             'currency_code': 'gbp',
             'currency_details': {

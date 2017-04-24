@@ -111,7 +111,8 @@ class PaginationMixin(object):
     def from_api_data(cls, data, *args, **kwargs):
         inst = super(PaginationMixin, cls).from_api_data(data)
 
-        paging_data = data.get('paging_status', {})
+        results = data.get('results', {})
+        paging_data = results.get('paging_status', {})
 
         inst.page_length = paging_data.get('page_length')
         inst.page_number = paging_data.get('page_number')

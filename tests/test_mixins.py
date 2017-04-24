@@ -105,6 +105,37 @@ class TestJSONMixin:
 
 class TestPaginationMixin:
 
+    def test_from_api_data(self):
+
+        data = {
+            'results': {
+                "paging_status": {
+                    "page_length": 50,
+                    "page_number": 2,
+                    "pages_remaining": 3,
+                    "results_remaining": 150,
+                    "total_unpaged_results": 250,
+                }
+            }
+        }
+
+        class FakeBaseMeta(object):
+
+            @classmethod
+            def from_api_data(cls, data):
+                return cls()
+
+        class FakeMeta(PaginationMixin, FakeBaseMeta):
+            pass
+
+        meta = FakeMeta.from_api_data(data)
+
+        assert meta.page_length == 50
+        assert meta.page_number == 2
+        assert meta.pages_remaining == 3
+        assert meta.results_remaining == 150
+        assert meta.total_results == 250
+
     def test_is_paginated_pages_remaining(self):
         meta = PaginationMixin(
             page_length=50,

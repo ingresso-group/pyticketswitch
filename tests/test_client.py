@@ -344,9 +344,9 @@ class TestClient:
                     {'event_id': 'ABC123'},
                     {'event_id': 'DEF456'},
                 ],
-            },
-            'paging_status': {
-                'total_unpaged_results': 10,
+                'paging_status': {
+                    'total_unpaged_results': 10,
+                },
             },
             'currency_code': 'gbp',
             'currency_details': {
@@ -637,10 +637,10 @@ class TestClient:
                     {'perf_id': 'ABC123-1', 'event_id': 'ABC123'},
                     {'perf_id': 'ABC123-2', 'event_id': 'ABC123'},
                     {'perf_id': 'ABC123-3', 'event_id': 'ABC123'},
-                ]
-            },
-            'paging_status': {
-                'total_unpaged_results': 10,
+                ],
+                'paging_status': {
+                    'total_unpaged_results': 10,
+                },
             },
             'currency_code': 'gbp',
             'currency_details': {
