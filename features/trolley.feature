@@ -27,6 +27,14 @@ Feature: add tickets to the trolley
         Then I get a trolley token
         And my trolley contains the requested seats
 
+    Scenario: create a trolley with unavailble seats
+        Given an API client with valid credentials
+        And my customer wants tickets to "7AB"
+        And my customer is requesting unavailable specific seats
+        When I add the tickets to the trolley
+        Then I get a trolley token
+        And my trolley contains the requested seats
+
     Scenario: add item to an existing trolley
         Given an API client with valid credentials
         And I have an existing trolley with items from "6IF" in it

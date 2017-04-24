@@ -90,8 +90,7 @@ class Client(object):
         if self.sub_user:
             return {'user_id': self.user, 'user_passwd': self.password,
                     'sub_user': self.sub_user}
-        else:
-            return {'user_id': self.user, 'user_passwd': self.password}
+        return {'user_id': self.user, 'user_passwd': self.password}
 
     def get_headers(self, headers):
         """Generate common headers to send with all requests
