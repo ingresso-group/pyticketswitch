@@ -175,7 +175,7 @@ class Order(JSONMixin, object):
                  ticket_type_code=None, ticket_type_description=None,
                  ticket_orders=None, number_of_seats=None,
                  total_seatprice=None, total_surcharge=None,
-                 seat_request_status=None, requested_seats=None,
+                 seat_request_status=None, requested_seat_ids=None,
                  backend_purchase_reference=None, send_method=None):
 
         self.item = item
@@ -189,7 +189,7 @@ class Order(JSONMixin, object):
         self.total_seatprice = total_seatprice
         self.total_surcharge = total_surcharge
         self.seat_request_status = seat_request_status
-        self.requested_seats = requested_seats
+        self.requested_seat_ids = requested_seat_ids
         self.backend_purchase_reference = backend_purchase_reference
         self.send_method = send_method
 
@@ -214,6 +214,7 @@ class Order(JSONMixin, object):
             'ticket_type_code': data.get('ticket_type_code'),
             'ticket_type_description': data.get('ticket_type_desc'),
             'seat_request_status': data.get('seat_request_status'),
+            'requested_seat_ids': data.get('requested_seat_ids'),
             'backend_purchase_reference': data.get('backend_purchase_reference'),
         }
 
@@ -242,14 +243,6 @@ class Order(JSONMixin, object):
         raw_total_surcharge = data.get('total_sale_surcharge')
         if raw_total_surcharge is not None:
             kwargs.update(total_surcharge=float(raw_total_surcharge))
-
-        raw_requested_seats = data.get('requested_seats')
-        if raw_requested_seats:
-            requested_seats = [
-                Seat.from_api_data(seat)
-                for seat in raw_requested_seats
-            ]
-            kwargs.update(requested_seats=requested_seats)
 
         raw_send_method = data.get('send_method')
         if raw_send_method:
@@ -283,15 +276,6 @@ class Order(JSONMixin, object):
 
         """
         return [seat.id for seat in self.get_seats() if seat.id]
-
-    def get_requested_seat_ids(self):
-        """Get all seat ids from requested seats
-
-        Returns:
-            list: list of seat ids.
-        """
-
-        return [seat.id for seat in self.requested_seats]
 
     def unique_seat_text(self):
         """Get the unique seat text for all seats in an order
