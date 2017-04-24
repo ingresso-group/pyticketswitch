@@ -20,6 +20,12 @@ def client():
 
 
 @pytest.fixture
+def client_with_subuser():
+    client = Client(user="beatles", password="lovemedo", sub_user="ringo")
+    return client
+
+
+@pytest.fixture
 def fake_func():
     def wrapper(return_value):
         def fake(*args, **kwargs):
@@ -144,6 +150,30 @@ class TestClient:
                 'foo': 'bar',
                 'user_id': 'bilbo',
                 'user_passwd': 'baggins',
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            }
+        )
+
+    def test_make_request_with_subuser(self, monkeypatch):
+        client = client_with_subuser()
+        fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
+        fake_get = Mock(return_value=fake_response)
+        monkeypatch.setattr('requests.get', fake_get)
+        params = {
+            'foo': 'bar',
+        }
+        client.language='en-GB'
+        response = client.make_request('events.v1', params)
+        assert response == {'lol': 'beans'}
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            params={
+                'foo': 'bar',
+                'user_id': 'beatles',
+                'user_passwd': 'lovemedo',
+                'sub_user': 'ringo',
             },
             headers={
                 'Accept-Language': 'en-GB',
