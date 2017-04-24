@@ -249,7 +249,7 @@ availabilty level and the abililty to reserve specific seats at the reservation
 level.
 
 Availability
-------------
+~~~~~~~~~~~~
 
 To request the available seats simply add the ``seats_blocks`` flag to the
 availabilty call::
@@ -404,7 +404,7 @@ whereas a system that had a cap on the maximum tickets purchasable by one
 customer might return ``[1, 2, 3]``.
 
 Reservation
------------
+~~~~~~~~~~~
 
 Once your customer has selected the seats they want you should reserve them
 for them with the ``seats`` argument to the :meth:`make_reservation
