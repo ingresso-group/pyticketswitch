@@ -19,10 +19,9 @@ def data():
         'venue_desc': 'Top Notch Theater',
 
 
-        'class': [
-            {'class_desc': 'Theater'},
-            {'class_desc': 'Amazeballs'},
-        ],
+        'classes': {
+            'theatre': 'Theatre', 'amazeballs': 'Amazeballs'
+        },
 
         #TODO: don't actually know what filters look like yet...
         'filters': [],
@@ -229,7 +228,7 @@ class TestEvent:
 
         assert event.critic_review_percent == 100
 
-        assert event.classes == ['Theater', 'Amazeballs']
+        assert event.classes == {'theatre': 'Theatre', 'amazeballs':'Amazeballs'}
         assert event.filters == []
 
         assert event.postcode == 'W6 8DL'
