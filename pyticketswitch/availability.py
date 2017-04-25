@@ -67,6 +67,11 @@ class AvailabilityMeta(CurrencyMeta):
 
         return inst
 
+    @property
+    def can_leave_singles(self):
+        """Temporary patch until we can remove dependency on this call in WL"""
+        return True
+
 
 class AvailabilityDetails(JSONMixin, object):
     """Details about the available tickets of a performance.
