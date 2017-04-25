@@ -888,15 +888,26 @@ class TestClient:
                     {
                         'ticket_type_code': 'CIRCLE',
                         'price_band': [
-                            {'price_band_code': 'A'},
-                            {'price_band_code': 'B'},
+                            {
+                                'price_band_code': 'A',
+                            },
+                            {
+                                'price_band_code': 'B',
+                                'allows_leaving_single_seats': 'if_necessary',
+                            },
                         ]
                     },
                     {
                         'ticket_type_code': 'STALLS',
                         'price_band': [
-                            {'price_band_code': 'C'},
-                            {'price_band_code': 'D'},
+                            {
+                                'price_band_code': 'C',
+                                'allows_leaving_single_seats': 'always',
+                            },
+                            {
+                                'price_band_code': 'D',
+                                'allows_leaving_single_seats': 'never',
+                            },
                         ]
                     }
                 ]
@@ -905,7 +916,6 @@ class TestClient:
             'backend_is_broken': False,
             'backend_is_down': False,
             'backend_throttle_failed': False,
-            'can_leave_singles': True,
             'contiguous_seat_selection_only': True,
             'currency_code': 'gbp',
             'currency_details': {
@@ -925,7 +935,6 @@ class TestClient:
             'perf_id': 'ABC123-1',
         })
 
-        assert meta.can_leave_singles is True
         assert meta.contiguous_seat_selection_only is True
         assert meta.default_currency_code == 'gbp'
         assert meta.valid_quantities == [2, 3, 4, 5, 6, 7]
@@ -939,9 +948,11 @@ class TestClient:
 
         price_band_one = ticket_type_one.price_bands[0]
         assert price_band_one.code == 'A'
+        assert price_band_one.allows_leaving_single_seats == 'always'
 
         price_band_two = ticket_type_one.price_bands[1]
         assert price_band_two.code == 'B'
+        assert price_band_two.allows_leaving_single_seats == 'if_necessary'
 
         ticket_type_two = availability[1]
         assert ticket_type_two.code == 'STALLS'
@@ -950,9 +961,11 @@ class TestClient:
 
         price_band_three = ticket_type_two.price_bands[0]
         assert price_band_three.code == 'C'
+        assert price_band_three.allows_leaving_single_seats == 'always'
 
         price_band_four = ticket_type_two.price_bands[1]
         assert price_band_four.code == 'D'
+        assert price_band_four.allows_leaving_single_seats == 'never'
 
     def test_get_availability_with_number_of_seats(self, client, mock_make_request_for_availability):
         client.get_availability('6IF-1', number_of_seats=2)

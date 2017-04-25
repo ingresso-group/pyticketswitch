@@ -13,6 +13,9 @@ class PriceBand(JSONMixin, object):
             this is the discount that will be assumed if no other discount
             is specified at reservation time. It holds the prices for the price
             band.
+        allows_leaving_single_seats (str): indicates if this price band will
+            allow customers to leave a single seat with no neighbours. Values
+            are 'always', 'never', or 'if_necessary'.
         description (str): human readable description of the price band if
             available.
         cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
@@ -35,14 +38,15 @@ class PriceBand(JSONMixin, object):
 
     """
 
-    def __init__(self, code, default_discount, description=None,
-                 cost_range=None, no_singles_cost_range=None,
+    def __init__(self, code, default_discount, allows_leaving_single_seats,
+                 description=None, cost_range=None, no_singles_cost_range=None,
                  example_seats=None, example_seats_are_real=True,
                  seat_blocks=None):
 
         self.code = code
         self.description = description
         self.cost_range = cost_range
+        self.allows_leaving_single_seats = allows_leaving_single_seats
         self.no_singles_cost_range = no_singles_cost_range
         self.default_discount = default_discount
         self.example_seats = example_seats
@@ -86,6 +90,9 @@ class PriceBand(JSONMixin, object):
             'no_singles_cost_range': no_singles_cost_range,
             'default_discount': discount,
             'example_seats_are_real': data.get('example_seats_are_real', True),
+            'allows_leaving_single_seats': data.get(
+                'allows_leaving_single_seats', 'always'
+            ),
         }
 
         example_seats_data = data.get('example_seats')

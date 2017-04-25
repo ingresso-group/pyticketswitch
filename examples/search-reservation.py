@@ -41,7 +41,6 @@ for performance_id, performance in performances.items():
 print("")
 print("availablity.v1:")
 availability, meta = client.get_availability(performance.id)
-print("can leave singles:", meta.can_leave_singles)
 print("contiguous seat selection only:", meta.contiguous_seat_selection_only)
 print("currency:", meta.currency.code)
 print("valid quantities: {}".format(','.join([str(x) for x in meta.valid_quantities])))
@@ -51,6 +50,8 @@ for ticket_type in availability:
     for price_band in ticket_type.price_bands:
         disc = price_band.default_discount
         print("   ", price_band.code, disc.code, disc.seatprice, disc.surcharge)
+        print("allows_leaving_single_seats: '{}'".format(
+            price_band.allows_leaving_single_seats))
 
 
 print("")

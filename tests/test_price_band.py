@@ -45,6 +45,7 @@ class TestPriceBand:
             },
             'price_band_code': 'B',
             'discount_code': 'ABC123',
+            'allows_leaving_single_seats': 'always',
             'example_seats': [
                 {'full_id': 'ZZ-TOP'},
                 {'full_id': 'ZZ-BOTTOM'},
@@ -71,6 +72,7 @@ class TestPriceBand:
         assert price_band.code == 'B'
         assert price_band.description == 'Cheap Seats'
         assert price_band.default_discount.code == 'ABC123'
+        assert price_band.allows_leaving_single_seats == 'always'
 
         assert len(price_band.example_seats) == 2
         assert price_band.example_seats[0].id == 'ZZ-TOP'
@@ -85,6 +87,7 @@ class TestPriceBand:
         price_band = PriceBand(
             'A/pool',
             Discount('ADULT'),
+            allows_leaving_single_seats='always',
             seat_blocks=[
                 SeatBlock(
                     2,
@@ -117,6 +120,7 @@ class TestPriceBand:
         price_band = PriceBand(
             'A/pool',
             Discount('ADULT'),
+            allows_leaving_single_seats='always',
             seat_blocks=[
                 SeatBlock(
                     2,
@@ -145,6 +149,7 @@ class TestPriceBand:
             'A/pool',
             Discount('ADULT'),
             seat_blocks=None,
+            allows_leaving_single_seats='always',
         )
 
         seats = price_band.get_seats()

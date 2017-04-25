@@ -56,7 +56,7 @@ class TestTicketType:
         assert ticket_type.code == 'GRA'
         assert ticket_type.description == 'Grand Circle'
         assert len(ticket_type.price_bands) == 1
-        
+
     def test_get_seats(self):
 
         ticket_type = TicketType(
@@ -65,6 +65,7 @@ class TestTicketType:
                 PriceBand(
                     'A/pool',
                     Discount('ADULT'),
+                    allows_leaving_single_seats='always',
                     seat_blocks=[
                         SeatBlock(
                             2,
@@ -86,6 +87,7 @@ class TestTicketType:
                 PriceBand(
                     'B/pool',
                     Discount('ADULT'),
+                    allows_leaving_single_seats='always',
                     seat_blocks=[
                         SeatBlock(
                             1,
