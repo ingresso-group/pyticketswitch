@@ -20,7 +20,8 @@ class Event(JSONMixin, object):
         source (str): the backend system from wich the event originates.
         event_type (str): the type of the event.
         venue (str): a human readable description of the venue.
-        classes (list): a list of classes that the event belongs to.
+        classes (dict): a dictionary of class descriptions that the event
+            belongs to keyed on class identifier.
         filters (list): a list of filters that the event belongs to.
         postcode (str): venue post code.
         city (str): human readable venue city.
@@ -178,13 +179,6 @@ class Event(JSONMixin, object):
         if not id_:
             raise IntegrityError("event_id not found in event data", data=data)
 
-        api_classes = data.get('class', [])
-        classes = [
-            c['class_desc']
-            for c in api_classes
-            if 'class_desc' in c
-        ]
-
         geo_data = data.get('geo_data', {})
 
         # the raw field 'has_no_perfs' is a negative flag, so I'm inverting it
@@ -265,7 +259,7 @@ class Event(JSONMixin, object):
             'source': data.get('source_desc'),
             'venue': data.get('venue_desc'),
 
-            'classes': classes,
+            'classes': data.get('classes'),
             #TODO: don't actually know what filters look like yet...
             'filters': data.get('custom_filter', []),
             'fields': fields,
