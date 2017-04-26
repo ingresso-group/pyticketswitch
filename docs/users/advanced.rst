@@ -256,17 +256,17 @@ availabilty call::
 
     >>> from pyticketswitch import Client
     >>> client = Client(user='demo', password='demopass')
-    >>> ticket_types, meta = client.get_availability('7AA-4', seat_blocks=True)
+    >>> ticket_types, meta = client.get_availability(
+    ...     performance_id='7AA-4',
+    ...     seat_blocks=True
+    ... )
+    ...
     >>> for ticket_type in ticket_types:
     ...     for price_band in ticket_type.price_bands:
     ...         for seat_block in price_band.seat_blocks:
     ...             print('SeatBlock with length:', seat_block.length)
     ...             for seat in seat_block.seats:
     ...                 print(seat)
-    ...                 
-    ...             
-    ...         
-    ...     
     ... 
     SeatBlock with length: 10
     <Seat A1>
@@ -391,7 +391,7 @@ developing a seat selection booking application.
 
 Valid quantities indicates what number of tickets will be considered valid for
 a backend system. For example a system that required all tickets to be bought
-in pairs (think parent + child events perhaps) might return ``[2, 4, 6]``
+in pairs (think parent + child events perhaps) might return ``[2, 4, 6]``,
 whereas a system that had a cap on the maximum tickets purchasable by one
 customer might return ``[1, 2, 3]``.
 
@@ -466,14 +466,210 @@ Trollies, Bundles, Orders and Ticket orders
 
 .. _trollies_bundles_orders_ticket_orders:
 
-Trolley -> Bundle -> Order -> TicketOrder
+The API is designed to allow purchasing multiple tickets to multiple events in
+a single transaction. To support this a transaction is organised into several
+sub layers that represent the products you are after, it's important to
+understand these terms and what they represent.
 
-Basketing
+If you are interested in purchasing multiple items in a single transaction see
+the section on :ref:`Bundling <bundling>` below.
+
+The general heirarchy can be though of as:
+
+- Transaction
+- Trolley
+- Bundles
+- Orders
+- Ticket Order
+
+Trolley
+~~~~~~~
+
+The trolley represents the general collection of stuff you want to buy. It has
+a one to one mapping with the transaction and contains important stuff like
+the transaction ids, purchase results, and how long you have before your
+reservations expire. The details of the products you are ordering is contained
+in a collection of Bundle objects inside the trolley object.
+
+Bundle
+~~~~~~
+
+A bundle represents a collection of products from the same backend system
+source. It contains information like the total cost of all it's items, the
+currency that it's priced in, and the payment method it will be expecting.
+
+Details of Individual events and performances are contained in a collection of
+Orders inside the bundle object.
+
+Order
+~~~~~
+
+An Order represents a request for tickets for a single event and performance. It
+contains information such as the ticket type and prices band, the number of
+seats, total price, any requested seats, the send method, and the in event of a
+successful purchase the backend purchase reference.
+
+Details of any discounts or assigned seats are contained in a collection of
+ticket orders inside this parent order.
+
+Ticket Order
+~~~~~~~~~~~~
+
+A Ticket Order represents details about specific tickets. Primarily this is used
+to indicate discounts and assigned seat ids, however it also contains
+individual and total pricing.
+
+
+Bundling
 =========
+.. _bundling:
 
-.. _basketing:
+The API supports bundling where you can purchase multiple items from different
+sources as a single transaction.
 
-I puts the item in the baskets
+For example our customer wants to go to two shows in london, and buy a museum
+membership::
+
+    >>> from pyticketswitch import Client
+    >>> client = Client(user='demo', password='demopass')
+    >>> events, meta = client.get_events(['6IF', '7AB', '6KF'])
+    >>> events
+    {'6IF': <Event 6IF:b"Matthew Bourne's Nutcracker TEST">,
+     '6KF': <Event 6KF:b'V&A Memberships'>,
+     '7AB': <Event 7AB:b'The Unremarkable Incident of the Cat at Lunchtime'>}
+    >>>
+
+Building a trolley is a similar process to how we 
+:ref:`created a reservation in the quickstart guide <making_a_reservation>`, 
+the difference here is that the trolley call doesn't actually reserve any
+tickets. This way we can build up a trolley with some stuff in it and pass it
+all into the reservation call in one go
+
+First lets create an initial trolley with some tickets to the 6IF event::
+
+    >>> from pyticketswitch import Client
+    >>> client = Client(user='demo', password='demopass')
+    >>> trolley, meta = client.get_trolley(
+    ...     number_of_seats=2,
+    ...     ticket_type_code='CIRCLE',
+    ...     price_band_code='A/pool',
+    ...     performance_id='6IF-B0G'
+    ... )
+    ...
+    >>> trolley.token
+    's2--ys4C_FkPOSwdZM72WNGJ1ma0ZoEMYIZ8zWUGne0qaTYMcuc8ovMCWE1sQpjpLDGjZiKK_-6BtoKWkd6u3a56HP6ynJFqCNj_LW9npMLqK-PED8X6mGe-qWugFc714-0JDP31K7YpZUxoo-ADt0LIYUxC06ENJ3ZINjqr4NiWzkDwVHQtvMGAp4K9w_nRyJj2-8AqE_d3HkYfM4i17_FlxMAan0Zkd0fZF7xLySlSZCmuB-umnH-QEp9uWp8aU5yjsEht-oF36n0FgwgozQKhc6vMZxm2R6R2yP_VzSMrGM4cy_Yfoi6moZCG3IPOIu6R0ZeHgdu5RgGw8-yNBYIhx66xHnaIIIJBmQ_MqeKE5d5TBs82Ra3WZ0qAkOambTanAU2ZybRLmtLdSFqWbuFM3KCg9MDBVonmZ'
+    >>> trolley.bundles
+    [<Bundle ext_test0>]
+    >>> trolley.bundles[0].orders
+    [<Order 1>]
+    >>> trolley.bundles[0].orders[0].event.id
+    '6IF'
+    >>>
+
+Result! We can see we have trolley object with a trolley token which identifies
+this trolley and it's current state. Our trolley now contains a single bundle
+for the ``ext_test0`` backend system, and that bundle contains a single order
+for the 6IF event.
+
+Now lets add another event to our trolley by the same method, however this time
+we will pass in the current trolley token as an additional argument to the
+:meth:`get_trolley <pyticketswitch.client.Client.get_trolley>` call::
+
+    >>> trolley, meta = client.get_trolley(
+    ...     number_of_seats=2,
+    ...     ticket_type_code='STALLS',
+    ...     price_band_code='A/pool',
+    ...     performance_id='7AB-4',
+    ...     token=trolley.token,
+    ... )
+    ...
+    >>> trolley.token
+    'M4--hLYu4VwV6QUww385En04K9nZtOYL1uq6Xvyo24CFtP8o-uW_FHqo7DzwILJM3_aIDiCmrIXy7GJN5vkb3HtPdE-jXMEvt7zyxhKRRHzRLuKAjx3M3bhZoetSwB9jE0dYCYpLCsxjVfBCAN22TQ9jck3PD3WSbV1KR98OmQ44I8VFF4UCuBzpDCy78mbZu2DWWjeWyxHQbYM0ZNZrCEEZ2QZzWxeAVoJlCNmorxJIaek57Gr8v_Vj3jnBNLGtjQdbXmf9ENU5WYjkeX3Xgpy2ZTubusvLMn2rRMK7oZ1v4WtdL0fLdZJZNlzia9hJBeL2DQ-QmLvNawX2Rz27OV_TuvZpMkOyF9xpbADd4rg2VuwEHnU1puKX6brmy7PspildvqhjVrAwBcBR3jlDaZtCI6ACMxggTclmXUsGFjwDuWGJM9qBB3g87irMjq6TyZV1mBDFBWlq1BL-hC2Z6jIQ-968Ud8loWm5s5OVXgPZIhTqntoGZB58CinbF3hEY_CxbXycrznqkyHo7aYQVc45Iv1JnNUjvASSZ'
+    >>> trolley.bundles
+    [<Bundle ext_test0>, <Bundle ext_test1>]
+    >>> trolley.bundles[1].orders
+    [<Order 2>]
+    >>> trolley.bundles[1].orders[0].event.id
+    '7AB'
+
+As you can see our trolley token has changed, and the trolley now contains an
+additional bundle for ext_test1. This because 6IF and 7AB originate from
+different source systems. Our new bundle contains a single order for 7AB.
+
+We can add the museum membership in the same way::
+
+    >>> trolley, meta = client.get_trolley(
+    ...     number_of_seats=1,
+    ...     ticket_type_code='MEMBER',
+    ...     price_band_code='X/pool',
+    ...     performance_id='6KF-F',
+    ...     token=trolley.token
+    ... )
+    ...
+    >>> trolley.bundles
+    [<Bundle ext_test0>, <Bundle ext_test1>]
+    >>> trolley.bundles[0].orders
+    [<Order 1>, <Order 3>]
+    >>> trolley.bundles[0].orders[1].event.id
+    '6KF'
+    >>>
+
+As 6KF and 6IF are on the same backend system this order is added to our
+existing ``ext_test0`` bundle.
+
+If our customer decides that this is actually getting a bit pricey and they want
+to remove their 6IF tickets they can do this by removing the order (using it's
+item number) from the
+trolley::
+
+
+    >>> trolley.bundles[0].orders[0].item
+    1
+    >>> trolley, meta = client.get_trolley(
+    ...     item_numbers_to_remove=[1],
+    ...     token=trolley.token
+    ... )
+    ...
+    >>> trolley.get_orders()
+    [<Order 3>, <Order 2>]
+    >>> trolley.bundles[0].orders
+    [<Order 3>]
+    >>>
+
+Order 1 has now been removed from the trolley!
+
+When happy with the contents of the trolley, you can use the trolley token
+directly in the :meth:`make_reservation()
+<pyticketswitch.client.Client.make_reservation>` call::
+
+    >>> reservation, meta = client.make_reservation(
+    ...     token=trolley.token
+    ... )
+    ...
+    >>> reservation.status
+    'reserved'
+    >>> reservation.trolley.transaction_uuid
+    'b89747e2-29d0-11e7-b228-0025903268dc'
+    >>> reservation.trolley.get_orders()
+    [<Order 3>, <Order 2>]
+    >>> reservation.trolley.bundles
+    [<Bundle ext_test0>, <Bundle ext_test1>]
+    >>>
+
+Your trolley is now reserved and you can continue as normal through the rest of
+the transaction process.
+
+.. note:: Once the trolley is reserved it becomes immuatable. If you need to
+          make changes you should release the reservation then remake it with a
+          new trolley token.
+
+          If you hang on to your trolley token from the original
+          reservation you can simply restart the modification process using
+          that token, avoiding the steps needed to generate a new one. 
+
+          Only trollies returned by the :meth:`get_trolley
+          <pyticketswitch.client.Client.get_trolley>` call will return trolley
+          tokens.
 
 Sorting search results
 ======================
@@ -506,7 +702,60 @@ Taking payments
 
 .. _taking_payments:
 
-SHOW ME THE MONEY
+There are multiple ways that we can take payment for a transaction:
+
+- on credit (we invoice you later)
+- redirecting to a third party who takes the card payment (such as paypal)
+- `stripe`_
+- directly taking card payments
+
+.. note:: Generally speaking we are phasing out taking card payments directly
+          and you as a user are highly unlikely to ever see a backend system
+          that requires it. Regardless it's documented here in case it ever
+          crops up.
+
+The below examples will assume that you have the following customer object::
+
+    >>> from pyticketswitch.customer import Customer
+    >>> customer = Customer(
+    ...     first_name='Fred',
+    ...     last_name='Flintstone',
+    ...     address_lines=['301 Cobble stone road', 'Bolder Lane'],
+    ...     country_code='us',
+    ...     email='fred@slate-rock-gravel.com',
+    ...     post_code='70777',
+    ...     town='Bedrock',
+    ...     county='LA',
+    ...     phone='0110134345'
+    ...)
+
+On credit payments
+~~~~~~~~~~~~~~~~~~
+
+This is the simplest method of payment as it only requires customer details.
+Don't worry though, we will invoice you later!::
+
+    >>> client = Client('demo', 'demopass')
+    >>> reservation, meta = client.make_reservation(
+    ...     performance_id='7AB-4',
+    ...     ticket_type_code='STALLS',
+    ...     price_band_code='A/pool',
+    ...     number_of_seats=2
+    ... )
+    >>> status, callout, meta = client.make_purchase(
+    ...     reservation.trolley.transaction_uuid,
+    ...     customer
+    ... )
+    >>> status.status
+    'purchased'
+
+Job done, ship it!
+
+
+
+
+
+
 
 
 Handling callouts
@@ -524,3 +773,4 @@ Frontend Integrations
 doing all the stripe and the paypals and the meta debitings etc.
 
 
+.. _`stripe`: https://stripe.com/gb

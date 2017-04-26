@@ -1024,7 +1024,7 @@ class Client(object):
         method.
 
         .. note:: If you are interested in bundling multiple orders into a
-                  single purchase then see the :ref:`Basketing <basketing>`
+                  single purchase then see the :ref:`Bundling <bundling>`
                   documentation for more details.
 
         Args:

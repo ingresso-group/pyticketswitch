@@ -288,6 +288,7 @@ price band, discount, and a
 
 Making a Reservation
 ====================
+.. _making_a_reservation:
 
 Before making a purchase we have to reserve the tickets. Ingresso is often not
 the only agent connected to a ticketing system and you are almost certainly
@@ -401,7 +402,7 @@ be purchasing::
 This is just a simple reservation, but the system can handle much more complex
 orders to multiple systems, in multiple currencies, and to multiple events and 
 performances. If you are interested in package deals or up-selling then you
-should probably take a look at :ref:`Basketing <basketing>`.
+should probably take a look at :ref:`Bundling <Bundling>`.
 
 .. note:: We have glossed over a lot of information contained in the above 
           objects with the aim of getting you purchasing quickly, if you want
