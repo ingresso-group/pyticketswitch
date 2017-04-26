@@ -9,8 +9,6 @@ class AvailabilityMeta(CurrencyMeta):
     """Meta data about an availability response
 
     Attributes:
-        can_leave_singles (bool): indicates that the backend system will allow
-            customers to leave a single seat with no neighbours.
         contiguous_seat_selection_only (bool): indicates that the backend
             system will only allow seats to be selected that are in a
             contiguous line.
@@ -33,12 +31,10 @@ class AvailabilityMeta(CurrencyMeta):
             indicates that the backend system is under heavy load.
 
     """
-    def __init__(self, can_leave_singles=True,
-                 contiguous_seat_selection_only=True, currency=None,
+    def __init__(self, contiguous_seat_selection_only=True, currency=None,
                  valid_quantities=None, backend_is_down=False,
                  backend_is_broken=False, backend_throttle_failed=False,
                  *args, **kwargs):
-        self.can_leave_singles = can_leave_singles
         self.contiguous_seat_selection_only = contiguous_seat_selection_only
         self.currency = currency
         self.valid_quantities = valid_quantities
@@ -64,13 +60,17 @@ class AvailabilityMeta(CurrencyMeta):
         inst = super(AvailabilityMeta, cls).from_api_data(data)
 
         inst.valid_quantities = data.get('valid_quantities')
-        inst.can_leave_singles = data.get('can_leave_singles', False)
-        inst.contiguous_seat_selection_only = data.get('contiguous_seat_select_only', True)
+        inst.contiguous_seat_selection_only = data.get('contiguous_seat_selection_only', True)
         inst.backend_is_broken = data.get('backend_is_broken')
         inst.backend_is_down = data.get('backend_is_down')
         inst.backend_throttle_failed = data.get('backend_throttle_failed')
 
         return inst
+
+    @property
+    def can_leave_singles(self):
+        """Temporary patch until we can remove dependency on this call in WL"""
+        return True
 
 
 class AvailabilityDetails(JSONMixin, object):

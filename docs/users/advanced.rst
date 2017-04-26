@@ -377,25 +377,17 @@ The :class:`AvailabilityMeta <pyticketswitch.availability.AvailabilityMeta>`
 object returned with your availability data includes some information on what
 seats can be selected::
 
-    >>> meta.can_leave_singles
-    False
     >>> meta.contiguous_seat_selection_only
     True
     >>> meta.valid_quantities
     [1, 2, 3, 4, 5, 6]
     >>>
 
-When :attr:`can_leave_singles 
-<pyticketswitch.availability.AvailabilityMeta.can_leave_singles>` is 
-:obj:`False` then the backend system will not allow your customer to leave a
-single seat at the end of a row or inbetween two other seats. This a common
-restriction and something you should deffinately keep in mind when developing
-a seat selection application.
-
 When :class:`contiguous_seat_selection_only 
 <pyticketswitch.availability.AvailabilityMeta.contiguous_seat_selection_only>`
-flag is set then you may only select consecuative seats from a single seat
-block. Again this a common requirement and is something you should be aware of.
+flag is set then you may only select consecutive seats from a single seat
+block. This a common requirement and is something you should keep in mind when
+developing a seat selection booking application.
 
 Valid quantities indicates what number of tickets will be considered valid for
 a backend system. For example a system that required all tickets to be bought
