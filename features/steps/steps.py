@@ -6,14 +6,14 @@ from pyticketswitch.exceptions import AuthenticationError
 
 @given('an API client with valid credentials')
 def given_an_api_client_with_valid_credentials(context):
-    client = Client('demo', 'demopass', url='https://api.ticketswitch.com')
+    client = Client('demo', 'demopass', url='https://test-api.ingresso.co.uk')
     context.client = client
     context.user_id = 'demo'
 
 
 @given('an API client with invalid credentials')
 def given_an_api_client_with_invalid_credentials(context):
-    client = Client('boatymcboatyface', 'irship', url='https://api.ticketswitch.com')
+    client = Client('boatymcboatyface', 'irship', url='https://test-api.ingresso.co.uk')
     context.client = client
     context.user_id = 'boatymcboatyface'
 

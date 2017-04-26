@@ -4,7 +4,7 @@ logger = logging.getLogger(__name__)
 
 
 def before_all(context):
-    context.url = context.config.userdata.get('url', 'https://api.ticketswitch.com')
+    context.url = context.config.userdata.get('url', 'https://test-api.ingresso.co.uk')
     context.config.setup_logging()
 
 

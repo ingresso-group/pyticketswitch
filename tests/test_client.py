@@ -102,7 +102,7 @@ class TestClient:
     @pytest.mark.integration
     def test_get_url(self, client):
         url = client.get_url('events.v1')
-        assert url == 'https://api.ticketswitch.com/f13/events.v1/'
+        assert url == 'https://test-api.ingresso.co.uk/f13/events.v1/'
 
     @pytest.mark.integration
     def test_make_request(self, client, monkeypatch):
@@ -116,7 +116,7 @@ class TestClient:
         response = client.make_request('events.v1', params)
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
-            'https://api.ticketswitch.com/f13/events.v1/',
+            'https://test-api.ingresso.co.uk/f13/events.v1/',
             params={
                 'foo': 'bar',
                 'user_id': 'bilbo',
@@ -139,7 +139,7 @@ class TestClient:
         response = client.make_request('events.v1', params, method=POST)
         assert response == {'lol': 'beans'}
         fake_post.assert_called_with(
-            'https://api.ticketswitch.com/f13/events.v1/',
+            'https://test-api.ingresso.co.uk/f13/events.v1/',
             data={
                 'foo': 'bar',
                 'user_id': 'bilbo',
@@ -162,7 +162,7 @@ class TestClient:
         response = client.make_request('events.v1', params)
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
-            'https://api.ticketswitch.com/f13/events.v1/',
+            'https://test-api.ingresso.co.uk/f13/events.v1/',
             params={
                 'foo': 'bar',
                 'user_id': 'beatles',

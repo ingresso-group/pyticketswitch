@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 POST = 'post'
 GET = 'get'
-DEFAULT_ROOT_URL = "https://api.ticketswitch.com"
+DEFAULT_ROOT_URL = "https://test-api.ingresso.co.uk"
 
 
 class Client(object):
