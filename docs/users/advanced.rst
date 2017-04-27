@@ -704,10 +704,10 @@ Taking payments
 
 There are multiple ways that we can take payment for a transaction:
 
-- on credit (we invoice you later)
-- redirecting to a third party who takes the card payment (such as paypal)
-- `stripe`_
-- directly taking card payments
+- :ref:`on credit <on_credit_payments>` (we invoice you later)
+- :ref:`redirection <redirect_payments>` to a third party who takes the card payment (such as paypal)
+- :ref:`stripe <stripe_payments>` an on page third party payment provider
+- :ref:`directly taking card payments <card_payments>`
 
 .. note:: Generally speaking we are phasing out taking card payments directly
           and you as a user are highly unlikely to ever see a backend system
@@ -716,6 +716,7 @@ There are multiple ways that we can take payment for a transaction:
 
 The below examples will assume that you have the following customer object::
 
+    >>> from pyticketswitch import Client
     >>> from pyticketswitch.customer import Customer
     >>> customer = Customer(
     ...     first_name='Fred',
@@ -727,10 +728,11 @@ The below examples will assume that you have the following customer object::
     ...     town='Bedrock',
     ...     county='LA',
     ...     phone='0110134345'
-    ...)
+    ... )
 
-On credit payments
-~~~~~~~~~~~~~~~~~~
+On credit
+~~~~~~~~~
+.. _on_credit_payments:
 
 This is the simplest method of payment as it only requires customer details.
 Don't worry though, we will invoice you later!::
@@ -751,19 +753,388 @@ Don't worry though, we will invoice you later!::
 
 Job done, ship it!
 
+Redirects
+~~~~~~~~~
+.. _redirect_payments:
+
+For some payments you will need to redirect your customers browser to a third
+party::
+
+    >>> client = Client('demo-redirect', 'demopass')
+    >>> reservation, meta = client.make_reservation(
+    ...     performance_id='7AB-4',
+    ...     ticket_type_code='STALLS',
+    ...     price_band_code='A/pool',
+    ...     number_of_seats=2
+    ... )
+    >>> import uuid
+    >>> from pyticketswitch.payment_methods import RedirectionDetails
+    >>> token = uuid.uuid4()
+    >>> details = RedirectionDetails(
+    ...     token=token,
+    ...     url='https://fromtheboxoffice.com/callback/{}'.format(token),
+    ...     user_agent='Mozilla/5.0 (X11; Linux x86_64; rv:51.0) Gecko/20100101 Firefox/51.0',
+    ...     accept='text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    ...     remote_site='fromtheboxoffice.com',
+    ... )
+    ...
+    >>>
 
 
+All redirect payments require a unique return token. The token should be
+unique to your user, transaction, and each potential callout. We recommend a
+UUID (v1 or v4) so there is no confusion (python has a good implementation).
+
+Your return URL should contain the return token, and importantly **no query
+string parameters**. It *can* be a non secure URL, but don't be that guy that
+handles payments from a non secure website.
+
+The remote site should match the domain in return URL.
+
+To facilitate some of our weirder redirects you should also pass in your users
+``User-Agent`` and ``Accept`` HTTP request headers.
+
+With your redirect details established you can go ahead and make the
+purchase::
+
+    >>> status, callout, meta = client.make_purchase(
+    ...     reservation.trolley.transaction_uuid,
+    ...     customer,
+    ...     payment_method=details,
+    ... )
+    >>> status
+    None
+    >>> callout
+    <Callout ext_test1:95ca436e-e763-4463-954b-2b3eb4d8fdcb>
+
+All redirect payments should return a callback but no status. :ref:`See below 
+for how to handle callouts <handling_callouts>`.
+
+Stripe
+~~~~~~
+.. _stripe_payments:
+
+A common payment method for handling credit/debit cards is the third party
+payment provider `stripe`_. Stripe allows us to take card payments without you
+having to send us card details and the associated security nightmare that
+comes with it. If stripe sounds interesting you can read more about
+:ref:`handling front end integrations <frontend_integrations>`, or in
+`our main API documentation 
+<http://ingresso-group.github.io/slate/#purchasing-with-stripe>`_, or `the 
+official stripe documentation <https://stripe.com/docs>`_.
+
+For this example  we are going to set up a reservation with more than one
+bundle, this is because we must supply a stripe token for each bundle::
 
 
+    >>> from pyticketswitch import Client
+    >>> from pyticketswitch.customer import Customer
+    >>> from pyticketswitch.payment_methods import StripeDetails
+    >>> client = Client('demo-stripe', 'demopass')
+    <pyticketswitch.user.User object at 0x7f69f0849a58>
+    >>> trolley, meta = client.get_trolley(
+    ...         performance_id='7AB-4',
+    ...     ticket_type_code='STALLS',
+    ...     price_band_code='A/pool',
+    ...     number_of_seats=2
+    ... )
+    >>> reservation, meta = client.make_reservation(
+    ...     token=trolley.token,
+    ...     performance_id='7AA-4',
+    ...     ticket_type_code='STALLS',
+    ...     price_band_code='A/pool',
+    ...     number_of_seats=2
+    ... )
+    >>> reservation.trolley.bundles
+    [<Bundle ext_test0>, <Bundle ext_test1>]
+
+We will assume that you have also managed to create a stripe token for each
+bundle that represents a single use of your customers card details::
+
+    >>> tokens = 
+    >>> details = StripeDetails({
+    ...     'ext_test0': 'tok_1ADFKNHIklODsaxB3LZqzvpX',
+    ...     'ext_test1': 'tok_1ADFKgHIklODsaxBUr5gE6ca',
+    ... })
+    >>> status, callout, meta = client.make_purchase(
+    ...     reservation.trolley.transaction_uuid,
+    ...     customer,
+    ...     payment_method=details,
+    ... )
+    >>> status.status
+    'purchased'
+    >>> 
+
+Result good job!
+
+Stripe payments should not return a callout if you do it in this manner.
+However if you miss a token a callout for the remaining payment(s) will be
+issued. If this happens you can handle the callback directly passing any
+missing stripe token for each callout like so::
+
+    >>> import uuid
+    >>> status, callout, meta = client.next_callout(
+    ...     callout.return_token,
+    ...     uuid.uuid4(),
+    ...     {'stripeToken': 'tok_1ADFKgHIklODsaxBUr5gE6ca'}
+    ... )
+    ...
+    >>> status.status
+    'purchased'
+    >>> 
+
+Card Details
+~~~~~~~~~~~~
+
+.. _card_payments:
+
+Sometimes we need to pass the customers card details directly to the backend
+system. This method of payment is being phased out and you are extremely
+unlikely to come across it, and certainly not without forewarning, however
+it's documented here just in case::
+
+    >>> from pyticketswitch import Client
+    >>> from pyticketswitch.payment_methods import CardDetails
+    >>> client = Client('demo-creditcard', 'demopass')
+    >>> reservation, meta = client.make_reservation(
+    ...     performance_id='7AB-4',
+    ...     ticket_type_code='STALLS',
+    ...     price_band_code='A/pool',
+    ...     number_of_seats=2
+    ... )
+    >>> details = CardDetails(
+    ...     '4111 1111 1111 1111',
+    ...     expiry_month=4,
+    ...     expiry_year=19,
+    ...     ccv2='123',
+    ... )
+    >>> status, callout, meta = client.make_purchase(
+    ...     reservation.trolley.transaction_uuid,
+    ...     customer,
+    ...     payment_method=details,
+    ... )
+    >>> status.status
+    'purchased'
+    >>> 
+
+If your customer wants to provide an alternate billing address they can do
+so::
+
+    >>> from pyticketswitch.address import Address
+    >>> billing_address = Address(
+    ...     lines=['Slate, Rock, and Gravel', '123 Sediment Row'],
+    ...     town='Bedrock',
+    ...     country_code='us',
+    ...     county='LA',
+    ...     post_code='70777',
+    ... )
+    >>> details = CardDetails(
+    ...     '4111 1111 1111 1111',
+    ...     expiry_month=4,
+    ...     expiry_year=19,
+    ...     ccv2='123',
+    ...     billing_address=billing_address
+    ... )
+    >>> status, callout, meta = client.make_purchase(
+    ...     reservation.trolley.transaction_uuid,
+    ...     customer,
+    ...     payment_method=details,
+    ... )
+    >>> status.status
+    'purchased'
+    >>>
+
+Some card's require 3D secure validation, if you want to accept these cards
+you must pass in the same return_url parameters as with redirect payments::
+
+    >>> import uuid
+    >>> token = uuid.uuid4()
+    >>> details = CardDetails(
+    ...     '4111 1111 1111 1111',
+    ...     expiry_month=4,
+    ...     expiry_year=19,
+    ...     ccv2='123',
+    ...     return_token=token,
+    ...     return_url='https://fromtheboxoffice.com/callback/{}'.format(token),
+    ...     user_agent='Mozilla/5.0 (X11; Linux x86_64; rv:51.0) Gecko/20100101 Firefox/51.0',
+    ...     accept='text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    ...     remote_site='fromtheboxoffice.com',
+    ... )
+    ...
+    >>> status, callout, meta = client.make_purchase(
+    ...     reservation.trolley.transaction_uuid,
+    ...     customer,
+    ...     payment_method=details,
+    ... )
+    >>> status
+    None
+    >>> callout
+    <Callout ext_test1:95ca436e-e763-4463-954b-2b3eb4d8fdcb>
+
+If your customers card requires a redirect to 3D secure then a callout will be
+issued :ref:`See below for how to handle callouts <handling_callouts>`.
+
+If you don't provide redirection details, and the card in question requires 3D
+secure you will receive a ``auth_failure`` error in the :attr:`purchase_result
+<pyticketswitch.trolley.Trolley.purchase_result>` and :attr:`failed_3d_secure
+<pyticketswitch.purchase_result.PurchaseResult.failed_3d_secure>` will be set
+to :obj:`True`.
 
 
-
-Handling callouts
+Handling Callouts
 =================
 
 .. _handling_callouts:
 
-London calling.... hello?
+Some payment methods may require redirecting your customer's browser to a
+third party. In these situations the :meth:`make_purchase
+<pyticketswitch.client.Client.make_purchase>` call or :meth:`next_callout
+<pyticketswitch.client.Client.next_callout>` call will return a 
+:class:`Callout <pyticketswitch.callout.Callout>` object providing details of
+where to send your customer::
+
+    >>> status, callout, meta = client.make_purchase(
+    ...     reservation.trolley.transaction_uuid,
+    ...     customer,
+    ...     payment_method=details,
+    ... )
+    >>> status
+    None
+    >>> callout
+    <Callout ext_test1:95ca436e-e763-4463-954b-2b3eb4d8fdcb>
+    >>> callout.code
+    'ext_test1'
+    >>> callout.type
+    'get'
+    >>> callout.destination
+    'https://api.ticketswitch.com/tickets/dummy_redirect.buy/demo-redirect'
+    >>> callout.parameters
+    OrderedDict([
+        ('return_url', 'https://fromtheboxoffice.com/callback/010288fe-a196-401f-8319-57bfe0cba552'),
+        ('title', "Dummy external card details page for debit on system 'ext_test1'")
+    ])
+    >>> callout.return_token
+    '010288fe-a196-401f-8319-57bfe0cba552'
+
+For simple ``get`` callouts you can just build the URL by adding the callout
+parameters to the callout destination::
+
+    >>> from urllib.parse import urlencode
+    >>> url = callout.destination
+    >>> if callout.parameters:
+    ...     url = '{}?{}'.format(
+    ...         callout.destination,
+    ...         urlencode(callout.parameters),
+    ...     )
+    ...
+    >>> url
+    'https://api.ticketswitch.com/tickets/dummy_redirect.buy/demo-redirect?return_url=https%3A%2F%2Ffromtheboxoffice.com%2Fcallback%2F010288fe-a196-401f-8319-57bfe0cba552&title=Dummy+external+card+details+page+for+debit+on+system+%27ext_test1%27'
+
+You can then redirect your customer to the URL with a 302 direct.
+
+Some callouts require a ``post`` request to the destination::
+
+    >>> callout.code
+    'ext_test1'
+    >>> callout.type
+    'post'
+    >>> callout.destination
+    'https://api.ticketswitch.com/tickets/dummy_redirect.buy/demo-redirect'
+    >>> callout.parameters
+    OrderedDict([
+        ('return_url', 'https://fromtheboxoffice.com/callback/010288fe-a196-401f-8319-57bfe0cba552'),
+        ('title', "Dummy external card details page for debit on system 'ext_test1'")
+    ])
+
+
+This cannot be achieved with a simple redirect. Instead you must render an
+HTML form and either submit it on behalf of the user or have the user submit
+it themselves::
+
+    <html>
+      <head>
+        <title>Redirecting you to your payment provider</title>
+      </head>
+      <body>
+        <strong>We are redirecting you to your payment provider</strong>
+
+        <form action="https://api.ticketswitch.com/tickets/dummy_redirect.buy/demo-redirect" method="POST" id="calloutForm" name="calloutForm">
+          <input type="hidden" name="return_url" value="https://fromtheboxoffice.com/callback/010288fe-a196-401f-8319-57bfe0cba552" />
+          <input type="hidden" name="title" value="Dummy external card details page for debit on system 'ext_test1'" />
+          <input type="submit" value="Click here to continue to your payment provider" />
+        </form>
+
+        <script language="javascript">
+          document.getElementById('calloutForm').submit();
+          document.getElementById('calloutButton').disabled = true;
+        </script>
+      </body>
+    </html>
+
+.. note:: the callout parameters are a :obj:`collections.OrderDict` and any url
+          or form parameters should be passed to the destination in the given
+          order.
+
+If you loose the details of where you are supposed to be redirecting your
+customer to to can retrieve it again with a :meth:`get_status
+<pyticketswitch.client.Client.get_status>` call and find the details on the
+:attr:`pending_callout <pyticketswitch.status.Status.pending_callout>`.
+
+Handling Callbacks
+==================
+
+.. _handling_callbacks:
+
+When the user has come back to your website from a third party payment
+method, the third party should pass you some parameters that need to be passed
+back to the API to complete the payment. 
+
+For example if your callback URL looks something like this
+``https://example.com/callback/<return_token>/`` and the payment provider
+returns your customer to a URL like this
+``https://example.com/callback/4e91a978-f7c6-4e38-b6c0-5167a1360398/?success=1&ref=abc123``
+you need to pass those parameters back to us::
+    
+    >>> import uuid
+    >>> from pyticketswitch import Client
+    >>> client = Client('demo-redirect', 'demopass')
+    >>> returned_parameters = {
+    ...     'success': '1',
+    ...     'ref': 'abc123',
+    ... }
+    ...
+    >>> this_token = '4e91a978-f7c6-4e38-b6c0-5167a1360398'
+    >>> next_token = uuid.uuid4()
+    >>> status, callout, meta = client.next_callout(
+    ...     this_token,
+    ...     next_token,
+    ...     returned_parameters,
+    ... )
+    ...
+    >>> status.status
+    'purchased'
+    >>>
+
+.. note:: :class:`next_callout <pyticketswitch.client.Client.next_callout>`
+          may return another :class:`Callout <pyticketswitch.callout.Callout>`
+          object.
+
+.. warning:: the third party may try to return parameters to you via either a
+             ``GET`` **OR** a ``POST`` request **OR** sometimes both (which is
+             a clear violation of the HTTP spec but you know it's only the
+             worlds largest payment provider, they probably don't know any
+             better). As such you should make sure your callback URL responds
+             to both ``GET`` and ``POST`` methods, and reads parameters from
+             both the URL and the request body.
+
+.. warning:: If your user gets lost and doesn't complete their transaction we
+             will after a time attempt to clean up the transaction by
+             returning to your return URL ourselves and returning no data. As
+             such you should not assume things like cookies or sessions, or
+             local storage, and you should be able to complete the callback
+             withonly the data contained in the return url. If this is a
+             problem for you let us know and we will see what we can do.
+
 
 Frontend Integrations
 =====================

@@ -127,6 +127,15 @@ Payment Details
    :inherited-members:
 
 
+Callouts
+--------
+.. _callout_and_callbacks:
+
+.. autoclass:: pyticketswitch.callout.Callout
+   :inherited-members:
+.. autoclass:: pyticketswitch.callout.Integration
+   :inherited-members:
+
 Meta Objects
 ------------
 .. autoclass:: pyticketswitch.event.EventMeta
