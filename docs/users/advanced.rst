@@ -1141,7 +1141,34 @@ Frontend Integrations
 
 .. _frontend_integrations:
 
-doing all the stripe and the paypals and the meta debitings etc.
+For payment methods like stripe you will need some information ahead of
+purchase time in order to capture payment details. The API provides the
+:class:`Debitor <pyticketswitch.debitor.Debitor>` object for each bundle so
+you can determine how you should be capturing these details::
 
+    >>> from pyticketswitch import Client
+    >>> client = Client('demo-stripe', 'demopass')
+    >>> reservation, meta = client.make_reservation(
+    ...     performance_id='7AB-4',
+    ...     ticket_type_code='STALLS',
+    ...     price_band_code='A/pool',
+    ...     number_of_seats=2
+    ... )
+    >>> debitor = reservation.trolley.bundles[0].debitor
+    >>> debitor
+    <Debitor stripe:stripe>
+    >>> debitor.description
+    'Stripe Debitor'
+    >>> debitor.type
+    'stripe'
+    >>> debitor.name
+    'stripe'
+    >>> debitor.integration_data
+    {'publishable_key': 'pk_test_b7N9DOwbo4B9t6EqCf9jFzfa',
+     'statement_descriptor': 'Test Stripe Account'}
+    >>> 
+
+You can then use the integration data to initalise a card details capture or
+similar front end integration.
 
 .. _`stripe`: https://stripe.com/gb

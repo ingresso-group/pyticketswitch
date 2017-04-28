@@ -30,7 +30,7 @@ class Debitor(JSONMixin, object):
     integration goes awry.
 
     :ref:`See front end integrations for more information
-    <front_end_integrations>`
+    <frontend_integrations>`
 
     Attributes:
         type (str): all debitors with the same type can be assumed to integrate
@@ -59,3 +59,6 @@ class Debitor(JSONMixin, object):
         }
 
         return cls(**kwargs)
+
+    def __repr__(self):
+        return u'<Debitor {}:{}>'.format(self.type, self.name)
