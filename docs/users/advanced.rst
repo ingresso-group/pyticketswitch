@@ -19,8 +19,8 @@ following events:
 +=========+====================================+=====================================================================+
 | ``6IE`` | Matthew Bourne's Swan Lake test    | - seated                                                            |
 |         |                                    | - default discounts only                                            |
-|         |                                    | - reservations for tuesday performances                             |
-|         |                                    | - has restricted view seats on ticket 2 and 3 on thursdays          |
+|         |                                    | - reservations for Tuesday performances                             |
+|         |                                    | - has restricted view seats on ticket 2 and 3 on Thursdays          |
 +---------+------------------------------------+---------------------------------------------------------------------+
 | ``6IF`` | Matthew Bourne's Nutcracker TEST   | - seated                                                            |
 |         |                                    | - maximum of 3 mixed discounts                                      |
@@ -33,7 +33,7 @@ following events:
 |         |                                    | - has only single performance that must be selected                 |
 +---------+------------------------------------+---------------------------------------------------------------------+
 | ``6KS`` | 1-Day Ticket                       | - attraction                                                        |
-+---------+------------------------------------+ - not valid on mondays                                              |
++---------+------------------------------------+ - not valid on Mondays                                              |
 | ``6KT`` | 3-Day Hopper                       |                                                                     |
 +---------+------------------------------------+                                                                     |
 | ``6KU`` | Family Ticket                      |                                                                     |
@@ -59,7 +59,7 @@ following events:
 | ``7AB`` | The Unremarkable Incident          | - seated                                                            |
 |         | of the Cat at Lunchtime            | - seat selection                                                    |
 |         |                                    | - seating plan data available                                       |
-|         |                                    | - allows discontiguous seat selection                               |
+|         |                                    | - allows discontinuous seat selection                               |
 |         |                                    | - self print vouchers with barcodes                                 |
 +---------+------------------------------------+---------------------------------------------------------------------+
 | ``9XW`` | Five Day Park Hopper Ticket        | - attraction                                                        |
@@ -68,7 +68,7 @@ following events:
 |         |                                    |                                                                     |
 +---------+------------------------------------+---------------------------------------------------------------------+
 | ``AG8`` | 1デーパスポート (One Day Passport) | - attraction                                                        |
-|         |                                    | - text in japanese (useful for testing unicode support)             |
+|         |                                    | - text in Japanese (useful for testing unicode support)             |
 +---------+------------------------------------+---------------------------------------------------------------------+
 | ``DBZ`` | Moulin Rouge (Dinner Show)         | - seated                                                            |
 |         |                                    | - priced in euros                                                   |
@@ -216,7 +216,7 @@ Paginated responses will return meta data objects which inherit from the
     6
     >>> 
 
-you can specify both the page number and length as parameters to all calls::
+You can specify both the page number and length as parameters to all calls::
 
     >>> from pyticketswitch import Client
     >>> client = Client(user='demo', password='demopass')
@@ -245,14 +245,14 @@ more likely the backend system) picks the specific seats for you from the
 seats we have available.
 
 Most theatre backend systems can provide both a list of available seats at
-availabilty level and the abililty to reserve specific seats at the reservation
+availability level and the ability to reserve specific seats at the reservation
 level.
 
 Availability
 ~~~~~~~~~~~~
 
 To request the available seats simply add the ``seats_blocks`` flag to the
-availabilty call::
+availability call::
 
     >>> from pyticketswitch import Client
     >>> client = Client(user='demo', password='demopass')
@@ -427,7 +427,7 @@ For each order you should then check that you got what you where expecting::
 
 It's possible that between being shown availability and making the reservation
 those seats were already taken by someone else. In this situation you would get
-a different seat_request_status and availabile seats from the same price band::
+a different seat_request_status and available seats from the same price band::
 
     >>> reservation, meta = client.make_reservation(
     ...     performance_id='7AA-4',
@@ -474,7 +474,7 @@ understand these terms and what they represent.
 If you are interested in purchasing multiple items in a single transaction see
 the section on :ref:`Bundling <bundling>` below.
 
-The general heirarchy can be though of as:
+The general hierarchy can be thought of as:
 
 - Transaction
 - Trolley
@@ -527,7 +527,7 @@ Bundling
 The API supports bundling where you can purchase multiple items from different
 sources as a single transaction.
 
-For example our customer wants to go to two shows in london, and buy a museum
+For example our customer wants to go to two shows in London, and buy a museum
 membership::
 
     >>> from pyticketswitch import Client
@@ -545,7 +545,7 @@ the difference here is that the trolley call doesn't actually reserve any
 tickets. This way we can build up a trolley with some stuff in it and pass it
 all into the reservation call in one go
 
-First lets create an initial trolley with some tickets to the 6IF event::
+First lets create an initial trolley with some tickets to the ``6IF`` event::
 
     >>> from pyticketswitch import Client
     >>> client = Client(user='demo', password='demopass')
@@ -593,8 +593,8 @@ we will pass in the current trolley token as an additional argument to the
     '7AB'
 
 As you can see our trolley token has changed, and the trolley now contains an
-additional bundle for ext_test1. This because 6IF and 7AB originate from
-different source systems. Our new bundle contains a single order for 7AB.
+additional bundle for ext_test1. This because ``6IF`` and ``7AB`` originate from
+different source systems. Our new bundle contains a single order for ``7AB``.
 
 We can add the museum membership in the same way::
 
@@ -614,11 +614,11 @@ We can add the museum membership in the same way::
     '6KF'
     >>>
 
-As 6KF and 6IF are on the same backend system this order is added to our
+As ``6KF`` and ``6IF`` are on the same backend system this order is added to our
 existing ``ext_test0`` bundle.
 
 If our customer decides that this is actually getting a bit pricey and they want
-to remove their 6IF tickets they can do this by removing the order (using it's
+to remove their ``6IF`` tickets they can do this by removing the order (using it's
 item number) from the
 trolley::
 
@@ -1168,7 +1168,7 @@ you can determine how you should be capturing these details::
      'statement_descriptor': 'Test Stripe Account'}
     >>> 
 
-You can then use the integration data to initalise a card details capture or
+You can then use the integration data to initialise a card details capture or
 similar front end integration.
 
 .. _`stripe`: https://stripe.com/gb

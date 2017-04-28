@@ -46,7 +46,7 @@ of this library supporting it was version 1.13.0.
 :ref:`See legacy installation instructions <legacy_install>`
 
 We do not intended to reintroduce support for this API and will eventually take
-it out of circualation, however there is no date set for this as of yet.
+it out of circulation, however there is no date set for this as of yet.
 
 
 Licence

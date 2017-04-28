@@ -29,7 +29,7 @@ instantiating it with your credentials::
     >>> from pyticketswitch import Client
     >>> client = Client('demo', 'demopass')
 
-We will use this client for the rest of this example. If you loose it somehow
+We will use this client for the rest of this example. If you lose it somehow
 (for example by closing your terminal), just instantiate a new one and continue 
 where you left off. The client holds no relevant state other than the
 authentication credentials.
@@ -377,7 +377,7 @@ total price, and more detailed information of our order::
     >>> bundle.orders
     [<Order 1>]
 
-So what did we actually reserve? lets inspect the 
+So what did we actually reserve? Lets inspect the 
 :class:`Order <pyticketswitch.order.Order>`::
 
     >>> order = bundle.orders[0]
