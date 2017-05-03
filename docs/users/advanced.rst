@@ -831,7 +831,6 @@ bundle, this is because we must supply a stripe token for each bundle::
     >>> from pyticketswitch.customer import Customer
     >>> from pyticketswitch.payment_methods import StripeDetails
     >>> client = Client('demo-stripe', 'demopass')
-    <pyticketswitch.user.User object at 0x7f69f0849a58>
     >>> trolley, meta = client.get_trolley(
     ...         performance_id='7AB-4',
     ...     ticket_type_code='STALLS',
