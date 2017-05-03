@@ -67,6 +67,16 @@ class TestPriceBand:
             },
             "user_commission": {
                 "amount_excluding_vat": 2.93,
+            },
+            "possible_discounts": {
+                "discount": [
+                    {
+                        "discount_code": "ADULT",
+                    },
+                    {
+                        "discount_code": "CHILD",
+                    },
+                ]
             }
         }
 
@@ -86,6 +96,10 @@ class TestPriceBand:
         assert price_band.seat_blocks[0].length == 2
 
         assert price_band.user_commission.excluding_vat == 2.93
+
+        assert len(price_band.discounts) == 2
+        assert price_band.discounts[0].code == 'ADULT'
+        assert price_band.discounts[1].code == 'CHILD'
 
     def test_get_seats(self):
 
