@@ -26,8 +26,8 @@ class Content(JSONMixin, object):
                 that concerns some content..
 
         Returns:
-            :class:`Content <pyticketswitch.customer.Customer>`: a new
-            :class:`Content <pyticketswitch.customer.Customer>` object
+            :class:`Content <pyticketswitch.content.Content>`: a new
+            :class:`Content <pyticketswitch.content.Content>` object
             populated with the data from the api.
 
         """

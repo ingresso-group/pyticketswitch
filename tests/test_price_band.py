@@ -64,6 +64,9 @@ class TestPriceBand:
                     'Death Trap': ['A1', 'B-2'],
                 },
                 'restricted_view_seats': ['A1', 'B-2'],
+            },
+            "user_commission": {
+                "amount_excluding_vat": 2.93,
             }
         }
 
@@ -81,6 +84,8 @@ class TestPriceBand:
 
         assert len(price_band.seat_blocks) == 4
         assert price_band.seat_blocks[0].length == 2
+
+        assert price_band.user_commission.excluding_vat == 2.93
 
     def test_get_seats(self):
 
