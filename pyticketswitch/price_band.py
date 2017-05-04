@@ -38,7 +38,7 @@ class PriceBand(JSONMixin, object):
 
     """
 
-    def __init__(self, code, default_discount, allows_leaving_single_seats,
+    def __init__(self, code, default_discount, allows_leaving_single_seats="always",
                  description=None, cost_range=None, no_singles_cost_range=None,
                  example_seats=None, example_seats_are_real=True,
                  seat_blocks=None):
