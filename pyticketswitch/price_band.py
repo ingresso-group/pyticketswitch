@@ -1,6 +1,7 @@
 from pyticketswitch.cost_range import CostRange
 from pyticketswitch.discount import Discount
 from pyticketswitch.seat import Seat, SeatBlock
+from pyticketswitch.commission import Commission
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -35,13 +36,18 @@ class PriceBand(JSONMixin, object):
             this are the contiguous seats that are available for purchase.
             :class:`SeatBlocks <pyticketswitch.seat.SeatBlock>` contain
             :class:`Seats <pyticketswitch.seat.Seat>`.
+        user_commission (:class:`Commission <pyticketswitch.commission.Commission>`):
+            the commission payable to the user on the sale of tickets in this
+            price band. Only available when requested.
+        gross_commission (:class:`Commission <pyticketswitch.commission.Commission>`):
+            the gross commission payable. This is not generally available.
 
     """
 
     def __init__(self, code, default_discount, allows_leaving_single_seats="always",
                  description=None, cost_range=None, no_singles_cost_range=None,
                  example_seats=None, example_seats_are_real=True,
-                 seat_blocks=None):
+                 seat_blocks=None, user_commission=None, discounts=None):
 
         self.code = code
         self.description = description
@@ -52,6 +58,8 @@ class PriceBand(JSONMixin, object):
         self.example_seats = example_seats
         self.example_seats_are_real = example_seats_are_real
         self.seat_blocks = seat_blocks
+        self.user_commission = user_commission
+        self.discounts = discounts
 
     @classmethod
     def from_api_data(cls, data):
@@ -126,6 +134,19 @@ class PriceBand(JSONMixin, object):
                         seat_blocks.append(seat_block)
 
             kwargs.update(seat_blocks=seat_blocks)
+
+        user_commission_data = data.get('user_commission')
+        if user_commission_data:
+            user_commission = Commission.from_api_data(user_commission_data)
+            kwargs.update(user_commission=user_commission)
+
+        discounts_data = data.get('possible_discounts', {}).get('discount')
+        if discounts_data:
+            discounts = [
+                Discount.from_api_data(discount_data)
+                for discount_data in discounts_data
+            ]
+            kwargs.update(discounts=discounts)
 
         return cls(**kwargs)
 

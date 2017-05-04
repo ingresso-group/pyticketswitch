@@ -51,8 +51,8 @@ Legacy Versions
 The last version of this wrapper that supported the old XML API was version
 1.13.0. To install this version specifically via pip::
 
-    $ pip install pyticketswitch==1.13.0
+    $ pip install pyticketswitch==1.13.1
 
 Or, download the tarball::
 
-    $ curl -OL https://github.com/ingresso-group/pyticketswitch/tarball/1.13.0
+    $ curl -OL https://github.com/ingresso-group/pyticketswitch/tarball/1.13.1

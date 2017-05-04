@@ -29,7 +29,7 @@ instantiating it with your credentials::
     >>> from pyticketswitch import Client
     >>> client = Client('demo', 'demopass')
 
-We will use this client for the rest of this example. If you loose it somehow
+We will use this client for the rest of this example. If you lose it somehow
 (for example by closing your terminal), just instantiate a new one and continue 
 where you left off. The client holds no relevant state other than the
 authentication credentials.
@@ -288,6 +288,7 @@ price band, discount, and a
 
 Making a Reservation
 ====================
+.. _making_a_reservation:
 
 Before making a purchase we have to reserve the tickets. Ingresso is often not
 the only agent connected to a ticketing system and you are almost certainly
@@ -376,7 +377,7 @@ total price, and more detailed information of our order::
     >>> bundle.orders
     [<Order 1>]
 
-So what did we actually reserve? lets inspect the 
+So what did we actually reserve? Lets inspect the 
 :class:`Order <pyticketswitch.order.Order>`::
 
     >>> order = bundle.orders[0]
@@ -401,7 +402,7 @@ be purchasing::
 This is just a simple reservation, but the system can handle much more complex
 orders to multiple systems, in multiple currencies, and to multiple events and 
 performances. If you are interested in package deals or up-selling then you
-should probably take a look at :ref:`Basketing <basketing>`.
+should probably take a look at :ref:`Bundling <Bundling>`.
 
 .. note:: We have glossed over a lot of information contained in the above 
           objects with the aim of getting you purchasing quickly, if you want

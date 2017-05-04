@@ -142,3 +142,6 @@ class Callout(JSONMixin, object):
             kwargs.update(parameters=parameters)
 
         return cls(**kwargs)
+
+    def __repr__(self):
+        return u'<Callout {}:{}>'.format(self.code, self.return_token)

@@ -95,7 +95,7 @@ Event Details
 These are additional details that are directly related to
 :class:`Event <pyticketswitch.event.Event>`
 
-.. autoclass:: pyticketswitch.content.Content
+.. autoclass:: pyticketswitch.card_type.CardType
    :inherited-members:
 .. autoclass:: pyticketswitch.field.Field
    :inherited-members:
@@ -125,7 +125,18 @@ Payment Details
    :inherited-members:
 .. autoclass:: pyticketswitch.payment_methods.RedirectionDetails
    :inherited-members:
+.. autoclass:: pyticketswitch.payment_methods.StripeDetails
+   :inherited-members:
 
+
+Callouts
+--------
+.. _callout_and_callbacks:
+
+.. autoclass:: pyticketswitch.callout.Callout
+   :inherited-members:
+.. autoclass:: pyticketswitch.callout.Integration
+   :inherited-members:
 
 Meta Objects
 ------------
@@ -181,4 +192,8 @@ Miscellaneous
 .. autoclass:: pyticketswitch.user.User
    :inherited-members:
 .. autoclass:: pyticketswitch.customer.Customer
+   :inherited-members:
+.. autoclass:: pyticketswitch.debitor.Debitor
+   :inherited-members:
+.. autoclass:: pyticketswitch.card_type.CardType
    :inherited-members:
