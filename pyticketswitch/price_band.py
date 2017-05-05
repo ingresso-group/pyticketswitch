@@ -46,13 +46,12 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
 
     """
 
-    def __init__(self, code, default_discount, allows_leaving_single_seats,
-                 description=None, cost_range=None, no_singles_cost_range=None,
-                 example_seats=None, example_seats_are_real=True,
-                 seat_blocks=None, user_commission=None, discounts=None,
-                 availability=None, seatprice=None, surcharge=None,
-                 non_offer_seatprice=None, non_offer_surcharge=None,
-                 percentage_saving=0, absolute_saving=0):
+    def __init__(self, code, default_discount, description=None, cost_range=None,
+                 no_singles_cost_range=None, example_seats=None,
+                 example_seats_are_real=True, seat_blocks=None, user_commission=None,
+                 discounts=None, allows_leaving_single_seats=None, availability=None,
+                 seatprice=None, surcharge=None, non_offer_seatprice=None,
+                 non_offer_surcharge=None, percentage_saving=0, absolute_saving=0):
 
         self.code = code
         self.description = description
@@ -111,9 +110,7 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
             'no_singles_cost_range': no_singles_cost_range,
             'default_discount': discount,
             'example_seats_are_real': data.get('example_seats_are_real', True),
-            'allows_leaving_single_seats': data.get(
-                'allows_leaving_single_seats', 'always'
-            ),
+            'allows_leaving_single_seats': data.get('allows_leaving_single_seats'),
         }
 
         example_seats_data = data.get('example_seats')

@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.0b0] - 2017-04-26
 ### Added
 - A new wrapper for the JSON API.
 - Comprehensive unit and behavioural tests.
