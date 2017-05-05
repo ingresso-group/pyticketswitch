@@ -948,7 +948,6 @@ class TestClient:
 
         price_band_one = ticket_type_one.price_bands[0]
         assert price_band_one.code == 'A'
-        assert price_band_one.allows_leaving_single_seats is None
 
         price_band_two = ticket_type_one.price_bands[1]
         assert price_band_two.code == 'B'
