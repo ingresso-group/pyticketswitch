@@ -77,7 +77,12 @@ class TestPriceBand:
                         "discount_code": "CHILD",
                     },
                 ]
-            }
+            },
+            "number_available": 40,
+            'sale_seatprice': 160,
+            'sale_surcharge': 5.5,
+            'non_offer_sale_seatprice': 200,
+            'non_offer_sale_surcharge': 6.5,
         }
 
         price_band = PriceBand.from_api_data(data)
@@ -100,6 +105,13 @@ class TestPriceBand:
         assert len(price_band.discounts) == 2
         assert price_band.discounts[0].code == 'ADULT'
         assert price_band.discounts[1].code == 'CHILD'
+
+        assert price_band.availability == 40
+
+        assert price_band.seatprice == 160.00
+        assert price_band.surcharge == 5.5
+        assert price_band.non_offer_seatprice == 200
+        assert price_band.non_offer_surcharge == 6.5
 
     def test_get_seats(self):
 

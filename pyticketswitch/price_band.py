@@ -2,10 +2,10 @@ from pyticketswitch.cost_range import CostRange
 from pyticketswitch.discount import Discount
 from pyticketswitch.seat import Seat, SeatBlock
 from pyticketswitch.commission import Commission
-from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
 
 
-class PriceBand(JSONMixin, object):
+class PriceBand(SeatPricingMixin, JSONMixin, object):
     """Describes a set of tickets with the same ticket type and price.
 
     Attributes:
@@ -41,13 +41,17 @@ class PriceBand(JSONMixin, object):
             price band. Only available when requested.
         gross_commission (:class:`Commission <pyticketswitch.commission.Commission>`):
             the gross commission payable. This is not generally available.
+        availability (int): the number of tickets/seats available in this price
+            band.
 
     """
 
     def __init__(self, code, default_discount, description=None, cost_range=None,
                  no_singles_cost_range=None, example_seats=None,
                  example_seats_are_real=True, seat_blocks=None, user_commission=None,
-                 discounts=None, allows_leaving_single_seats=None):
+                 discounts=None, allows_leaving_single_seats=None, availability=None,
+                 seatprice=None, surcharge=None, non_offer_seatprice=None,
+                 non_offer_surcharge=None, percentage_saving=0, absolute_saving=0):
 
         self.code = code
         self.description = description
@@ -60,6 +64,13 @@ class PriceBand(JSONMixin, object):
         self.seat_blocks = seat_blocks
         self.user_commission = user_commission
         self.discounts = discounts
+        self.availability = availability
+        self.seatprice = seatprice
+        self.surcharge = surcharge
+        self.non_offer_seatprice = non_offer_seatprice
+        self.non_offer_surcharge = non_offer_surcharge
+        self.percentage_saving = percentage_saving
+        self.absolute_saving = absolute_saving
 
     @classmethod
     def from_api_data(cls, data):
@@ -94,6 +105,7 @@ class PriceBand(JSONMixin, object):
         kwargs = {
             'code': data.get('price_band_code'),
             'description': data.get('price_band_desc'),
+            'availability': data.get('number_available'),
             'cost_range': cost_range,
             'no_singles_cost_range': no_singles_cost_range,
             'default_discount': discount,
@@ -145,6 +157,8 @@ class PriceBand(JSONMixin, object):
                 for discount_data in discounts_data
             ]
             kwargs.update(discounts=discounts)
+
+        kwargs.update(SeatPricingMixin.kwargs_from_api_data(data))
 
         return cls(**kwargs)
 

@@ -8,3 +8,4 @@ mock
 behave
 pyhamcrest
 flake8
+requests-mock

@@ -142,27 +142,20 @@ a list of :class:`TicketTypes <pyticketswitch.ticket_type.TicketType>` and an
 :class:`AvailabilityMeta <pyticketswitch.availability.AvailabilityMeta>` object.
 
 A ticket type can be generally considered to be a part of house, or part of a
-venue. :class:`TicketTypes <pyticketswitch.ticket_type.TicketType>` don't have
-prices directly attributed to them, but they contain 
-:class:`PriceBands <pyticketswitch.price_band.PriceBand>` which in turn contain
-a default :class:`Discount <pyticketswitch.discount.Discount>` which does::
-
+venue. Each ticket type will contain a list of one or more price bands:: 
     >>> ticket_type = ticket_types[0]
     >>> ticket_type.price_bands
     [<PriceBand A/pool>, <PriceBand B/pool>, <PriceBand C/pool>]
     >>> price_band = ticket_type.price_bands[0]
-    >>> discount = price_band.default_discount
-    >>> discount
-    <Discount ADULT:Adult standard>
-    >>> discount.combined_price()
-    35.0
-    >>> discount.availability
+    >>> price_band.availability
     6
+    >>> price_band.combined_price()
+    35.0
+
+Availability indicates the number of tickets available in this price band.
 
 The combined price is made up of the seatprice (or the facevalue) 
 and the surcharge (or booking fee) of a ticket. 
-
-The discount also indicates the number of available tickets in this price band.
 
 The meta object contains aggregate information relevant to the ticket types and
 their children. For example it contains information on the currency the tickets

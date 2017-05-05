@@ -1,5 +1,6 @@
 import pytest
 import json
+import requests
 from datetime import datetime
 from mock import Mock
 from pyticketswitch.client import Client, POST
@@ -68,7 +69,6 @@ def mock_make_request_for_trolley(client, monkeypatch):
     monkeypatch.setattr(client, 'make_request', mock_make_request)
     return mock_make_request
 
-
 class FakeResponse(object):
 
     def __init__(self, status_code=200, json=None):
@@ -108,7 +108,10 @@ class TestClient:
     def test_make_request(self, client, monkeypatch):
         fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
         fake_get = Mock(return_value=fake_response)
-        monkeypatch.setattr('requests.get', fake_get)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
         params = {
             'foo': 'bar',
         }
@@ -131,7 +134,10 @@ class TestClient:
     def test_make_request_with_post(self, client, monkeypatch):
         fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
         fake_post = Mock(return_value=fake_response)
-        monkeypatch.setattr('requests.post', fake_post)
+        session = Mock(spec=requests.Session)
+        session.post = fake_post
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
         params = {
             'foo': 'bar',
         }
@@ -154,7 +160,10 @@ class TestClient:
         client = Client(user="beatles", password="lovemedo", sub_user="ringo")
         fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
         fake_get = Mock(return_value=fake_response)
-        monkeypatch.setattr('requests.get', fake_get)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
         params = {
             'foo': 'bar',
         }
@@ -180,7 +189,10 @@ class TestClient:
             'error_desc': 'User authorisation failure',
         })
         fake_get = Mock(return_value=fake_response)
-        monkeypatch.setattr('requests.get', fake_get)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
         with pytest.raises(exceptions.APIError) as excinfo:
             client.make_request('test.v1', {})
 
@@ -194,7 +206,9 @@ class TestClient:
             'error_desc': 'price_band_code needs /pool or /alloc suffix',
         })
         fake_get = Mock(return_value=fake_response)
-        monkeypatch.setattr('requests.get', fake_get)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
         with pytest.raises(exceptions.APIError) as excinfo:
             client.make_request('trolley.v1', {})
 
@@ -205,7 +219,9 @@ class TestClient:
     def test_make_request_bad_response_without_error(self, client, monkeypatch):
         fake_response = FakeResponse(status_code=400, json={})
         fake_get = Mock(return_value=fake_response)
-        monkeypatch.setattr('requests.get', fake_get)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
         with pytest.raises(exceptions.InvalidResponseError):
             client.make_request('trolley.v1', {})
 
@@ -213,7 +229,9 @@ class TestClient:
         response_json = {'error_code': 8, 'error_desc': 'transaction failed'}
         fake_response = FakeResponse(status_code=410, json=response_json)
         fake_get = Mock(return_value=fake_response)
-        monkeypatch.setattr('requests.get', fake_get)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
         with pytest.raises(exceptions.CallbackGoneError):
             client.make_request('callback.v1', {})
 
@@ -221,7 +239,9 @@ class TestClient:
         response_json = {'data': 'some data'}
         fake_response = FakeResponseRaisesValueError(status_code=200, json=response_json)
         fake_get = Mock(return_value=fake_response)
-        monkeypatch.setattr('requests.get', fake_get)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
         with pytest.raises(exceptions.InvalidResponseError):
             client.make_request('test.v1', {})
 

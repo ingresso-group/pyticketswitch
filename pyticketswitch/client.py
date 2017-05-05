@@ -44,7 +44,7 @@ class Client(object):
         language (:obj:`str`, optional): prefered IETF language tag. When
             available this will translate text to the specified language. When
             None language defaults to user's preference. Defaults to None.
-        **kwargs: Additional arbitary key word arguments to keep with the
+        **kwargs: Additional arbitrary key word arguments to keep with the
             object.
 
     """
@@ -104,6 +104,35 @@ class Client(object):
 
         return headers
 
+    def get_session(self):
+        """Get the requests.Session instance to use to make HTTP requests
+
+        By default this method will create a new session for each request. This
+        replicates the default behaviour of the requests library:
+        https://github.com/kennethreitz/requests/blob/ead8fba84b12e7496c65272a07de47d553aa0ca0/requests/api.py#L57-L58
+
+        A common modification to this class would be to overload this method to
+        provide a single session instance across all calls to take advantage of
+        keep-alive.
+
+        .. note:: remember to also overload
+                  :meth:`cleanup_session <pyticketswitch.client.Client.cleanup_session>`
+                  as well or you connections/session might be unexpectedly killed.
+        """
+        return requests.Session()
+
+    def cleanup_session(self, session):
+        """Cleans up sessions so that we don't leave open sockets.
+
+        If you want to add support for persistent connections, then you should
+        noop this method so it does nothing.
+
+        Args:
+            session (:class:`requests.Session`): the http session to clean up.
+        """
+        logger.debug('requests session cleaning up')
+        session.close()
+
     def make_request(self, endpoint, params, method=GET, headers={}):
         """Makes actual requests to the API
 
@@ -130,12 +159,16 @@ class Client(object):
 
         raw_headers = self.get_headers(headers)
 
+        session = self.get_session()
+
         if method == POST:
-            response = requests.post(url, data=params, headers=raw_headers)
+            response = session.post(url, data=params, headers=raw_headers)
         else:
-            response = requests.get(url, params=params, headers=raw_headers)
+            response = session.get(url, params=params, headers=raw_headers)
 
         logger.debug(six.u(response.content))
+
+        self.cleanup_session(session)
 
         try:
             contents = response.json()
