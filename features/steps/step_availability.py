@@ -1,6 +1,6 @@
 import vcr
 from behave import given, when, then
-from hamcrest import (assert_that, has_length, greater_than, not_none, is_not,
+from hamcrest import (assert_that, has_length, greater_than, is_not,
                       empty)
 
 
@@ -41,8 +41,7 @@ def then_each_ticket_type_has_at_least_one_price_band(context):
 def then_each_price_band_has_a_price(context):
     for ticket_type in context.ticket_types:
         for price_band in ticket_type.price_bands:
-            assert_that(price_band.default_discount, not_none())
-            assert_that(price_band.default_discount.seatprice, greater_than(0))
+            assert_that(price_band.seatprice, greater_than(0))
 
 
 @then('each price band has some example seats')

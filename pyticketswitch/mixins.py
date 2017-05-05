@@ -138,3 +138,84 @@ class PaginationMixin(object):
             return False
 
         return True
+
+
+class SeatPricingMixin(object):
+    """Adds seat pricing to an object
+
+    Attributes:
+        seatprice (float): the price per seat/ticket.
+        surcharge (float): additional charges per seat/ticket.
+        non_offer_seatprice (float): the original price per seat/ticket when
+            not on offer.
+        non_offer_surcharge (float): the original additional charges per
+            seat/ticket when not on offer.
+    """
+
+    def __init__(self, seatprice=None, surcharge=None, non_offer_seatprice=None,
+                 non_offer_surcharge=None, *args, **kwargs):
+        super(SeatPricingMixin, self).__init__(*args, **kwargs)
+        self.seatprice = seatprice
+        self.surcharge = surcharge
+        self.non_offer_seatprice = non_offer_seatprice
+        self.non_offer_surcharge = non_offer_surcharge
+
+    @staticmethod
+    def kwargs_from_api_data(data):
+        kwargs = {
+            'seatprice': data.get('sale_seatprice'),
+            'surcharge': data.get('sale_surcharge'),
+            'non_offer_seatprice': data.get('non_offer_sale_seatprice'),
+            'non_offer_surcharge': data.get('non_offer_sale_surcharge'),
+        }
+        return kwargs
+
+    def combined_price(self):
+        """Returns the combined seatprice and surcharge.
+
+        This method assumes that we have both a seatprice and surcharge.
+        In the situation where are missing either a seatprice or a surcharge
+        then we don't have all the information to be able provide this
+        information.
+
+        Returns:
+            float: the combined seatprice and surcharge
+
+        Raises:
+            AssertionError: It might seem like the obvious thing to do would be
+                to assume the missing data was in fact zero and simply allow the
+                addition to continue. However that would be somewhat dangerous when
+                we are talking about prices, and it's better to actually raise an
+                exception to indicate that there was a problem with the objects
+                data, than to inform a customer that the tickets are free or have
+                no booking fees
+
+        """
+        assert self.seatprice is not None, 'seatprice data missing'
+        assert self.surcharge is not None, 'surcharge data missing'
+        return self.seatprice + self.surcharge
+
+    def non_offer_combined_price(self):
+        """Returns the combined non offer seatprice and surcharge.
+
+        This method assumes that we have both a seatprice and surcharge.
+        In the situation where are missing either a seatprice or a surcharge
+        then we don't have all the information to be able provide this
+        information.
+
+        Returns:
+            float: the combined seatprice and surcharge
+
+        Raises:
+            AssertionError: It might seem like the obvious thing to do would be
+                to assume the missing data was in fact zero and simply allow the
+                addition to continue. However that would be somewhat dangerous when
+                we are talking about prices, and it's better to actually raise an
+                exception to indicate that there was a problem with the objects
+                data, than to inform a customer that the tickets are free or have
+                no booking fees
+
+        """
+        assert self.non_offer_seatprice is not None, 'non_offer_seatprice data missing'
+        assert self.non_offer_surcharge is not None, 'non_offer_surcharge data missing'
+        return self.non_offer_seatprice + self.non_offer_surcharge
