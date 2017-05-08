@@ -4,5 +4,8 @@ pytest
 pytest-cov
 tox
 vcrpy
-vcrpy-unittest
 mock
+behave
+pyhamcrest
+flake8
+requests-mock
