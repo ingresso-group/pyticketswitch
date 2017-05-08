@@ -143,6 +143,7 @@ a list of :class:`TicketTypes <pyticketswitch.ticket_type.TicketType>` and an
 
 A ticket type can be generally considered to be a part of house, or part of a
 venue. Each ticket type will contain a list of one or more price bands:: 
+
     >>> ticket_type = ticket_types[0]
     >>> ticket_type.price_bands
     [<PriceBand A/pool>, <PriceBand B/pool>, <PriceBand C/pool>]
