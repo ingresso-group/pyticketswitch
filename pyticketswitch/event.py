@@ -158,7 +158,7 @@ class Event(JSONMixin, object):
 
         self.valid_quantities = valid_quantities
         self.raw = raw
-        
+
         self.is_add_on = is_add_on
 
     @classmethod
