@@ -227,7 +227,7 @@ class Client(object):
         Returns:
             :obj:`pyticketswitch.user.User`: details about the user calling the API
 
-        .. _`/f13/test.v1`: https://ingresso-group.github.io/slate/#test
+        .. _`/f13/test.v1`: http://docs.ingresso.co.uk/#test
 
         """
         response = self.make_request('test.v1', {})
@@ -255,7 +255,7 @@ class Client(object):
         availability details.
 
         `See the main F13 documentation for more details.
-        <https://ingresso-group.github.io/slate/#additional-parameters>`_
+        <http://docs.ingresso.co.uk/#additional-parameters>`_
 
         Args:
             params (dict): The parameters dictionary into which any additional
@@ -418,7 +418,7 @@ class Client(object):
                 parameters.
             InvalidResponse: when the response is in an unexpected format
 
-        .. _`/f13/events.v1`: https://ingresso-group.github.io/slate/#events-list
+        .. _`/f13/events.v1`: http://docs.ingresso.co.uk/#events-list
 
         """
 
@@ -495,7 +495,7 @@ class Client(object):
         Raises:
             InvalidResponse: when the response is in an unexpected format
 
-        .. _`/f13/events_by_id.v1`: https://ingresso-group.github.io/slate/#events-by-id
+        .. _`/f13/events_by_id.v1`: http://docs.ingresso.co.uk/#events-by-id
 
         """
         params = {}
@@ -566,7 +566,7 @@ class Client(object):
         Raises:
             InvalidResponse: when the response is in an unexpected format
 
-        .. _`/f13/months.v1`: https://ingresso-group.github.io/slate/#months
+        .. _`/f13/months.v1`: http://docs.ingresso.co.uk/#months
 
         """
         params = {'event_id': event_id}
@@ -617,7 +617,7 @@ class Client(object):
         Raises:
             InvalidResponse: when the response is in an unexpected format
 
-        .. _`/f13/performances.v1`: https://ingresso-group.github.io/slate/#performances-list
+        .. _`/f13/performances.v1`: http://docs.ingresso.co.uk/#performances-list
         """
         params = {'event_id': event_id}
 
@@ -670,7 +670,7 @@ class Client(object):
         Raises:
             InvalidResponse: when the response is in an unexpected format.
 
-        .. _`/f13/performances_by_id.v1`: https://ingresso-group.github.io/slate/#performances-by-id
+        .. _`/f13/performances_by_id.v1`: http://docs.ingresso.co.uk/#performances-by-id
 
         """
 
@@ -764,7 +764,7 @@ class Client(object):
                 while waiting for a response.
             InvalidResponse: when the response is in an unexpected format.
 
-        .. _`/f13/availability.v1`: https://ingresso-group.github.io/slate/#availability33
+        .. _`/f13/availability.v1`: http://docs.ingresso.co.uk/#availability
         """
         params = {'perf_id': performance_id}
 
@@ -819,7 +819,7 @@ class Client(object):
         Raises:
             InvalidResponse: when the response is in an unexpected format.
 
-        .. _`/f13/send_methods.v1`: https://ingresso-group.github.io/slate/#send-methods
+        .. _`/f13/send_methods.v1`: http://docs.ingresso.co.uk/#send-methods
         """
         params = {'perf_id': performance_id}
         response = self.make_request('send_methods.v1', params)
@@ -858,7 +858,7 @@ class Client(object):
         Raises:
             InvalidResponse: when the response is in an unexpected format.
 
-        .. _`/f13/discounts.v1`: https://ingresso-group.github.io/slate/#discounts
+        .. _`/f13/discounts.v1`: http://docs.ingresso.co.uk/#discounts
         """
 
         params = {
@@ -905,7 +905,7 @@ class Client(object):
                 trolley.
             discounts (list, optional): list containing discount codes for each
                 requested seat.
-            seats (list, optional): list of seat id's.
+            seats (list, optional): list of seat IDs.
             send_codes (dict, optional): send codes indexed on backend source
                 code.
             ticket_type_code: (string, optional): code of ticket type to add to
@@ -991,7 +991,7 @@ class Client(object):
 
         This endpoint is stateless and deterministic. Given the same arguments
         it will always return with the same response. It makes no additional
-        calls to verify the validity of it's contents.
+        calls to verify the validity of its contents.
 
         Args:
             token (string, optional): trolley token from a previous trolley
@@ -1000,13 +1000,13 @@ class Client(object):
                 trolley.
             discounts (list, optional): list containing discount codes for each
                 requested seat.
-            seats (list, optional): list of seat id's.
+            seats (list, optional): list of seat IDs.
             send_codes (dict, optional): send codes indexed on backend source
                 code.
             ticket_type_code: (string, optional): code of ticket type to add to
                 the trolley.
             price_band_code: (string, optional): code of price band to add to
-                the trolley
+                the trolley.
             item_numbers_to_remove: (list, optional): list of item numbers to
                 remove from trolley.
             **kwargs: arbitary additional raw keyword arguments to add the
@@ -1021,7 +1021,7 @@ class Client(object):
             InvalidParametersError: when there is an issue with the provided
                 parameters.
 
-        .. _`/f13/trolley.v1`: https://ingresso-group.github.io/slate/#trolley
+        .. _`/f13/trolley.v1`: http://docs.ingresso.co.uk/#trolley
 
         """
 
@@ -1038,6 +1038,88 @@ class Client(object):
         meta = CurrencyMeta.from_api_data(response)
 
         return trolley, meta
+
+    def get_related_events(self, token=None, event_ids=None, **kwargs):
+
+        """Retrieve a list of related events and addons from the API.
+
+        Wraps `/f13/related_events.v1`_
+
+        This endpoint is stateless and deterministic. Given the same arguments
+        it will always return with the same response. It makes no additional
+        calls to verify the validity of its contents.
+
+        Args:
+            token (string, optional): trolley token from a previous trolley
+                call.
+            event_ids (list, optional): list containing event IDs.
+            **kwargs: arbitrary additional raw keyword arguments to add to the
+                parameters.
+
+        Returns:
+            list, list, :class:`EventMeta <pyticketswitch.event.EventMeta>`:,
+            :class:`EventMeta <pyticketswitch.event.EventMeta>`:
+            a list of :class:`Events <pyticketswitch.event.Event>` of add-on
+            events, a list of :class:`Events <pyticketswitch.event.Event>` of
+            related upsell events, meta information for the add-on events and
+            meta information for the upsell events
+
+        Raises:
+            InvalidParametersError: when there is an issue with the provided
+                parameters.
+            InvalidResponse: when the response is in an unexpected format.
+
+        .. _`/f13/related_events.v1`: http://ingresso-group.github.io/slate/#related-events
+        """
+
+        if token:
+            params = {
+                'trolley_token': token,
+            }
+        elif event_ids:
+            params = {
+                'event_id_list': ','.join(event_ids),
+            }
+        else:
+            raise exceptions.InvalidParametersError(
+                'get_related_events called without trolley token or list of event IDs'
+            )
+
+        self.add_optional_kwargs(params, **kwargs)
+
+        response = self.make_request('related_events.v1', params)
+
+        add_on_results = response.get('add_on_results', {})
+
+        if 'add_on_results' not in response:
+            raise exceptions.InvalidResponseError(
+                "got no add_on_results key in json response"
+            )
+
+        if 'upsell_results' not in response:
+            raise exceptions.InvalidResponseError(
+                "got no upsell_results key in json response"
+            )
+
+        add_on_results = response.get('add_on_results', {})
+        upsell_results = response.get('upsell_results', {})
+
+        raw_add_on_events = add_on_results.get('event', [])
+        add_on_events = [
+            Event.from_api_data(data)
+            for data in raw_add_on_events
+        ]
+
+        raw_upsell_events = upsell_results.get('event', [])
+        upsell_events = [
+            Event.from_api_data(data)
+            for data in raw_upsell_events
+        ]
+
+        add_on_meta = EventMeta.from_api_data(add_on_results)
+        upsell_meta = EventMeta.from_api_data(upsell_results)
+
+        return add_on_events, upsell_events, add_on_meta, upsell_meta
 
     def make_reservation(self, token=None, number_of_seats=None, discounts=None,
                          seats=None, send_codes=None, ticket_type_code=None,
@@ -1088,7 +1170,7 @@ class Client(object):
             InvalidParametersError: when there is an issue with the provided
                 parameters.
 
-        .. _`/f13/reserve.v1`: https://ingresso-group.github.io/slate/#reserve
+        .. _`/f13/reserve.v1`: http://docs.ingresso.co.uk/#reserve
 
         """
 
@@ -1118,7 +1200,7 @@ class Client(object):
             bool: :obj:`True` if the reservation was successfully released
             otherwise :obj:`False`.
 
-        .. _`/f13/release.v1`: https://ingresso-group.github.io/slate/#release
+        .. _`/f13/release.v1`: http://docs.ingresso.co.uk/#release
 
         """
 
@@ -1154,7 +1236,7 @@ class Client(object):
             the current status of the transaction and acompanying meta
             information.
 
-        .. _`/f13/status.v1`: https://ingresso-group.github.io/slate/#status
+        .. _`/f13/status.v1`: http://docs.ingresso.co.uk/#status
 
         """
         params = {}
@@ -1216,7 +1298,7 @@ class Client(object):
 
             See :ref:`Handling callouts <handling_callouts>` for more information.
 
-        .. _`/f13/purchase.v1`: https://ingresso-group.github.io/slate/#purchase
+        .. _`/f13/purchase.v1`: http://docs.ingresso.co.uk/#purchase
 
         """
 
@@ -1276,7 +1358,7 @@ class Client(object):
             This method should only ever return either a status or a callout,
             never both.
 
-        .. _`/f13/callback.v1`: https://ingresso-group.github.io/slate/#purchasing-with-redirect
+        .. _`/f13/callback.v1`: http://docs.ingresso.co.uk/#purchasing-with-redirect
 
         """
 

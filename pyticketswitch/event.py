@@ -102,7 +102,7 @@ class Event(JSONMixin, object):
                  venue_info_html=None, media=None, reviews=None,
                  critic_review_percent=None, availability_details=None,
                  component_events=None, valid_quantities=None, fields=None,
-                 raw=None):
+                 raw=None, is_add_on=None):
 
         self.id = id_
         self.status = status
@@ -158,6 +158,8 @@ class Event(JSONMixin, object):
 
         self.valid_quantities = valid_quantities
         self.raw = raw
+        
+        self.is_add_on = is_add_on
 
     @classmethod
     def from_api_data(cls, data):
@@ -306,6 +308,7 @@ class Event(JSONMixin, object):
             'component_events': component_events,
             'valid_quantities': data.get('valid_quantities'),
             'raw': data,
+            'is_add_on': data.get('is_add_on'),
         }
 
         return cls(**kwargs)

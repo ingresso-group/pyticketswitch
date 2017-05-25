@@ -228,7 +228,7 @@ class TestEvent:
 
         assert event.critic_review_percent == 100
 
-        assert event.classes == {'theatre': 'Theatre', 'amazeballs':'Amazeballs'}
+        assert event.classes == {'theatre': 'Theatre', 'amazeballs': 'Amazeballs'}
         assert event.filters == []
 
         assert event.postcode == 'W6 8DL'
@@ -279,3 +279,13 @@ class TestEvent:
         event = Event.from_api_data(data)
 
         assert event.has_performances is False
+
+    def test_from_api_data_with_is_add_on(self):
+        data = {
+            'event_id': 'ABC2',
+            'is_add_on': True,
+        }
+
+        event = Event.from_api_data(data)
+
+        assert event.is_add_on

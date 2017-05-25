@@ -4,12 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+- A new client call to the `related_events.v1` endpoint
+- New behavioural and unit tests for this functionality
+- Added `is_add_on` property to Event
+
 ## [2.0.1] - 2017-06-01
 ### Fixed
 - incorrect sub user parameter being passed to the API was sub_user should
   have been sub_id.
 
 ### Updated
+- PyDoc links to API documentation
 - Legacy API documentation
 
 ## [2.0.0] - 2017-05-05

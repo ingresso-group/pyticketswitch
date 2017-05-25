@@ -1211,6 +1211,86 @@ class TestClient:
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code == 'gbp'
 
+    def test_get_related_events(self, client, monkeypatch):
+        # fakes
+        response = {
+            'add_on_results': {
+                'event': [
+                    {'event_id': 'ABC123'},
+                    {'event_id': 'DEF456'},
+                ],
+                'paging_status': {
+                    'total_unpaged_results': 10,
+                },
+            },
+            'upsell_results': {
+                'event': [
+                    {'event_id': 'GHI789'},
+                    {'event_id': 'JKL012'},
+                ],
+                'paging_status': {
+                    'total_unpaged_results': 2,
+                },
+            },
+        }
+        mock_make_request = Mock(return_value=response)
+
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        # action
+        addon_events, upsell_events, addon_meta, upsell_meta = client.get_related_events(
+            token="foobar",
+        )
+
+        # results
+        mock_make_request.assert_called_with('related_events.v1', {
+            'trolley_token': 'foobar',
+        })
+
+        assert len(addon_events) == 2
+        event_one, event_two = addon_events
+
+        assert event_one.id =='ABC123'
+        assert event_two.id == 'DEF456'
+
+        assert len(upsell_events) == 2
+        event_three, event_four = upsell_events
+
+        assert event_three.id == 'GHI789'
+        assert event_four.id == 'JKL012'
+
+        assert addon_meta.total_results == 10
+        assert upsell_meta.total_results == 2
+
+    def test_get_related_events_fails_with_no_params(self, client, monkeypatch):
+        # fakes
+        mock_make_request = Mock()
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        # action
+        with pytest.raises(exceptions.InvalidParametersError):
+            addons, upsells, addon_meta, upsell_meta = client.get_related_events()
+
+    def test_get_related_events_with_ids_formatted_correctly(self, client, monkeypatch):
+        """Test that event IDs are formatted correctly when sent to F13."""
+        # fakes
+        response = {
+            'add_on_results': {},
+            'upsell_results': {},
+        }
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        # action
+        addons, upsells, addon_meta, upsell_meta = client.get_related_events(
+            event_ids=['ABC123', 'DEF456'],
+        )
+
+        # results
+        mock_make_request.assert_called_with('related_events.v1', {
+            'event_id_list': 'ABC123,DEF456',
+        })
+
     def test_make_reservation(self, client, monkeypatch):
         response = {
             'reserved_trolley': {
