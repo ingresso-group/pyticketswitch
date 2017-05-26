@@ -18,20 +18,17 @@ Feature: search for events
     Scenario: country search
         Given an API client with valid credentials
         When a search for events in country with code "jp" is performed
-        Then a single event should be returned
-        And that event should have the ID of "AG8"
+        Then all events are in country with code "jp"
 
     Scenario: city search
         Given an API client with valid credentials
         When a search for events in city with code "belfast-uk" is performed
-        Then a single event should be returned
-        And that event should have the ID of "2HJD"
+        Then all events are in city with code "belfast-uk"
 
     Scenario: geo search
         Given an API client with valid credentials
         When a search for events within "100"km of "35.5000" lat and "139.300" long is performed
-        Then a list of "1" events should be returned
-        And those events should have the ID's "AG8"
+        Then the events are all within "100"km of "35.5000" lat and "139.300" long
 
     Scenario: paginated search
         Given an API client with valid credentials

@@ -1,11 +1,11 @@
 Feature: availability
     In order to display ticket for sale to my customer
     As a Developer
-    I need to retieve the available tickets and prices for a performance.
+    I need to retrieve the available tickets and prices for a performance.
 
     Scenario: seated performance
         Given an API client with valid credentials
-        And I have a performance ID for event with ID "6IF"
+        And I have a performance ID for event with ID "6IE"
         When I fetch availabilty for my performance
         Then I get a list of available ticket types
         And each ticket type has at least one price band
@@ -14,7 +14,7 @@ Feature: availability
 
     Scenario: seated performance with seat selection
         Given an API client with valid credentials
-        And I have a performance ID for event with ID "3CVF"
+        And I have a performance ID for event with ID "7AB"
         When I fetch availabilty for my performance
         Then I get a list of available ticket types
         And each ticket type has at least one price band

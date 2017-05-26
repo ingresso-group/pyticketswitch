@@ -1,3 +1,4 @@
+import math
 import datetime
 import json
 import vcr
@@ -201,6 +202,57 @@ def then_events_have_performance_between_days(context, start, end):
             continue
 
         raise Exception('Event with id %s does not have a performance inside the given date range' % event.id)
+
+
+@then('the events are all within "{distance}"km of "{lat}" lat and "{lon}" long')
+@vcr.use_cassette('fixtures/cassettes/search-geo.yaml', record_mode='new_episodes')
+def then_events_are_all_within_distance_of_lat_long(context, distance, lat, lon):
+    assert len(context.events) > 0
+    RADIUS = 6371   # km
+    lat = float(lat)
+    lon = float(lon)
+    distance = float(distance)
+
+    rad_lat_origin = math.radians(lat)
+
+    for event in context.events:
+        # Use haversine formula to determine the distance between two coords
+        rad_lat_event = math.radians(event.latitude)
+
+        delta_lat = math.radians(event.latitude - lat)
+        delta_lon = math.radians(event.longitude - lon)
+
+        a = math.sin(delta_lat/2) ** 2 + \
+            math.cos(rad_lat_origin) * math.cos(rad_lat_event) * \
+            math.sin(delta_lon/2) ** 2
+
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+
+        event_distance = RADIUS * c
+
+        if event_distance <= distance:
+            continue
+
+        raise Exception('Event with id %s and coordinates %f, %f is more than %d km from the given position' %
+                        (event.id, event.latitude, event.longitude, distance))
+
+
+@then(u'all events are in country with code "{country_code}"')
+@vcr.use_cassette('fixtures/cassettes/search-country.yaml', record_mode='new_episodes')
+def all_events_should_be_in_country(context, country_code):
+    assert len(context.events) > 0
+
+    for event in context.events:
+        assert_that(event.country_code, equal_to(country_code))
+
+
+@then(u'all events are in city with code "{city_code}"')
+@vcr.use_cassette('fixtures/cassettes/search-city.yaml', record_mode='new_epidsodes')
+def all_events_should_be_in_city(context, city_code):
+    assert len(context.events) > 0
+
+    for event in context.events:
+        assert_that(event.city_code, equal_to(city_code))
 
 
 @then('that event should have the ID of "{event_id}"')
