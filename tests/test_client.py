@@ -1238,7 +1238,7 @@ class TestClient:
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         # action
-        addon_events, upsell_events, addon_meta, upsell_meta = client.get_related_events(
+        (addon_events, addon_meta), (upsell_events, upsell_meta) = client.get_related_events(
             token="foobar",
         )
 
@@ -1269,7 +1269,7 @@ class TestClient:
 
         # action
         with pytest.raises(exceptions.InvalidParametersError):
-            addons, upsells, addon_meta, upsell_meta = client.get_related_events()
+            (addon_events, addon_meta), (upsell_events, upsell_meta) = client.get_related_events()
 
     def test_get_related_events_with_ids_formatted_correctly(self, client, monkeypatch):
         """Test that event IDs are formatted correctly when sent to F13."""
@@ -1282,7 +1282,7 @@ class TestClient:
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         # action
-        addons, upsells, addon_meta, upsell_meta = client.get_related_events(
+        (addon_events, addon_meta), (upsell_events, upsell_meta) = client.get_related_events(
             event_ids=['ABC123', 'DEF456'],
         )
 

@@ -1116,10 +1116,13 @@ class Client(object):
             for data in raw_upsell_events
         ]
 
-        add_on_meta = EventMeta.from_api_data(add_on_results)
-        upsell_meta = EventMeta.from_api_data(upsell_results)
+        add_on_meta = EventMeta.from_api_data(response, result_key='add_on_results')
+        upsell_meta = EventMeta.from_api_data(response, result_key='upsell_results')
 
-        return add_on_events, upsell_events, add_on_meta, upsell_meta
+        return (
+            (add_on_events, add_on_meta),
+            (upsell_events, upsell_meta),
+        )
 
     def make_reservation(self, token=None, number_of_seats=None, discounts=None,
                          seats=None, send_codes=None, ticket_type_code=None,

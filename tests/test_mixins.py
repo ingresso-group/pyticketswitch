@@ -189,12 +189,14 @@ class TestPaginationMixin:
         # state
 
         data = {
-            'paging_status': {
-                'page_length': 50,
-                'page_number': 2,
-                'pages_remaining': 3,
-                'results_remaining': 150,
-                'total_unpaged_results': 250,
+            'misnamed_results': {
+                'paging_status': {
+                    'page_length': 50,
+                    'page_number': 2,
+                    'pages_remaining': 3,
+                    'results_remaining': 150,
+                    'total_unpaged_results': 250,
+                }
             }
         }
 
@@ -207,14 +209,13 @@ class TestPaginationMixin:
         class FakeMeta(PaginationMixin, FakeBaseMeta):
             pass
 
-        meta = FakeMeta.from_api_data(data)
+        meta = FakeMeta.from_api_data(data, result_key='misnamed_results')
 
         assert meta.page_length == 50
         assert meta.page_number == 2
         assert meta.pages_remaining == 3
         assert meta.results_remaining == 150
         assert meta.total_results == 250
-
 
 
 class TestSeatPricingMixin:

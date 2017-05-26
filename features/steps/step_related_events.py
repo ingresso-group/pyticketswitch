@@ -10,7 +10,7 @@ def when_i_fetch_related_events_for_my_trolley(context):
     if hasattr(context, 'trolley_token'):
         token = context.trolley_token
 
-    addon_events, upsell_events, _, _ = context.client.get_related_events(
+    (addon_events, _), (upsell_events, _) = context.client.get_related_events(
         token=token,
     )
 
@@ -21,7 +21,7 @@ def when_i_fetch_related_events_for_my_trolley(context):
 @when('I fetch related events for the list of event IDs "{event_ids}"')
 def when_i_fetch_related_events_for_the_list_of_event_ids(context, event_ids):
     ids = event_ids.split(',')
-    addon_events, upsell_events, _, _ = context.client.get_related_events(
+    (addon_events, _), (upsell_events, _) = context.client.get_related_events(
         event_ids=ids,
     )
 
