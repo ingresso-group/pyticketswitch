@@ -989,10 +989,6 @@ class Client(object):
 
         Wraps `/f13/trolley.v1`_
 
-        This endpoint is stateless and deterministic. Given the same arguments
-        it will always return with the same response. It makes no additional
-        calls to verify the validity of its contents.
-
         Args:
             token (string, optional): trolley token from a previous trolley
                 call.
@@ -1045,10 +1041,6 @@ class Client(object):
 
         Wraps `/f13/related_events.v1`_
 
-        This endpoint is stateless and deterministic. Given the same arguments
-        it will always return with the same response. It makes no additional
-        calls to verify the validity of its contents.
-
         Args:
             token (string, optional): trolley token from a previous trolley
                 call.
@@ -1057,12 +1049,10 @@ class Client(object):
                 parameters.
 
         Returns:
-            list, list, :class:`EventMeta <pyticketswitch.event.EventMeta>`:,
-            :class:`EventMeta <pyticketswitch.event.EventMeta>`:
-            a list of :class:`Events <pyticketswitch.event.Event>` of add-on
-            events, a list of :class:`Events <pyticketswitch.event.Event>` of
-            related upsell events, meta information for the add-on events and
-            meta information for the upsell events
+            tuple:((list of :class:`Events <pyticketswitch.event.Event>` of add-on
+            events, :class:`EventMeta <pyticketswitch.event.EventMeta>`:),
+            (list of :class:`Events <pyticketswitch.event.Event>` of related upsell
+            events, :class:`EventMeta <pyticketswitch.event.EventMeta>`:))
 
         Raises:
             InvalidParametersError: when there is an issue with the provided
