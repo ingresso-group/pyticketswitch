@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.0.1] - 2017-05-30
 ### Added
 - A new client call to the `related_events.v1` endpoint
 - New behavioural and unit tests for this functionality
@@ -16,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   have been sub_id.
 
 ### Updated
+- Some behavioural tests improved
 - PyDoc links to API documentation
 - Legacy API documentation
 
