@@ -6,7 +6,7 @@ Feature: availability
     Scenario: seated performance
         Given an API client with valid credentials
         And I have a performance ID for event with ID "6IE"
-        When I fetch availabilty for my performance
+        When I fetch availability for my performance
         Then I get a list of available ticket types
         And each ticket type has at least one price band
         And each price band has a price
@@ -15,7 +15,7 @@ Feature: availability
     Scenario: seated performance with seat selection
         Given an API client with valid credentials
         And I have a performance ID for event with ID "7AB"
-        When I fetch availabilty for my performance
+        When I fetch availability for my performance
         Then I get a list of available ticket types
         And each ticket type has at least one price band
         And each price band has a price
@@ -24,7 +24,7 @@ Feature: availability
     Scenario: non seated performance
         Given an API client with valid credentials
         And I have a performance ID for event with ID "AG8"
-        When I fetch availabilty for my performance
+        When I fetch availability for my performance
         Then I get a list of available ticket types
         And each ticket type has at least one price band
         And each price band has a price
