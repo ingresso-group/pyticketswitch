@@ -176,7 +176,7 @@ class TestClient:
                 'foo': 'bar',
                 'user_id': 'beatles',
                 'user_passwd': 'lovemedo',
-                'sub_user': 'ringo',
+                'sub_id': 'ringo',
             },
             headers={
                 'Accept-Language': 'en-GB',

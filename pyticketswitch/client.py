@@ -89,7 +89,7 @@ class Client(object):
         """
         if self.sub_user:
             return {'user_id': self.user, 'user_passwd': self.password,
-                    'sub_user': self.sub_user}
+                    'sub_id': self.sub_user}
         return {'user_id': self.user, 'user_passwd': self.password}
 
     def get_headers(self, headers):
