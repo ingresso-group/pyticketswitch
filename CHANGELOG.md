@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [2.0.1] - 2017-06-01
+### Fixed
+- incorrect sub user parameter being passed to the API was sub_user should
+  have been sub_id.
+
 ### Updated
 - Legacy API documentation
 
@@ -201,6 +205,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.0...HEAD
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.1...HEAD
+[2.0.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/ingresso-group/pyticketswitch/compare/1.13.1...2.0.0
 
