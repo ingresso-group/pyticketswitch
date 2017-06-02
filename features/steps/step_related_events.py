@@ -24,9 +24,6 @@ def when_i_fetch_upsell_events_for_the_list_of_event_ids(context, event_ids):
         event_ids=ids,
     )
 
-    print("iUpsell events for this trolley are:")
-    print(upsell_events)
-
     context.upsell_events = upsell_events
 
 
