@@ -6,9 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [2.0.1] - 2017-05-30
+## [2.0.1] - 2017-06-02
 ### Added
-- A new client call to the `related_events.v1` endpoint
+- A new client call to the `upsells.v1` endpoint
+- A new client call to the `add_ons.v1` endpoint
 - New behavioural and unit tests for this functionality
 - Added `is_add_on` property to Event
 

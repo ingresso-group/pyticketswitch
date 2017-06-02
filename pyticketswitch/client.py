@@ -1035,40 +1035,87 @@ class Client(object):
 
         return trolley, meta
 
-    def get_related_events(self, token=None, event_ids=None, **kwargs):
+    def get_upsells(self, event_ids=None, **kwargs):
 
-        """Retrieve a list of related events and addons from the API.
+        """Retrieve a list of related events from the API.
 
-        Wraps `/f13/related_events.v1`_
+        Wraps `/f13/upsells.v1`_
 
         Args:
-            token (string, optional): trolley token from a previous trolley
-                call.
-            event_ids (list, optional): list containing event IDs.
+            event_ids (list): list containing event IDs.
             **kwargs: arbitrary additional raw keyword arguments to add to the
                 parameters.
 
         Returns:
-            tuple:((list of :class:`Events <pyticketswitch.event.Event>` of add-on
-            events, :class:`EventMeta <pyticketswitch.event.EventMeta>`:),
-            (list of :class:`Events <pyticketswitch.event.Event>` of related upsell
-            events, :class:`EventMeta <pyticketswitch.event.EventMeta>`:))
+            list, :class:`EventMeta <pyticketswitch.event.EventMeta>`:
+            a list of :class:`Events <pyticketswitch.event.Event>` of related upsell
+            events
 
         Raises:
             InvalidParametersError: when there is an issue with the provided
                 parameters.
             InvalidResponse: when the response is in an unexpected format.
 
-        .. _`/f13/related_events.v1`: http://ingresso-group.github.io/slate/#related-events
+        .. _`/f13/upsells.v1`: http://ingresso-group.github.io/slate/#related-events
+        """
+
+        if event_ids:
+            params = {
+                'event_id_list': ','.join(event_ids),
+            }
+        else:
+            raise exceptions.InvalidParametersError(
+                'get_upsells called without list of event IDs'
+            )
+
+        self.add_optional_kwargs(params, **kwargs)
+
+        response = self.make_request('upsells.v1', params)
+
+        if 'results' not in response:
+            raise exceptions.InvalidResponseError(
+                "got no results key in json response"
+            )
+
+        results = response.get('results', {})
+
+        raw_upsell_events = results.get('event', [])
+        upsell_events = [
+            Event.from_api_data(data)
+            for data in raw_upsell_events
+        ]
+
+        upsell_meta = EventMeta.from_api_data(response)
+
+        return (upsell_events, upsell_meta)
+
+    def get_addons(self, token=None, **kwargs):
+
+        """Retrieve a list of add-on events from the API.
+
+        Wraps `/f13/add_ons.v1`_
+
+        Args:
+            token (string): trolley token from a previous trolley
+                call.
+            **kwargs: arbitrary additional raw keyword arguments to add to the
+                parameters.
+
+        Returns:
+            list, :class:`EventMeta <pyticketswitch.event.EventMeta>`:
+            a list of :class:`Events <pyticketswitch.event.Event>` of add-on events
+
+        Raises:
+            InvalidParametersError: when there is an issue with the provided
+                parameters.
+            InvalidResponse: when the response is in an unexpected format.
+
+        .. _`/f13/add_ons.v1`: http://ingresso-group.github.io/slate/#add-ons
         """
 
         if token:
             params = {
                 'trolley_token': token,
-            }
-        elif event_ids:
-            params = {
-                'event_id_list': ','.join(event_ids),
             }
         else:
             raise exceptions.InvalidParametersError(
@@ -1077,22 +1124,14 @@ class Client(object):
 
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('related_events.v1', params)
+        response = self.make_request('add_ons.v1', params)
 
-        add_on_results = response.get('add_on_results', {})
-
-        if 'add_on_results' not in response:
+        if 'results' not in response:
             raise exceptions.InvalidResponseError(
-                "got no add_on_results key in json response"
+                "got no results key in json response"
             )
 
-        if 'upsell_results' not in response:
-            raise exceptions.InvalidResponseError(
-                "got no upsell_results key in json response"
-            )
-
-        add_on_results = response.get('add_on_results', {})
-        upsell_results = response.get('upsell_results', {})
+        add_on_results = response.get('results', {})
 
         raw_add_on_events = add_on_results.get('event', [])
         add_on_events = [
@@ -1100,19 +1139,9 @@ class Client(object):
             for data in raw_add_on_events
         ]
 
-        raw_upsell_events = upsell_results.get('event', [])
-        upsell_events = [
-            Event.from_api_data(data)
-            for data in raw_upsell_events
-        ]
+        add_on_meta = EventMeta.from_api_data(response)
 
-        add_on_meta = EventMeta.from_api_data(response, result_key='add_on_results')
-        upsell_meta = EventMeta.from_api_data(response, result_key='upsell_results')
-
-        return (
-            (add_on_events, add_on_meta),
-            (upsell_events, upsell_meta),
-        )
+        return (add_on_events, add_on_meta)
 
     def make_reservation(self, token=None, number_of_seats=None, discounts=None,
                          seats=None, send_codes=None, ticket_type_code=None,

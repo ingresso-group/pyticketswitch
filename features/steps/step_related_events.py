@@ -4,28 +4,29 @@ from hamcrest import (
 )
 
 
-@when('I fetch related events for my trolley')
-def when_i_fetch_related_events_for_my_trolley(context):
+@when('I fetch addon events for my trolley')
+def when_i_fetch_addon_events_for_my_trolley(context):
     token = None
     if hasattr(context, 'trolley_token'):
         token = context.trolley_token
 
-    (addon_events, _), (upsell_events, _) = context.client.get_related_events(
+    addon_events, _ = context.client.get_addons(
         token=token,
     )
 
     context.addon_events = addon_events
-    context.upsell_events = upsell_events
 
 
-@when('I fetch related events for the list of event IDs "{event_ids}"')
-def when_i_fetch_related_events_for_the_list_of_event_ids(context, event_ids):
+@when('I fetch upsell events for the list of event IDs "{event_ids}"')
+def when_i_fetch_upsell_events_for_the_list_of_event_ids(context, event_ids):
     ids = event_ids.split(',')
-    (addon_events, _), (upsell_events, _) = context.client.get_related_events(
+    upsell_events, _ = context.client.get_upsells(
         event_ids=ids,
     )
 
-    context.addon_events = addon_events
+    print("iUpsell events for this trolley are:")
+    print(upsell_events)
+
     context.upsell_events = upsell_events
 
 
@@ -51,3 +52,10 @@ def then_the_upsell_event_list_does_not_contain_event(context, event_id):
     events = context.upsell_events
     event_ids = [event.id for event in events]
     assert_that(event_ids, is_not(has_item(event_id)))
+
+
+@then('the addon event list contains "{event_id}"')
+def then_the_addon_event_list_contains_event(context, event_id):
+    events = context.addon_events
+    event_ids = [event.id for event in events]
+    assert_that(event_ids, has_item(event_id))
