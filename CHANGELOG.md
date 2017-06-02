@@ -5,8 +5,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-
-## [2.0.1] - 2017-06-02
 ### Added
 - A new client call to the `upsells.v1` endpoint
 - A new client call to the `add_ons.v1` endpoint
