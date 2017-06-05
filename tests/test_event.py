@@ -289,3 +289,25 @@ class TestEvent:
         event = Event.from_api_data(data)
 
         assert event.is_add_on
+
+    def test_from_events_by_id_api_data(self, data):
+        raw_data = {
+            'event': data,
+            'add_ons': [
+                {
+                    'event_id': 'FOO',
+                    'event_desc': 'Foo Test',
+                },
+            ],
+            'upsells': [
+                {
+                    'event_id': 'BAR',
+                    'event_desc': 'Bar Test',
+                },
+            ],
+        }
+
+        event = Event.from_events_by_id_api_data(raw_data)
+
+        assert event.addon_events
+        assert event.upsell_events

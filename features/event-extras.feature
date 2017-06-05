@@ -88,3 +88,18 @@ Feature: add additional information to request
         And the cost range max seatprice is "47.0"
         And the cost range min surcharge is "3.0"
         And the cost range max surcharge is "5.0"
+
+    Scenario: get single event with add-ons
+        Given an API client with valid credentials
+        When we attempt to fetch events with the ID's "7AB" with add-ons
+        Then a single event should be returned
+        And the event has add-ons
+        And the add-ons contain "7AC"
+
+    Scenario: get single event with upsells
+        Given an API client with valid credentials
+        When we attempt to fetch events with the ID's "7AB" with upsells
+        Then a single event should be returned
+        And the event has upsells
+        And the upsells contain "7AA"
+        And the upsells do not contain "7AB"

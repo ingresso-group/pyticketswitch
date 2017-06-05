@@ -563,7 +563,21 @@ class TestClient:
         client.get_events([], foobar='lolbeans')
 
         mock_make_request_for_events.assert_called_with('events_by_id.v1', {
-            'foobar': 'lolbeans'
+            'foobar': 'lolbeans',
+        })
+
+    def test_get_events_with_upsell(self, client, mock_make_request_for_events):
+        client.get_events(['6IF'], with_upsells=True)
+
+        mock_make_request_for_events.assert_called_with('events_by_id.v1', {
+            'event_id_list': '6IF', 'add_upsells': True,
+        })
+
+    def test_get_events_with_addons(self, client, mock_make_request_for_events):
+        client.get_events(['ABC123'], with_addons=True)
+
+        mock_make_request_for_events.assert_called_with('events_by_id.v1', {
+            'event_id_list': 'ABC123', 'add_add_ons': True,
         })
 
     def test_get_event(self, client, monkeypatch):
@@ -1229,11 +1243,11 @@ class TestClient:
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
         # action
-        (upsell_events, upsell_meta) = client.get_upsells(event_ids=['FOO', 'BAR'])
+        (upsell_events, upsell_meta) = client.get_upsells(token="foobar")
 
         # results
         mock_make_request.assert_called_with('upsells.v1', {
-            'event_id_list': 'FOO,BAR',
+            'trolley_token': 'foobar',
         })
 
         assert len(upsell_events) == 2
@@ -1273,17 +1287,6 @@ class TestClient:
         assert event_two.id == 'DEF456'
 
         assert addon_meta.total_results == 10
-
-    def test_get_addons_and_upsells_fails_with_no_params(self, client, monkeypatch):
-        # fakes
-        mock_make_request = Mock()
-        monkeypatch.setattr(client, 'make_request', mock_make_request)
-
-        # action
-        with pytest.raises(exceptions.InvalidParametersError):
-            events, meta = client.get_upsells()
-        with pytest.raises(exceptions.InvalidParametersError):
-            events, meta = client.get_addons()
 
     def test_make_reservation(self, client, monkeypatch):
         response = {

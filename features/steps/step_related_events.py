@@ -17,11 +17,22 @@ def when_i_fetch_addon_events_for_my_trolley(context):
     context.addon_events = addon_events
 
 
-@when('I fetch upsell events for the list of event IDs "{event_ids}"')
-def when_i_fetch_upsell_events_for_the_list_of_event_ids(context, event_ids):
-    ids = event_ids.split(',')
+@when('I fetch upsell events for the tickets')
+def when_i_fetch_upsell_events_for_the_tickets(context):
+
+    token = None
+    if hasattr(context, 'trolley_token'):
+        token = context.trolley_token
+
     upsell_events, _ = context.client.get_upsells(
-        event_ids=ids,
+        token=token,
+        performance_id=context.performance.id,
+        number_of_seats=context.no_of_tickets,
+        ticket_type_code=context.ticket_type.code,
+        price_band_code=context.price_band.code,
+        discounts=context.discounts,
+        send_codes=context.send_codes,
+        seats=context.seats,
     )
 
     context.upsell_events = upsell_events

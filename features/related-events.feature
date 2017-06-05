@@ -10,9 +10,10 @@ Feature: related_events
         Then I get a list of addon events
         And the addon event list contains "7AC"
 
-    Scenario: upsell events with a list of event IDs
+    Scenario: upsell events without a trolley
         Given an API client with valid credentials
-        When I fetch upsell events for the list of event IDs "7AB"
+        And my customer wants tickets to "7AB"
+        When I fetch upsell events for the tickets
         Then I get a list of upsell events
         And the upsell event list does not contain "7AB"
         And the upsell event list contains "7AA"

@@ -164,6 +164,22 @@ def when_get_events_with_media(context, event_ids):
     context.events, _ = context.client.get_events(event_ids, media=True)
 
 
+@when(u'we attempt to fetch events with the ID\'s "{event_ids}" with add-ons')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
+def when_get_events_with_add_ons(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+    context.events, _ = context.client.get_events(event_ids, with_addons=True)
+
+
+@when(u'we attempt to fetch events with the ID\'s "{event_ids}" with upsells')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
+def when_get_events_with_upsells(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+    context.events, _ = context.client.get_events(event_ids, with_upsells=True)
+
+
 @then('a single event should be returned')
 def then_a_single_event(context):
     assert_that(context.events, has_length(1))
@@ -369,3 +385,40 @@ def then_the_event_has_media(context):
         assert_that(item.secure, equal_to(values['secure']))
         assert_that(item.width, equal_to(values['width']))
         assert_that(item.height, equal_to(values['height']))
+
+
+@then(u'the event has add-ons')
+def then_the_event_has_addons(context):
+    assert context.event.addon_events
+
+
+@then(u'the event has upsells')
+def then_the_event_has_upsells(context):
+    assert context.event.upsell_events
+
+
+@then(u'the add-ons contain "{event_ids}"')
+def then_the_add_ons_contain_event(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+
+    addon_event_ids = [event.id for event in context.event.addon_events]
+    assert set(addon_event_ids) >= set(event_ids)
+
+
+@then(u'the upsells contain "{event_ids}"')
+def then_the_upsells_contain_event(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+
+    upsell_event_ids = [event.id for event in context.event.upsell_events]
+    assert set(upsell_event_ids) >= set(event_ids)
+
+
+@then(u'the upsells do not contain "{event_ids}"')
+def then_the_upsells_do_not_contain_event(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+
+    upsell_event_ids = [event.id for event in context.event.upsell_events]
+    assert set(upsell_event_ids).isdisjoint(set(event_ids))

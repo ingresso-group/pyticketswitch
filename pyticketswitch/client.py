@@ -477,13 +477,16 @@ class Client(object):
         meta = EventMeta.from_api_data(response)
         return events, meta
 
-    def get_events(self, event_ids, **kwargs):
+    def get_events(self, event_ids,
+                   with_addons=False, with_upsells=False, **kwargs):
         """Get events with the given id's
 
         Wraps `/f13/events_by_id.v1`_
 
         Args:
             event_ids (list): list of event IDs
+            with_addons (bool, optional): include add-on events
+            with_upsells (bool, optional): include upsell events
             **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
@@ -505,6 +508,12 @@ class Client(object):
 
         self.add_optional_kwargs(params, **kwargs)
 
+        if with_addons:
+            params.update(add_add_ons=with_addons)
+
+        if with_upsells:
+            params.update(add_upsells=with_upsells)
+
         response = self.make_request('events_by_id.v1', params)
 
         if 'events_by_id' not in response:
@@ -514,7 +523,7 @@ class Client(object):
 
         events_by_id = response.get('events_by_id', {})
         events = {
-            event_id: Event.from_api_data(raw_event.get('event'))
+            event_id: Event.from_events_by_id_api_data(raw_event)
             for event_id, raw_event in events_by_id.items()
             if raw_event.get('event')
         }
@@ -910,6 +919,8 @@ class Client(object):
                 code.
             ticket_type_code: (string, optional): code of ticket type to add to
                 the trolley.
+            performance_id: (string, optional): id of the performance to add to
+                the trolley.
             price_band_code: (string, optional): code of price band to add to
                 the trolley
             item_numbers_to_remove: (list, optional): list of item numbers to
@@ -1001,6 +1012,8 @@ class Client(object):
                 code.
             ticket_type_code: (string, optional): code of ticket type to add to
                 the trolley.
+            performance_id: (string, optional): id of the performance to add to
+                the trolley.
             price_band_code: (string, optional): code of price band to add to
                 the trolley.
             item_numbers_to_remove: (list, optional): list of item numbers to
@@ -1035,15 +1048,38 @@ class Client(object):
 
         return trolley, meta
 
-    def get_upsells(self, event_ids=None, **kwargs):
+    def get_upsells(self, token=None, number_of_seats=None, discounts=None,
+                    seats=None, send_codes=None, ticket_type_code=None,
+                    performance_id=None, price_band_code=None,
+                    item_numbers_to_remove=None, **kwargs):
 
-        """Retrieve a list of related events from the API.
+        """Retrieve a list of upsell events related to a trolley from the API.
+
+        Upsell events are related to a main event but can be purchased
+        separately. This call accepts a trolley token or any combination of
+        parameters to create a valid trolley, but does not alter any existing
+        trolley (it is idempotent).
 
         Wraps `/f13/upsells.v1`_
 
         Args:
-            event_ids (list): list containing event IDs.
-            **kwargs: arbitrary additional raw keyword arguments to add to the
+            token (string, optional): trolley token from a previous trolley
+                call.
+            number_of_seats (int, optional): trolley with number of seats added.
+            discounts (list, optional): list containing discount codes for each
+                requested seat.
+            seats (list, optional): trolley with added list of seat IDs.
+            send_codes (dict, optional): send codes indexed on backend source
+                code.
+            ticket_type_code: (string, optional): trolley with tickets of
+                ticket type added.
+            performance_id: (string, optional): trolley with tickets from the
+                specified performance added.
+            price_band_code: (string, optional): trolley with tickets from a
+                specified price band added.
+            item_numbers_to_remove: (list, optional): trolley with a list of
+                item numbers removed.
+            **kwargs: arbitary additional raw keyword arguments to add the
                 parameters.
 
         Returns:
@@ -1059,22 +1095,18 @@ class Client(object):
         .. _`/f13/upsells.v1`: http://ingresso-group.github.io/slate/#related-events
         """
 
-        if event_ids:
-            params = {
-                'event_id_list': ','.join(event_ids),
-            }
-        else:
-            raise exceptions.InvalidParametersError(
-                'get_upsells called without list of event IDs'
-            )
-
-        self.add_optional_kwargs(params, **kwargs)
+        params = self._trolley_params(
+            token=token, number_of_seats=number_of_seats, discounts=discounts,
+            seats=seats, send_codes=send_codes,
+            ticket_type_code=ticket_type_code, performance_id=performance_id,
+            price_band_code=price_band_code,
+            item_numbers_to_remove=item_numbers_to_remove, **kwargs)
 
         response = self.make_request('upsells.v1', params)
 
         if 'results' not in response:
             raise exceptions.InvalidResponseError(
-                "got no results key in json response"
+                "got no results key in JSON response"
             )
 
         results = response.get('results', {})
@@ -1089,15 +1121,32 @@ class Client(object):
 
         return (upsell_events, upsell_meta)
 
-    def get_addons(self, token=None, **kwargs):
+    def get_addons(self, token=None, number_of_seats=None, discounts=None,
+                   seats=None, send_codes=None, ticket_type_code=None,
+                   performance_id=None, price_band_code=None,
+                   item_numbers_to_remove=None, **kwargs):
 
         """Retrieve a list of add-on events from the API.
 
         Wraps `/f13/add_ons.v1`_
 
         Args:
-            token (string): trolley token from a previous trolley
+            token (string, optional): trolley token from a previous trolley
                 call.
+            number_of_seats (int, optional): trolley with number of seats added.
+            discounts (list, optional): list containing discount codes for each
+                requested seat.
+            seats (list, optional): trolley with added list of seat IDs.
+            send_codes (dict, optional): send codes indexed on backend source
+                code.
+            ticket_type_code: (string, optional): trolley with tickets of
+                ticket type added.
+            performance_id: (string, optional): trolley with tickets from the
+                specified performance added.
+            price_band_code: (string, optional): trolley with tickets from a
+                specified price band added.
+            item_numbers_to_remove: (list, optional): trolley with a list of
+                item numbers removed.
             **kwargs: arbitrary additional raw keyword arguments to add to the
                 parameters.
 
@@ -1113,16 +1162,12 @@ class Client(object):
         .. _`/f13/add_ons.v1`: http://ingresso-group.github.io/slate/#add-ons
         """
 
-        if token:
-            params = {
-                'trolley_token': token,
-            }
-        else:
-            raise exceptions.InvalidParametersError(
-                'get_related_events called without trolley token or list of event IDs'
-            )
-
-        self.add_optional_kwargs(params, **kwargs)
+        params = self._trolley_params(
+            token=token, number_of_seats=number_of_seats, discounts=discounts,
+            seats=seats, send_codes=send_codes,
+            ticket_type_code=ticket_type_code, performance_id=performance_id,
+            price_band_code=price_band_code,
+            item_numbers_to_remove=item_numbers_to_remove, **kwargs)
 
         response = self.make_request('add_ons.v1', params)
 
@@ -1175,6 +1220,8 @@ class Client(object):
             send_codes (dict, optional): send codes indexed on backend source
                 code.
             ticket_type_code: (string, optional): code of ticket type to add to
+                the trolley.
+            performance_id: (string, optional): id of the performance to add to
                 the trolley.
             price_band_code: (string, optional): code of price band to add to
                 the trolley
