@@ -5,11 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.0.2] - 2017-06-05
 ### Added
 - A new client call to the `upsells.v1` endpoint
 - A new client call to the `add_ons.v1` endpoint
 - New behavioural and unit tests for this functionality
 - Added `is_add_on` property to Event
+- `get_events` now supports adding upsell and add-on information to Events
 
 ## [2.0.1] - 2017-06-01
 ### Fixed
