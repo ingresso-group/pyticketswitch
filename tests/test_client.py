@@ -563,7 +563,21 @@ class TestClient:
         client.get_events([], foobar='lolbeans')
 
         mock_make_request_for_events.assert_called_with('events_by_id.v1', {
-            'foobar': 'lolbeans'
+            'foobar': 'lolbeans',
+        })
+
+    def test_get_events_with_upsell(self, client, mock_make_request_for_events):
+        client.get_events(['6IF'], with_upsells=True)
+
+        mock_make_request_for_events.assert_called_with('events_by_id.v1', {
+            'event_id_list': '6IF', 'add_upsells': True,
+        })
+
+    def test_get_events_with_addons(self, client, mock_make_request_for_events):
+        client.get_events(['ABC123'], with_addons=True)
+
+        mock_make_request_for_events.assert_called_with('events_by_id.v1', {
+            'event_id_list': 'ABC123', 'add_add_ons': True,
         })
 
     def test_get_event(self, client, monkeypatch):
@@ -1210,6 +1224,69 @@ class TestClient:
 
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code == 'gbp'
+
+    def test_get_upsells(self, client, monkeypatch):
+        # fakes
+        response = {
+            'results': {
+                'event': [
+                    {'event_id': 'GHI789'},
+                    {'event_id': 'JKL012'},
+                ],
+                'paging_status': {
+                    'total_unpaged_results': 2,
+                },
+            },
+        }
+        mock_make_request = Mock(return_value=response)
+
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        # action
+        (upsell_events, upsell_meta) = client.get_upsells(token="foobar")
+
+        # results
+        mock_make_request.assert_called_with('upsells.v1', {
+            'trolley_token': 'foobar',
+        })
+
+        assert len(upsell_events) == 2
+        event_one, event_two = upsell_events
+        assert event_one.id == 'GHI789'
+        assert event_two.id == 'JKL012'
+        assert upsell_meta.total_results == 2
+
+    def test_get_addons(self, client, monkeypatch):
+        # fakes
+        response = {
+            'results': {
+                'event': [
+                    {'event_id': 'ABC123'},
+                    {'event_id': 'DEF456'},
+                ],
+                'paging_status': {
+                    'total_unpaged_results': 10,
+                },
+            },
+        }
+        mock_make_request = Mock(return_value=response)
+
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        # action
+        addon_events, addon_meta = client.get_addons(token="foobar")
+
+        # results
+        mock_make_request.assert_called_with('add_ons.v1', {
+            'trolley_token': 'foobar',
+        })
+
+        assert len(addon_events) == 2
+        event_one, event_two = addon_events
+        assert event_one.id =='ABC123'
+        assert event_two.id == 'DEF456'
+
+        assert addon_meta.total_results == 10
 
     def test_make_reservation(self, client, monkeypatch):
         response = {

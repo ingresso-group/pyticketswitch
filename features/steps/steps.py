@@ -1,5 +1,7 @@
 from behave import given, then
-from hamcrest import *  # noqa
+from hamcrest import (
+    assert_that, instance_of
+)
 from pyticketswitch import Client
 from pyticketswitch.exceptions import AuthenticationError
 

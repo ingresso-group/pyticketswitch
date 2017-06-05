@@ -36,7 +36,7 @@ class Month(JSONMixin, object):
         return cls(**kwargs)
 
     def is_available(self, day):
-        """Indicates if the event has availabilty on a given day.
+        """Indicates if the event has availability on a given day.
 
         the dates bitmask is a 32 bit int where the right most bit is the first
         day of the month. To find if we have availability on a specfic day,

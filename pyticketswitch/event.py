@@ -92,7 +92,7 @@ class Event(JSONMixin, object):
                  classes=None, filters=None, upsell_list=None, city=None,
                  city_code=None, country=None, country_code=None,
                  latitude=None, longitude=None, needs_departure_date=False,
-                 needs_duration=False,
+                 needs_duration=False, addon_events=None, upsell_events=None,
                  needs_performance=False, has_performances=False,
                  is_seated=False, show_performance_time=False,
                  min_running_time=None, max_running_time=None, cost_range=None,
@@ -102,7 +102,7 @@ class Event(JSONMixin, object):
                  venue_info_html=None, media=None, reviews=None,
                  critic_review_percent=None, availability_details=None,
                  component_events=None, valid_quantities=None, fields=None,
-                 raw=None):
+                 raw=None, is_add_on=None):
 
         self.id = id_
         self.status = status
@@ -133,6 +133,9 @@ class Event(JSONMixin, object):
         self.needs_duration = needs_duration
         self.needs_performance = needs_performance
 
+        self.addon_events = addon_events
+        self.upsell_events = upsell_events
+        # TODO This will be removed from the API soon
         self.upsell_list = upsell_list
 
         self.cost_range = cost_range
@@ -159,18 +162,19 @@ class Event(JSONMixin, object):
         self.valid_quantities = valid_quantities
         self.raw = raw
 
+        self.is_add_on = is_add_on
+
     @classmethod
-    def from_api_data(cls, data):
-        """Creates a new Event object from API data from ticketswitch.
+    def class_dict_from_api_data(cls, data):
+        """Creates a dict of Event data from a raw ticketswitch API call
 
         Args:
             data (dict): the part of the response from a ticketswitch API call
                 that concerns a event.
 
         Returns:
-            :class:`Event <pyticketswitch.event.Event>`: a new
-            :class:`Event <pyticketswitch.event.Event>` object
-            populated with the data from the api.
+            dict: a new dict populated with the data from the api for creating
+            an :class:`Event <pyticketswitch.event.Event>` object
 
         """
 
@@ -306,7 +310,59 @@ class Event(JSONMixin, object):
             'component_events': component_events,
             'valid_quantities': data.get('valid_quantities'),
             'raw': data,
+            'is_add_on': data.get('is_add_on'),
         }
+
+        return kwargs
+
+    @classmethod
+    def from_api_data(cls, data):
+        """Creates a new Event object from API data from ticketswitch.
+
+        Args:
+            data (dict): the part of the response from a ticketswitch API call
+                that concerns a event.
+
+        Returns:
+            :class:`Event <pyticketswitch.event.Event>`: a new
+            :class:`Event <pyticketswitch.event.Event>` object
+            populated with the data from the api.
+
+        """
+
+        kwargs = cls.class_dict_from_api_data(data)
+        return cls(**kwargs)
+
+    @classmethod
+    def from_events_by_id_api_data(cls, data):
+        """Creates a new Event object from API data from the events_by_id call.
+
+        Args:
+            data (dict): the part of the response from the ticketswitch
+                `events_by_id` API call containing events and other data.
+
+        Returns:
+            :class:`Event <pyticketswitch.event.Event>`: a new
+            :class:`Event <pyticketswitch.event.EVent>` object populated with
+            the data from the API.
+
+        """
+
+        kwargs = cls.class_dict_from_api_data(data.get('event'))
+
+        if data.get('add_ons'):
+            addons=[
+                Event.from_api_data(raw_addon)
+                for raw_addon in data.get('add_ons')
+            ]
+            kwargs.update(addon_events=addons)
+
+        if data.get('upsells'):
+            upsells=[
+                Event.from_api_data(raw_upsell)
+                for raw_upsell in data.get('upsells')
+            ]
+            kwargs.update(upsell_events=upsells)
 
         return cls(**kwargs)
 

@@ -1,3 +1,4 @@
+import math
 import datetime
 import json
 import vcr
@@ -163,6 +164,22 @@ def when_get_events_with_media(context, event_ids):
     context.events, _ = context.client.get_events(event_ids, media=True)
 
 
+@when(u'we attempt to fetch events with the ID\'s "{event_ids}" with add-ons')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
+def when_get_events_with_add_ons(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+    context.events, _ = context.client.get_events(event_ids, with_addons=True)
+
+
+@when(u'we attempt to fetch events with the ID\'s "{event_ids}" with upsells')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
+def when_get_events_with_upsells(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+    context.events, _ = context.client.get_events(event_ids, with_upsells=True)
+
+
 @then('a single event should be returned')
 def then_a_single_event(context):
     assert_that(context.events, has_length(1))
@@ -201,6 +218,57 @@ def then_events_have_performance_between_days(context, start, end):
             continue
 
         raise Exception('Event with id %s does not have a performance inside the given date range' % event.id)
+
+
+@then('the events are all within "{distance}"km of "{lat}" lat and "{lon}" long')
+@vcr.use_cassette('fixtures/cassettes/search-geo.yaml', record_mode='new_episodes')
+def then_events_are_all_within_distance_of_lat_long(context, distance, lat, lon):
+    assert len(context.events) > 0
+    RADIUS = 6371   # km
+    lat = float(lat)
+    lon = float(lon)
+    distance = float(distance)
+
+    rad_lat_origin = math.radians(lat)
+
+    for event in context.events:
+        # Use haversine formula to determine the distance between two coords
+        rad_lat_event = math.radians(event.latitude)
+
+        delta_lat = math.radians(event.latitude - lat)
+        delta_lon = math.radians(event.longitude - lon)
+
+        a = math.sin(delta_lat/2) ** 2 + \
+            math.cos(rad_lat_origin) * math.cos(rad_lat_event) * \
+            math.sin(delta_lon/2) ** 2
+
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+
+        event_distance = RADIUS * c
+
+        if event_distance <= distance:
+            continue
+
+        raise Exception('Event with id %s and coordinates %f, %f is more than %d km from the given position' %
+                        (event.id, event.latitude, event.longitude, distance))
+
+
+@then(u'all events are in country with code "{country_code}"')
+@vcr.use_cassette('fixtures/cassettes/search-country.yaml', record_mode='new_episodes')
+def all_events_should_be_in_country(context, country_code):
+    assert len(context.events) > 0
+
+    for event in context.events:
+        assert_that(event.country_code, equal_to(country_code))
+
+
+@then(u'all events are in city with code "{city_code}"')
+@vcr.use_cassette('fixtures/cassettes/search-city.yaml', record_mode='new_epidsodes')
+def all_events_should_be_in_city(context, city_code):
+    assert len(context.events) > 0
+
+    for event in context.events:
+        assert_that(event.city_code, equal_to(city_code))
 
 
 @then('that event should have the ID of "{event_id}"')
@@ -317,3 +385,40 @@ def then_the_event_has_media(context):
         assert_that(item.secure, equal_to(values['secure']))
         assert_that(item.width, equal_to(values['width']))
         assert_that(item.height, equal_to(values['height']))
+
+
+@then(u'the event has add-ons')
+def then_the_event_has_addons(context):
+    assert context.event.addon_events
+
+
+@then(u'the event has upsells')
+def then_the_event_has_upsells(context):
+    assert context.event.upsell_events
+
+
+@then(u'the add-ons contain "{event_ids}"')
+def then_the_add_ons_contain_event(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+
+    addon_event_ids = [event.id for event in context.event.addon_events]
+    assert set(addon_event_ids) >= set(event_ids)
+
+
+@then(u'the upsells contain "{event_ids}"')
+def then_the_upsells_contain_event(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+
+    upsell_event_ids = [event.id for event in context.event.upsell_events]
+    assert set(upsell_event_ids) >= set(event_ids)
+
+
+@then(u'the upsells do not contain "{event_ids}"')
+def then_the_upsells_do_not_contain_event(context, event_ids):
+    event_ids = event_ids.split(', ')
+    assert event_ids
+
+    upsell_event_ids = [event.id for event in context.event.upsell_events]
+    assert set(upsell_event_ids).isdisjoint(set(event_ids))

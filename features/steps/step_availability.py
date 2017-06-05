@@ -13,7 +13,7 @@ def given_i_have_a_performance_id(context, event_id):
     context.performance = performances[0]
 
 
-@when('I fetch availabilty for my performance')
+@when('I fetch availability for my performance')
 @vcr.use_cassette('fixtures/cassettes/availability.yaml', record_mode='new_episodes')
 def when_i_fetch_availability(context):
     ticket_types, meta = context.client.get_availability(
