@@ -14,12 +14,12 @@ class SendMethod(JSONMixin, object):
             self print a voucher
         self_print_voucher_url (str): url for the client to download their
             voucher from
-        send_final_comment (str): comment about dispatching tickets
+        final_comment (str): comment about dispatching tickets
     """
 
     def __init__(self, code, cost=None, description=None, typ=None,
                  permitted_countries=None, can_generate_self_print=False,
-                 self_print_voucher_url=None, send_final_comment=None):
+                 self_print_voucher_url=None, final_comment=None):
         self.code = code
         self.cost = cost
         self.description = description
@@ -27,7 +27,7 @@ class SendMethod(JSONMixin, object):
         self.permitted_countries = permitted_countries
         self.can_generate_self_print = can_generate_self_print
         self.self_print_voucher_url = self_print_voucher_url
-        self.send_final_comment = send_final_comment
+        self.final_comment = final_comment
 
     @classmethod
     def from_api_data(cls, data):
@@ -49,7 +49,7 @@ class SendMethod(JSONMixin, object):
             'typ': data.get('send_type'),
             'can_generate_self_print': data.get('can_generate_self_print'),
             'self_print_voucher_url': data.get('self_print_voucher_url'),
-            'send_final_comment': data.get('send_final_comment'),
+            'final_comment': data.get('send_final_comment'),
         }
 
         cost = data.get('send_cost', 0.0)
