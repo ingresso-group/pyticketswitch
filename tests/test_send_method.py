@@ -9,6 +9,7 @@ class TestSendMethod:
             'send_cost': 3.5,
             'send_desc': 'Post (UK & Ireland only)',
             'send_type': 'post',
+            'send_final_comment': 'allow some time',
             'permitted_countries': {
                 'country': [
                     {
@@ -30,6 +31,7 @@ class TestSendMethod:
         assert method.cost == 3.5
         assert method.description == 'Post (UK & Ireland only)'
         assert method.type == 'post'
+        assert method.final_comment == 'allow some time'
         assert len(method.permitted_countries) == 2
 
     def test_from_api_data_without_permitted_countries(self):
