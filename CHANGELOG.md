@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added 
+- Added `final_comment` to the SendMethod class. This was present in the XML
+  but got lost when we switched to JSON.
 
 ## [2.0.2] - 2017-06-05
 ### Added
