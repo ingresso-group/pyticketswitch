@@ -110,7 +110,7 @@ class Client(object):
         """
         tracking_id = self.kwargs.get("tracking_id")
         if tracking_id:
-            return { "tsw_session_track_id": tracking_id }
+            return {"tsw_session_track_id": tracking_id}
         return {}
 
     def get_session(self):
