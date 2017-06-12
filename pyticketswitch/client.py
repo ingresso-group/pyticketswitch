@@ -109,7 +109,7 @@ class Client(object):
         Return current request's session tracking id
         """
         tracking_id = self.kwargs.get("tracking_id", "")
-        return {"tsw_session_track_id": tracking_id}
+        return { "tsw_session_track_id": tracking_id }
 
     def get_session(self):
         """Get the requests.Session instance to use to make HTTP requests
