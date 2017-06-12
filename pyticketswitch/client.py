@@ -108,7 +108,7 @@ class Client(object):
         """
         Return current request's session tracking id
         """
-        tracking_id = self.kwargs.get("tracking_id", "")
+        tracking_id = self.kwargs.get("tracking_id")
         if tracking_id:
             return { "tsw_session_track_id": tracking_id }
         return {}
