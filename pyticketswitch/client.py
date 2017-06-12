@@ -104,6 +104,13 @@ class Client(object):
 
         return headers
 
+    def get_tracking_code(self):
+        """
+        Return current request's session tracking id
+        """
+        tracking_id = self.kwargs.get("tracking_id", "")
+        return {"tsw_session_track_id": tracking_id}
+
     def get_session(self):
         """Get the requests.Session instance to use to make HTTP requests
 
@@ -152,8 +159,10 @@ class Client(object):
                 200
             APIError: When any other explict errors are returned from the API
         """
+
         url = self.get_url(endpoint)
         params.update(self.get_auth_params())
+        params.update(self.get_tracking_code())
 
         logger.debug(u'url: %s; endpoint: %s; params: %s', self.url, endpoint, params)
 
