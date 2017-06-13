@@ -105,12 +105,14 @@ class Client(object):
 
         return headers
 
-    def get_tracking_params(self):
+    def get_tracking_params(self, custom_tracking_id=None):
         """
         Return current request's session tracking id
+        or custom tracking id passed
         """
-        if self.tracking_id:
-            return {"tsw_session_track_id": self.tracking_id}
+        tracking_id = custom_tracking_id or self.tracking_id
+        if tracking_id:
+            return {"tsw_session_track_id": tracking_id}
         return {}
 
     def get_session(self):
@@ -254,6 +256,7 @@ class Client(object):
                             max_saving_offer=False, min_cost_offer=False,
                             top_price_offer=False, no_singles_data=False,
                             cost_range_details=False, source_info=False,
+                            tracking_id=None,
                             **kwargs):
         """Adds additional arguments to the requests.
 
@@ -362,6 +365,10 @@ class Client(object):
         if availability_with_performances:
             params.update(req_avail_details=True,
                           req_avail_details_with_perfs=True)
+
+        if tracking_id:
+            params.update(self.get_tracking_params(
+                custom_tracking_id=tracking_id))
 
         if source_info:
             params.update(req_src_info=True)
