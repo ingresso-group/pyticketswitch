@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- Reservation object now handles unreserved orders correctly.
 
 ## [2.0.3] - 2017-06-07
 ### Added
