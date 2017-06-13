@@ -67,13 +67,15 @@ class Reservation(Status):
 
         inst = super(Reservation, cls).from_api_data(data)
 
-        raw_unreserved_orders = data.get('unreserve_orders')
+        unreserved_orders = []
+        raw_unreserved_orders = data.get('unreserved_orders')
         if raw_unreserved_orders:
             unreserved_orders = [
                 Order.from_api_data(order)
                 for order in raw_unreserved_orders
             ]
-            inst.unreserved_orders=unreserved_orders
+
+        inst.unreserved_orders=unreserved_orders
 
         return inst
 

@@ -39,7 +39,7 @@ class TestReservation:
                 'trolley_order_count': 1
             },
             'minutes_left_on_reserve': 15,
-            "unreserve_orders": [{'item_number': 2}],
+            "unreserved_orders": [{'item_number': 2}],
         }
 
         reservation = Reservation.from_api_data(data)
