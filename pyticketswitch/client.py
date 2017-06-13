@@ -50,12 +50,13 @@ class Client(object):
     """
 
     def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
-                 language=None, **kwargs):
+                 language=None, tracking_id=None, **kwargs):
         self.user = user
         self.password = password
         self.url = url
         self.sub_user = sub_user
         self.language = language
+        self.tracking_id = tracking_id
         self.kwargs = kwargs
 
     def get_url(self, end_point):
@@ -108,9 +109,8 @@ class Client(object):
         """
         Return current request's session tracking id
         """
-        tracking_id = self.kwargs.get("tracking_id")
-        if tracking_id:
-            return {"tsw_session_track_id": tracking_id}
+        if self.tracking_id:
+            return {"tsw_session_track_id": self.tracking_id}
         return {}
 
     def get_session(self):
