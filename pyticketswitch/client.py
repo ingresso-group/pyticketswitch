@@ -104,7 +104,7 @@ class Client(object):
 
         return headers
 
-    def get_tracking_code(self):
+    def get_tracking_params(self):
         """
         Return current request's session tracking id
         """
@@ -164,7 +164,7 @@ class Client(object):
 
         url = self.get_url(endpoint)
         params.update(self.get_auth_params())
-        params.update(self.get_tracking_code())
+        params.update(self.get_tracking_params())
 
         logger.debug(u'url: %s; endpoint: %s; params: %s', self.url, endpoint, params)
 
