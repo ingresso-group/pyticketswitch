@@ -10,7 +10,7 @@ Release v\ |version|. (:ref:`Installation <install>`)
 
 Python wrapper around Ingresso's `F13 API`_.
 
-.. _`F13 API`: http://ingresso-group.github.io/slate
+.. _`F13 API`: http://docs.ingresso.co.uk/
 
 Features
 ========

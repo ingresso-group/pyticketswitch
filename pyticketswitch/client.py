@@ -1110,7 +1110,7 @@ class Client(object):
                 parameters.
             InvalidResponse: when the response is in an unexpected format.
 
-        .. _`/f13/upsells.v1`: http://ingresso-group.github.io/slate/#related-events
+        .. _`/f13/upsells.v1`: http://docs.ingresso.co.uk/#related-events
         """
 
         params = self._trolley_params(
@@ -1177,7 +1177,7 @@ class Client(object):
                 parameters.
             InvalidResponse: when the response is in an unexpected format.
 
-        .. _`/f13/add_ons.v1`: http://ingresso-group.github.io/slate/#add-ons
+        .. _`/f13/add_ons.v1`: http://docs.ingresso.co.uk/#add-ons
         """
 
         params = self._trolley_params(

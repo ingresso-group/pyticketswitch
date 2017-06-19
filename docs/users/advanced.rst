@@ -820,7 +820,7 @@ having to send us card details and the associated security nightmare that
 comes with it. If stripe sounds interesting you can read more about
 :ref:`handling front end integrations <frontend_integrations>`, or in
 `our main API documentation 
-<http://ingresso-group.github.io/slate/#purchasing-with-stripe>`_, or `the 
+<http://docs.ingresso.co.uk/#purchasing-with-stripe>`_, or `the 
 official stripe documentation <https://stripe.com/docs>`_.
 
 For this example  we are going to set up a reservation with more than one

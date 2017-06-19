@@ -1,9 +1,9 @@
 Pyticketswitch
 ==============
 
-Python wrapper for the ticketswitch [f13 API](http://ingresso-group.github.io/slate).
+Python wrapper for the ticketswitch [f13 API](http://docs.ingresso.co.uk/).
 
-Docs: https://ingresso-group.github.io/pyticketswitch
+Docs: http://www.ingresso.co.uk/pyticketswitch/
 
 Features
 --------
@@ -27,7 +27,7 @@ Contribute
 
 - Issue Tracker: https://github.com/ingresso-group/pyticketswitch/issues
 - Source Code: https://github.com/ingresso-group/pyticketswitch
-- F13 API Documentation: https://ingresso-group.github.io/slate
+- F13 API Documentation: http://docs.ingresso.co.uk/
 
 ### How to contribute ###
 

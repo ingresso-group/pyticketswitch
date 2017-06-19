@@ -10,7 +10,7 @@ Pyticketswitch is a wrapper around Ingresso's F13 API.
 
 Full API documentation (and a much better introduction) can be found here: 
 
-http://ingresso-group.github.io/slate/
+http://docs.ingresso.co.uk/
 
 The work horse of this wrapper is the wonderful 
 `Requests`_ library.
