@@ -1153,14 +1153,13 @@ when debugging failing queries.
 
 Additionally it's also possible to set a tracking id not only
 when instantiating the API Client but also using separate
-tracking id each time `make_request` is called.
+tracking id each time a call is made.
 
-To set up a tracking id on a per request basis you can pass
-`custom_tracking_id` parameter to `make_request` which will be used
-instead of the `tracking_id` instance variable::
+For example to set custom tracking id each time the `list_events`
+method is called append `tracking_id` parameter as a kwarg.
     >>> from pyticketswitch import Client
     >>> client = Client('example-user', 'some-password')
-    >>> client.make_request('/get-data', {}, custom_tracking_id='abc')
+    >>> client.list_events(tracking_id='123')
 
 
 Frontend Integrations
