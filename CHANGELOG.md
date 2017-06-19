@@ -5,8 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.0.4] - 2017-06-19
 ### Fixed
 - Reservation object now handles unreserved orders correctly.
+### Added
+- Added ability to set tracking ID for pyticketswitch requests
 
 ## [2.0.3] - 2017-06-07
 ### Added
@@ -225,6 +229,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Initial release.
 
 [Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.1...HEAD
+[2.0.4]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.3...2.0.4
 [2.0.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/ingresso-group/pyticketswitch/compare/1.13.1...2.0.0
 
