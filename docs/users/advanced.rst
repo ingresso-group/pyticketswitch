@@ -1135,6 +1135,34 @@ you need to pass those parameters back to us::
              problem for you let us know and we will see what we can do.
 
 
+Setting tracking ID
+=====================
+
+.. _setting_tracking_id:
+
+When instantiating Client object it's also possible to set optional tracking ID 
+that will be set with each request performed by `make_request` method::
+
+    >>> from pyticketswitch import Client
+    >>> client = Client('example-user', 'some-password', tracking_id='xyz')
+    >>> client.make_request('/get-data', {})
+
+This is useful when using common id for tracking requests across the 
+whole infrastructure, and if set might prove very helpful
+when debugging failing queries.
+
+Additionally it's also possible to set a tracking id not only
+when instantiating the API Client but also using separate
+tracking id each time `make_request` is called.
+
+To set up a tracking id on a per request basis you can pass
+`custom_tracking_id` parameter to `make_request` which will be used
+instead of the `tracking_id` instance variable::
+    >>> from pyticketswitch import Client
+    >>> client = Client('example-user', 'some-password')
+    >>> client.make_request('/get-data', {}, custom_tracking_id='abc')
+
+
 Frontend Integrations
 =====================
 
