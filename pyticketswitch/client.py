@@ -50,12 +50,13 @@ class Client(object):
     """
 
     def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
-                 language=None, **kwargs):
+                 language=None, tracking_id=None, **kwargs):
         self.user = user
         self.password = password
         self.url = url
         self.sub_user = sub_user
         self.language = language
+        self.tracking_id = tracking_id
         self.kwargs = kwargs
 
     def get_url(self, end_point):
@@ -103,6 +104,16 @@ class Client(object):
             headers.update({'Accept-Language': self.language})
 
         return headers
+
+    def get_tracking_params(self, custom_tracking_id=None):
+        """
+        Return current request's session tracking id
+        or custom tracking id passed
+        """
+        tracking_id = custom_tracking_id or self.tracking_id
+        if tracking_id:
+            return {"tsw_session_track_id": tracking_id}
+        return {}
 
     def get_session(self):
         """Get the requests.Session instance to use to make HTTP requests
@@ -152,8 +163,10 @@ class Client(object):
                 200
             APIError: When any other explict errors are returned from the API
         """
+
         url = self.get_url(endpoint)
         params.update(self.get_auth_params())
+        params.update(self.get_tracking_params())
 
         logger.debug(u'url: %s; endpoint: %s; params: %s', self.url, endpoint, params)
 
@@ -243,6 +256,7 @@ class Client(object):
                             max_saving_offer=False, min_cost_offer=False,
                             top_price_offer=False, no_singles_data=False,
                             cost_range_details=False, source_info=False,
+                            tracking_id=None,
                             **kwargs):
         """Adds additional arguments to the requests.
 
@@ -351,6 +365,10 @@ class Client(object):
         if availability_with_performances:
             params.update(req_avail_details=True,
                           req_avail_details_with_perfs=True)
+
+        if tracking_id:
+            params.update(self.get_tracking_params(
+                custom_tracking_id=tracking_id))
 
         if source_info:
             params.update(req_src_info=True)
