@@ -1,7 +1,7 @@
 .PHONY: docs publish-docs
 
 DOCS_TO_BRANCH=gh-pages
-DOCS_FROM_BRANCH=v2-dev
+DOCS_FROM_BRANCH=master
 
 init:
 	virtualenv venv -p python3
