@@ -183,6 +183,64 @@ class TestClient:
             }
         )
 
+    def test_make_request_with_tracking_id(self, monkeypatch):
+        client = Client(user="user", password="pass", tracking_id="xyz")
+        fake_response = FakeResponse(status_code=200, json={"depro": "fundis"})
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+        client.language='en-GB'
+        response = client.make_request('events.v1', {})
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            params={
+                'user_id': 'user',
+                'user_passwd': 'pass',
+                'tsw_session_track_id': 'xyz'
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            }
+        )
+
+    def test_make_request_when_using_per_request_tracking_id(self, monkeypatch):
+        client = Client(user="user", password="pass", tracking_id="xyz")
+        fake_response = FakeResponse(status_code=200, json={"depro": "fundis"})
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+        client.language='en-GB'
+        params = {}
+        client.add_optional_kwargs(params, tracking_id="123")
+        response = client.make_request('events.v1', params)
+
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            params={
+                'user_id': 'user',
+                'user_passwd': 'pass',
+                'tsw_session_track_id': '123'
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            }
+        )
+
+        client.add_optional_kwargs(params, tracking_id="456")
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            params={
+                'user_id': 'user',
+                'user_passwd': 'pass',
+                'tsw_session_track_id': '456'
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            }
+        )
+
     def test_make_request_bad_response_with_auth_error(self, client, monkeypatch):
         fake_response = FakeResponse(status_code=400, json={
             'error_code': 3,
