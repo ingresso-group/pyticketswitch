@@ -1145,15 +1145,18 @@ that will be set with each request performed by `make_request` method::
 
     >>> from pyticketswitch import Client
     >>> client = Client('example-user', 'some-password', tracking_id='xyz')
-    >>> client.make_request('/get-data', {})
+    >>> client.make_request('test.v1', {})
 
-This is useful when using common id for tracking requests across the 
+This is useful when using a common id for tracking requests across the 
 whole infrastructure, and if set might prove very helpful
 when debugging failing queries.
 
 Additionally it's also possible to set a tracking id not only
 when instantiating the API Client but also using separate
 tracking id each time a call is made.
+
+If global tracking id is set when instantiating API client
+it will be overwritten by per request tracking id
 
 For example to set custom tracking id each time the `list_events`
 method is called append `tracking_id` parameter as a kwarg.
