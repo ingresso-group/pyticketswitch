@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.5] - 2017-06-22
+### Fixed
+- Fixed a bug when custom tracking id would not overwrite global one.
+### Added
+- Tests/Documentation for custom Tracking id feature
+
 ## [2.0.4] - 2017-06-19
 ### Fixed
 - Reservation object now handles unreserved orders correctly.
