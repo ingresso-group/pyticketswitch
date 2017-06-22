@@ -166,7 +166,8 @@ class Client(object):
 
         url = self.get_url(endpoint)
         params.update(self.get_auth_params())
-        params.update(self.get_tracking_params())
+        if not params.get('tsw_session_track_id'):
+            params.update(self.get_tracking_params())
 
         logger.debug(u'url: %s; endpoint: %s; params: %s', self.url, endpoint, params)
 
@@ -307,8 +308,9 @@ class Client(object):
                 each available price band.  Defaults to :obj:`False`.
             cost_range_details (bool, optional): Cost range information for
                 each available price band.  Defaults to :obj:`False`.
-            source_info (bool, optional): Includes information on the source
-                system. Defaults to :obj:`False`.
+            source_info (bool, optional): includes information on the source
+                system. defaults to :obj:`false`.
+            tracking_id (string, optional): Add custom tracking id to the request
             **kwargs: Additional or override parameters to send with the
                 request.
         """
@@ -372,7 +374,6 @@ class Client(object):
 
         if source_info:
             params.update(req_src_info=True)
-
         params.update(kwargs)
 
     def list_events(self, keywords=None, start_date=None, end_date=None,
