@@ -2,6 +2,7 @@ from pyticketswitch.bundle import Bundle
 from pyticketswitch.event import Event
 from pyticketswitch.order import Order
 from pyticketswitch.debitor import Debitor
+from pyticketswitch.purchase_result import PurchaseResult
 
 
 class TestBundle(object):
@@ -23,6 +24,9 @@ class TestBundle(object):
                 "debitor_type": "dummy"
             },
             "source_t_and_c": 'some legal stuff',
+            "purchase_result": {
+                "success": True,
+            },
         }
 
         bundle = Bundle.from_api_data(data)
@@ -50,6 +54,9 @@ class TestBundle(object):
 
         assert isinstance(bundle.debitor, Debitor)
         assert bundle.debitor.type == 'dummy'
+
+        assert isinstance(bundle.purchase_result, PurchaseResult)
+        assert bundle.purchase_result.success
 
     def test_get_events(self):
 
@@ -91,6 +98,25 @@ class TestBundle(object):
         events = bundle.get_event_ids()
 
         assert events == {'abc123', 'def456'}
+
+    def test_is_purchased(self):
+        pr = PurchaseResult(success=True)
+
+        bundle_orders = [Order(item=1, event=Event(id_='TEST'))]
+
+        bundle = Bundle(
+            'tests',
+            orders=bundle_orders,
+            purchase_result=pr,
+        )
+
+        no_pr_bundle = Bundle(
+            'tests',
+            orders=bundle_orders,
+        )
+
+        assert bundle.is_purchased()
+        assert not no_pr_bundle.is_purchased()
 
     def test_repr(self):
 

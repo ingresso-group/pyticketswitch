@@ -10,7 +10,10 @@ class TestPurchaseResult:
             "failed_avs": True,
             "failed_cv_two": True,
             "purchase_error": "too much donk",
-            "success": True
+            "success": True,
+            "failure_reason": "unknown",
+            "is_partial": True,
+            "is_semi_credit": False,
         }
 
         purchase_result = PurchaseResult.from_api_data(data)
@@ -20,3 +23,6 @@ class TestPurchaseResult:
         assert purchase_result.failed_avs is True
         assert purchase_result.failed_cv_two is True
         assert purchase_result.error == 'too much donk'
+        assert purchase_result.failure_reason == 'unknown'
+        assert purchase_result.is_partial
+        assert not purchase_result.is_semi_credit
