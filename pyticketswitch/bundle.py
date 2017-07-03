@@ -1,6 +1,7 @@
 from pyticketswitch.order import Order
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.debitor import Debitor
+from pyticketswitch.purchase_result import PurchaseResult
 
 
 class Bundle(JSONMixin, object):
@@ -23,13 +24,15 @@ class Bundle(JSONMixin, object):
             source system is taking payment, this will be :obj:`None`.
         terms_and_conditions (str): supplier terms and conditions. Only
             availabile when requested with the optional ``source_info`` flag.
+        purchase_result (:class:`PurchaseResult <pyticketswitch.purchase_result.
+            PurchaseResult>`): the result of the purchase attempt for the bundle
 
     """
 
     def __init__(self, source_code, orders=None, description=None,
                  total_seatprice=None, total_surcharge=None,
                  total_send_cost=None, total=None, currency_code=None,
-                 debitor=None, terms_and_conditions=None):
+                 debitor=None, terms_and_conditions=None, purchase_result=None):
         self.source_code = source_code
         self.orders = orders
         self.description = description
@@ -40,6 +43,7 @@ class Bundle(JSONMixin, object):
         self.currency_code = currency_code
         self.debitor = debitor
         self.terms_and_conditions = terms_and_conditions
+        self.purchase_result = purchase_result
 
     @classmethod
     def from_api_data(cls, data):
@@ -92,6 +96,11 @@ class Bundle(JSONMixin, object):
             debitor = Debitor.from_api_data(raw_debitor)
             kwargs.update(debitor=debitor)
 
+        raw_purchase_result = data.get('purchase_result')
+        if raw_purchase_result:
+            purchase_result = PurchaseResult.from_api_data(raw_purchase_result)
+            kwargs.update(purchase_result=purchase_result)
+
         return cls(**kwargs)
 
     def get_events(self):
@@ -116,6 +125,16 @@ class Bundle(JSONMixin, object):
 
         """
         return {event.id for event in self.get_events()}
+
+    def is_purchased(self):
+        """Check if this bundle was successfully purchased.
+
+        Returns:
+            bool: if the bundle is purchased or not.
+        """
+        if self.purchase_result:
+            return self.purchase_result.success
+        return False
 
     def __repr__(self):
         return u'<Bundle {}>'.format(self.source_code)

@@ -12,17 +12,27 @@ class PurchaseResult(JSONMixin, object):
             verification number.
         error (string): error code for backend purchase failure. These are
             non uniform as they can come from a varitiy of sources.
+        failure_reason (string): description of the failure reason, if there
+            is one. Not for display to customers.
+        is_partial (bool): indicates if the success is only partial for multi-
+            bundle transactions where one may succeed and the other fail.
+        is_semi_credit (bool): Marks the purchase as provisionally completed but
+            requiring invoicing before sale is finally confirmed.
 
     """
 
     def __init__(self, success=False, failed_3d_secure=False, failed_avs=False,
-                 failed_cv_two=False, error=None):
+                 failed_cv_two=False, error=None, failure_reason=None,
+                 is_partial=False, is_semi_credit=False):
 
         self.success = success
         self.failed_3d_secure = failed_3d_secure
         self.failed_avs = failed_avs
         self.failed_cv_two = failed_cv_two
         self.error = error
+        self.failure_reason = failure_reason
+        self.is_partial = is_partial
+        self.is_semi_credit = is_semi_credit
 
     @classmethod
     def from_api_data(cls, data):
@@ -46,6 +56,9 @@ class PurchaseResult(JSONMixin, object):
             'failed_avs': data.get('failed_avs'),
             'failed_cv_two': data.get('failed_cv_two'),
             'error': data.get('purchase_error'),
+            'failure_reason': data.get('failure_reason'),
+            'is_partial': data.get('is_partial'),
+            'is_semi_credit': data.get('is_semi_credit'),
         }
 
         return cls(**kwargs)
