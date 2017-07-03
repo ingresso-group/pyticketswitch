@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.6] - 2017-07-03
+### Added
+- Purchase Result information at the bundle level
+
 ## [2.0.5] - 2017-06-22
 ### Fixed
 - Fixed a bug when custom tracking id would not overwrite global one.
