@@ -99,6 +99,25 @@ class TestBundle(object):
 
         assert events == {'abc123', 'def456'}
 
+    def test_is_purchased(self):
+        pr = PurchaseResult(success=True)
+
+        bundle_orders = [Order(item=1, event=Event(id_='TEST'))]
+
+        bundle = Bundle(
+            'tests',
+            orders=bundle_orders,
+            purchase_result=pr,
+        )
+
+        no_pr_bundle = Bundle(
+            'tests',
+            orders=bundle_orders,
+        )
+
+        assert bundle.is_purchased()
+        assert not no_pr_bundle.is_purchased()
+
     def test_repr(self):
 
         bundle = Bundle('tests')
