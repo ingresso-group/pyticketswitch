@@ -31,7 +31,8 @@ class TestSeat:
             'is_restricted_view': True,
             'row_id': 'GQ',
             'seat_text_code': 'NEARTOILET',
-            'separator': '-'
+            'separator': '-',
+            'barcode': '0987654321',
         }
 
         seat = Seat.from_api_data(data)
@@ -42,3 +43,4 @@ class TestSeat:
         assert seat.separator == '-'
         assert seat.is_restricted is True
         assert seat.text_code == 'NEARTOILET'
+        assert seat.barcode == '0987654321'

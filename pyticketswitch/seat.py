@@ -76,11 +76,14 @@ class Seat(JSONMixin, object):
         seat_text_code (str): code indicating text that should be displayed
             with the seat when preseting seat information.
         seat_text (str): readable explanation of the seats description
+        barcode (str): barcode specific to this seat. Only available when
+            supported by the backend system.
 
     """
 
     def __init__(self, id_=None, column=None, row=None, is_restricted=False,
-                 seat_text_code=None, seat_text=None, separator=None):
+                 seat_text_code=None, seat_text=None, separator=None, 
+                 barcode=None):
         self.id = id_
         self.column = column
         self.row = row
@@ -88,6 +91,7 @@ class Seat(JSONMixin, object):
         self.is_restricted = is_restricted
         self.seat_text = seat_text
         self.seat_text_code = seat_text_code
+        self.barcode = barcode
 
     @classmethod
     def from_api_data(cls, data):
@@ -111,6 +115,7 @@ class Seat(JSONMixin, object):
             'seat_text_code': data.get('seat_text_code'),
             'seat_text': data.get('seat_text'),
             'separator': data.get('separator', ''),
+            'barcode': data.get('barcode'),
         }
 
         return cls(**kwargs)
