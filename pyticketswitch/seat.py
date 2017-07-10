@@ -82,7 +82,7 @@ class Seat(JSONMixin, object):
     """
 
     def __init__(self, id_=None, column=None, row=None, is_restricted=False,
-                 seat_text_code=None, seat_text=None, separator=None, 
+                 seat_text_code=None, seat_text=None, separator=None,
                  barcode=None):
         self.id = id_
         self.column = column
