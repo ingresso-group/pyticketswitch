@@ -868,7 +868,7 @@ class Client(object):
 
         return send_methods, meta
 
-    def get_discounts(self, performance_id, ticket_type_code, price_band_code):
+    def get_discounts(self, performance_id, ticket_type_code, price_band_code, user_commission=False):
         """Fetch available discounts for a ticket_type/price band combination
 
         Wraps `/f13/discounts.v1`_
@@ -888,11 +888,11 @@ class Client(object):
 
         .. _`/f13/discounts.v1`: http://docs.ingresso.co.uk/#discounts
         """
-
         params = {
             'perf_id': performance_id,
             'ticket_type_code': ticket_type_code,
             'price_band_code': price_band_code,
+            'add_user_commission': user_commission,
         }
 
         response = self.make_request('discounts.v1', params)

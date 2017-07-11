@@ -1,4 +1,5 @@
 from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
+from pyticketswitch.commission import Commission
 
 
 class Discount(SeatPricingMixin, JSONMixin, object):
@@ -19,7 +20,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
 
     def __init__(self, code, description=None, price_band_code=None,
                  availability=None, is_offer=False, percentage_saving=0,
-                 absolute_saving=0, *args, **kwargs):
+                 absolute_saving=0, user_commission=None, *args, **kwargs):
         super(Discount, self).__init__(*args, **kwargs)
         self.code = code
         self.description = description
@@ -28,6 +29,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         self.availability = availability
         self.percentage_saving = percentage_saving
         self.absolute_saving = absolute_saving
+        self.user_commission = user_commission
 
     @classmethod
     def from_api_data(cls, data):
@@ -43,6 +45,9 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             populated with the data from the api.
 
         """
+        user_commission = data.get('user_commission')
+        if user_commission:
+            user_commission = Commission.from_api_data(user_commission)
 
         kwargs = {
             'code': data.get('discount_code'),
@@ -56,6 +61,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             'availability': data.get('number_available'),
             'percentage_saving': data.get('percentage_saving'),
             'absolute_saving': data.get('absolute_saving'),
+            'user_commission': user_commission,
         }
         kwargs.update(SeatPricingMixin.kwargs_from_api_data(data))
 

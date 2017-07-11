@@ -1174,6 +1174,7 @@ class TestClient:
             'perf_id': 'ABC123-1',
             'ticket_type_code': 'STALLS',
             'price_band_code': 'A/pool',
+            'add_user_commission': False,
         })
 
         assert len(discounts) == 2
