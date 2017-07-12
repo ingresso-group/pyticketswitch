@@ -15,7 +15,8 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             discount is not on offer, as a percentage or the non offer price.
         absolute_saving (float): the amount saved compared to when this
             discount is not on offer.
-
+        user_commission (:class:`Commission <pyticketswitch.commission.Commission>`):
+            The commission for the api user.
     """
 
     def __init__(self, code, description=None, price_band_code=None,

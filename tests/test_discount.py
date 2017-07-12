@@ -6,9 +6,9 @@ class TestDiscount:
 
     def test_from_api_data(self):
         user_commission_data = {
-            'including_vat': 0.8,
-            'excluding_vat': 1.0,
-            'currency_code': 'gbp',
+            'amount_including_vat': 0.8,
+            'amount_excluding_vat': 1.0,
+            'commission_currency_code': 'gbp',
         }
 
         data = {
@@ -19,14 +19,14 @@ class TestDiscount:
             'sale_surcharge': 5.5,
             'is_offer': True,
             'non_offer_sale_seatprice': 200,
-            'non_offer_sale_surcharge': 6.5, 'absolute_saving': 40,
+            'non_offer_sale_surcharge': 6.5,
+            'absolute_saving': 40,
             'percentage_saving': 20,
             'number_available': 6,
             'user_commission': user_commission_data,
         }
 
         discount = Discount.from_api_data(data)
-        user_commission = Commission.from_api_data(user_commission_data)
 
         assert discount.code == 'ADULT'
         assert discount.description == 'Adult standard'
@@ -37,7 +37,10 @@ class TestDiscount:
         assert discount.non_offer_seatprice == 200
         assert discount.non_offer_surcharge == 6.5
         assert discount.availability == 6
-        assert discount.user_commission.__dict__ == user_commission.__dict__
+        assert isinstance(discount.user_commission, Commission)
+        assert discount.user_commission.including_vat == user_commission_data['amount_including_vat']
+        assert discount.user_commission.excluding_vat == user_commission_data['amount_excluding_vat']
+        assert discount.user_commission.currency_code == user_commission_data['commission_currency_code']
 
     def test_from_api_data_without_user_commission(self):
         data = {
@@ -48,7 +51,8 @@ class TestDiscount:
             'sale_surcharge': 5.5,
             'is_offer': True,
             'non_offer_sale_seatprice': 200,
-            'non_offer_sale_surcharge': 6.5, 'absolute_saving': 40,
+            'non_offer_sale_surcharge': 6.5,
+            'absolute_saving': 40,
             'percentage_saving': 20,
             'number_available': 6,
         }

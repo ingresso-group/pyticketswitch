@@ -877,6 +877,8 @@ class Client(object):
             performance_id (string): identifier of the target performance.
             ticket_type_code (string): code for the target ticket type.
             price_band_code (string): code for the target price band.
+            user_commission (bool): if True then return the user_commission,
+                otherwise do not return the user_commission. Defaults to False.
 
         Returns:
            list, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
