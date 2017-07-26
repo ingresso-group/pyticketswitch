@@ -18,6 +18,7 @@ class Event(JSONMixin, object):
         status (str): status of the event.
         description (str): human readable name for the event.
         source (str): the backend system from wich the event originates.
+        source_code (str): the internal code for the backend system.
         event_type (str): the type of the event.
         venue (str): a human readable description of the venue.
         classes (dict): a dictionary of class descriptions that the event
