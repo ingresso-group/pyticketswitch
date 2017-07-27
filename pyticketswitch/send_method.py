@@ -1,5 +1,5 @@
+from python_to_json.mixins import JSONMixin
 from pyticketswitch.country import Country
-from pyticketswitch.mixins import JSONMixin
 
 
 class SendMethod(JSONMixin, object):

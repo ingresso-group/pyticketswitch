@@ -1,5 +1,5 @@
+from python_to_json.mixins import JSONMixin
 from pyticketswitch.offer import Offer
-from pyticketswitch.mixins import JSONMixin
 from pyticketswitch import utils
 
 

@@ -1,7 +1,8 @@
+from python_to_json.mixins import JSONMixin
 from pyticketswitch import utils
 from pyticketswitch.cost_range import CostRange
 from pyticketswitch.availability import AvailabilityDetails
-from pyticketswitch.mixins import JSONMixin, PaginationMixin
+from pyticketswitch.mixins import PaginationMixin
 from pyticketswitch.currency import CurrencyMeta
 
 

@@ -1,5 +1,5 @@
+from python_to_json.mixins import JSONMixin
 from pyticketswitch.order import Order
-from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.debitor import Debitor
 from pyticketswitch.purchase_result import PurchaseResult
 
