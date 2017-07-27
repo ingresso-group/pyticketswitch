@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from pyticketswitch.mixins import JSONMixin
+from python_to_json.mixins import JSONMixin
 from pyticketswitch.debitor import Debitor
 
 

@@ -1,3 +1,4 @@
+from python_to_json.mixins import JSONMixin
 from pyticketswitch.exceptions import IntegrityError
 from pyticketswitch.cost_range import CostRange
 from pyticketswitch.ticket_type import TicketType
@@ -6,7 +7,7 @@ from pyticketswitch.media import Media
 from pyticketswitch.review import Review
 from pyticketswitch.availability import AvailabilityDetails
 from pyticketswitch.field import Field
-from pyticketswitch.mixins import JSONMixin, PaginationMixin
+from pyticketswitch.mixins import PaginationMixin
 from pyticketswitch.currency import CurrencyMeta
 
 

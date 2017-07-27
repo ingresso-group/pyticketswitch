@@ -1,8 +1,9 @@
+from python_to_json.mixins import JSONMixin
 from pyticketswitch.cost_range import CostRange
 from pyticketswitch.discount import Discount
 from pyticketswitch.seat import Seat, SeatBlock
 from pyticketswitch.commission import Commission
-from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
+from pyticketswitch.mixins import SeatPricingMixin
 
 
 class PriceBand(SeatPricingMixin, JSONMixin, object):

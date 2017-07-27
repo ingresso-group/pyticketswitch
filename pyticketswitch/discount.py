@@ -1,4 +1,5 @@
-from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
+from python_to_json.mixins import JSONMixin
+from pyticketswitch.mixins import SeatPricingMixin
 
 
 class Discount(SeatPricingMixin, JSONMixin, object):

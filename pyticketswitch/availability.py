@@ -1,6 +1,6 @@
 import datetime
+from python_to_json.mixins import JSONMixin
 from pyticketswitch.utils import bitmask_to_numbered_list
-from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.currency import CurrencyMeta
 from pyticketswitch.misc import MONTH_NUMBERS
 

@@ -2,7 +2,7 @@ from pyticketswitch.event import Event
 from pyticketswitch.performance import Performance
 from pyticketswitch.seat import Seat
 from pyticketswitch.send_method import SendMethod
-from pyticketswitch.mixins import JSONMixin
+from python_to_json.mixins import JSONMixin
 
 
 class TicketOrder(JSONMixin, object):

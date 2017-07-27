@@ -1,4 +1,4 @@
-from pyticketswitch.mixins import JSONMixin
+from python_to_json.mixins import JSONMixin
 from pyticketswitch.utils import isostr_to_datetime
 
 
