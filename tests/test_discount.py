@@ -23,7 +23,7 @@ class TestDiscount:
             'absolute_saving': 40,
             'percentage_saving': 20,
             'number_available': 6,
-            'user_commission': user_commission_data,
+            'predicted_user_commission': user_commission_data,
         }
 
         discount = Discount.from_api_data(data)

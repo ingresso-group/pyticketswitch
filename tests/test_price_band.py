@@ -65,7 +65,7 @@ class TestPriceBand:
                 },
                 'restricted_view_seats': ['A1', 'B-2'],
             },
-            "user_commission": {
+            "predicted_user_commission": {
                 "amount_excluding_vat": 2.93,
             },
             "possible_discounts": {
