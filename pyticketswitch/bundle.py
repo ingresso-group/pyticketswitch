@@ -3,6 +3,7 @@ from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.debitor import Debitor
 from pyticketswitch.purchase_result import PurchaseResult
 
+import json
 
 class Bundle(JSONMixin, object):
     """A collection of orders into the same backend system

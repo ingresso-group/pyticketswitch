@@ -809,7 +809,7 @@ class Client(object):
             params.update(add_seat_blocks=True)
 
         if user_commission:
-            params.update(add_user_commission=True)
+            params.update(req_predicted_commission=True)
 
         self.add_optional_kwargs(params, **kwargs)
 
@@ -894,7 +894,7 @@ class Client(object):
             'perf_id': performance_id,
             'ticket_type_code': ticket_type_code,
             'price_band_code': price_band_code,
-            'add_user_commission': user_commission,
+            'req_predicted_commission': user_commission,
         }
 
         response = self.make_request('discounts.v1', params)

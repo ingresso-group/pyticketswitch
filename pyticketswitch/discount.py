@@ -46,7 +46,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             populated with the data from the api.
 
         """
-        user_commission = data.get('user_commission')
+        user_commission = data.get('predicted_user_commission')
         if user_commission:
             user_commission = Commission.from_api_data(user_commission)
 

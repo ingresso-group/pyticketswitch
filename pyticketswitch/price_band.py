@@ -145,7 +145,7 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
 
             kwargs.update(seat_blocks=seat_blocks)
 
-        user_commission_data = data.get('user_commission')
+        user_commission_data = data.get('predicted_user_commission')
         if user_commission_data:
             user_commission = Commission.from_api_data(user_commission_data)
             kwargs.update(user_commission=user_commission)
