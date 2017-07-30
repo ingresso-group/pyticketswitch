@@ -1,0 +1,172 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.reservation &#8212; pyticketswitch 2.0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.reservation</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch.order</span> <span class="k">import</span> <span class="n">Order</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.status</span> <span class="k">import</span> <span class="n">Status</span>
+
+
+<div class="viewcode-block" id="Reservation"><a class="viewcode-back" href="../../api.html#pyticketswitch.reservation.Reservation">[docs]</a><span class="k">class</span> <span class="nc">Reservation</span><span class="p">(</span><span class="n">Status</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes some tickets currently being held for purchase</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        status (str): the currency status of the transaction.</span>
+<span class="sd">        reserved_at (datetime.datetime): the date and time when the transaction</span>
+<span class="sd">            was reserved.</span>
+<span class="sd">        purchased_at (datetime.datetime): the date and time when the transaction</span>
+<span class="sd">            was purchased.</span>
+<span class="sd">        trolley (:class:`Trolley &lt;pyticketswitch.trolley.Trolley&gt;`): the</span>
+<span class="sd">            contents of the transactions trolley.</span>
+<span class="sd">        external_sale_page (str): the page that was rendered to the customer</span>
+<span class="sd">            after the transaction was completed. This is only available if</span>
+<span class="sd">            it was passed into the API at purchase time.</span>
+<span class="sd">        languages (list): list of IETF language tags relevant to the</span>
+<span class="sd">            transaction.</span>
+<span class="sd">        remote_site (str): the remote site the transaction was reserved and</span>
+<span class="sd">            purchased under.</span>
+<span class="sd">        reserve_user (:class:`User &lt;pyticketswitch.user.User&gt;`): the user that</span>
+<span class="sd">            was used to reserve the transaction.</span>
+<span class="sd">        unreserved_orders (list): list of :class:`Orders</span>
+<span class="sd">            &lt;pyticketswitch.order.Order`&gt;` that failed to reserve.</span>
+<span class="sd">        prefilled_address (:class:`Address &lt;pyticketswitch.address.Address&gt;`):</span>
+<span class="sd">            some address information that should be used to prefill any</span>
+<span class="sd">            customer address fields. This is primarily used on B2B accounts.</span>
+<span class="sd">        needs_payment_card (bool): When :obj:`True` indicates that this</span>
+<span class="sd">            reservation will require :class:`CardDetails</span>
+<span class="sd">            &lt;pyticketswitch.payment_methods.CardDetails&gt;` as the payment method</span>
+<span class="sd">            at purchase time.</span>
+<span class="sd">        needs_email_address (bool): When :obj:`True` indicates that the</span>
+<span class="sd">            customer needs to provide a valid email address at purchase time.</span>
+<span class="sd">        needs_agent_reference (bool): When :obj:`True` indicates that an agent</span>
+<span class="sd">            reference should be provided at purchase time.</span>
+<span class="sd">        can_edit_address (bool): When :obj:`False` indicates that the prefilled</span>
+<span class="sd">            customer address provided by **prefilled_address** should not be</span>
+<span class="sd">            edited.</span>
+<span class="sd">        allowed_countries (list): list of :class:`Countries</span>
+<span class="sd">            &lt;pyticketswitch.country.Country&gt;` that are acceptable for the</span>
+<span class="sd">            customers postal address to be from.</span>
+<span class="sd">        minutes_left (float): the number of minutes left before a reservation</span>
+<span class="sd">            expires.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unreserved_orders</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Reservation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unreserved_orders</span> <span class="o">=</span> <span class="n">unreserved_orders</span>
+
+<div class="viewcode-block" id="Reservation.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.reservation.Reservation.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new **Reservation** object from ticketswitch API data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a reservation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Reservation &lt;pyticketswitch.order.Reservation&gt;`: a new</span>
+<span class="sd">            :class:`Reservation &lt;pyticketswitch.order.Reservation&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">inst</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Reservation</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">unreserved_orders</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">raw_unreserved_orders</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;unreserved_orders&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_unreserved_orders</span><span class="p">:</span>
+            <span class="n">unreserved_orders</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Order</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">raw_unreserved_orders</span>
+            <span class="p">]</span>
+
+        <span class="n">inst</span><span class="o">.</span><span class="n">unreserved_orders</span><span class="o">=</span><span class="n">unreserved_orders</span>
+
+        <span class="k">return</span> <span class="n">inst</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trolley</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Reservation </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Reservation</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

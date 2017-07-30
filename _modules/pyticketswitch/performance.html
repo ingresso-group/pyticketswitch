@@ -1,0 +1,254 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.performance &#8212; pyticketswitch 2.0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.performance</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.cost_range</span> <span class="k">import</span> <span class="n">CostRange</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.availability</span> <span class="k">import</span> <span class="n">AvailabilityDetails</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span><span class="p">,</span> <span class="n">PaginationMixin</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.currency</span> <span class="k">import</span> <span class="n">CurrencyMeta</span>
+
+
+<div class="viewcode-block" id="Performance"><a class="viewcode-back" href="../../api.html#pyticketswitch.performance.Performance">[docs]</a><span class="k">class</span> <span class="nc">Performance</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes and occurance of an :class:`Event &lt;pyticketswitch.event.Event&gt;`.</span>
+
+<span class="sd">    The performance will have either a **date_time** or a **name**.</span>
+
+<span class="sd">    .. note:: The **date_time** field is a timezone aware datetime and it is</span>
+<span class="sd">              localised for the venue and not the user.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id (str): identifier for the performance.</span>
+<span class="sd">        event_id (str): identifier for the event.</span>
+<span class="sd">        date_time (:obj:`datetime.datetime`): the localised date and time for</span>
+<span class="sd">            the performance.</span>
+<span class="sd">        date_description (str): a human readable description of the date of the</span>
+<span class="sd">            performance.</span>
+<span class="sd">        time_description (str): a human readable description of the time of the</span>
+<span class="sd">            performance.</span>
+<span class="sd">        has_pool_seats (bool): the performance has pool seats available.</span>
+<span class="sd">        is_limited (bool): the performance has limited availability.</span>
+<span class="sd">        cached_max_seats (int): the maximum number of seats available to book</span>
+<span class="sd">            in a single order. This value is cached and may not be accurate.</span>
+<span class="sd">        cost_range (:class:`CostRange &lt;pyticketswitch.cost_range.CostRange&gt;`):</span>
+<span class="sd">            pricing summary, may also include offers.</span>
+<span class="sd">        no_singles_cost_range (:class:`CostRange &lt;pyticketswitch.cost_range.CostRange&gt;`):</span>
+<span class="sd">            pricing summary when no leaving single seats, may also include</span>
+<span class="sd">            offers.</span>
+<span class="sd">        is_ghost (bool): the performance is a ghost performance and is nolonger</span>
+<span class="sd">            available.</span>
+<span class="sd">        name (str): the name of the performance.</span>
+<span class="sd">        running_time (int): the number of minutes the performance is expected</span>
+<span class="sd">            to run for.</span>
+<span class="sd">        availability_details (:class:`AvailabilityDetails &lt;pyticketswitch.availability.AvailabilityDetails&gt;`):</span>
+<span class="sd">            summerised availability data for the performance. This data is</span>
+<span class="sd">            cached from previous availability calls and may not be accurate.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">,</span> <span class="n">event_id</span><span class="p">,</span> <span class="n">date_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">date_description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">has_pool_seats</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">is_limited</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cached_max_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cost_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">no_singles_cost_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_ghost</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">running_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">availability_details</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">id_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_id</span> <span class="o">=</span> <span class="n">event_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_time</span> <span class="o">=</span> <span class="n">date_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">date_description</span> <span class="o">=</span> <span class="n">date_description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_description</span> <span class="o">=</span> <span class="n">time_description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_pool_seats</span> <span class="o">=</span> <span class="n">has_pool_seats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_limited</span> <span class="o">=</span> <span class="n">is_limited</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cached_max_seats</span> <span class="o">=</span> <span class="n">cached_max_seats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost_range</span> <span class="o">=</span> <span class="n">cost_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">no_singles_cost_range</span> <span class="o">=</span> <span class="n">no_singles_cost_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_ghost</span> <span class="o">=</span> <span class="n">is_ghost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running_time</span> <span class="o">=</span> <span class="n">running_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">availability_details</span> <span class="o">=</span> <span class="n">availability_details</span>
+
+<div class="viewcode-block" id="Performance.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.performance.Performance.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new **Performance** object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a performance.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Performance &lt;pyticketswitch.order.Performance&gt;`: a new</span>
+<span class="sd">            :class:`Performance &lt;pyticketswitch.order.Performance&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">id_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;perf_id&#39;</span><span class="p">)</span>
+        <span class="n">event_id</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_id&#39;</span><span class="p">)</span>
+
+        <span class="n">date_time</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;iso8601_date_and_time&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">date_time</span><span class="p">:</span>
+            <span class="n">date_time</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">isostr_to_datetime</span><span class="p">(</span><span class="n">date_time</span><span class="p">)</span>
+
+        <span class="n">date_desc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;date_desc&#39;</span><span class="p">)</span>
+        <span class="n">time_desc</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;time_desc&#39;</span><span class="p">)</span>
+
+        <span class="n">api_cost_range</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cost_range&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">api_no_singles_cost_range</span> <span class="o">=</span> <span class="n">api_cost_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;no_singles_cost_range&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">cost_range</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">no_singles_cost_range</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">api_cost_range</span><span class="p">:</span>
+            <span class="n">api_cost_range</span><span class="p">[</span><span class="s1">&#39;singles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">cost_range</span> <span class="o">=</span> <span class="n">CostRange</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">api_cost_range</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">api_no_singles_cost_range</span><span class="p">:</span>
+            <span class="n">api_no_singles_cost_range</span><span class="p">[</span><span class="s1">&#39;singles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">no_singles_cost_range</span> <span class="o">=</span> <span class="n">CostRange</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span>
+                <span class="n">api_no_singles_cost_range</span><span class="p">)</span>
+
+        <span class="n">availability_details</span> <span class="o">=</span> <span class="n">AvailabilityDetails</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;avail_details&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;id_&#39;</span><span class="p">:</span> <span class="n">id_</span><span class="p">,</span>
+            <span class="s1">&#39;event_id&#39;</span><span class="p">:</span> <span class="n">event_id</span><span class="p">,</span>
+            <span class="s1">&#39;date_time&#39;</span><span class="p">:</span> <span class="n">date_time</span><span class="p">,</span>
+            <span class="s1">&#39;date_description&#39;</span><span class="p">:</span> <span class="n">date_desc</span><span class="p">,</span>
+            <span class="s1">&#39;time_description&#39;</span><span class="p">:</span> <span class="n">time_desc</span><span class="p">,</span>
+            <span class="s1">&#39;running_time&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;running_time&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;perf_name&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;has_pool_seats&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;has_pool_seats&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="s1">&#39;is_limited&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_limited&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="s1">&#39;is_ghost&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_ghost&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="s1">&#39;cached_max_seats&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cached_max_seats&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;cost_range&#39;</span><span class="p">:</span> <span class="n">cost_range</span><span class="p">,</span>
+            <span class="s1">&#39;no_singles_cost_range&#39;</span><span class="p">:</span> <span class="n">no_singles_cost_range</span><span class="p">,</span>
+            <span class="s1">&#39;availability_details&#39;</span><span class="p">:</span> <span class="n">availability_details</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_time</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Performance </span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">date_time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">())</span>
+        <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Performance </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PerformanceMeta"><a class="viewcode-back" href="../../api.html#pyticketswitch.performance.PerformanceMeta">[docs]</a><span class="k">class</span> <span class="nc">PerformanceMeta</span><span class="p">(</span><span class="n">PaginationMixin</span><span class="p">,</span> <span class="n">CurrencyMeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    PerformanceMeta contains meta information about a list of</span>
+<span class="sd">    :class:`Performances &lt;pyticketswitch.performance.Performance&gt;`.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        auto_select (bool): indicates that the performance list will contain</span>
+<span class="sd">            only one performance and this performance should be automatically</span>
+<span class="sd">            selected for the customer.</span>
+<span class="sd">        has_names: (bool): indicates that the related performances have names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">auto_select</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">has_names</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auto_select</span> <span class="o">=</span> <span class="n">auto_select</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_names</span> <span class="o">=</span> <span class="n">has_names</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PerformanceMeta</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PerformanceMeta.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.performance.PerformanceMeta.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new **PerformanceMeta** object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns some performance meta data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`PerformanceMeta &lt;pyticketswitch.order.PerformanceMeta&gt;`: a</span>
+<span class="sd">            new :class:`PerformanceMeta &lt;pyticketswitch.order.PerformanceMeta&gt;`</span>
+<span class="sd">            object populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inst</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">PerformanceMeta</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">auto_select</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;autoselect_this_performance&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">has_names</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;has_perf_names&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">inst</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

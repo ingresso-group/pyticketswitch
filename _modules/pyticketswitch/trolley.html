@@ -1,0 +1,278 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.trolley &#8212; pyticketswitch 2.0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.trolley</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch.bundle</span> <span class="k">import</span> <span class="n">Bundle</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.order</span> <span class="k">import</span> <span class="n">Order</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.purchase_result</span> <span class="k">import</span> <span class="n">PurchaseResult</span>
+
+
+<div class="viewcode-block" id="Trolley"><a class="viewcode-back" href="../../api.html#pyticketswitch.trolley.Trolley">[docs]</a><span class="k">class</span> <span class="nc">Trolley</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes a collection of products that are being purchased.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        token (str): a token that represents the current state of the trolley.</span>
+<span class="sd">        transaction_uuid (str): unique identifier for this trolley. Only</span>
+<span class="sd">            present after reservation.</span>
+<span class="sd">        transaction_id (str): unique identifier for this trolley. Only present</span>
+<span class="sd">            after purchase. This supposed to be an identifer that is easily</span>
+<span class="sd">            readable/recognisable by a human being.</span>
+<span class="sd">        bundles (list): list of :class:`Bundles &lt;pyticketswitch.bundle.Bundle&gt;`</span>
+<span class="sd">            objects that break down the items to be purchased by their source</span>
+<span class="sd">            systems.</span>
+<span class="sd">        discarded_orders (list): list of</span>
+<span class="sd">            :class:`Orders &lt;pyticketswitch.order.Order&gt;` objects that were in</span>
+<span class="sd">            the trolley in the past but have been removed.</span>
+<span class="sd">        minutes_left (float): the number of minutes left before a reservation</span>
+<span class="sd">            expires.</span>
+<span class="sd">        order_count (int): the number of orders in the trolley.</span>
+<span class="sd">        purchase_result (:class:`PurchaseResult &lt;pyticketswitch.callout.Callout&gt;`):</span>
+<span class="sd">            the result of the purchase attempt when available.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transaction_uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transaction_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bundles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discarded_orders</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">minutes_left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">order_count</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">purchase_result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_uuid</span> <span class="o">=</span> <span class="n">transaction_uuid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="n">transaction_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bundles</span> <span class="o">=</span> <span class="n">bundles</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">discarded_orders</span> <span class="o">=</span> <span class="n">discarded_orders</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minutes_left</span> <span class="o">=</span> <span class="n">minutes_left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">order_count</span> <span class="o">=</span> <span class="n">order_count</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">purchase_result</span> <span class="o">=</span> <span class="n">purchase_result</span>
+
+<div class="viewcode-block" id="Trolley.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.trolley.Trolley.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new Trolley object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a trolley.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Trolley &lt;pyticketswitch.trolley.Trolley&gt;`: a new</span>
+<span class="sd">            :class:`Trolley &lt;pyticketswitch.trolley.Trolley&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">raw_contents</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trolley_contents&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raw_contents</span><span class="p">:</span>
+            <span class="n">raw_contents</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reserved_trolley&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">raw_contents</span><span class="p">:</span>
+            <span class="n">raw_contents</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trolley_token_contents&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">raw_bundles</span> <span class="o">=</span> <span class="n">raw_contents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle&#39;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">bundles</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Bundle</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">bundle</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="n">raw_bundles</span>
+        <span class="p">]</span>
+
+        <span class="n">raw_discarded_orders</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discarded_orders&#39;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">discarded_orders</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Order</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">order</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">raw_discarded_orders</span>
+        <span class="p">]</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;token&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trolley_token&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;bundles&#39;</span><span class="p">:</span> <span class="n">bundles</span><span class="p">,</span>
+            <span class="s1">&#39;discarded_orders&#39;</span><span class="p">:</span> <span class="n">discarded_orders</span><span class="p">,</span>
+            <span class="s1">&#39;transaction_uuid&#39;</span><span class="p">:</span> <span class="n">raw_contents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transaction_uuid&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;transaction_id&#39;</span><span class="p">:</span> <span class="n">raw_contents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transaction_id&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;order_count&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;trolley_order_count&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="n">minutes</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;minutes_left_on_reserve&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">minutes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">minutes_left</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">minutes</span><span class="p">))</span>
+
+        <span class="n">purchase_result</span> <span class="o">=</span> <span class="n">raw_contents</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;purchase_result&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">purchase_result</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">purchase_result</span><span class="o">=</span><span class="n">PurchaseResult</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">purchase_result</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Trolley.get_events"><a class="viewcode-back" href="../../api.html#pyticketswitch.trolley.Trolley.get_events">[docs]</a>    <span class="k">def</span> <span class="nf">get_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the events in the trolley.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: list of :class:`Event &lt;pyticketswitch.event.Event&gt;` objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bundles</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">event</span>
+            <span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bundles</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">bundle</span><span class="o">.</span><span class="n">get_events</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">event</span> <span class="ow">and</span> <span class="n">event</span><span class="o">.</span><span class="n">id</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="Trolley.get_event_ids"><a class="viewcode-back" href="../../api.html#pyticketswitch.trolley.Trolley.get_event_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_event_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the event ids of the events in the trolley.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            set: set of events IDs (str).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">event</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_events</span><span class="p">()}</span></div>
+
+<div class="viewcode-block" id="Trolley.get_bundle"><a class="viewcode-back" href="../../api.html#pyticketswitch.trolley.Trolley.get_bundle">[docs]</a>    <span class="k">def</span> <span class="nf">get_bundle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_code</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find a bundle with a specific source code</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            source_code (str): the source code for the target bundle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Bundle &lt;pyticketswitch.bundle.Bundle&gt;`: the bundle with the</span>
+<span class="sd">            requested source code.</span>
+
+<span class="sd">            When no bundle with that source code is present returns :obj:`None`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bundles</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bundles</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bundle</span><span class="o">.</span><span class="n">source_code</span> <span class="o">==</span> <span class="n">source_code</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">bundle</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Trolley.get_item"><a class="viewcode-back" href="../../api.html#pyticketswitch.trolley.Trolley.get_item">[docs]</a>    <span class="k">def</span> <span class="nf">get_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_number</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find an order with the given item number</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            item_number (int): the item number of the target order</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Order &lt;pyticketswitch.order.order&gt;`: the order with the</span>
+<span class="sd">            specified</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bundles</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_orders</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">item</span> <span class="o">==</span> <span class="n">item_number</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">order</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Trolley.get_orders"><a class="viewcode-back" href="../../api.html#pyticketswitch.trolley.Trolley.get_orders">[docs]</a>    <span class="k">def</span> <span class="nf">get_orders</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all orders in all bundles in a trolley</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: orders from all bundles in the the trolley</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bundles</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">order</span>
+            <span class="k">for</span> <span class="n">bundle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bundles</span>
+            <span class="k">if</span> <span class="n">bundle</span><span class="o">.</span><span class="n">orders</span>
+            <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">bundle</span><span class="o">.</span><span class="n">orders</span>
+        <span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Trolley id:</span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Trolley uuid:</span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Trolley token:</span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Trolley</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

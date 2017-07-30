@@ -1,0 +1,401 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.order &#8212; pyticketswitch 2.0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.order</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch.event</span> <span class="k">import</span> <span class="n">Event</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.performance</span> <span class="k">import</span> <span class="n">Performance</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.seat</span> <span class="k">import</span> <span class="n">Seat</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.send_method</span> <span class="k">import</span> <span class="n">SendMethod</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.commission</span> <span class="k">import</span> <span class="n">Commission</span>
+
+
+<div class="viewcode-block" id="TicketOrder"><a class="viewcode-back" href="../../api.html#pyticketswitch.order.TicketOrder">[docs]</a><span class="k">class</span> <span class="nc">TicketOrder</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes a set of identical priced tickets.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        code (str): the discount code.</span>
+<span class="sd">        seats (list): list of seat IDs.</span>
+<span class="sd">        number_of_seats (int): number of seats of this type the ticket</span>
+<span class="sd">            order represents.</span>
+<span class="sd">        description (str): the discount description.</span>
+<span class="sd">        seatprice (float): price of individual seat in this ticket order.</span>
+<span class="sd">        surcharge (float): additional surcharge added per seat in this</span>
+<span class="sd">            ticket order.</span>
+<span class="sd">        total_seatprice (float): seatprice for all tickets in the ticket order.</span>
+<span class="sd">        total_surcharge (float): surcharge for all tickets in the ticket order.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">total_seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">total_surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seats</span> <span class="o">=</span> <span class="n">seats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_seats</span> <span class="o">=</span> <span class="n">number_of_seats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seatprice</span> <span class="o">=</span> <span class="n">seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surcharge</span> <span class="o">=</span> <span class="n">surcharge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_seatprice</span> <span class="o">=</span> <span class="n">total_seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_surcharge</span> <span class="o">=</span> <span class="n">total_surcharge</span>
+
+<div class="viewcode-block" id="TicketOrder.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.order.TicketOrder.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new **TicketOrder** object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a ticket order.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`TicketOrder &lt;pyticketswitch.order.TicketOrder&gt;`: a new</span>
+<span class="sd">            :class:`TicketOrder &lt;pyticketswitch.order.TicketOrder&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discount_code&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;number_of_seats&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;no_of_seats&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discount_desc&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Below we are explicital checking for not None because we want to</span>
+        <span class="c1"># differentiate between situtations where a value is 0 and a value is</span>
+        <span class="c1"># missing from the response.</span>
+        <span class="n">raw_seatprice</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sale_seatprice&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_seatprice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">seatprice</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">raw_seatprice</span><span class="p">))</span>
+
+        <span class="n">raw_surcharge</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sale_surcharge&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_surcharge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">surcharge</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">raw_surcharge</span><span class="p">))</span>
+
+        <span class="n">raw_total_seatprice</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;total_sale_seatprice&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_total_seatprice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">total_seatprice</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">raw_total_seatprice</span><span class="p">))</span>
+
+        <span class="n">raw_total_surcharge</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;total_sale_surcharge&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_total_surcharge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">total_surcharge</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">raw_total_surcharge</span><span class="p">))</span>
+
+        <span class="n">seats_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;seats&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">seats_data</span><span class="p">:</span>
+            <span class="n">seats</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Seat</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">seat</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">seat</span> <span class="ow">in</span> <span class="n">seats_data</span>
+            <span class="p">]</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">seats</span><span class="o">=</span><span class="n">seats</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TicketOrder.combined_price"><a class="viewcode-back" href="../../api.html#pyticketswitch.order.TicketOrder.combined_price">[docs]</a>    <span class="k">def</span> <span class="nf">combined_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the combined seatprice and surcharge.</span>
+
+<span class="sd">        This method assumes that we have both a seatprice and surcharge.</span>
+<span class="sd">        In the situation where are missing either a seatprice or a surcharge</span>
+<span class="sd">        then we don&#39;t have all the information to be able provide this</span>
+<span class="sd">        information.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: the ticket order seatprice and surcharge</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: It might seem like the obvious thing to do would be</span>
+<span class="sd">                to assume the missing data was in fact zero and simply allow the</span>
+<span class="sd">                addition to continue. However that would be somewhat dangerous when</span>
+<span class="sd">                we are talking about prices, and it&#39;s better to actually raise an</span>
+<span class="sd">                exception to indicate that there was a problem with the objects</span>
+<span class="sd">                data, than to inform a customer that the tickets are free or have</span>
+<span class="sd">                no booking fees</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">seatprice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;seatprice data missing&#39;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">surcharge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;surcharge data missing&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">seatprice</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">surcharge</span></div>
+
+<div class="viewcode-block" id="TicketOrder.total_combined_price"><a class="viewcode-back" href="../../api.html#pyticketswitch.order.TicketOrder.total_combined_price">[docs]</a>    <span class="k">def</span> <span class="nf">total_combined_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the combined total seatprice and surcharge.</span>
+
+<span class="sd">        This method assumes that we have both a seatprice and surcharge.</span>
+<span class="sd">        In the situation where are missing either a seatprice or a surcharge</span>
+<span class="sd">        then we don&#39;t have all the information to be able provide this</span>
+<span class="sd">        information.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: the ticket order total seatprice and total surcharge</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: It might seem like the obvious thing to do would be</span>
+<span class="sd">                to assume the missing data was in fact zero and simply allow the</span>
+<span class="sd">                addition to continue. However that would be somewhat dangerous when</span>
+<span class="sd">                we are talking about prices, and it&#39;s better to actually raise an</span>
+<span class="sd">                exception to indicate that there was a problem with the objects</span>
+<span class="sd">                data, than to inform a customer that the tickets are free or have</span>
+<span class="sd">                no booking fees</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_seatprice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;seatprice data missing&#39;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_surcharge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;surcharge data missing&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_seatprice</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_surcharge</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;TicketOrder </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Order"><a class="viewcode-back" href="../../api.html#pyticketswitch.order.Order">[docs]</a><span class="k">class</span> <span class="nc">Order</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes tickets for a specific event/performance.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        item (int): the item number within the trolley. If an order is removed</span>
+<span class="sd">            from the trolley it will retain it&#39;s item number.</span>
+<span class="sd">        event (:class:`Event &lt;pyticketswitch.event.Event&gt;`): the event</span>
+<span class="sd">            the order is for.</span>
+<span class="sd">        performance (:class:`Performance &lt;pyticketswitch.performance.Performance&gt;`):</span>
+<span class="sd">            the performance the order is for.</span>
+<span class="sd">        price_band_code (str): the price band identifier.</span>
+<span class="sd">        ticket_type_code (str): the ticket type identifier.</span>
+<span class="sd">        ticket_type_description (str): description of the ticket type.</span>
+<span class="sd">        ticket_orders (list): list of</span>
+<span class="sd">            :class:`TicketOrders &lt;pyticketswitch.order.TicketOrder&gt;` that</span>
+<span class="sd">            provide information on the specific tickets in the order.</span>
+<span class="sd">        number_of_seats (int): total number of seats/tickets in the</span>
+<span class="sd">            order.</span>
+<span class="sd">        total_seatprice (float): total seat price of the order.</span>
+<span class="sd">        total_surcharge (float): total additional surcharges for the order.</span>
+<span class="sd">        seat_request_status (str): the status of requested seats. Will be filled</span>
+<span class="sd">            after the order has been reserved, and :obj:`None` before.</span>
+<span class="sd">        requested_seats (list): list of</span>
+<span class="sd">            :class:`Seats &lt;pyticketswitch.seat.Seat&gt;` requested at reservation</span>
+<span class="sd">            time.</span>
+<span class="sd">        backend_purchase_reference (str): a reference from the source</span>
+<span class="sd">            supplier for this order. This is generally empty until the order</span>
+<span class="sd">            has been successfully purchased.</span>
+<span class="sd">        send_method (:class:`SendMethod &lt;pyticketswitch.send_method.SendMethod&gt;`):</span>
+<span class="sd">            method of ticket delivery. Only present when requested.</span>
+<span class="sd">        gross_commission (:class: `Commission &lt;pyticketswitch.commission.Commission&gt;`):</span>
+<span class="sd">            predicted commission to be shared between ingresso and the partner.</span>
+<span class="sd">        user_commission (:class: `Commission &lt;pyticketswitch.commission.Commission&gt;`):</span>
+<span class="sd">            predicted commission for the partner.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">performance</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price_band_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ticket_type_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ticket_type_description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ticket_orders</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">total_seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">total_surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">seat_request_status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">requested_seat_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">backend_purchase_reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">send_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">gross_commission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_commission</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">item</span> <span class="o">=</span> <span class="n">item</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">event</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">performance</span> <span class="o">=</span> <span class="n">performance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price_band_code</span> <span class="o">=</span> <span class="n">price_band_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ticket_type_code</span> <span class="o">=</span> <span class="n">ticket_type_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ticket_type_description</span> <span class="o">=</span> <span class="n">ticket_type_description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ticket_orders</span> <span class="o">=</span> <span class="n">ticket_orders</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_seats</span> <span class="o">=</span> <span class="n">number_of_seats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_seatprice</span> <span class="o">=</span> <span class="n">total_seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_surcharge</span> <span class="o">=</span> <span class="n">total_surcharge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seat_request_status</span> <span class="o">=</span> <span class="n">seat_request_status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">requested_seat_ids</span> <span class="o">=</span> <span class="n">requested_seat_ids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_purchase_reference</span> <span class="o">=</span> <span class="n">backend_purchase_reference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">send_method</span> <span class="o">=</span> <span class="n">send_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gross_commission</span> <span class="o">=</span> <span class="n">gross_commission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_commission</span> <span class="o">=</span> <span class="n">user_commission</span>
+
+<div class="viewcode-block" id="Order.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.order.Order.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new **Order** object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a order.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Order &lt;pyticketswitch.order.Order&gt;`: a new</span>
+<span class="sd">            :class:`Order &lt;pyticketswitch.order.Order&gt;` object populated with</span>
+<span class="sd">            the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;item&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;item_number&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;number_of_seats&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;total_no_of_seats&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;price_band_code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;price_band_code&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;ticket_type_code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ticket_type_code&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;ticket_type_description&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ticket_type_desc&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;seat_request_status&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;seat_request_status&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;requested_seat_ids&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;requested_seat_ids&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;backend_purchase_reference&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;backend_purchase_reference&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="n">raw_event</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_event</span><span class="p">:</span>
+            <span class="n">event</span> <span class="o">=</span> <span class="n">Event</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">raw_event</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">)</span>
+
+        <span class="n">raw_performance</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;performance&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_performance</span><span class="p">:</span>
+            <span class="n">performance</span> <span class="o">=</span> <span class="n">Performance</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">raw_performance</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">performance</span><span class="o">=</span><span class="n">performance</span><span class="p">)</span>
+
+        <span class="n">raw_ticket_orders</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ticket_orders&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ticket_order&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_ticket_orders</span><span class="p">:</span>
+            <span class="n">ticket_orders</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">TicketOrder</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">ticket_order</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">ticket_order</span> <span class="ow">in</span> <span class="n">raw_ticket_orders</span>
+            <span class="p">]</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ticket_orders</span><span class="o">=</span><span class="n">ticket_orders</span><span class="p">)</span>
+
+        <span class="n">raw_total_seatprice</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;total_sale_seatprice&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_total_seatprice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">total_seatprice</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">raw_total_seatprice</span><span class="p">))</span>
+
+        <span class="n">raw_total_surcharge</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;total_sale_surcharge&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_total_surcharge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">total_surcharge</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">raw_total_surcharge</span><span class="p">))</span>
+
+        <span class="n">raw_send_method</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;send_method&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_send_method</span><span class="p">:</span>
+            <span class="n">send_method</span> <span class="o">=</span> <span class="n">SendMethod</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">raw_send_method</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">send_method</span><span class="o">=</span><span class="n">send_method</span><span class="p">)</span>
+
+        <span class="n">raw_gross_commission</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;predicted_gross_commission&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_gross_commission</span><span class="p">:</span>
+            <span class="n">gross_commission</span> <span class="o">=</span> <span class="n">Commission</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">raw_gross_commission</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">gross_commission</span><span class="o">=</span><span class="n">gross_commission</span><span class="p">)</span>
+
+        <span class="n">raw_user_commission</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;predicted_user_commission&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_user_commission</span><span class="p">:</span>
+            <span class="n">user_commission</span> <span class="o">=</span> <span class="n">Commission</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">raw_user_commission</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">user_commission</span><span class="o">=</span><span class="n">user_commission</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Order.get_seats"><a class="viewcode-back" href="../../api.html#pyticketswitch.order.Order.get_seats">[docs]</a>    <span class="k">def</span> <span class="nf">get_seats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all seats from all :class:`TicketOrder &lt;pyticketswitch.order.TicketOrder&gt;` children.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: list of `Seats &lt;pyticketswitch.seat.Seat&gt;`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ticket_orders</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">seat</span>
+            <span class="k">for</span> <span class="n">ticket_order</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ticket_orders</span>
+            <span class="k">if</span> <span class="n">ticket_order</span><span class="o">.</span><span class="n">seats</span>
+            <span class="k">for</span> <span class="n">seat</span> <span class="ow">in</span> <span class="n">ticket_order</span><span class="o">.</span><span class="n">seats</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="Order.get_seat_ids"><a class="viewcode-back" href="../../api.html#pyticketswitch.order.Order.get_seat_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_seat_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all seat ids from all :class:`TicketOrders &lt;pyticketswitch.order.TickerOrder&gt;`</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: list of seat ids.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">seat</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">seat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_seats</span><span class="p">()</span> <span class="k">if</span> <span class="n">seat</span><span class="o">.</span><span class="n">id</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Order.unique_seat_text"><a class="viewcode-back" href="../../api.html#pyticketswitch.order.Order.unique_seat_text">[docs]</a>    <span class="k">def</span> <span class="nf">unique_seat_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the unique seat text for all seats in an order</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            string: string combining all seat texts for the order</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">text_set</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">seat</span><span class="o">.</span><span class="n">seat_text</span><span class="p">:</span> <span class="n">seat</span><span class="o">.</span><span class="n">seat_text</span>
+            <span class="k">for</span> <span class="n">seat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_seats</span><span class="p">()</span> <span class="k">if</span> <span class="n">seat</span><span class="o">.</span><span class="n">seat_text</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seat_text</span> <span class="k">for</span> <span class="n">seat_text</span> <span class="ow">in</span> <span class="n">text_set</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+
+    <span class="k">def</span> <span class="nf">total_including_send_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_seatprice</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_surcharge</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">send_method</span><span class="o">.</span><span class="n">cost</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Order </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">item</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

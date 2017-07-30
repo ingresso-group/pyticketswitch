@@ -1,0 +1,481 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.event &#8212; pyticketswitch 2.0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.event</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch.exceptions</span> <span class="k">import</span> <span class="n">IntegrityError</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.cost_range</span> <span class="k">import</span> <span class="n">CostRange</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.ticket_type</span> <span class="k">import</span> <span class="n">TicketType</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.content</span> <span class="k">import</span> <span class="n">Content</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.media</span> <span class="k">import</span> <span class="n">Media</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.review</span> <span class="k">import</span> <span class="n">Review</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.availability</span> <span class="k">import</span> <span class="n">AvailabilityDetails</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.field</span> <span class="k">import</span> <span class="n">Field</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span><span class="p">,</span> <span class="n">PaginationMixin</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.currency</span> <span class="k">import</span> <span class="n">CurrencyMeta</span>
+
+
+<div class="viewcode-block" id="Event"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.Event">[docs]</a><span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes a product in the ticketswitch system.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id (str): the identifier for the event.</span>
+<span class="sd">        status (str): status of the event.</span>
+<span class="sd">        description (str): human readable name for the event.</span>
+<span class="sd">        source (str): the backend system from wich the event originates.</span>
+<span class="sd">        source_code (str): the internal code for the backend system.</span>
+<span class="sd">        event_type (str): the type of the event.</span>
+<span class="sd">        venue (str): a human readable description of the venue.</span>
+<span class="sd">        classes (dict): a dictionary of class descriptions that the event</span>
+<span class="sd">            belongs to keyed on class identifier.</span>
+<span class="sd">        filters (list): a list of filters that the event belongs to.</span>
+<span class="sd">        postcode (str): venue post code.</span>
+<span class="sd">        city (str): human readable venue city.</span>
+<span class="sd">        city_code (str): venue city code</span>
+<span class="sd">        country (str): human readable country name.</span>
+<span class="sd">        country_code (str): ISO 3166-1 country code.</span>
+<span class="sd">        latitude (float): latitude of the venue.</span>
+<span class="sd">        longitude (float): longitude of the venue.</span>
+<span class="sd">        max_running_time (int): maximum running time of a performance in</span>
+<span class="sd">            minutes.</span>
+<span class="sd">        min_running_time (int): minimum running time of a performance in</span>
+<span class="sd">            minutes.</span>
+<span class="sd">        show_performance_time (bool): indicates that the performance time</span>
+<span class="sd">            for this event is relevant and should be shown.</span>
+<span class="sd">        has_performances (bool): indicates that the event has performances.</span>
+<span class="sd">        is_seated (bool): indicates the event is seated.</span>
+<span class="sd">        needs_departure_date (bool): indicates that ticket purchases for this</span>
+<span class="sd">            event will require a departure date.</span>
+<span class="sd">        needs_duration (bool): indicates that ticket purchases for this</span>
+<span class="sd">            event will require a duration.</span>
+<span class="sd">        needs_performance (bool): indicates that ticket purchases for this</span>
+<span class="sd">            event will require a performance id.</span>
+<span class="sd">        upsell_list (list): list of event id&#39;s.</span>
+<span class="sd">        cost_range (:class:`CostRange &lt;pyticketswitch.cost_range.CostRange&gt;`):</span>
+<span class="sd">            pricing summary from cached availability. Only present when</span>
+<span class="sd">            requested.</span>
+<span class="sd">        no_singles_cost_range (:class:`CostRange &lt;pyticketswitch.cost_range.CostRange&gt;`):</span>
+<span class="sd">            pricining summary from cached availability. Only present when</span>
+<span class="sd">            requested.</span>
+<span class="sd">        cost_range_details (:class:`CostRangeDetails &lt;pyticketswitch.cost_range.CostRangeDetails&gt;`)</span>
+<span class="sd">            summary pricing information broken down by availability. This is</span>
+<span class="sd">            cached data. Only present when requested.</span>
+<span class="sd">        content (dict): dictionary of</span>
+<span class="sd">            :class:`Content &lt;pyticketswitch.content.Content&gt;` objects</span>
+<span class="sd">            indexed on content name. Only present when requested.</span>
+<span class="sd">        fields (dict): dictionary of</span>
+<span class="sd">            :class:`Field &lt;pyticketswitch.content.Content&gt;` objects</span>
+<span class="sd">            indexed on field name. Only present when requested.</span>
+<span class="sd">        event_info (str): event info in plain text. Only present when</span>
+<span class="sd">            requested.</span>
+<span class="sd">        event_info (str): event info as HTML. Only present when requested.</span>
+<span class="sd">        venue_addr (str): venue address in plain text. Only present when</span>
+<span class="sd">            requested.</span>
+<span class="sd">        venue_addr_html (str): venue address as HTML. Only present when requested.</span>
+<span class="sd">        venue_info (str): venue info in plain text. Only present when</span>
+<span class="sd">            requested.</span>
+<span class="sd">        venue_info (str): venue info as HTML. Only present when requested.</span>
+<span class="sd">        media (dict): dictionary of :class:`Media &lt;pyticketswitch.media.Media&gt;`</span>
+<span class="sd">            objects indexed on media name. Only present when requested.</span>
+<span class="sd">        reviews (list): list of :class:`Reviews &lt;pyticketswitch.review.Review&gt;`</span>
+<span class="sd">            objects. Only present when requested.</span>
+<span class="sd">        critic_review_percent (float): summary of critic review star rating.</span>
+<span class="sd">            rated from 1 (lowest) to 5 (highest).</span>
+<span class="sd">        availability_details (:class:`AvailabilityDetails &lt;pyticketswitch.availability.AvailabilityDetails&gt;`):</span>
+<span class="sd">            summary of availability details from cached data. Only present when</span>
+<span class="sd">            requested.</span>
+<span class="sd">        component_events (list): list of :class:`Events &lt;pyticketswitch.event.Event&gt;`</span>
+<span class="sd">            objects that comprise a meta event.</span>
+<span class="sd">        valid_quantities (list): list of valid quanities available for</span>
+<span class="sd">            purchase. from cached data, only available when requested by</span>
+<span class="sd">            **get_events** or **get_event**.</span>
+<span class="sd">        raw (dict): the raw data used to generate the object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">event_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">source_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">venue</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">postcode</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upsell_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">city</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">city_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">country</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">country_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">needs_departure_date</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">needs_duration</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">addon_events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">upsell_events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">needs_performance</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">has_performances</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">is_seated</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_performance_time</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">min_running_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_running_time</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cost_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">no_singles_cost_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cost_range_details</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">content</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">event_info_html</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">event_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">venue_addr_html</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">venue_addr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">venue_info</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">venue_info_html</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">media</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reviews</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">critic_review_percent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">availability_details</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">component_events</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">valid_quantities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fields</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">raw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_add_on</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">id_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_code</span> <span class="o">=</span> <span class="n">source_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_type</span> <span class="o">=</span> <span class="n">event_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">venue</span> <span class="o">=</span> <span class="n">venue</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="n">classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">filters</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">postcode</span> <span class="o">=</span> <span class="n">postcode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">city</span> <span class="o">=</span> <span class="n">city</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">city_code</span> <span class="o">=</span> <span class="n">city_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">country</span> <span class="o">=</span> <span class="n">country</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">country_code</span> <span class="o">=</span> <span class="n">country_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">latitude</span> <span class="o">=</span> <span class="n">latitude</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">longitude</span> <span class="o">=</span> <span class="n">longitude</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_running_time</span> <span class="o">=</span> <span class="n">max_running_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_running_time</span> <span class="o">=</span> <span class="n">min_running_time</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_performance_time</span> <span class="o">=</span> <span class="n">show_performance_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_performances</span> <span class="o">=</span> <span class="n">has_performances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_seated</span> <span class="o">=</span> <span class="n">is_seated</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs_departure_date</span> <span class="o">=</span> <span class="n">needs_departure_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs_duration</span> <span class="o">=</span> <span class="n">needs_duration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs_performance</span> <span class="o">=</span> <span class="n">needs_performance</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addon_events</span> <span class="o">=</span> <span class="n">addon_events</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upsell_events</span> <span class="o">=</span> <span class="n">upsell_events</span>
+        <span class="c1"># TODO This will be removed from the API soon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upsell_list</span> <span class="o">=</span> <span class="n">upsell_list</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost_range</span> <span class="o">=</span> <span class="n">cost_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">no_singles_cost_range</span> <span class="o">=</span> <span class="n">no_singles_cost_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost_range_details</span> <span class="o">=</span> <span class="n">cost_range_details</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">content</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_info</span> <span class="o">=</span> <span class="n">event_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_info_html</span> <span class="o">=</span> <span class="n">event_info_html</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">venue_addr</span> <span class="o">=</span> <span class="n">venue_addr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">venue_addr_html</span> <span class="o">=</span> <span class="n">venue_addr_html</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">venue_info</span> <span class="o">=</span> <span class="n">venue_info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">venue_info_html</span> <span class="o">=</span> <span class="n">venue_info_html</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">media</span> <span class="o">=</span> <span class="n">media</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reviews</span> <span class="o">=</span> <span class="n">reviews</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">critic_review_percent</span> <span class="o">=</span> <span class="n">critic_review_percent</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">availability_details</span> <span class="o">=</span> <span class="n">availability_details</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">component_events</span> <span class="o">=</span> <span class="n">component_events</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_quantities</span> <span class="o">=</span> <span class="n">valid_quantities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raw</span> <span class="o">=</span> <span class="n">raw</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_add_on</span> <span class="o">=</span> <span class="n">is_add_on</span>
+
+<div class="viewcode-block" id="Event.class_dict_from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.Event.class_dict_from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">class_dict_from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a dict of Event data from a raw ticketswitch API call</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a event.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: a new dict populated with the data from the api for creating</span>
+<span class="sd">            an :class:`Event &lt;pyticketswitch.event.Event&gt;` object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">id_</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_id&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">id_</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">IntegrityError</span><span class="p">(</span><span class="s2">&quot;event_id not found in event data&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">geo_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;geo_data&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="c1"># the raw field &#39;has_no_perfs&#39; is a negative flag, so I&#39;m inverting it</span>
+        <span class="n">has_performances</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;has_no_perfs&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">api_cost_range</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cost_range&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">api_no_singles_cost_range</span> <span class="o">=</span> <span class="n">api_cost_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;no_singles_cost_range&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">cost_range</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">no_singles_cost_range</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">api_cost_range</span><span class="p">:</span>
+            <span class="n">api_cost_range</span><span class="p">[</span><span class="s1">&#39;singles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">cost_range</span> <span class="o">=</span> <span class="n">CostRange</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">api_cost_range</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">api_no_singles_cost_range</span><span class="p">:</span>
+            <span class="n">api_no_singles_cost_range</span><span class="p">[</span><span class="s1">&#39;singles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">no_singles_cost_range</span> <span class="o">=</span> <span class="n">CostRange</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span>
+                <span class="n">api_no_singles_cost_range</span><span class="p">)</span>
+
+        <span class="n">api_cost_range_details</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cost_range_details&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">ticket_type_list</span> <span class="o">=</span> <span class="n">api_cost_range_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ticket_type&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">cost_range_details</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">TicketType</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">ticket_type</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ticket_type</span> <span class="ow">in</span> <span class="n">ticket_type_list</span>
+        <span class="p">]</span>
+
+        <span class="n">api_content</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;structured_info&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">Content</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">api_content</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">field</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;custom_field_name&#39;</span><span class="p">):</span> <span class="n">Field</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;custom_fields&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="p">}</span>
+
+        <span class="n">media</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">api_media</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;media&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">for</span> <span class="n">asset</span> <span class="ow">in</span> <span class="n">api_media</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;media_asset&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">new_media</span> <span class="o">=</span> <span class="n">Media</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">asset</span><span class="p">)</span>
+            <span class="n">media</span><span class="p">[</span><span class="n">new_media</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_media</span>
+
+        <span class="n">api_video</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;video_iframe&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">api_video</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;secure_complete_url&#39;</span><span class="p">:</span> <span class="n">api_video</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;video_iframe_url_when_secure&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;insecure_complete_url&#39;</span><span class="p">:</span> <span class="n">api_video</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;video_iframe_url_when_insecure&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;caption&#39;</span><span class="p">:</span> <span class="n">api_video</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;video_iframe_caption&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;caption_html&#39;</span><span class="p">:</span> <span class="n">api_video</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;video_iframe_caption_html&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="n">api_video</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;video_iframe_width&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="n">api_video</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;video_iframe_height&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;video&#39;</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="n">new_video</span> <span class="o">=</span> <span class="n">Media</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">media</span><span class="p">[</span><span class="s1">&#39;video&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_video</span>
+
+        <span class="n">api_reviews</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reviews&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">reviews</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Review</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">api_review</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">api_review</span> <span class="ow">in</span> <span class="n">api_reviews</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;review&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">]</span>
+
+        <span class="n">availability_details</span> <span class="o">=</span> <span class="n">AvailabilityDetails</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;avail_details&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="n">api_component_events</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;meta_event_component_events&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">component_events</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Event</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">meta_event</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">meta_event</span> <span class="ow">in</span> <span class="n">api_component_events</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">]</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;id_&#39;</span><span class="p">:</span> <span class="n">id_</span><span class="p">,</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_desc&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_status&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;event_type&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_type&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;source_code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;source_code&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;source&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;source_desc&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;venue&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;venue_desc&#39;</span><span class="p">),</span>
+
+            <span class="s1">&#39;classes&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;classes&#39;</span><span class="p">),</span>
+            <span class="c1">#TODO: don&#39;t actually know what filters look like yet...</span>
+            <span class="s1">&#39;filters&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;custom_filter&#39;</span><span class="p">,</span> <span class="p">[]),</span>
+            <span class="s1">&#39;fields&#39;</span><span class="p">:</span> <span class="n">fields</span><span class="p">,</span>
+
+            <span class="s1">&#39;postcode&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;postcode&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;city&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;city_desc&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;city_code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;city_code&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;country&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;country_desc&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;country_code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;country_code&#39;</span><span class="p">),</span>
+
+            <span class="s1">&#39;latitude&#39;</span><span class="p">:</span> <span class="n">geo_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;latitude&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;longitude&#39;</span><span class="p">:</span> <span class="n">geo_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;longitude&#39;</span><span class="p">),</span>
+
+            <span class="s1">&#39;max_running_time&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_running_time&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;min_running_time&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;min_running_time&#39;</span><span class="p">),</span>
+
+            <span class="s1">&#39;has_performances&#39;</span><span class="p">:</span> <span class="n">has_performances</span><span class="p">,</span>
+            <span class="s1">&#39;show_performance_time&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;show_perf_time&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="s1">&#39;is_seated&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_seated&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="s1">&#39;needs_departure_date&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;needs_departure_date&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="s1">&#39;needs_duration&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;needs_duration&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="s1">&#39;needs_performance&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;needs_performance&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+
+            <span class="s1">&#39;upsell_list&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_upsell_list&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_id&#39;</span><span class="p">,</span> <span class="p">[]),</span>
+
+            <span class="s1">&#39;cost_range&#39;</span><span class="p">:</span> <span class="n">cost_range</span><span class="p">,</span>
+            <span class="s1">&#39;no_singles_cost_range&#39;</span><span class="p">:</span> <span class="n">no_singles_cost_range</span><span class="p">,</span>
+            <span class="s1">&#39;cost_range_details&#39;</span><span class="p">:</span> <span class="n">cost_range_details</span><span class="p">,</span>
+
+            <span class="c1"># extra info</span>
+            <span class="s1">&#39;event_info_html&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_info_html&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;event_info&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event_info&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;venue_addr_html&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;venue_addr_html&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;venue_addr&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;venue_addr&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;venue_info&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;venue_info&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;venue_info_html&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;venue_info_html&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;content&#39;</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span>
+
+            <span class="s1">&#39;media&#39;</span><span class="p">:</span> <span class="n">media</span><span class="p">,</span>
+            <span class="s1">&#39;reviews&#39;</span><span class="p">:</span> <span class="n">reviews</span><span class="p">,</span>
+            <span class="s1">&#39;critic_review_percent&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;critic_review_percent&#39;</span><span class="p">),</span>
+
+            <span class="s1">&#39;availability_details&#39;</span><span class="p">:</span> <span class="n">availability_details</span><span class="p">,</span>
+            <span class="s1">&#39;component_events&#39;</span><span class="p">:</span> <span class="n">component_events</span><span class="p">,</span>
+            <span class="s1">&#39;valid_quantities&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;valid_quantities&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;raw&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
+            <span class="s1">&#39;is_add_on&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_add_on&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">kwargs</span></div>
+
+<div class="viewcode-block" id="Event.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.Event.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new Event object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a event.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Event &lt;pyticketswitch.event.Event&gt;`: a new</span>
+<span class="sd">            :class:`Event &lt;pyticketswitch.event.Event&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">class_dict_from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Event.from_events_by_id_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.Event.from_events_by_id_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_events_by_id_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new Event object from API data from the events_by_id call.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from the ticketswitch</span>
+<span class="sd">                `events_by_id` API call containing events and other data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Event &lt;pyticketswitch.event.Event&gt;`: a new</span>
+<span class="sd">            :class:`Event &lt;pyticketswitch.event.EVent&gt;` object populated with</span>
+<span class="sd">            the data from the API.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">class_dict_from_api_data</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;add_ons&#39;</span><span class="p">):</span>
+            <span class="n">addons</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">Event</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">raw_addon</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">raw_addon</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;add_ons&#39;</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">addon_events</span><span class="o">=</span><span class="n">addons</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;upsells&#39;</span><span class="p">):</span>
+            <span class="n">upsells</span><span class="o">=</span><span class="p">[</span>
+                <span class="n">Event</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">raw_upsell</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">raw_upsell</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;upsells&#39;</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">upsell_events</span><span class="o">=</span><span class="n">upsells</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Event </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="EventMeta"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.EventMeta">[docs]</a><span class="k">class</span> <span class="nc">EventMeta</span><span class="p">(</span><span class="n">PaginationMixin</span><span class="p">,</span> <span class="n">CurrencyMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Meta information about a set of events</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        currencies (dict): dictionary of</span>
+<span class="sd">            :class:`Currency &lt;pytickectswitch.currency.Currency&gt;`) objects</span>
+<span class="sd">            indexed on currency code.</span>
+<span class="sd">        default_currency_code (str): unless other wise specified all prices in</span>
+<span class="sd">            the related response will be in this currency.</span>
+<span class="sd">        desired_currency_code (str):</span>
+<span class="sd">            the currency that the user account is expecting. Useful for</span>
+<span class="sd">            conversions.</span>
+<span class="sd">        page_length (int): the number of items per page.</span>
+<span class="sd">        page_number (int): the current page.</span>
+<span class="sd">        pages_remaining (int): the number of pages remaining.</span>
+<span class="sd">        results_remaining (int): the total number of remaining results after</span>
+<span class="sd">            the current page.</span>
+<span class="sd">        total_results (int): the total number of results.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

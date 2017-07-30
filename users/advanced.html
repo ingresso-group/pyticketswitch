@@ -1,0 +1,1359 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Advanced Guide &#8212; pyticketswitch 2.0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developer Interface" href="../api.html" />
+    <link rel="prev" title="Quick Start" href="quickstart.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="advanced-guide">
+<span id="advanced"></span><h1>Advanced Guide<a class="headerlink" href="#advanced-guide" title="Permalink to this headline">¶</a></h1>
+<p>This guide provides additional information about parts of the wrapper that
+expands on the <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">quick start guide</span></a></p>
+<div class="section" id="demo-user-events">
+<h2>Demo User Events<a class="headerlink" href="#demo-user-events" title="Permalink to this headline">¶</a></h2>
+<p id="demo-events">At the time of writing this documentation the demo user has access to the
+following events:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="8%" />
+<col width="32%" />
+<col width="61%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">id</th>
+<th class="head">description</th>
+<th class="head">additional attributes</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">6IE</span></code></td>
+<td>Matthew Bourne’s Swan Lake test</td>
+<td><ul class="first last simple">
+<li>seated</li>
+<li>default discounts only</li>
+<li>reservations for Tuesday performances</li>
+<li>has restricted view seats on ticket 2 and 3 on Thursdays</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">6IF</span></code></td>
+<td>Matthew Bourne’s Nutcracker TEST</td>
+<td><ul class="first last simple">
+<li>seated</li>
+<li>maximum of 3 mixed discounts</li>
+<li>no availability on Saturday nights</li>
+<li>no discounts in the stalls on the 1st of the month</li>
+<li>no OPA or STUDENT discounts in price band B</li>
+<li>collect from the venue and post dispatch methods available</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">6KF</span></code></td>
+<td>V&amp;A Memberships</td>
+<td><ul class="first last simple">
+<li>subscription</li>
+<li>has only single performance that must be selected</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">6KS</span></code></td>
+<td>1-Day Ticket</td>
+<td rowspan="4"><ul class="first last simple">
+<li>attraction</li>
+<li>not valid on Mondays</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">6KT</span></code></td>
+<td>3-Day Hopper</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">6KU</span></code></td>
+<td>Family Ticket</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">6KV</span></code></td>
+<td>Individual Ticket</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">6L9</span></code></td>
+<td>La Femme</td>
+<td><ul class="first last simple">
+<li>seated</li>
+<li>blanket discounts</li>
+<li>special offer</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">7AA</span></code></td>
+<td>Toy Story - The Opera</td>
+<td><ul class="first last simple">
+<li>seated</li>
+<li>seat selection</li>
+<li>seating plan data available</li>
+<li>contiguous seat selection only</li>
+<li>cannot leave single seats</li>
+<li>self print vouchers</li>
+<li>reservations including seat H10 will always fail</li>
+<li>reservations including seat D7 will return a different
+seat selection from the same block of seats (as if
+that seat had become unavailable)</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">7AB</span></code></td>
+<td>The Unremarkable Incident
+of the Cat at Lunchtime</td>
+<td><ul class="first last simple">
+<li>seated</li>
+<li>seat selection</li>
+<li>seating plan data available</li>
+<li>allows discontinuous seat selection</li>
+<li>self print vouchers with barcodes</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">9XW</span></code></td>
+<td>Five Day Park Hopper Ticket</td>
+<td rowspan="2"><ul class="first last simple">
+<li>attraction</li>
+<li>is post only (can be used to generate ‘no sends’
+if you select a performance date within the next few days)</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">9XY</span></code></td>
+<td>Two day Parkhopper</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">AG8</span></code></td>
+<td>1デーパスポート (One Day Passport)</td>
+<td><ul class="first last simple">
+<li>attraction</li>
+<li>text in Japanese (useful for testing unicode support)</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">DBZ</span></code></td>
+<td>Moulin Rouge (Dinner Show)</td>
+<td><ul class="first last simple">
+<li>seated</li>
+<li>priced in euros</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">DP9</span></code></td>
+<td>Imperial Helicopter Tour</td>
+<td rowspan="2"><ul class="first last simple">
+<li>tour</li>
+<li>many performances (useful for testing pagination, calendars, etc)</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">DPB</span></code></td>
+<td>North Canyon Helicopter Tour</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">GVA</span></code></td>
+<td>Souvenir DVD</td>
+<td><ul class="first last simple">
+<li>merchandise</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">I3R</span></code></td>
+<td>MGM Grand Accomodation</td>
+<td rowspan="5"><ul class="first last simple">
+<li>hotel</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">I3S</span></code></td>
+<td>Athenaeum</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">I3T</span></code></td>
+<td>Corus Hyde Park</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">I3U</span></code></td>
+<td>Hilton Kensington</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">I3V</span></code></td>
+<td>St Ermin’s</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="searching-for-an-event">
+<h2>Searching for an Event<a class="headerlink" href="#searching-for-an-event" title="Permalink to this headline">¶</a></h2>
+<p id="event-search">With no arguments the <a class="reference internal" href="../api.html#pyticketswitch.client.Client.list_events" title="pyticketswitch.client.Client.list_events"><code class="xref py py-meth docutils literal"><span class="pre">list_events</span></code></a> will return all events that are
+available to your user.</p>
+<p>However it is possible to filter the events via a keyword search:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">(</span><span class="n">keywords</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;matthew&#39;</span><span class="p">,</span> <span class="s1">&#39;bourne&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span>
+<span class="go">[&lt;Event 6IF:b&quot;Matthew Bourne&#39;s Nutcracker TEST&quot;&gt;,</span>
+<span class="go"> &lt;Event 6IE:b&quot;Matthew Bourne&#39;s Swan Lake test&quot;&gt;]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Or by country:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">(</span><span class="n">country_code</span><span class="o">=</span><span class="s1">&#39;jp&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span>
+<span class="go">[&lt;Event AG8:&#39;1 デーパスポート (One Day Passport)&#39;&gt;]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Or by city:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">(</span><span class="n">city_code</span><span class="o">=</span><span class="s1">&#39;paris-fr&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span>
+<span class="go">[&lt;Event DBZ:b&#39;Moulin Rouge (Dinner Show)&#39;&gt;,</span>
+<span class="go"> &lt;Event GVA:b&#39;Souvenir DVD&#39;&gt;]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Or within a geographical radius:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">(</span><span class="n">latitude</span><span class="o">=</span><span class="mf">50.62</span><span class="p">,</span> <span class="n">longitude</span><span class="o">=</span><span class="mf">3.05</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span>
+<span class="go">[&lt;Event 6KS:b&#39;1-Day Ticket&#39;&gt;,</span>
+<span class="go"> &lt;Event 6KT:b&#39;3-Day Hopper&#39;&gt;]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>When you combine search terms, only intersecting results are returned:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">(</span><span class="n">city_code</span><span class="o">=</span><span class="s1">&#39;london-uk&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span>
+<span class="go">[&lt;Event I3S:b&#39;Athenaeum&#39;&gt;,</span>
+<span class="go"> &lt;Event I3T:b&#39;Corus Hyde Park&#39;&gt;,</span>
+<span class="go"> &lt;Event I3U:b&#39;Hilton Kensington&#39;&gt;,</span>
+<span class="go"> &lt;Event 6IF:b&quot;Matthew Bourne&#39;s Nutcracker TEST&quot;&gt;,</span>
+<span class="go"> &lt;Event 6IE:b&quot;Matthew Bourne&#39;s Swan Lake test&quot;&gt;,</span>
+<span class="go"> &lt;Event I3V:b&quot;St Ermin&#39;s&quot;&gt;,</span>
+<span class="go"> &lt;Event 7AB:b&#39;The Unremarkable Incident of the Cat at Lunchtime&#39;&gt;,</span>
+<span class="go"> &lt;Event 7AA:b&#39;Toy Story - The Opera&#39;&gt;,</span>
+<span class="go"> &lt;Event 6KF:b&#39;V&amp;A Memberships&#39;&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">(</span><span class="n">keywords</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;park&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span>
+<span class="go">[&lt;Event 6KS:b&#39;1-Day Ticket&#39;&gt;,</span>
+<span class="go"> &lt;Event AG8:b&#39;1 (One Day Passport)&#39;&gt;,</span>
+<span class="go"> &lt;Event 6KT:b&#39;3-Day Hopper&#39;&gt;,</span>
+<span class="go"> &lt;Event I3T:b&#39;Corus Hyde Park&#39;&gt;,</span>
+<span class="go"> &lt;Event 9XW:b&#39;Five Day Park Hopper Ticket&#39;&gt;,</span>
+<span class="go"> &lt;Event 6KV:b&#39;Individual Ticket&#39;&gt;,</span>
+<span class="go"> &lt;Event 9XY:b&#39;Two day Parkhopper&#39;&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">(</span><span class="n">keywords</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;park&#39;</span><span class="p">],</span> <span class="n">city_code</span><span class="o">=</span><span class="s1">&#39;london-uk&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span>
+<span class="go">[&lt;Event I3T:b&#39;Corus Hyde Park&#39;&gt;]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pagination">
+<h2>Pagination<a class="headerlink" href="#pagination" title="Permalink to this headline">¶</a></h2>
+<p id="id1">Some calls to the API will return paginated results (most notibly the event and
+performance methods). Some of the responses to these calls can be incredibly
+long, and so to avoid frying both our servers and yours, these responses are
+fragmented into multiple “pages”.</p>
+<p>Paginated responses will return meta data objects which inherit from the
+<a class="reference internal" href="../api.html#pyticketswitch.mixins.PaginationMixin" title="pyticketswitch.mixins.PaginationMixin"><code class="xref py py-class docutils literal"><span class="pre">PaginationMixin</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">is_paginated</span><span class="p">()</span>
+<span class="go">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">page_number</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">page_length</span>
+<span class="go">50</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">total_results</span>
+<span class="go">29</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">pages_remaining</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">results_remaining</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">performances</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_performances</span><span class="p">(</span><span class="s1">&#39;DP9&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">is_paginated</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">page_number</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">page_length</span>
+<span class="go">50</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">total_results</span>
+<span class="go">360</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">results_remaining</span>
+<span class="go">310</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">performances</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_performances</span><span class="p">(</span><span class="s1">&#39;DP9&#39;</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">page_number</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">results_remaining</span>
+<span class="go">260</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">pages_remaining</span>
+<span class="go">6</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>You can specify both the page number and length as parameters to all calls:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">performances</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_performances</span><span class="p">(</span><span class="s1">&#39;DP9&#39;</span><span class="p">,</span> <span class="n">page_length</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">page_number</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">page_length</span>
+<span class="go">20</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">total_results</span>
+<span class="go">360</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">results_remaining</span>
+<span class="go">300</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">pages_remaining</span>
+<span class="go">15</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="requesting-seat-availability">
+<h2>Requesting Seat Availability<a class="headerlink" href="#requesting-seat-availability" title="Permalink to this headline">¶</a></h2>
+<p id="seated-availability">The primary mode of sale for all seated backend systems is concept called
+<em>“best available”</em> where you specify a ticket type and a price band and we (or
+more likely the backend system) picks the specific seats for you from the
+seats we have available.</p>
+<p>Most theatre backend systems can provide both a list of available seats at
+availability level and the ability to reserve specific seats at the reservation
+level.</p>
+<div class="section" id="availability">
+<h3>Availability<a class="headerlink" href="#availability" title="Permalink to this headline">¶</a></h3>
+<p>To request the available seats simply add the <code class="docutils literal"><span class="pre">seats_blocks</span></code> flag to the
+availability call:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ticket_types</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_availability</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AA-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">seat_blocks</span><span class="o">=</span><span class="kc">True</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">ticket_type</span> <span class="ow">in</span> <span class="n">ticket_types</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">price_band</span> <span class="ow">in</span> <span class="n">ticket_type</span><span class="o">.</span><span class="n">price_bands</span><span class="p">:</span>
+<span class="gp">... </span>        <span class="k">for</span> <span class="n">seat_block</span> <span class="ow">in</span> <span class="n">price_band</span><span class="o">.</span><span class="n">seat_blocks</span><span class="p">:</span>
+<span class="gp">... </span>            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;SeatBlock with length:&#39;</span><span class="p">,</span> <span class="n">seat_block</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+<span class="gp">... </span>            <span class="k">for</span> <span class="n">seat</span> <span class="ow">in</span> <span class="n">seat_block</span><span class="o">.</span><span class="n">seats</span><span class="p">:</span>
+<span class="gp">... </span>                <span class="nb">print</span><span class="p">(</span><span class="n">seat</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">SeatBlock with length: 10</span>
+<span class="go">&lt;Seat A1&gt;</span>
+<span class="go">&lt;Seat A2&gt;</span>
+<span class="go">&lt;Seat A3&gt;</span>
+<span class="go">&lt;Seat A4&gt;</span>
+<span class="go">&lt;Seat A5&gt;</span>
+<span class="go">&lt;Seat A6&gt;</span>
+<span class="go">&lt;Seat A7&gt;</span>
+<span class="go">&lt;Seat A8&gt;</span>
+<span class="go">&lt;Seat A9&gt;</span>
+<span class="go">&lt;Seat A10&gt;</span>
+<span class="go">SeatBlock with length: 8</span>
+<span class="go">&lt;Seat B2&gt;</span>
+<span class="go">&lt;Seat B3&gt;</span>
+<span class="go">&lt;Seat B4&gt;</span>
+<span class="go">&lt;Seat B5&gt;</span>
+<span class="go">&lt;Seat B6&gt;</span>
+<span class="go">&lt;Seat B7&gt;</span>
+<span class="go">&lt;Seat B8&gt;</span>
+<span class="go">&lt;Seat B9&gt;</span>
+<span class="go">SeatBlock with length: 4</span>
+<span class="go">&lt;Seat C3&gt;</span>
+<span class="go">&lt;Seat C4&gt;</span>
+<span class="go">&lt;Seat C5&gt;</span>
+<span class="go">&lt;Seat C6&gt;</span>
+<span class="go">SeatBlock with length: 6</span>
+<span class="go">&lt;Seat D2&gt;</span>
+<span class="go">&lt;Seat D3&gt;</span>
+<span class="go">&lt;Seat D4&gt;</span>
+<span class="go">&lt;Seat D5&gt;</span>
+<span class="go">&lt;Seat D6&gt;</span>
+<span class="go">&lt;Seat D7&gt;</span>
+<span class="go">SeatBlock with length: 2</span>
+<span class="go">&lt;Seat E4&gt;</span>
+<span class="go">&lt;Seat E5&gt;</span>
+<span class="go">SeatBlock with length: 3</span>
+<span class="go">&lt;Seat E7&gt;</span>
+<span class="go">&lt;Seat E8&gt;</span>
+<span class="go">&lt;Seat E9&gt;</span>
+<span class="go">SeatBlock with length: 3</span>
+<span class="go">&lt;Seat F1&gt;</span>
+<span class="go">&lt;Seat F2&gt;</span>
+<span class="go">&lt;Seat F3&gt;</span>
+<span class="go">SeatBlock with length: 4</span>
+<span class="go">&lt;Seat G7&gt;</span>
+<span class="go">&lt;Seat G8&gt;</span>
+<span class="go">&lt;Seat G9&gt;</span>
+<span class="go">&lt;Seat G10&gt;</span>
+<span class="go">SeatBlock with length: 4</span>
+<span class="go">&lt;Seat H1&gt;</span>
+<span class="go">&lt;Seat H2&gt;</span>
+<span class="go">&lt;Seat H3&gt;</span>
+<span class="go">&lt;Seat H4&gt;</span>
+<span class="go">SeatBlock with length: 4</span>
+<span class="go">&lt;Seat H7&gt;</span>
+<span class="go">&lt;Seat H8&gt;</span>
+<span class="go">&lt;Seat H9&gt;</span>
+<span class="go">&lt;Seat H10&gt;</span>
+</pre></div>
+</div>
+<p>The results will contain a list of seat blocks (all seats in a seat block are
+adjacent to one another and can be considered to be <em>contiguous</em>, sort of like
+a linked list) and each seat block will contain a list of seats.</p>
+<p>If you don’t care about the seat blocks you can just use the helper method on
+ticket type or price band:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ticket_type</span> <span class="o">=</span> <span class="n">ticket_types</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ticket_type</span><span class="o">.</span><span class="n">get_seats</span><span class="p">()</span>
+<span class="go">[&lt;Seat E4&gt;,</span>
+<span class="go"> &lt;Seat E5&gt;,</span>
+<span class="go"> &lt;Seat E7&gt;,</span>
+<span class="go"> &lt;Seat E8&gt;,</span>
+<span class="go"> &lt;Seat E9&gt;,</span>
+<span class="go"> &lt;Seat F1&gt;,</span>
+<span class="go"> &lt;Seat F2&gt;,</span>
+<span class="go"> &lt;Seat F3&gt;,</span>
+<span class="go"> &lt;Seat G7&gt;,</span>
+<span class="go"> &lt;Seat G8&gt;,</span>
+<span class="go"> &lt;Seat G9&gt;,</span>
+<span class="go"> &lt;Seat G10&gt;,</span>
+<span class="go"> &lt;Seat H1&gt;,</span>
+<span class="go"> &lt;Seat H2&gt;,</span>
+<span class="go"> &lt;Seat H3&gt;,</span>
+<span class="go"> &lt;Seat H4&gt;,</span>
+<span class="go"> &lt;Seat H7&gt;,</span>
+<span class="go"> &lt;Seat H8&gt;,</span>
+<span class="go"> &lt;Seat H9&gt;,</span>
+<span class="go"> &lt;Seat H10&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_band</span> <span class="o">=</span> <span class="n">ticket_type</span><span class="o">.</span><span class="n">price_bands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_band</span><span class="o">.</span><span class="n">get_seats</span><span class="p">()</span>
+<span class="go">[&lt;Seat G7&gt;,</span>
+<span class="go"> &lt;Seat G8&gt;,</span>
+<span class="go"> &lt;Seat G9&gt;,</span>
+<span class="go"> &lt;Seat G10&gt;,</span>
+<span class="go"> &lt;Seat H1&gt;,</span>
+<span class="go"> &lt;Seat H2&gt;,</span>
+<span class="go"> &lt;Seat H3&gt;,</span>
+<span class="go"> &lt;Seat H4&gt;,</span>
+<span class="go"> &lt;Seat H7&gt;,</span>
+<span class="go"> &lt;Seat H8&gt;,</span>
+<span class="go"> &lt;Seat H9&gt;,</span>
+<span class="go"> &lt;Seat H10&gt;]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="../api.html#pyticketswitch.availability.AvailabilityMeta" title="pyticketswitch.availability.AvailabilityMeta"><code class="xref py py-class docutils literal"><span class="pre">AvailabilityMeta</span></code></a>
+object returned with your availability data includes some information on what
+seats can be selected:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">contiguous_seat_selection_only</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">valid_quantities</span>
+<span class="go">[1, 2, 3, 4, 5, 6]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>When <code class="xref py py-class docutils literal"><span class="pre">contiguous_seat_selection_only</span></code>
+flag is set then you may only select consecutive seats from a single seat
+block. This a common requirement and is something you should keep in mind when
+developing a seat selection booking application.</p>
+<p>Valid quantities indicates what number of tickets will be considered valid for
+a backend system. For example a system that required all tickets to be bought
+in pairs (think parent + child events perhaps) might return <code class="docutils literal"><span class="pre">[2,</span> <span class="pre">4,</span> <span class="pre">6]</span></code>,
+whereas a system that had a cap on the maximum tickets purchasable by one
+customer might return <code class="docutils literal"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]</span></code>.</p>
+</div>
+<div class="section" id="reservation">
+<h3>Reservation<a class="headerlink" href="#reservation" title="Permalink to this headline">¶</a></h3>
+<p>Once your customer has selected the seats they want you should reserve them
+for them with the <code class="docutils literal"><span class="pre">seats</span></code> argument to the <a class="reference internal" href="../api.html#pyticketswitch.client.Client.make_reservation" title="pyticketswitch.client.Client.make_reservation"><code class="xref py py-meth docutils literal"><span class="pre">make_reservation</span></code></a> call:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_reservation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AA-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;B/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;CIRCLE&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">seats</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;G7&#39;</span><span class="p">,</span> <span class="s1">&#39;G8&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>For each order you should then check that you got what you where expecting:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># We only made one order so we extract it from the trolley</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span> <span class="o">=</span> <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">get_orders</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">requested_seat_ids</span>
+<span class="go">[&#39;G7&#39;, &#39;G8&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">get_seat_ids</span><span class="p">()</span>
+<span class="go">[&#39;G7&#39;, &#39;G8&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">seat_request_status</span>
+<span class="go">&#39;got_all&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>It’s possible that between being shown availability and making the reservation
+those seats were already taken by someone else. In this situation you would get
+a different seat_request_status and available seats from the same price band:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_reservation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AA-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;B/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;STALLS&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">seats</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;D6&#39;</span><span class="p">,</span> <span class="s1">&#39;D7&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span> <span class="o">=</span> <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">get_orders</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">requested_seat_ids</span>
+<span class="go">[&#39;D6&#39;, &#39;D7&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">get_seat_ids</span><span class="p">()</span>
+<span class="go">[&#39;D2&#39;, &#39;D3&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">seat_request_status</span>
+<span class="go">&#39;got_none&#39;</span>
+</pre></div>
+</div>
+<p>The possible values for seat_request_status are <code class="docutils literal"><span class="pre">got_all</span></code>, <code class="docutils literal"><span class="pre">got_none</span></code>,
+<code class="docutils literal"><span class="pre">got_some</span></code>, and <code class="docutils literal"><span class="pre">not_requested</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When you were given seats you no longer want, please consider
+releasing them so that someone else can have them.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">When releasing seated tickets there is no garentuee that the same
+seats will be instantly available again. Someone else might have
+taken them, or it may take some time for the backend system to
+recycle them.</p>
+</div>
+<p>Best available should be considered the common standard and you should be aware
+of it even if you only intend on implementing seat selection.</p>
+</div>
+</div>
+<div class="section" id="trollies-bundles-orders-and-ticket-orders">
+<h2>Trollies, Bundles, Orders and Ticket orders<a class="headerlink" href="#trollies-bundles-orders-and-ticket-orders" title="Permalink to this headline">¶</a></h2>
+<p id="trollies-bundles-orders-ticket-orders">The API is designed to allow purchasing multiple tickets to multiple events in
+a single transaction. To support this a transaction is organised into several
+sub layers that represent the products you are after, it’s important to
+understand these terms and what they represent.</p>
+<p>If you are interested in purchasing multiple items in a single transaction see
+the section on <a class="reference internal" href="#id2"><span class="std std-ref">Bundling</span></a> below.</p>
+<p>The general hierarchy can be thought of as:</p>
+<ul class="simple">
+<li>Transaction</li>
+<li>Trolley</li>
+<li>Bundles</li>
+<li>Orders</li>
+<li>Ticket Order</li>
+</ul>
+<div class="section" id="trolley">
+<h3>Trolley<a class="headerlink" href="#trolley" title="Permalink to this headline">¶</a></h3>
+<p>The trolley represents the general collection of stuff you want to buy. It has
+a one to one mapping with the transaction and contains important stuff like
+the transaction ids, purchase results, and how long you have before your
+reservations expire. The details of the products you are ordering is contained
+in a collection of Bundle objects inside the trolley object.</p>
+</div>
+<div class="section" id="bundle">
+<h3>Bundle<a class="headerlink" href="#bundle" title="Permalink to this headline">¶</a></h3>
+<p>A bundle represents a collection of products from the same backend system
+source. It contains information like the total cost of all it’s items, the
+currency that it’s priced in, and the payment method it will be expecting.</p>
+<p>Details of Individual events and performances are contained in a collection of
+Orders inside the bundle object.</p>
+</div>
+<div class="section" id="order">
+<h3>Order<a class="headerlink" href="#order" title="Permalink to this headline">¶</a></h3>
+<p>An Order represents a request for tickets for a single event and performance. It
+contains information such as the ticket type and prices band, the number of
+seats, total price, any requested seats, the send method, and the in event of a
+successful purchase the backend purchase reference.</p>
+<p>Details of any discounts or assigned seats are contained in a collection of
+ticket orders inside this parent order.</p>
+</div>
+<div class="section" id="ticket-order">
+<h3>Ticket Order<a class="headerlink" href="#ticket-order" title="Permalink to this headline">¶</a></h3>
+<p>A Ticket Order represents details about specific tickets. Primarily this is used
+to indicate discounts and assigned seat ids, however it also contains
+individual and total pricing.</p>
+</div>
+</div>
+<div class="section" id="bundling">
+<h2>Bundling<a class="headerlink" href="#bundling" title="Permalink to this headline">¶</a></h2>
+<p id="id2">The API supports bundling where you can purchase multiple items from different
+sources as a single transaction.</p>
+<p>For example our customer wants to go to two shows in London, and buy a museum
+membership:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_events</span><span class="p">([</span><span class="s1">&#39;6IF&#39;</span><span class="p">,</span> <span class="s1">&#39;7AB&#39;</span><span class="p">,</span> <span class="s1">&#39;6KF&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span>
+<span class="go">{&#39;6IF&#39;: &lt;Event 6IF:b&quot;Matthew Bourne&#39;s Nutcracker TEST&quot;&gt;,</span>
+<span class="go"> &#39;6KF&#39;: &lt;Event 6KF:b&#39;V&amp;A Memberships&#39;&gt;,</span>
+<span class="go"> &#39;7AB&#39;: &lt;Event 7AB:b&#39;The Unremarkable Incident of the Cat at Lunchtime&#39;&gt;}</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Building a trolley is a similar process to how we
+<a class="reference internal" href="quickstart.html#id1"><span class="std std-ref">created a reservation in the quickstart guide</span></a>,
+the difference here is that the trolley call doesn’t actually reserve any
+tickets. This way we can build up a trolley with some stuff in it and pass it
+all into the reservation call in one go</p>
+<p>First lets create an initial trolley with some tickets to the <code class="docutils literal"><span class="pre">6IF</span></code> event:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_trolley</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;CIRCLE&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;A/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;6IF-B0G&#39;</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">token</span>
+<span class="go">&#39;s2--ys4C_FkPOSwdZM72WNGJ1ma0ZoEMYIZ8zWUGne0qaTYMcuc8ovMCWE1sQpjpLDGjZiKK_-6BtoKWkd6u3a56HP6ynJFqCNj_LW9npMLqK-PED8X6mGe-qWugFc714-0JDP31K7YpZUxoo-ADt0LIYUxC06ENJ3ZINjqr4NiWzkDwVHQtvMGAp4K9w_nRyJj2-8AqE_d3HkYfM4i17_FlxMAan0Zkd0fZF7xLySlSZCmuB-umnH-QEp9uWp8aU5yjsEht-oF36n0FgwgozQKhc6vMZxm2R6R2yP_VzSMrGM4cy_Yfoi6moZCG3IPOIu6R0ZeHgdu5RgGw8-yNBYIhx66xHnaIIIJBmQ_MqeKE5d5TBs82Ra3WZ0qAkOambTanAU2ZybRLmtLdSFqWbuFM3KCg9MDBVonmZ&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span>
+<span class="go">[&lt;Bundle ext_test0&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span>
+<span class="go">[&lt;Order 1&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">id</span>
+<span class="go">&#39;6IF&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Result! We can see we have trolley object with a trolley token which identifies
+this trolley and it’s current state. Our trolley now contains a single bundle
+for the <code class="docutils literal"><span class="pre">ext_test0</span></code> backend system, and that bundle contains a single order
+for the 6IF event.</p>
+<p>Now lets add another event to our trolley by the same method, however this time
+we will pass in the current trolley token as an additional argument to the
+<a class="reference internal" href="../api.html#pyticketswitch.client.Client.get_trolley" title="pyticketswitch.client.Client.get_trolley"><code class="xref py py-meth docutils literal"><span class="pre">get_trolley</span></code></a> call:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_trolley</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;STALLS&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;A/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AB-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">token</span><span class="o">=</span><span class="n">trolley</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">token</span>
+<span class="go">&#39;M4--hLYu4VwV6QUww385En04K9nZtOYL1uq6Xvyo24CFtP8o-uW_FHqo7DzwILJM3_aIDiCmrIXy7GJN5vkb3HtPdE-jXMEvt7zyxhKRRHzRLuKAjx3M3bhZoetSwB9jE0dYCYpLCsxjVfBCAN22TQ9jck3PD3WSbV1KR98OmQ44I8VFF4UCuBzpDCy78mbZu2DWWjeWyxHQbYM0ZNZrCEEZ2QZzWxeAVoJlCNmorxJIaek57Gr8v_Vj3jnBNLGtjQdbXmf9ENU5WYjkeX3Xgpy2ZTubusvLMn2rRMK7oZ1v4WtdL0fLdZJZNlzia9hJBeL2DQ-QmLvNawX2Rz27OV_TuvZpMkOyF9xpbADd4rg2VuwEHnU1puKX6brmy7PspildvqhjVrAwBcBR3jlDaZtCI6ACMxggTclmXUsGFjwDuWGJM9qBB3g87irMjq6TyZV1mBDFBWlq1BL-hC2Z6jIQ-968Ud8loWm5s5OVXgPZIhTqntoGZB58CinbF3hEY_CxbXycrznqkyHo7aYQVc45Iv1JnNUjvASSZ&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span>
+<span class="go">[&lt;Bundle ext_test0&gt;, &lt;Bundle ext_test1&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span>
+<span class="go">[&lt;Order 2&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">id</span>
+<span class="go">&#39;7AB&#39;</span>
+</pre></div>
+</div>
+<p>As you can see our trolley token has changed, and the trolley now contains an
+additional bundle for ext_test1. This because <code class="docutils literal"><span class="pre">6IF</span></code> and <code class="docutils literal"><span class="pre">7AB</span></code> originate from
+different source systems. Our new bundle contains a single order for <code class="docutils literal"><span class="pre">7AB</span></code>.</p>
+<p>We can add the museum membership in the same way:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_trolley</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;MEMBER&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;X/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;6KF-F&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">token</span><span class="o">=</span><span class="n">trolley</span><span class="o">.</span><span class="n">token</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span>
+<span class="go">[&lt;Bundle ext_test0&gt;, &lt;Bundle ext_test1&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span>
+<span class="go">[&lt;Order 1&gt;, &lt;Order 3&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">id</span>
+<span class="go">&#39;6KF&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>As <code class="docutils literal"><span class="pre">6KF</span></code> and <code class="docutils literal"><span class="pre">6IF</span></code> are on the same backend system this order is added to our
+existing <code class="docutils literal"><span class="pre">ext_test0</span></code> bundle.</p>
+<p>If our customer decides that this is actually getting a bit pricey and they want
+to remove their <code class="docutils literal"><span class="pre">6IF</span></code> tickets they can do this by removing the order (using it’s
+item number) from the
+trolley:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_trolley</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">token</span><span class="o">=</span><span class="n">trolley</span><span class="o">.</span><span class="n">token</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">get_orders</span><span class="p">()</span>
+<span class="go">[&lt;Order 3&gt;, &lt;Order 2&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span>
+<span class="go">[&lt;Order 3&gt;]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Order 1 has now been removed from the trolley!</p>
+<p>When happy with the contents of the trolley, you can use the trolley token
+directly in the <a class="reference internal" href="../api.html#pyticketswitch.client.Client.make_reservation" title="pyticketswitch.client.Client.make_reservation"><code class="xref py py-meth docutils literal"><span class="pre">make_reservation()</span></code></a> call:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_reservation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">token</span><span class="o">=</span><span class="n">trolley</span><span class="o">.</span><span class="n">token</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;reserved&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span>
+<span class="go">&#39;b89747e2-29d0-11e7-b228-0025903268dc&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">get_orders</span><span class="p">()</span>
+<span class="go">[&lt;Order 3&gt;, &lt;Order 2&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span>
+<span class="go">[&lt;Bundle ext_test0&gt;, &lt;Bundle ext_test1&gt;]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Your trolley is now reserved and you can continue as normal through the rest of
+the transaction process.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Once the trolley is reserved it becomes immuatable. If you need to
+make changes you should release the reservation then remake it with a
+new trolley token.</p>
+<p>If you hang on to your trolley token from the original
+reservation you can simply restart the modification process using
+that token, avoiding the steps needed to generate a new one.</p>
+<p class="last">Only trollies returned by the <a class="reference internal" href="../api.html#pyticketswitch.client.Client.get_trolley" title="pyticketswitch.client.Client.get_trolley"><code class="xref py py-meth docutils literal"><span class="pre">get_trolley</span></code></a> call will return trolley
+tokens.</p>
+</div>
+</div>
+<div class="section" id="sorting-search-results">
+<h2>Sorting search results<a class="headerlink" href="#sorting-search-results" title="Permalink to this headline">¶</a></h2>
+<p id="id3">The <code class="docutils literal"><span class="pre">sort_order</span></code> argument of the
+<a class="reference internal" href="../api.html#pyticketswitch.client.Client.list_events" title="pyticketswitch.client.Client.list_events"><code class="xref py py-func docutils literal"><span class="pre">Client.list_events</span></code></a>
+method will sort returned events by the specified metric.</p>
+<p>Valid values for this attribute are as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">most_popular</span></code></td>
+<td>sales across all partners over the last 48 hours in descending order</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">alphabetic</span></code></td>
+<td>event description in ascending order alphabetically</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">cost_ascending</span></code></td>
+<td>minimum total cost of the ticket in ascending order</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cost_descending</span></code></td>
+<td>maximum total cost of the ticket in descending order</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">critic_rating</span></code></td>
+<td>average critic rating in descending order</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">recent</span></code></td>
+<td>date we first saw the event in descending order</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">last_sale</span></code></td>
+<td>the last time we sold a ticket for the event in descending order</td>
+</tr>
+</tbody>
+</table>
+<p>The default sort order is <code class="docutils literal"><span class="pre">alphabetic</span></code>. The secondary sorting metric is
+always <code class="docutils literal"><span class="pre">alphabetic</span></code>.</p>
+</div>
+<div class="section" id="taking-payments">
+<h2>Taking payments<a class="headerlink" href="#taking-payments" title="Permalink to this headline">¶</a></h2>
+<p id="id4">There are multiple ways that we can take payment for a transaction:</p>
+<ul class="simple">
+<li><a class="reference internal" href="#on-credit-payments"><span class="std std-ref">on credit</span></a> (we invoice you later)</li>
+<li><a class="reference internal" href="#redirect-payments"><span class="std std-ref">redirection</span></a> to a third party who takes the card payment (such as paypal)</li>
+<li><a class="reference internal" href="#stripe-payments"><span class="std std-ref">stripe</span></a> an on page third party payment provider</li>
+<li><a class="reference internal" href="#card-payments"><span class="std std-ref">directly taking card payments</span></a></li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Generally speaking we are phasing out taking card payments directly
+and you as a user are highly unlikely to ever see a backend system
+that requires it. Regardless it’s documented here in case it ever
+crops up.</p>
+</div>
+<p>The below examples will assume that you have the following customer object:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch.customer</span> <span class="k">import</span> <span class="n">Customer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;Fred&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Flintstone&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">address_lines</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;301 Cobble stone road&#39;</span><span class="p">,</span> <span class="s1">&#39;Bolder Lane&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">country_code</span><span class="o">=</span><span class="s1">&#39;us&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">email</span><span class="o">=</span><span class="s1">&#39;fred@slate-rock-gravel.com&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">post_code</span><span class="o">=</span><span class="s1">&#39;70777&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">town</span><span class="o">=</span><span class="s1">&#39;Bedrock&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">county</span><span class="o">=</span><span class="s1">&#39;LA&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">phone</span><span class="o">=</span><span class="s1">&#39;0110134345&#39;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="on-credit">
+<h3>On credit<a class="headerlink" href="#on-credit" title="Permalink to this headline">¶</a></h3>
+<p id="on-credit-payments">This is the simplest method of payment as it only requires customer details.
+Don’t worry though, we will invoice you later!:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_reservation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AB-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;STALLS&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;A/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_purchase</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">customer</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;purchased&#39;</span>
+</pre></div>
+</div>
+<p>Job done, ship it!</p>
+</div>
+<div class="section" id="redirects">
+<h3>Redirects<a class="headerlink" href="#redirects" title="Permalink to this headline">¶</a></h3>
+<p id="redirect-payments">For some payments you will need to redirect your customers browser to a third
+party:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;demo-redirect&#39;</span><span class="p">,</span> <span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_reservation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AB-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;STALLS&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;A/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch.payment_methods</span> <span class="k">import</span> <span class="n">RedirectionDetails</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">token</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">details</span> <span class="o">=</span> <span class="n">RedirectionDetails</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">url</span><span class="o">=</span><span class="s1">&#39;https://fromtheboxoffice.com/callback/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">user_agent</span><span class="o">=</span><span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64; rv:51.0) Gecko/20100101 Firefox/51.0&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">accept</span><span class="o">=</span><span class="s1">&#39;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">remote_site</span><span class="o">=</span><span class="s1">&#39;fromtheboxoffice.com&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>All redirect payments require a unique return token. The token should be
+unique to your user, transaction, and each potential callout. We recommend a
+UUID (v1 or v4) so there is no confusion (python has a good implementation).</p>
+<p>Your return URL should contain the return token, and importantly <strong>no query
+string parameters</strong>. It <em>can</em> be a non secure URL, but don’t be that guy that
+handles payments from a non secure website.</p>
+<p>The remote site should match the domain in return URL.</p>
+<p>To facilitate some of our weirder redirects you should also pass in your users
+<code class="docutils literal"><span class="pre">User-Agent</span></code> and <code class="docutils literal"><span class="pre">Accept</span></code> HTTP request headers.</p>
+<p>With your redirect details established you can go ahead and make the
+purchase:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_purchase</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">customer</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">payment_method</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span>
+<span class="go">&lt;Callout ext_test1:95ca436e-e763-4463-954b-2b3eb4d8fdcb&gt;</span>
+</pre></div>
+</div>
+<p>All redirect payments should return a callback but no status. <a class="reference internal" href="#id5"><span class="std std-ref">See below
+for how to handle callouts</span></a>.</p>
+</div>
+<div class="section" id="stripe">
+<h3>Stripe<a class="headerlink" href="#stripe" title="Permalink to this headline">¶</a></h3>
+<p id="stripe-payments">A common payment method for handling credit/debit cards is the third party
+payment provider <a class="reference external" href="https://stripe.com/gb">stripe</a>. Stripe allows us to take card payments without you
+having to send us card details and the associated security nightmare that
+comes with it. If stripe sounds interesting you can read more about
+<a class="reference internal" href="#id8"><span class="std std-ref">handling front end integrations</span></a>, or in
+<a class="reference external" href="http://docs.ingresso.co.uk/#purchasing-with-stripe">our main API documentation</a>, or <a class="reference external" href="https://stripe.com/docs">the
+official stripe documentation</a>.</p>
+<p>For this example  we are going to set up a reservation with more than one
+bundle, this is because we must supply a stripe token for each bundle:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch.customer</span> <span class="k">import</span> <span class="n">Customer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch.payment_methods</span> <span class="k">import</span> <span class="n">StripeDetails</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;demo-stripe&#39;</span><span class="p">,</span> <span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_trolley</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AB-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;STALLS&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;A/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_reservation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">token</span><span class="o">=</span><span class="n">trolley</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AA-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;STALLS&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;A/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span>
+<span class="go">[&lt;Bundle ext_test0&gt;, &lt;Bundle ext_test1&gt;]</span>
+</pre></div>
+</div>
+<p>We will assume that you have also managed to create a stripe token for each
+bundle that represents a single use of your customers card details:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tokens</span> <span class="o">=</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">details</span> <span class="o">=</span> <span class="n">StripeDetails</span><span class="p">({</span>
+<span class="gp">... </span>    <span class="s1">&#39;ext_test0&#39;</span><span class="p">:</span> <span class="s1">&#39;tok_1ADFKNHIklODsaxB3LZqzvpX&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;ext_test1&#39;</span><span class="p">:</span> <span class="s1">&#39;tok_1ADFKgHIklODsaxBUr5gE6ca&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_purchase</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">customer</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">payment_method</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;purchased&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Result good job!</p>
+<p>Stripe payments should not return a callout if you do it in this manner.
+However if you miss a token a callout for the remaining payment(s) will be
+issued. If this happens you can handle the callback directly passing any
+missing stripe token for each callout like so:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">next_callout</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">callout</span><span class="o">.</span><span class="n">return_token</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">(),</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;stripeToken&#39;</span><span class="p">:</span> <span class="s1">&#39;tok_1ADFKgHIklODsaxBUr5gE6ca&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;purchased&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="card-details">
+<h3>Card Details<a class="headerlink" href="#card-details" title="Permalink to this headline">¶</a></h3>
+<p id="card-payments">Sometimes we need to pass the customers card details directly to the backend
+system. This method of payment is being phased out and you are extremely
+unlikely to come across it, and certainly not without forewarning, however
+it’s documented here just in case:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch.payment_methods</span> <span class="k">import</span> <span class="n">CardDetails</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;demo-creditcard&#39;</span><span class="p">,</span> <span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_reservation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AB-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;STALLS&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;A/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">details</span> <span class="o">=</span> <span class="n">CardDetails</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;4111 1111 1111 1111&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">expiry_month</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">expiry_year</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ccv2</span><span class="o">=</span><span class="s1">&#39;123&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_purchase</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">customer</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">payment_method</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;purchased&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>If your customer wants to provide an alternate billing address they can do
+so:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch.address</span> <span class="k">import</span> <span class="n">Address</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">billing_address</span> <span class="o">=</span> <span class="n">Address</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">lines</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Slate, Rock, and Gravel&#39;</span><span class="p">,</span> <span class="s1">&#39;123 Sediment Row&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">town</span><span class="o">=</span><span class="s1">&#39;Bedrock&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">country_code</span><span class="o">=</span><span class="s1">&#39;us&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">county</span><span class="o">=</span><span class="s1">&#39;LA&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">post_code</span><span class="o">=</span><span class="s1">&#39;70777&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">details</span> <span class="o">=</span> <span class="n">CardDetails</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;4111 1111 1111 1111&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">expiry_month</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">expiry_year</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ccv2</span><span class="o">=</span><span class="s1">&#39;123&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">billing_address</span><span class="o">=</span><span class="n">billing_address</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_purchase</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">customer</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">payment_method</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;purchased&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>Some card’s require 3D secure validation, if you want to accept these cards
+you must pass in the same return_url parameters as with redirect payments:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">token</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">details</span> <span class="o">=</span> <span class="n">CardDetails</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;4111 1111 1111 1111&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">expiry_month</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">expiry_year</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ccv2</span><span class="o">=</span><span class="s1">&#39;123&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">return_token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">return_url</span><span class="o">=</span><span class="s1">&#39;https://fromtheboxoffice.com/callback/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">token</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="n">user_agent</span><span class="o">=</span><span class="s1">&#39;Mozilla/5.0 (X11; Linux x86_64; rv:51.0) Gecko/20100101 Firefox/51.0&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">accept</span><span class="o">=</span><span class="s1">&#39;text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">remote_site</span><span class="o">=</span><span class="s1">&#39;fromtheboxoffice.com&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_purchase</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">customer</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">payment_method</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span>
+<span class="go">&lt;Callout ext_test1:95ca436e-e763-4463-954b-2b3eb4d8fdcb&gt;</span>
+</pre></div>
+</div>
+<p>If your customers card requires a redirect to 3D secure then a callout will be
+issued <a class="reference internal" href="#id5"><span class="std std-ref">See below for how to handle callouts</span></a>.</p>
+<p>If you don’t provide redirection details, and the card in question requires 3D
+secure you will receive a <code class="docutils literal"><span class="pre">auth_failure</span></code> error in the <code class="xref py py-attr docutils literal"><span class="pre">purchase_result</span></code> and <code class="xref py py-attr docutils literal"><span class="pre">failed_3d_secure</span></code> will be set
+to <a class="reference external" href="https://docs.python.org/3.6/library/constants.html#True" title="(in Python v3.6)"><code class="xref py py-obj docutils literal"><span class="pre">True</span></code></a>.</p>
+</div>
+</div>
+<div class="section" id="handling-callouts">
+<h2>Handling Callouts<a class="headerlink" href="#handling-callouts" title="Permalink to this headline">¶</a></h2>
+<p id="id5">Some payment methods may require redirecting your customer’s browser to a
+third party. In these situations the <a class="reference internal" href="../api.html#pyticketswitch.client.Client.make_purchase" title="pyticketswitch.client.Client.make_purchase"><code class="xref py py-meth docutils literal"><span class="pre">make_purchase</span></code></a> call or <a class="reference internal" href="../api.html#pyticketswitch.client.Client.next_callout" title="pyticketswitch.client.Client.next_callout"><code class="xref py py-meth docutils literal"><span class="pre">next_callout</span></code></a> call will return a
+<a class="reference internal" href="../api.html#pyticketswitch.callout.Callout" title="pyticketswitch.callout.Callout"><code class="xref py py-class docutils literal"><span class="pre">Callout</span></code></a> object providing details of
+where to send your customer:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_purchase</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">customer</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">payment_method</span><span class="o">=</span><span class="n">details</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span>
+<span class="go">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span>
+<span class="go">&lt;Callout ext_test1:95ca436e-e763-4463-954b-2b3eb4d8fdcb&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span><span class="o">.</span><span class="n">code</span>
+<span class="go">&#39;ext_test1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span><span class="o">.</span><span class="n">type</span>
+<span class="go">&#39;get&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span><span class="o">.</span><span class="n">destination</span>
+<span class="go">&#39;https://api.ticketswitch.com/tickets/dummy_redirect.buy/demo-redirect&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span><span class="o">.</span><span class="n">parameters</span>
+<span class="go">OrderedDict([</span>
+<span class="go">    (&#39;return_url&#39;, &#39;https://fromtheboxoffice.com/callback/010288fe-a196-401f-8319-57bfe0cba552&#39;),</span>
+<span class="go">    (&#39;title&#39;, &quot;Dummy external card details page for debit on system &#39;ext_test1&#39;&quot;)</span>
+<span class="go">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span><span class="o">.</span><span class="n">return_token</span>
+<span class="go">&#39;010288fe-a196-401f-8319-57bfe0cba552&#39;</span>
+</pre></div>
+</div>
+<p>For simple <code class="docutils literal"><span class="pre">get</span></code> callouts you can just build the URL by adding the callout
+parameters to the callout destination:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urlencode</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="n">callout</span><span class="o">.</span><span class="n">destination</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">if</span> <span class="n">callout</span><span class="o">.</span><span class="n">parameters</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">?</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+<span class="gp">... </span>        <span class="n">callout</span><span class="o">.</span><span class="n">destination</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">urlencode</span><span class="p">(</span><span class="n">callout</span><span class="o">.</span><span class="n">parameters</span><span class="p">),</span>
+<span class="gp">... </span>    <span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">url</span>
+<span class="go">&#39;https://api.ticketswitch.com/tickets/dummy_redirect.buy/demo-redirect?return_url=https%3A%2F%2Ffromtheboxoffice.com%2Fcallback%2F010288fe-a196-401f-8319-57bfe0cba552&amp;title=Dummy+external+card+details+page+for+debit+on+system+%27ext_test1%27&#39;</span>
+</pre></div>
+</div>
+<p>You can then redirect your customer to the URL with a 302 direct.</p>
+<p>Some callouts require a <code class="docutils literal"><span class="pre">post</span></code> request to the destination:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span><span class="o">.</span><span class="n">code</span>
+<span class="go">&#39;ext_test1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span><span class="o">.</span><span class="n">type</span>
+<span class="go">&#39;post&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span><span class="o">.</span><span class="n">destination</span>
+<span class="go">&#39;https://api.ticketswitch.com/tickets/dummy_redirect.buy/demo-redirect&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">callout</span><span class="o">.</span><span class="n">parameters</span>
+<span class="go">OrderedDict([</span>
+<span class="go">    (&#39;return_url&#39;, &#39;https://fromtheboxoffice.com/callback/010288fe-a196-401f-8319-57bfe0cba552&#39;),</span>
+<span class="go">    (&#39;title&#39;, &quot;Dummy external card details page for debit on system &#39;ext_test1&#39;&quot;)</span>
+<span class="go">])</span>
+</pre></div>
+</div>
+<p>This cannot be achieved with a simple redirect. Instead you must render an
+HTML form and either submit it on behalf of the user or have the user submit
+it themselves:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">head</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">title</span><span class="o">&gt;</span><span class="n">Redirecting</span> <span class="n">you</span> <span class="n">to</span> <span class="n">your</span> <span class="n">payment</span> <span class="n">provider</span><span class="o">&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">strong</span><span class="o">&gt;</span><span class="n">We</span> <span class="n">are</span> <span class="n">redirecting</span> <span class="n">you</span> <span class="n">to</span> <span class="n">your</span> <span class="n">payment</span> <span class="n">provider</span><span class="o">&lt;/</span><span class="n">strong</span><span class="o">&gt;</span>
+
+    <span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;https://api.ticketswitch.com/tickets/dummy_redirect.buy/demo-redirect&quot;</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;POST&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;calloutForm&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;calloutForm&quot;</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;hidden&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;return_url&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;https://fromtheboxoffice.com/callback/010288fe-a196-401f-8319-57bfe0cba552&quot;</span> <span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;hidden&quot;</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;title&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Dummy external card details page for debit on system &#39;ext_test1&#39;&quot;</span> <span class="o">/&gt;</span>
+      <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;submit&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;Click here to continue to your payment provider&quot;</span> <span class="o">/&gt;</span>
+    <span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+
+    <span class="o">&lt;</span><span class="n">script</span> <span class="n">language</span><span class="o">=</span><span class="s2">&quot;javascript&quot;</span><span class="o">&gt;</span>
+      <span class="n">document</span><span class="o">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s1">&#39;calloutForm&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">submit</span><span class="p">();</span>
+      <span class="n">document</span><span class="o">.</span><span class="n">getElementById</span><span class="p">(</span><span class="s1">&#39;calloutButton&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">disabled</span> <span class="o">=</span> <span class="n">true</span><span class="p">;</span>
+    <span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">the callout parameters are a <code class="xref py py-obj docutils literal"><span class="pre">collections.OrderDict</span></code> and any url
+or form parameters should be passed to the destination in the given
+order.</p>
+</div>
+<p>If you loose the details of where you are supposed to be redirecting your
+customer to to can retrieve it again with a <a class="reference internal" href="../api.html#pyticketswitch.client.Client.get_status" title="pyticketswitch.client.Client.get_status"><code class="xref py py-meth docutils literal"><span class="pre">get_status</span></code></a> call and find the details on the
+<code class="xref py py-attr docutils literal"><span class="pre">pending_callout</span></code>.</p>
+</div>
+<div class="section" id="handling-callbacks">
+<h2>Handling Callbacks<a class="headerlink" href="#handling-callbacks" title="Permalink to this headline">¶</a></h2>
+<p id="id6">When the user has come back to your website from a third party payment
+method, the third party should pass you some parameters that need to be passed
+back to the API to complete the payment.</p>
+<p>For example if your callback URL looks something like this
+<code class="docutils literal"><span class="pre">https://example.com/callback/&lt;return_token&gt;/</span></code> and the payment provider
+returns your customer to a URL like this
+<code class="docutils literal"><span class="pre">https://example.com/callback/4e91a978-f7c6-4e38-b6c0-5167a1360398/?success=1&amp;ref=abc123</span></code>
+you need to pass those parameters back to us:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;demo-redirect&#39;</span><span class="p">,</span> <span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">returned_parameters</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="s1">&#39;ref&#39;</span><span class="p">:</span> <span class="s1">&#39;abc123&#39;</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">this_token</span> <span class="o">=</span> <span class="s1">&#39;4e91a978-f7c6-4e38-b6c0-5167a1360398&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">next_token</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">next_callout</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">this_token</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">next_token</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">returned_parameters</span><span class="p">,</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;purchased&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="../api.html#pyticketswitch.client.Client.next_callout" title="pyticketswitch.client.Client.next_callout"><code class="xref py py-class docutils literal"><span class="pre">next_callout</span></code></a>
+may return another <a class="reference internal" href="../api.html#pyticketswitch.callout.Callout" title="pyticketswitch.callout.Callout"><code class="xref py py-class docutils literal"><span class="pre">Callout</span></code></a>
+object.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">the third party may try to return parameters to you via either a
+<code class="docutils literal"><span class="pre">GET</span></code> <strong>OR</strong> a <code class="docutils literal"><span class="pre">POST</span></code> request <strong>OR</strong> sometimes both (which is
+a clear violation of the HTTP spec but you know it’s only the
+worlds largest payment provider, they probably don’t know any
+better). As such you should make sure your callback URL responds
+to both <code class="docutils literal"><span class="pre">GET</span></code> and <code class="docutils literal"><span class="pre">POST</span></code> methods, and reads parameters from
+both the URL and the request body.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">If your user gets lost and doesn’t complete their transaction we
+will after a time attempt to clean up the transaction by
+returning to your return URL ourselves and returning no data. As
+such you should not assume things like cookies or sessions, or
+local storage, and you should be able to complete the callback
+withonly the data contained in the return url. If this is a
+problem for you let us know and we will see what we can do.</p>
+</div>
+</div>
+<div class="section" id="setting-tracking-id">
+<h2>Setting tracking ID<a class="headerlink" href="#setting-tracking-id" title="Permalink to this headline">¶</a></h2>
+<p id="id7">When instantiating Client object it’s also possible to set optional tracking ID
+that will be set with each request performed by <cite>make_request</cite> method:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;example-user&#39;</span><span class="p">,</span> <span class="s1">&#39;some-password&#39;</span><span class="p">,</span> <span class="n">tracking_id</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;test.v1&#39;</span><span class="p">,</span> <span class="p">{})</span>
+</pre></div>
+</div>
+<p>This is useful when using a common id for tracking requests across the
+whole infrastructure, and if set might prove very helpful
+when debugging failing queries.</p>
+<p>Additionally it’s also possible to set a tracking id not only
+when instantiating the API Client but also using separate
+tracking id each time a call is made.</p>
+<p>If global tracking id is set when instantiating API client
+it will be overwritten by per request tracking id</p>
+<p>For example to set custom tracking id each time the <cite>list_events</cite>
+method is called append <cite>tracking_id</cite> parameter as a kwarg.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;example-user&#39;</span><span class="p">,</span> <span class="s1">&#39;some-password&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">(</span><span class="n">tracking_id</span><span class="o">=</span><span class="s1">&#39;123&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="frontend-integrations">
+<h2>Frontend Integrations<a class="headerlink" href="#frontend-integrations" title="Permalink to this headline">¶</a></h2>
+<p id="id8">For payment methods like stripe you will need some information ahead of
+purchase time in order to capture payment details. The API provides the
+<a class="reference internal" href="../api.html#pyticketswitch.debitor.Debitor" title="pyticketswitch.debitor.Debitor"><code class="xref py py-class docutils literal"><span class="pre">Debitor</span></code></a> object for each bundle so
+you can determine how you should be capturing these details:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;demo-stripe&#39;</span><span class="p">,</span> <span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_reservation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="s1">&#39;7AB-4&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="s1">&#39;STALLS&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="s1">&#39;A/pool&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">2</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">debitor</span> <span class="o">=</span> <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">debitor</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">debitor</span>
+<span class="go">&lt;Debitor stripe:stripe&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">debitor</span><span class="o">.</span><span class="n">description</span>
+<span class="go">&#39;Stripe Debitor&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">debitor</span><span class="o">.</span><span class="n">type</span>
+<span class="go">&#39;stripe&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">debitor</span><span class="o">.</span><span class="n">name</span>
+<span class="go">&#39;stripe&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">debitor</span><span class="o">.</span><span class="n">integration_data</span>
+<span class="go">{&#39;publishable_key&#39;: &#39;pk_test_b7N9DOwbo4B9t6EqCf9jFzfa&#39;,</span>
+<span class="go"> &#39;statement_descriptor&#39;: &#39;Test Stripe Account&#39;}</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>You can then use the integration data to initialise a card details capture or
+similar front end integration.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Advanced Guide</a><ul>
+<li><a class="reference internal" href="#demo-user-events">Demo User Events</a></li>
+<li><a class="reference internal" href="#searching-for-an-event">Searching for an Event</a></li>
+<li><a class="reference internal" href="#pagination">Pagination</a></li>
+<li><a class="reference internal" href="#requesting-seat-availability">Requesting Seat Availability</a><ul>
+<li><a class="reference internal" href="#availability">Availability</a></li>
+<li><a class="reference internal" href="#reservation">Reservation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#trollies-bundles-orders-and-ticket-orders">Trollies, Bundles, Orders and Ticket orders</a><ul>
+<li><a class="reference internal" href="#trolley">Trolley</a></li>
+<li><a class="reference internal" href="#bundle">Bundle</a></li>
+<li><a class="reference internal" href="#order">Order</a></li>
+<li><a class="reference internal" href="#ticket-order">Ticket Order</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bundling">Bundling</a></li>
+<li><a class="reference internal" href="#sorting-search-results">Sorting search results</a></li>
+<li><a class="reference internal" href="#taking-payments">Taking payments</a><ul>
+<li><a class="reference internal" href="#on-credit">On credit</a></li>
+<li><a class="reference internal" href="#redirects">Redirects</a></li>
+<li><a class="reference internal" href="#stripe">Stripe</a></li>
+<li><a class="reference internal" href="#card-details">Card Details</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#handling-callouts">Handling Callouts</a></li>
+<li><a class="reference internal" href="#handling-callbacks">Handling Callbacks</a></li>
+<li><a class="reference internal" href="#setting-tracking-id">Setting tracking ID</a></li>
+<li><a class="reference internal" href="#frontend-integrations">Frontend Integrations</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="quickstart.html" title="previous chapter">Quick Start</a></li>
+      <li>Next: <a href="../api.html" title="next chapter">Developer Interface</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/users/advanced.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/users/advanced.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,151 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.debitor &#8212; pyticketswitch 2.0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.debitor</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span>
+
+
+<div class="viewcode-block" id="Debitor"><a class="viewcode-back" href="../../api.html#pyticketswitch.debitor.Debitor">[docs]</a><span class="k">class</span> <span class="nc">Debitor</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Information about a 3rd party that will take payment from your customer.</span>
+
+<span class="sd">    This information is primarily used for bypassing callouts an integrating</span>
+<span class="sd">    directly with payment providers on the front end.</span>
+
+<span class="sd">    When your account is set up to sell on credit (i.e. you are always taking</span>
+<span class="sd">    payment from the customer in your application directly), this information</span>
+<span class="sd">    will not be present, and it should not be relevant.</span>
+
+<span class="sd">    When the source system is taking payment this information will not be</span>
+<span class="sd">    present.</span>
+
+<span class="sd">    When debitor information is not present or you are not front end</span>
+<span class="sd">    integrating you should refer to the</span>
+<span class="sd">    :attr:`Reservation.needs_payment_card</span>
+<span class="sd">    &lt;pyticketswitch.reservation.Reservation.needs_payment_card&gt;`,</span>
+<span class="sd">    :attr:`Reservation.needs_email_address</span>
+<span class="sd">    &lt;pyticketswitch.reservation.Reservation.needs_email_address&gt;`, and</span>
+<span class="sd">    :attr:`Reservation.needs_agent_reference</span>
+<span class="sd">    &lt;pyticketswitch.reservation.Reservation.needs_agent_reference&gt;` attributes</span>
+<span class="sd">    as to what information you need to pass back to the API for purchasing</span>
+<span class="sd">    tickets.</span>
+
+<span class="sd">    Regardless of the debitor it&#39;s advisable to implement the full</span>
+<span class="sd">    purchase/callout/callback process in the event that your front end</span>
+<span class="sd">    integration goes awry.</span>
+
+<span class="sd">    :ref:`See front end integrations for more information</span>
+<span class="sd">    &lt;frontend_integrations&gt;`</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        type (str): all debitors with the same type can be assumed to integrate</span>
+<span class="sd">            in the same manor, however their parameters and integration data</span>
+<span class="sd">            might be different.</span>
+<span class="sd">        name (str): name of the specific implementation of the debitor.</span>
+<span class="sd">        description (str): human readable description of the debitor.</span>
+<span class="sd">        integration_data (dict): data used to do front end integrations. For</span>
+<span class="sd">            the format of this data please consult :ref:`the documentation for</span>
+<span class="sd">            the relevant debitor type &lt;frontend_integrations&gt;`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">integration_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">typ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">integration_data</span> <span class="o">=</span> <span class="n">integration_data</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;typ&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;debitor_type&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;debitor_name&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;debitor_desc&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;integration_data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;debitor_integration_data&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Debitor </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

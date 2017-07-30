@@ -1,0 +1,254 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.status &#8212; pyticketswitch 2.0.8 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.8',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.status</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch.trolley</span> <span class="k">import</span> <span class="n">Trolley</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.user</span> <span class="k">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.utils</span> <span class="k">import</span> <span class="n">isostr_to_datetime</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.country</span> <span class="k">import</span> <span class="n">Country</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.customer</span> <span class="k">import</span> <span class="n">Customer</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.address</span> <span class="k">import</span> <span class="n">Address</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.card_type</span> <span class="k">import</span> <span class="n">CardType</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.callout</span> <span class="k">import</span> <span class="n">Callout</span>
+
+
+<div class="viewcode-block" id="Status"><a class="viewcode-back" href="../../api.html#pyticketswitch.status.Status">[docs]</a><span class="k">class</span> <span class="nc">Status</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes the current state of a transaction</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        status (str): the current status of the transaction.</span>
+<span class="sd">        reserved_at (datetime.datetime): the date and time when the transaction</span>
+<span class="sd">            was reserved.</span>
+<span class="sd">        purchased_at (datetime.datetime): the date and time when the transaction</span>
+<span class="sd">            was purchased.</span>
+<span class="sd">        trolley (:class:`Trolley &lt;pyticketswitch.trolley.Trolley&gt;`): the</span>
+<span class="sd">            contents of the transactions trolley.</span>
+<span class="sd">        external_sale_page (str): the page that was rendered to the customer</span>
+<span class="sd">            after the transaction was completed. This is only available if</span>
+<span class="sd">            it was passed into the API at purchase time.</span>
+<span class="sd">        languages (list): list of IETF language tags relevant to the</span>
+<span class="sd">            transaction.</span>
+<span class="sd">        remote_site (str): the remote site the transaction was reserved and</span>
+<span class="sd">            purchased under.</span>
+<span class="sd">        unreserved_orders (list): list of :class:`Orders</span>
+<span class="sd">            &lt;pyticketswitch.order.Order`&gt;` that failed to reserve.</span>
+<span class="sd">        prefilled_address (:class:`Address &lt;pyticketswitch.address.Address&gt;`):</span>
+<span class="sd">            some address information that should be used to prefill any</span>
+<span class="sd">            customer address fields. This is primarily used on B2B accounts.</span>
+<span class="sd">        needs_payment_card (bool): When :obj:`True` indicates that this</span>
+<span class="sd">            reservation will require :class:`CardDetails</span>
+<span class="sd">            &lt;pyticketswitch.payment_methods.CardDetails&gt;` as the payment method</span>
+<span class="sd">            at purchase time.</span>
+<span class="sd">        needs_email_address (bool): When :obj:`True` indicates that the</span>
+<span class="sd">            customer needs to provide a valid email address at purchase time.</span>
+<span class="sd">        needs_agent_reference (bool): When :obj:`True` indicates that an agent</span>
+<span class="sd">            reference should be provided at purchase time.</span>
+<span class="sd">        can_edit_address (bool): When :obj:`False` indicates that the prefilled</span>
+<span class="sd">            customer address provided by **prefilled_address** should not be</span>
+<span class="sd">            edited.</span>
+<span class="sd">        allowed_countries (list): list of :class:`Countries</span>
+<span class="sd">            &lt;pyticketswitch.country.Country&gt;` that are acceptable for the</span>
+<span class="sd">            customers postal address to be from.</span>
+<span class="sd">        minutes_left (float): the number of minutes left before a reservation</span>
+<span class="sd">            expires.</span>
+<span class="sd">        supports_billing_address (bool): this transaction will support supplying</span>
+<span class="sd">            a secondary billing address that is differnet to the customer</span>
+<span class="sd">            address.</span>
+<span class="sd">        accepted_cards (list): acceptable debit/credit card types when API</span>
+<span class="sd">            takes card details from the customer.</span>
+<span class="sd">        pending_callout (:class:`Callout &lt;pyticketswitch.callout.Callout&gt;`):</span>
+<span class="sd">            if the transaction is mid purchase then this will hold information</span>
+<span class="sd">            about how to reenter the purchase process.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reserved_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">trolley</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">purchased_at</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">external_sale_page</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">languages</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remote_site</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reserve_user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">prefilled_address</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">needs_payment_card</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">needs_email_address</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">needs_agent_reference</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">can_edit_address</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">allowed_countries</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">minutes_left</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">supports_billing_address</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">accepted_cards</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pending_callout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">customer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">purchase_result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reserved_at</span> <span class="o">=</span> <span class="n">reserved_at</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">purchased_at</span> <span class="o">=</span> <span class="n">purchased_at</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trolley</span> <span class="o">=</span> <span class="n">trolley</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">external_sale_page</span> <span class="o">=</span> <span class="n">external_sale_page</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">languages</span> <span class="o">=</span> <span class="n">languages</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remote_site</span> <span class="o">=</span> <span class="n">remote_site</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reserve_user</span> <span class="o">=</span> <span class="n">reserve_user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefilled_address</span> <span class="o">=</span> <span class="n">prefilled_address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs_payment_card</span> <span class="o">=</span> <span class="n">needs_payment_card</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs_email_address</span> <span class="o">=</span> <span class="n">needs_email_address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">needs_agent_reference</span> <span class="o">=</span> <span class="n">needs_agent_reference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">can_edit_address</span> <span class="o">=</span> <span class="n">can_edit_address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allowed_countries</span> <span class="o">=</span> <span class="n">allowed_countries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minutes_left</span> <span class="o">=</span> <span class="n">minutes_left</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">supports_billing_address</span> <span class="o">=</span> <span class="n">supports_billing_address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accepted_cards</span> <span class="o">=</span> <span class="n">accepted_cards</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pending_callout</span> <span class="o">=</span> <span class="n">pending_callout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">customer</span> <span class="o">=</span> <span class="n">customer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">purchase_result</span> <span class="o">=</span> <span class="n">purchase_result</span>
+
+<div class="viewcode-block" id="Status.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.status.Status.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new Status object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a transactions state.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Status &lt;pyticketswitch.status.Status&gt;`: a new</span>
+<span class="sd">            :class:`Status &lt;pyticketswitch.status.Status&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">accepted_cards</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">CardType</span><span class="p">(</span><span class="n">code</span><span class="o">=</span><span class="n">key</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;accepted_payment_cards&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">]</span>
+
+        <span class="n">customer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">customer_api_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;customer&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">customer_api_data</span><span class="p">:</span>
+            <span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">customer_api_data</span><span class="p">)</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;status&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;transaction_status&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;trolley&#39;</span><span class="p">:</span> <span class="n">Trolley</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+            <span class="s1">&#39;remote_site&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;remote_site&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;can_edit_address&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;can_edit_address&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;needs_agent_reference&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;needs_agent_reference&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;needs_email_address&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;needs_email_address&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;needs_payment_card&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;needs_payment_card&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;minutes_left&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;minutes_left_on_reserve&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;supports_billing_address&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;supports_billing_address&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;accepted_cards&#39;</span><span class="p">:</span> <span class="n">accepted_cards</span><span class="p">,</span>
+            <span class="s1">&#39;customer&#39;</span><span class="p">:</span> <span class="n">customer</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">reserved_raw</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reserve_iso8601_date_and_time&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reserved_raw</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">reserved_at</span><span class="o">=</span><span class="n">isostr_to_datetime</span><span class="p">(</span><span class="n">reserved_raw</span><span class="p">))</span>
+
+        <span class="n">purchased_raw</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;purchase_iso8601_date_and_time&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">purchased_raw</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">purchased_at</span><span class="o">=</span><span class="n">isostr_to_datetime</span><span class="p">(</span><span class="n">purchased_raw</span><span class="p">))</span>
+
+        <span class="n">external_sale_page_raw</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;external_sale_page_raw&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">external_sale_page_raw</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s2">&quot;don&#39;t know what this looks like yet&quot;</span><span class="p">)</span>
+
+        <span class="n">reserve_user_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reserve_user&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reserve_user_data</span><span class="p">:</span>
+            <span class="n">reserve_user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">reserve_user_data</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">reserve_user</span><span class="o">=</span><span class="n">reserve_user</span><span class="p">)</span>
+
+        <span class="n">languages_raw</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;language_list&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">languages_raw</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">languages</span><span class="o">=</span><span class="n">languages_raw</span><span class="p">)</span>
+
+        <span class="n">allowed_countries</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allowed_countries&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">allowed_countries</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">countries</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Country</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">allowed_countries</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">]</span>
+            <span class="n">countries</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">code</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">allowed_countries</span><span class="o">=</span><span class="n">countries</span><span class="p">)</span>
+
+        <span class="n">address</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;prefilled_address&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">address</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">prefilled_address</span><span class="o">=</span><span class="n">Address</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">address</span><span class="p">))</span>
+
+        <span class="n">pending_callout</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pending_callout&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pending_callout</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pending_callout</span><span class="o">=</span><span class="n">Callout</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">pending_callout</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
