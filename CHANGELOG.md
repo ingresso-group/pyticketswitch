@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.8] - 2017-07-30
+### Added
+- added `user_commisison` attributes
+
 ## [2.0.7] - 2017-07-03
 ### Added
 - missing barcode attribute to seat
