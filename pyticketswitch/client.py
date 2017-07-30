@@ -809,7 +809,7 @@ class Client(object):
             params.update(add_seat_blocks=True)
 
         if user_commission:
-            params.update(add_user_commission=True)
+            params.update(req_predicted_commission=True)
 
         self.add_optional_kwargs(params, **kwargs)
 
@@ -868,7 +868,7 @@ class Client(object):
 
         return send_methods, meta
 
-    def get_discounts(self, performance_id, ticket_type_code, price_band_code):
+    def get_discounts(self, performance_id, ticket_type_code, price_band_code, user_commission=False):
         """Fetch available discounts for a ticket_type/price band combination
 
         Wraps `/f13/discounts.v1`_
@@ -877,6 +877,8 @@ class Client(object):
             performance_id (string): identifier of the target performance.
             ticket_type_code (string): code for the target ticket type.
             price_band_code (string): code for the target price band.
+            user_commission (bool): if True then return the user_commission,
+                otherwise do not return the user_commission. Defaults to False.
 
         Returns:
            list, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
@@ -888,11 +890,11 @@ class Client(object):
 
         .. _`/f13/discounts.v1`: http://docs.ingresso.co.uk/#discounts
         """
-
         params = {
             'perf_id': performance_id,
             'ticket_type_code': ticket_type_code,
             'price_band_code': price_band_code,
+            'req_predicted_commission': user_commission,
         }
 
         response = self.make_request('discounts.v1', params)

@@ -3,6 +3,7 @@ from pyticketswitch.performance import Performance
 from pyticketswitch.seat import Seat
 from pyticketswitch.send_method import SendMethod
 from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.commission import Commission
 
 
 class TicketOrder(JSONMixin, object):
@@ -168,6 +169,10 @@ class Order(JSONMixin, object):
             has been successfully purchased.
         send_method (:class:`SendMethod <pyticketswitch.send_method.SendMethod>`):
             method of ticket delivery. Only present when requested.
+        gross_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
+            predicted commission to be shared between ingresso and the partner.
+        user_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
+            predicted commission for the partner.
 
     """
 
@@ -176,8 +181,8 @@ class Order(JSONMixin, object):
                  ticket_orders=None, number_of_seats=None,
                  total_seatprice=None, total_surcharge=None,
                  seat_request_status=None, requested_seat_ids=None,
-                 backend_purchase_reference=None, send_method=None):
-
+                 backend_purchase_reference=None, send_method=None,
+                 gross_commission=None, user_commission=None):
         self.item = item
         self.event = event
         self.performance = performance
@@ -192,6 +197,8 @@ class Order(JSONMixin, object):
         self.requested_seat_ids = requested_seat_ids
         self.backend_purchase_reference = backend_purchase_reference
         self.send_method = send_method
+        self.gross_commission = gross_commission
+        self.user_commission = user_commission
 
     @classmethod
     def from_api_data(cls, data):
@@ -248,6 +255,16 @@ class Order(JSONMixin, object):
         if raw_send_method:
             send_method = SendMethod.from_api_data(raw_send_method)
             kwargs.update(send_method=send_method)
+
+        raw_gross_commission = data.get('predicted_gross_commission')
+        if raw_gross_commission:
+            gross_commission = Commission.from_api_data(raw_gross_commission)
+            kwargs.update(gross_commission=gross_commission)
+
+        raw_user_commission = data.get('predicted_user_commission')
+        if raw_user_commission:
+            user_commission = Commission.from_api_data(raw_user_commission)
+            kwargs.update(user_commission=user_commission)
 
         return cls(**kwargs)
 

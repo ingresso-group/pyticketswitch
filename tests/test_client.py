@@ -1095,7 +1095,7 @@ class TestClient:
 
         mock_make_request_for_availability.assert_called_with('availability.v1', {
             'perf_id': '6IF-1',
-            'add_user_commission': True,
+            'req_predicted_commission': True,
         })
 
     def test_get_availability_no_availability(self, client, monkeypatch):
@@ -1174,6 +1174,7 @@ class TestClient:
             'perf_id': 'ABC123-1',
             'ticket_type_code': 'STALLS',
             'price_band_code': 'A/pool',
+            'req_predicted_commission': False,
         })
 
         assert len(discounts) == 2

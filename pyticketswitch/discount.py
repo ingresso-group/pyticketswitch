@@ -1,4 +1,5 @@
 from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
+from pyticketswitch.commission import Commission
 
 
 class Discount(SeatPricingMixin, JSONMixin, object):
@@ -14,12 +15,16 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             discount is not on offer, as a percentage or the non offer price.
         absolute_saving (float): the amount saved compared to when this
             discount is not on offer.
-
+        gross_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
+            predicted commission to be shared between ingresso and the partner.
+        user_commission (:class:`Commission <pyticketswitch.commission.Commission>`):
+            predicted commission for the partner.
     """
 
     def __init__(self, code, description=None, price_band_code=None,
                  availability=None, is_offer=False, percentage_saving=0,
-                 absolute_saving=0, *args, **kwargs):
+                 absolute_saving=0, gross_commission=None, user_commission=None,
+                 *args, **kwargs):
         super(Discount, self).__init__(*args, **kwargs)
         self.code = code
         self.description = description
@@ -28,6 +33,8 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         self.availability = availability
         self.percentage_saving = percentage_saving
         self.absolute_saving = absolute_saving
+        self.gross_commission = gross_commission
+        self.user_commission = user_commission
 
     @classmethod
     def from_api_data(cls, data):
@@ -43,6 +50,13 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             populated with the data from the api.
 
         """
+        gross_commission = data.get('predicted_gross_commission')
+        if gross_commission:
+            gross_commission = Commission.from_api_data(gross_commission)
+
+        user_commission = data.get('predicted_user_commission')
+        if user_commission:
+            user_commission = Commission.from_api_data(user_commission)
 
         kwargs = {
             'code': data.get('discount_code'),
@@ -56,6 +70,8 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             'availability': data.get('number_available'),
             'percentage_saving': data.get('percentage_saving'),
             'absolute_saving': data.get('absolute_saving'),
+            'gross_commission': gross_commission,
+            'user_commission': user_commission,
         }
         kwargs.update(SeatPricingMixin.kwargs_from_api_data(data))
 
