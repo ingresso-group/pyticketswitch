@@ -1,6 +1,13 @@
 Pyticketswitch
 ==============
 
+
+[![Build Status](https://travis-ci.org/ingresso-group/pyticketswitch.svg?branch=master)](https://travis-ci.org/ingresso-group/pyticketswitch)
+[![codecov](https://codecov.io/gh/ingresso-group/pyticketswitch/branch/master/graph/badge.svg)](https://codecov.io/gh/ingresso-group/pyticketswitch)
+[![PyPI](https://img.shields.io/pypi/v/pyticketswitch.svg)](https://pypi.python.org/pypi/pyticketswitch)
+[![PyPI](https://img.shields.io/pypi/pyversions/pyticketswitch.svg)](https://pypi.python.org/pypi/pyticketswitch)
+
+
 Python wrapper for the ticketswitch [f13 API](http://docs.ingresso.co.uk/).
 
 Docs: http://www.ingresso.co.uk/pyticketswitch/
