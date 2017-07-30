@@ -2,6 +2,7 @@ from pyticketswitch.event import Event
 from pyticketswitch.performance import Performance
 from pyticketswitch.order import TicketOrder, Order
 from pyticketswitch.seat import Seat
+from pyticketswitch.commission import Commission
 
 
 class TestTicketOrder:
@@ -18,7 +19,7 @@ class TestTicketOrder:
             'seats': [
                 {'full_id': 'ABC123'},
                 {'full_id': 'DEF456'},
-            ]
+            ],
         }
 
         ticket_order = TicketOrder.from_api_data(data)
@@ -124,7 +125,17 @@ class TestOrder:
                         }
                     ]
                 }
-            }
+            },
+            'predicted_gross_commission': {
+                'amount_including_vat': 4.0,
+                'amount_excluding_vat': 4.5,
+                'commission_currency_code': 'gbp',
+            },
+            'predicted_user_commission': {
+                'amount_including_vat': 2.0,
+                'amount_excluding_vat': 2.1,
+                'commission_currency_code': 'gbp',
+            },
         }
 
         order = Order.from_api_data(data)
@@ -153,6 +164,15 @@ class TestOrder:
         assert order.requested_seat_ids[1] == 'DEF456'
 
         assert order.total_including_send_cost() == (51 + 5.40 + 3.5)
+
+        assert isinstance(order.gross_commission, Commission)
+        assert order.gross_commission.including_vat == 4.0
+        assert order.gross_commission.excluding_vat == 4.5
+        assert order.gross_commission.currency_code == 'gbp'
+        assert isinstance(order.user_commission, Commission)
+        assert order.user_commission.including_vat == 2.0
+        assert order.user_commission.excluding_vat == 2.1
+        assert order.user_commission.currency_code == 'gbp'
 
     def test_from_api_data_with_send_method(self):
 

@@ -169,6 +169,10 @@ class Order(JSONMixin, object):
             has been successfully purchased.
         send_method (:class:`SendMethod <pyticketswitch.send_method.SendMethod>`):
             method of ticket delivery. Only present when requested.
+        gross_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
+            predicted commission to be shared between ingresso and the partner.
+        user_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
+            predicted commission for the partner.
 
     """
 
