@@ -52,7 +52,7 @@ class TestDiscount:
         assert discount.user_commission.excluding_vat == user_commission_data['amount_excluding_vat']
         assert discount.user_commission.currency_code == user_commission_data['commission_currency_code']
 
-    def test_from_api_data_without_user_commission(self):
+    def test_from_api_data_without_commission(self):
         data = {
             'discount_code': 'ADULT',
             'discount_desc': 'Adult standard',
@@ -78,4 +78,5 @@ class TestDiscount:
         assert discount.non_offer_seatprice == 200
         assert discount.non_offer_surcharge == 6.5
         assert discount.availability == 6
+        assert discount.gross_commission is None
         assert discount.user_commission is None

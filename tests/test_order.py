@@ -253,3 +253,16 @@ class TestOrder:
     def test_repr(self):
         order = Order(1, ticket_orders=[])
         assert repr(order) == '<Order 1>'
+
+    def test_from_api_data_without_commission(self):
+        data = {
+            'item_number': 1,
+            "send_method": {
+                "send_code": "COBO",
+            },
+        }
+
+        order = Order.from_api_data(data)
+
+        assert order.gross_commission is None
+        assert order.user_commission is None
