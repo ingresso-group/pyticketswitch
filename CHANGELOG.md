@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - missing links in changelog
-- event docstring
+- misc docstring improvements
 
 ## [2.0.8] - 2017-07-30
 ### Added

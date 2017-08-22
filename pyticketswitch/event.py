@@ -63,13 +63,13 @@ class Event(JSONMixin, object):
             indexed on field name. Only present when requested.
         event_info (str): event info in plain text. Only present when
             requested.
-        event_info (str): event info as HTML. Only present when requested.
+        event_info_html (str): event info as HTML. Only present when requested.
         venue_addr (str): venue address in plain text. Only present when
             requested.
         venue_addr_html (str): venue address as HTML. Only present when requested.
         venue_info (str): venue info in plain text. Only present when
             requested.
-        venue_info (str): venue info as HTML. Only present when requested.
+        venue_info_html (str): venue info as HTML. Only present when requested.
         media (dict): dictionary of :class:`Media <pyticketswitch.media.Media>`
             objects indexed on media name. Only present when requested.
         reviews (list): list of :class:`Reviews <pyticketswitch.review.Review>`
@@ -85,6 +85,7 @@ class Event(JSONMixin, object):
             purchase. from cached data, only available when requested by
             **get_events** or **get_event**.
         raw (dict): the raw data used to generate the object.
+        is_addon (bool): indicates that the event is an addon.
 
     """
 

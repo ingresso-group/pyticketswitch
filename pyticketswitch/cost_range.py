@@ -4,7 +4,7 @@ from pyticketswitch import utils
 
 
 class CostRange(JSONMixin, object):
-    """CostRange gives summarizes pricing for events and performances.
+    """CostRange gives summarized pricing for events and performances.
 
     This information is returned from cached data collected when making actual
     calls to the backend system, and should not be considered accurate.
