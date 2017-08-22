@@ -203,9 +203,9 @@ class AvailabilityDetails(JSONMixin, object):
         """Check availablity on a given year/month/day.
 
         Args:
-            year (int): the year to check. E.G.: 2005, 2016, 2222, etc
-            month (int, optional): the month to check. 1 == jan, 12 == dec, etc
-            day (int, optional): the day of the month, zero indexed.
+            year (int): the year to check. For example, 2005, 2016, 2222, etc
+            month (int): (optional) the month to check. 1 == jan, 12 == dec, etc
+            day (int): (optional) the day of the month, zero indexed.
 
         Returns:
             bool: :obj:`True` when availble inside the given parameters, other

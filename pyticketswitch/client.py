@@ -150,8 +150,9 @@ class Client(object):
         Args:
             endpoint (str): target API endpoint
             params (dict): parameters to provide to requests
-            method (:obj:`str`, optional): HTTP method to make the request with
+            method (str): HTTP method to make the request with
                 valid values are ``post`` and ``get``. Defaults to ``get``.
+            headers (dict): headers to include with the request
 
         Returns:
             str: The body of the response after deserialising from JSON
@@ -275,42 +276,42 @@ class Client(object):
         Args:
             params (dict): The parameters dictionary into which any additional
                 paramters will be added
-            availability (bool, optional): Includes general information
+            availability (bool): Includes general information
                 about availability of events and performances.
-            availability_with_performances (:obj:`bool`, optional): Includes
+            availability_with_performances (bool): Includes
                 detailed information about avilability of events and includes
                 performance information.
-            extra_info (bool, optional): Includes additional event
+            extra_info (bool): Includes additional event
                 textual content. Defaults to :obj:`False`.
-            reviews (bool, optional): Includes event reviews when
+            reviews (bool): Includes event reviews when
                 available. Defaults to :obj:`False`.
-            media (bool, optional): Includes any media assets associated
+            media (bool): Includes any media assets associated
                 with an event. Defaults to :obj:`False`.
-            cost_range (bool, optional): Include price range estimates.
+            cost_range (bool): Include price range estimates.
                 Defaults to :obj:`False`.
-            best_value_offer (bool, optional): requires **cost_range**.
+            best_value_offer (bool): requires **cost_range**.
                 Includes the offer with the highest percentage saving in cost
                 range information. Defaults to :obj:`False`.
-            max_saving_offer (bool, optional): requires **cost_range**.
+            max_saving_offer (bool): requires **cost_range**.
                 Includes the offer with the highest absolute saving in cost
                 range information. Defaults to :obj:`False`.
-            min_cost_offer (bool, optional): requires **cost_range**.
+            min_cost_offer (bool): requires **cost_range**.
                 Includes the offer with the lowest cost in cost range
                 information. Defaults to :obj:`False`.
-            top_price_offer (bool, optional): requires **cost_range**.
+            top_price_offer (bool): requires **cost_range**.
                 Includes the offer with the highest cost in cost range
                 information. Defaults to :obj:`False`.
-            no_singles_data (bool, optional): requires **cost_range**.
+            no_singles_data (bool): requires **cost_range**.
                 This returns another cost range object that excludes
                 availability with only one consecutive seat available.
                 Defaults to :obj:`False`.
-            cost_range_details (bool, optional): Cost range information for
+            cost_range_details (bool): Cost range information for
                 each available price band.  Defaults to :obj:`False`.
-            cost_range_details (bool, optional): Cost range information for
+            cost_range_details (bool): Cost range information for
                 each available price band.  Defaults to :obj:`False`.
-            source_info (bool, optional): includes information on the source
+            source_info (bool): includes information on the source
                 system. defaults to :obj:`false`.
-            tracking_id (string, optional): Add custom tracking id to the request
+            tracking_id (string): Add custom tracking id to the request
             **kwargs: Additional or override parameters to send with the
                 request.
         """
@@ -389,39 +390,39 @@ class Client(object):
         available to the user.
 
         Args:
-            keywords (list, optional): list of keyword strings. For example:
+            keywords (list): list of keyword strings. For example:
                 ``keywords=['sadlers', 'nutcracker']``. Defaults to
                 :obj:`None`.
-            start_date (datetime.datetime, optional): only show events that
+            start_date (datetime.datetime): only show events that
                 have a performance after this date. Defaults to :obj:`None`.
-            end_date (datetime.datetime, optional): only show events that have
+            end_date (datetime.datetime): only show events that have
                 a performance before this date. Defaults to :obj:`None`.
-            country_code (string, optional): only show events in this country.
+            country_code (string): only show events in this country.
                 the country is specified by it's ISO 3166-1 country code.
                 Defaults to :obj:`None`.
-            city_code: (string, optional): specified by the internal city code. As
+            city_code: (string): specified by the internal city code. As
                 a rule of thumb this is the lowercase city name followed by
                 a hyphen followed by the ISO 3166-1 country code. For example:
                 ``london-uk``, ``new_york-us``, ``berlin-de``.  Defaults to
                 :obj:`None`.
-            latitude (float, optional): only show events near this latitude.
+            latitude (float): only show events near this latitude.
                 valid only in combination with longitude and radius. Defaults
                 to :obj:`None`.
-            longitude (float, optional): only show events near this longitude.
+            longitude (float): only show events near this longitude.
                 valid only in combination with latitude and radius. Defaults
                 to :obj:`None`.
-            radius (float, optional): only show events inside this radius
+            radius (float): only show events inside this radius
                 relative to the provided coordinates (latitude & longitude
                 above). Units are kilometers. Defaults to :obj:`None`.
-            include_dead (bool, optional): when true results will include all
+            include_dead (bool): when true results will include all
                 events even if they are dead (are unavailable to purchase
                 from). Defaults to :obj:`False`.
-            sort_order (string, optional): order the returned events by the
+            sort_order (string): order the returned events by the
                 specified metric. See
                 :ref:`sorting search results <sorting_search_results>`.
                 Defaults to :obj:`None`
-            page (int, optional): the page of a paginated response.
-            page_length (int, optional): how many performances are
+            page (int): the page of a paginated response.
+            page_length (int): how many performances are
                 returned per page.
             **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
@@ -504,8 +505,8 @@ class Client(object):
 
         Args:
             event_ids (list): list of event IDs
-            with_addons (bool, optional): include add-on events
-            with_upsells (bool, optional): include upsell events
+            with_addons (bool): include add-on events
+            with_upsells (bool): include upsell events
             **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
@@ -626,12 +627,12 @@ class Client(object):
 
         Args:
             event_id (str): identifier for the event.
-            start_date (datetime.datetime, optional):
+            start_date (datetime.datetime):
                 list performances only if they occur after this date.
-            end_date (datetime.datetime, optional):
+            end_date (datetime.datetime):
                 list performances only if they occur before this date.
-            page (int, optional): the page of a paginated response.
-            page_length (int, optional): how many performances are
+            page (int): the page of a paginated response.
+            page_length (int): how many performances are
                 returned per page.
             **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
@@ -762,16 +763,16 @@ class Client(object):
 
         Args:
             performance_id (string): identifier of the target performance.
-            number_of_seats (int, optional): number of seats that we after,
+            number_of_seats (int): number of seats that we after,
                 Defaults to :obj:`None`.
-            discounts (bool, optional): request all discount options for all
+            discounts (bool): request all discount options for all
                 price bands in response. Defaults to :obj:`False`.
 
-            example_seats (bool, optional): request example seats for seated
+            example_seats (bool): request example seats for seated
                 events. Defaults to :obj:`False`.
-            seat_blocks (bool, optional): request seating information if
+            seat_blocks (bool): request seating information if
                 available. Defaults to :obj:`False`.
-            user_commission (bool, optional): request user commission for each
+            user_commission (bool): request user commission for each
                 price band/discount. Defaults to :obj:`False`
             **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
@@ -929,22 +930,22 @@ class Client(object):
         to identical parameters.
 
         Args:
-            token (string, optional): trolley token from a previous trolley
+            token (string): trolley token from a previous trolley
                 call.
-            number_of_seats (int, optional): number of seats to add to the
+            number_of_seats (int): number of seats to add to the
                 trolley.
-            discounts (list, optional): list containing discount codes for each
+            discounts (list): list containing discount codes for each
                 requested seat.
-            seats (list, optional): list of seat IDs.
-            send_codes (dict, optional): send codes indexed on backend source
+            seats (list): list of seat IDs.
+            send_codes (dict): send codes indexed on backend source
                 code.
-            ticket_type_code: (string, optional): code of ticket type to add to
+            ticket_type_code: (string): code of ticket type to add to
                 the trolley.
-            performance_id: (string, optional): id of the performance to add to
+            performance_id: (string): id of the performance to add to
                 the trolley.
-            price_band_code: (string, optional): code of price band to add to
+            price_band_code: (string): code of price band to add to
                 the trolley
-            item_numbers_to_remove: (list, optional): list of item numbers to
+            item_numbers_to_remove: (list): list of item numbers to
                 remove from trolley.
             **kwargs: arbitary additional raw keyword arguments to add the
                 parameters.
@@ -1022,22 +1023,22 @@ class Client(object):
         Wraps `/f13/trolley.v1`_
 
         Args:
-            token (string, optional): trolley token from a previous trolley
+            token (string): trolley token from a previous trolley
                 call.
-            number_of_seats (int, optional): number of seats to add to the
+            number_of_seats (int): number of seats to add to the
                 trolley.
-            discounts (list, optional): list containing discount codes for each
+            discounts (list): list containing discount codes for each
                 requested seat.
-            seats (list, optional): list of seat IDs.
-            send_codes (dict, optional): send codes indexed on backend source
+            seats (list): list of seat IDs.
+            send_codes (dict): send codes indexed on backend source
                 code.
-            ticket_type_code: (string, optional): code of ticket type to add to
+            ticket_type_code: (string): code of ticket type to add to
                 the trolley.
-            performance_id: (string, optional): id of the performance to add to
+            performance_id: (string): id of the performance to add to
                 the trolley.
-            price_band_code: (string, optional): code of price band to add to
+            price_band_code: (string): code of price band to add to
                 the trolley.
-            item_numbers_to_remove: (list, optional): list of item numbers to
+            item_numbers_to_remove: (list): list of item numbers to
                 remove from trolley.
             **kwargs: arbitary additional raw keyword arguments to add the
                 parameters.
@@ -1084,21 +1085,21 @@ class Client(object):
         Wraps `/f13/upsells.v1`_
 
         Args:
-            token (string, optional): trolley token from a previous trolley
+            token (string): trolley token from a previous trolley
                 call.
-            number_of_seats (int, optional): trolley with number of seats added.
-            discounts (list, optional): list containing discount codes for each
+            number_of_seats (int): trolley with number of seats added.
+            discounts (list): list containing discount codes for each
                 requested seat.
-            seats (list, optional): trolley with added list of seat IDs.
-            send_codes (dict, optional): send codes indexed on backend source
+            seats (list): trolley with added list of seat IDs.
+            send_codes (dict): send codes indexed on backend source
                 code.
-            ticket_type_code: (string, optional): trolley with tickets of
+            ticket_type_code: (string): trolley with tickets of
                 ticket type added.
-            performance_id: (string, optional): trolley with tickets from the
+            performance_id: (string): trolley with tickets from the
                 specified performance added.
-            price_band_code: (string, optional): trolley with tickets from a
+            price_band_code: (string): trolley with tickets from a
                 specified price band added.
-            item_numbers_to_remove: (list, optional): trolley with a list of
+            item_numbers_to_remove: (list): trolley with a list of
                 item numbers removed.
             **kwargs: arbitary additional raw keyword arguments to add the
                 parameters.
@@ -1152,21 +1153,21 @@ class Client(object):
         Wraps `/f13/add_ons.v1`_
 
         Args:
-            token (string, optional): trolley token from a previous trolley
+            token (string): trolley token from a previous trolley
                 call.
-            number_of_seats (int, optional): trolley with number of seats added.
-            discounts (list, optional): list containing discount codes for each
+            number_of_seats (int): trolley with number of seats added.
+            discounts (list): list containing discount codes for each
                 requested seat.
-            seats (list, optional): trolley with added list of seat IDs.
-            send_codes (dict, optional): send codes indexed on backend source
+            seats (list): trolley with added list of seat IDs.
+            send_codes (dict): send codes indexed on backend source
                 code.
-            ticket_type_code: (string, optional): trolley with tickets of
+            ticket_type_code: (string): trolley with tickets of
                 ticket type added.
-            performance_id: (string, optional): trolley with tickets from the
+            performance_id: (string): trolley with tickets from the
                 specified performance added.
-            price_band_code: (string, optional): trolley with tickets from a
+            price_band_code: (string): trolley with tickets from a
                 specified price band added.
-            item_numbers_to_remove: (list, optional): trolley with a list of
+            item_numbers_to_remove: (list): trolley with a list of
                 item numbers removed.
             **kwargs: arbitrary additional raw keyword arguments to add to the
                 parameters.
@@ -1231,22 +1232,22 @@ class Client(object):
                   documentation for more details.
 
         Args:
-            token (string, optional): trolley token from a previous trolley
+            token (string): trolley token from a previous trolley
                 call.
-            number_of_seats (int, optional): number of seats to add to the
+            number_of_seats (int): number of seats to add to the
                 trolley.
-            discounts (list, optional): list containing discount codes for each
+            discounts (list): list containing discount codes for each
                 requested seat.
-            seats (list, optional): list of seat id's.
-            send_codes (dict, optional): send codes indexed on backend source
+            seats (list): list of seat id's.
+            send_codes (dict): send codes indexed on backend source
                 code.
-            ticket_type_code: (string, optional): code of ticket type to add to
+            ticket_type_code: (string): code of ticket type to add to
                 the trolley.
-            performance_id: (string, optional): id of the performance to add to
+            performance_id: (string): id of the performance to add to
                 the trolley.
-            price_band_code: (string, optional): code of price band to add to
+            price_band_code: (string): code of price band to add to
                 the trolley
-            item_numbers_to_remove: (list, optional): list of item numbers to
+            item_numbers_to_remove: (list): list of item numbers to
                 remove from trolley.
             **kwargs: arbitary additional raw keyword arguments to add the
                 parameters.
@@ -1311,12 +1312,12 @@ class Client(object):
         Wraps `/f13/status.v1`_
 
         Args:
-            transaction_uuid (str, optional): identifier for the transaction.
-            transaction_id (str, optional): identifier for the old transaction ids.
+            transaction_uuid (str): identifier for the transaction.
+            transaction_id (str): identifier for the old transaction ids.
                 Note: one of these two must be set.
-            customer (bool, optional): include customer information if
+            customer (bool): include customer information if
                 available. Defaults to :obj:`False`.
-            external_sale_page (bool, optional): include the saved html of the
+            external_sale_page (bool): include the saved html of the
                 sale/confirmation page if you asked us to save it for you.
                 Defaults to :obj:`None`
             **kwargs: arbitary keyword parameters to pass directly to the API.
@@ -1360,18 +1361,18 @@ class Client(object):
         Args:
             transaction_uuid (str): the identifier of the existing
                 reservation/transaction
-            customer (:class:`Customer <pyticketswitch.customer.Customer>`):
-                information about the customer.
-            payment_method (:class:`PaymentDetails <pyticketswitch.payment_methods.PaymentMethod>`):
-                the customers payment details. Can be
+            customer: `Customer <pyticketswitch.customer.Customer>`
+                information.
+            payment_method: the customer's payment details. Can be
                 :class:`CardDetails <pyticketswitch.payment_methods.CardDetails>`
                 or
                 :class:`RedirectionDetails <pyticketswitch.payment_methods.RedirectionDetails>`.
-            send_confimation_email (bool): on a successful purchase, when this
+            send_confirmation_email (bool): on a successful purchase, when this
                 parameter is :obj:`True`, then we will send the customer a
                 confirmation email. If you would prefer to send your own
                 confirmation email then you can set this parameter to
                 :obj:`False`.
+            **kwargs: arbitary keyword arguments to send with the request.
 
         Returns:
             :class:`Status <pyticketswitch.status.Status>`,
@@ -1437,7 +1438,7 @@ class Client(object):
             next_token (str): the token for the potential next redirect.
             returned_data (dict): dictionary of query string paramters appended
                 to your return url.
-            **kwarg: arbitary keyword arguments to send with the request.
+            **kwargs: arbitary keyword arguments to send with the request.
 
         Returns:
             :class:`Status <pyticketswitch.status.Status>`,
