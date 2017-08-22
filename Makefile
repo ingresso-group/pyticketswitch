@@ -16,6 +16,7 @@ clean:
 
 test:
 	flake8 pyticketswitch
+	pylint pyticketswitch
 	py.test
 	behave
 

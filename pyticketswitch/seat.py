@@ -18,11 +18,16 @@ class SeatBlock(JSONMixin, object):
     @classmethod
     def from_api_data(cls, block, row_id=None, separator='',
                       restricted_view_seats=None, seats_by_text_message=None):
-        """Creates a new Customer object from API data from ticketswitch.
+        """Creates a new SeatBlock object from API data from ticketswitch.
 
         Args:
-            data (dict): the part of the response from a ticketswitch API call
+            block (list): the part of the response from a ticketswitch API call
                 that concerns a seat block.
+            row_id (str): the component of the seat ID corresponding to the row
+            separator (str): the string separating row and column in the id
+            restricted_view_seats (list): seat IDs that have restricted view
+            seats_by_text_message (dict): a mapping of seat text messages to
+                seat IDs
 
         Returns:
             :class:`SeatBlock <pyticketswitch.seat.SeatBlock>`: a new

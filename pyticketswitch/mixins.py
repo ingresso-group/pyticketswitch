@@ -67,10 +67,10 @@ class JSONMixin(object):
         """Generate a json represetation of an object.
 
         Args:
-            hide_none (bool, optional): when :obj:`True` the returned
+            hide_none (bool): when :obj:`True` the returned
                 dictionary will not include attributes who's value is
                 :obj:`None`.
-            hide_empty (bool, optional): when :obj:`True` the returned
+            hide_empty (bool): when :obj:`True` the returned
                 dictionary will not include attributes who's value is iterable
                 and has a length of zero.
             **kwargs: passed to :py:func:`json.dumps`.
