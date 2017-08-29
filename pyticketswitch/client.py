@@ -839,6 +839,8 @@ class Client(object):
 
         Args:
             performance_id (string): identifier of the target performance.
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
 
         Returns:
            list, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
