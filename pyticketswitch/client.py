@@ -832,7 +832,7 @@ class Client(object):
 
         return availability, meta
 
-    def get_send_methods(self, performance_id):
+    def get_send_methods(self, performance_id, **kwargs):
         """Fetch available delivery methods for a given performance
 
         Wraps `/f13/send_methods.v1`_
@@ -851,6 +851,8 @@ class Client(object):
         .. _`/f13/send_methods.v1`: http://docs.ingresso.co.uk/#send-methods
         """
         params = {'perf_id': performance_id}
+        self.add_optional_kwargs(params, **kwargs)
+
         response = self.make_request('send_methods.v1', params)
 
         if 'send_methods' not in response:
