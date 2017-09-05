@@ -1,0 +1,290 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.currency &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.currency</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span>
+
+
+<div class="viewcode-block" id="Currency"><a class="viewcode-back" href="../../api.html#pyticketswitch.currency.Currency">[docs]</a><span class="k">class</span> <span class="nc">Currency</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Information about the currency prices are described in.</span>
+
+<span class="sd">    This information can be used to create human readable prices.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        code (str): ISO 4217 currency code.</span>
+<span class="sd">        places (int): precision of decimal numbers.</span>
+<span class="sd">        pre_symbol (str): a symbol to place before the digits of a price.</span>
+<span class="sd">        post_symbol (str): a symbol to place after the digits of a price.</span>
+<span class="sd">        factor (int): arbitary scale factor, can be used to roughly convert</span>
+<span class="sd">            from one currency to another.</span>
+<span class="sd">        number (int): internal identifier.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pre_symbol</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">post_symbol</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">=</span> <span class="n">factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">places</span> <span class="o">=</span> <span class="n">places</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_symbol</span> <span class="o">=</span> <span class="n">pre_symbol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_symbol</span> <span class="o">=</span> <span class="n">post_symbol</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        FIXME: do we need this anywhere other than tests?</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">other</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">code</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">number</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">factor</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">places</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">places</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_symbol</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">pre_symbol</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_symbol</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">post_symbol</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span> <span class="o">==</span> <span class="n">other</span>
+
+<div class="viewcode-block" id="Currency.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.currency.Currency.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert data from the API into a native object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): API data describing a currency.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Currency &lt;pyticketswitch.currency.Currency&gt;`: the currency.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;factor&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency_factor&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;places&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency_places&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;number&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency_number&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;pre_symbol&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency_pre_symbol&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;post_symbol&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency_post_symbol&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency_code&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Currency.price_as_string"><a class="viewcode-back" href="../../api.html#pyticketswitch.currency.Currency.price_as_string">[docs]</a>    <span class="k">def</span> <span class="nf">price_as_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">price</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates a human readble string for a price.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            price (float): a price</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: the price with the correct number of places with pre and post</span>
+<span class="sd">            symbols attached</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">            &gt;&gt;&gt; from pyticketswitch.currency import Currency</span>
+<span class="sd">            &gt;&gt;&gt; usd = Currency(&#39;usd&#39;, pre_symbol=&#39;$&#39;, places=2)</span>
+<span class="sd">            &gt;&gt;&gt; usd.price_as_string(5)</span>
+<span class="sd">            u&#39;$5.00&#39;</span>
+<span class="sd">            &gt;&gt;&gt; usd.price_as_string(12.34567)</span>
+<span class="sd">            u&#39;$12.34&#39;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">price</span> <span class="o">=</span> <span class="n">price</span> <span class="k">if</span> <span class="n">price</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">format_string</span> <span class="o">=</span> <span class="n">six</span><span class="o">.</span><span class="n">text_type</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{pre}</span><span class="s1">{price:.&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">places</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;f}</span><span class="si">{post}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">format_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">pre</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pre_symbol</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">price</span><span class="o">=</span><span class="n">price</span><span class="p">,</span>
+            <span class="n">post</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">post_symbol</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Currency </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CurrencyMeta"><a class="viewcode-back" href="../../api.html#pyticketswitch.currency.CurrencyMeta">[docs]</a><span class="k">class</span> <span class="nc">CurrencyMeta</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Currency information for another object.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        currencies (dict) dictionary of</span>
+<span class="sd">            :class:`Currency &lt;pytickectswitch.currency.Currency&gt;`) objects</span>
+<span class="sd">            indexed on currency code.</span>
+<span class="sd">        default_currency_code (str): unless other wise specified all prices in</span>
+<span class="sd">            the related response will be in this currency.</span>
+<span class="sd">        desired_currency_code (str):</span>
+<span class="sd">            the currency that the user account is expecting. Useful for</span>
+<span class="sd">            conversions.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">currencies</span><span class="p">,</span> <span class="n">default_currency_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">desired_currency_code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currencies</span> <span class="o">=</span> <span class="n">currencies</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_currency_code</span> <span class="o">=</span> <span class="n">default_currency_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">desired_currency_code</span> <span class="o">=</span> <span class="n">desired_currency_code</span>
+
+<div class="viewcode-block" id="CurrencyMeta.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.currency.CurrencyMeta.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert data from the API into a native object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): API data describing the currencies of a related</span>
+<span class="sd">                object.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`CurrencyMeta &lt;pyticketswitch.currency.CurrencyMeta&gt;`: the</span>
+<span class="sd">                currency meta data.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">currency_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency_details&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">currency_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">currencies</span><span class="o">=</span><span class="p">{})</span>
+
+        <span class="n">currencies</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">code</span><span class="p">:</span> <span class="n">Currency</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">code</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">currency_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="n">default_currency_code</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency_code&#39;</span><span class="p">)</span>
+        <span class="n">desired_currency_code</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;desired_currency_code&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">currencies</span><span class="o">=</span><span class="n">currencies</span><span class="p">,</span>
+            <span class="n">default_currency_code</span><span class="o">=</span><span class="n">default_currency_code</span><span class="p">,</span>
+            <span class="n">desired_currency_code</span><span class="o">=</span><span class="n">desired_currency_code</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="CurrencyMeta.get_currency"><a class="viewcode-back" href="../../api.html#pyticketswitch.currency.CurrencyMeta.get_currency">[docs]</a>    <span class="k">def</span> <span class="nf">get_currency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the :class:`Currency &lt;pyticketswitch.currency.Currency&gt;` object for the given code.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            code (str, optional): ISO 4217 currency code.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Currency &lt;pyticketswitch.currency.Currency&gt;`: The currency</span>
+<span class="sd">            for the given code.</span>
+
+<span class="sd">            If no code is specified, return the default currency as specified</span>
+<span class="sd">            by :attr:`CurrencyMeta.default_currency_code &lt;pyticketswitch.currency.CurrencyMeta.default_currency_code&gt;`.</span>
+
+<span class="sd">            If no default currency is specified return :obj:`None`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">code</span><span class="p">:</span>
+            <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_currency_code</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">code</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">currencies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">code</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CurrencyMeta.get_desired_currency"><a class="viewcode-back" href="../../api.html#pyticketswitch.currency.CurrencyMeta.get_desired_currency">[docs]</a>    <span class="k">def</span> <span class="nf">get_desired_currency</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the :class:`Currency &lt;pyticketswitch.currency.Currency&gt;` object for the desired currency.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Currency &lt;pyticketswitch.currency.Currency&gt;`: The currency</span>
+<span class="sd">            for the desired currency.</span>
+
+<span class="sd">            If no desired currency is specified return :obj:`None`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">desired_currency_code</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">currencies</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">desired_currency_code</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

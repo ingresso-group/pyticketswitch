@@ -1,0 +1,1565 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.client &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.client</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">exceptions</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.event</span> <span class="k">import</span> <span class="n">Event</span><span class="p">,</span> <span class="n">EventMeta</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.performance</span> <span class="k">import</span> <span class="n">Performance</span><span class="p">,</span> <span class="n">PerformanceMeta</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.availability</span> <span class="k">import</span> <span class="n">AvailabilityMeta</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.ticket_type</span> <span class="k">import</span> <span class="n">TicketType</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.send_method</span> <span class="k">import</span> <span class="n">SendMethod</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.month</span> <span class="k">import</span> <span class="n">Month</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.discount</span> <span class="k">import</span> <span class="n">Discount</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.trolley</span> <span class="k">import</span> <span class="n">Trolley</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.reservation</span> <span class="k">import</span> <span class="n">Reservation</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.status</span> <span class="k">import</span> <span class="n">Status</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.user</span> <span class="k">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.currency</span> <span class="k">import</span> <span class="n">CurrencyMeta</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.callout</span> <span class="k">import</span> <span class="n">Callout</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">POST</span> <span class="o">=</span> <span class="s1">&#39;post&#39;</span>
+<span class="n">GET</span> <span class="o">=</span> <span class="s1">&#39;get&#39;</span>
+<span class="n">DEFAULT_ROOT_URL</span> <span class="o">=</span> <span class="s2">&quot;https://api.ticketswitch.com&quot;</span>
+
+
+<div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Client wraps the ticketswitch f13 API.</span>
+
+<span class="sd">    Client contains auth details and provides helper methods for calling</span>
+<span class="sd">    the f13 endpoints.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        user (str): user id used to connect to the api.</span>
+<span class="sd">        password (str): Password for the user used to connect to the api.</span>
+<span class="sd">        url (:obj:`str`, optional): Root url for the API.</span>
+<span class="sd">            Defaults to https://api.ticketswitch.com.</span>
+<span class="sd">        sub_user (:obj:`str`, optional): the sub user is used to idicate a</span>
+<span class="sd">            specific agent of the holder of the main users account requests</span>
+<span class="sd">            is being made for. For example a travel agent might hold the main</span>
+<span class="sd">            account but an agent in the london office might specify `london` as</span>
+<span class="sd">            their sub user, whereas an agent in belfast might specify `belfast`</span>
+<span class="sd">            or even something more specific. Defaults to None</span>
+<span class="sd">        language (:obj:`str`, optional): prefered IETF language tag. When</span>
+<span class="sd">            available this will translate text to the specified language. When</span>
+<span class="sd">            None language defaults to user&#39;s preference. Defaults to None.</span>
+<span class="sd">        **kwargs: Additional arbitrary key word arguments to keep with the</span>
+<span class="sd">            object.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user</span><span class="p">,</span> <span class="n">password</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">DEFAULT_ROOT_URL</span><span class="p">,</span> <span class="n">sub_user</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tracking_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sub_user</span> <span class="o">=</span> <span class="n">sub_user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">language</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracking_id</span> <span class="o">=</span> <span class="n">tracking_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+<div class="viewcode-block" id="Client.get_url"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_url">[docs]</a>    <span class="k">def</span> <span class="nf">get_url</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">end_point</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the url for a given endpoint</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            end_point (str): the target api end point, for example events.v1 or</span>
+<span class="sd">                performances.v1</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: the full url for the given endpoint, contains the base url and</span>
+<span class="sd">            endpoint</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{url}</span><span class="s2">/f13/</span><span class="si">{end_point}</span><span class="s2">/&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="n">end_point</span><span class="o">=</span><span class="n">end_point</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">url</span></div>
+
+<div class="viewcode-block" id="Client.get_auth_params"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_auth_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_auth_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the authentication parameters for inclusion in requests.</span>
+
+<span class="sd">        This this method is intended to be overwritten if</span>
+<span class="sd">        additional/alternative auth params need to be provided</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: auth params that passed to requests</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_user</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="s1">&#39;user_passwd&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+                    <span class="s1">&#39;sub_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_user</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;user_id&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="s1">&#39;user_passwd&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="Client.get_headers"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_headers">[docs]</a>    <span class="k">def</span> <span class="nf">get_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">headers</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate common headers to send with all requests</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: key value map of headers</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">:</span>
+            <span class="n">headers</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;Accept-Language&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">language</span><span class="p">})</span>
+
+        <span class="k">return</span> <span class="n">headers</span></div>
+
+<div class="viewcode-block" id="Client.get_tracking_params"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_tracking_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_tracking_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_tracking_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return current request&#39;s session tracking id</span>
+<span class="sd">        or custom tracking id passed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tracking_id</span> <span class="o">=</span> <span class="n">custom_tracking_id</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracking_id</span>
+        <span class="k">if</span> <span class="n">tracking_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;tsw_session_track_id&quot;</span><span class="p">:</span> <span class="n">tracking_id</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="Client.get_session"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_session">[docs]</a>    <span class="k">def</span> <span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the requests.Session instance to use to make HTTP requests</span>
+
+<span class="sd">        By default this method will create a new session for each request. This</span>
+<span class="sd">        replicates the default behaviour of the requests library:</span>
+<span class="sd">        https://github.com/kennethreitz/requests/blob/ead8fba84b12e7496c65272a07de47d553aa0ca0/requests/api.py#L57-L58</span>
+
+<span class="sd">        A common modification to this class would be to overload this method to</span>
+<span class="sd">        provide a single session instance across all calls to take advantage of</span>
+<span class="sd">        keep-alive.</span>
+
+<span class="sd">        .. note:: remember to also overload</span>
+<span class="sd">                  :meth:`cleanup_session &lt;pyticketswitch.client.Client.cleanup_session&gt;`</span>
+<span class="sd">                  as well or you connections/session might be unexpectedly killed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Client.cleanup_session"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.cleanup_session">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup_session</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Cleans up sessions so that we don&#39;t leave open sockets.</span>
+
+<span class="sd">        If you want to add support for persistent connections, then you should</span>
+<span class="sd">        noop this method so it does nothing.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            session (:class:`requests.Session`): the http session to clean up.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;requests session cleaning up&#39;</span><span class="p">)</span>
+        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Client.make_request"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.make_request">[docs]</a>    <span class="k">def</span> <span class="nf">make_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">GET</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;Makes actual requests to the API</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            endpoint (str): target API endpoint</span>
+<span class="sd">            params (dict): parameters to provide to requests</span>
+<span class="sd">            method (str): HTTP method to make the request with</span>
+<span class="sd">                valid values are ``post`` and ``get``. Defaults to ``get``.</span>
+<span class="sd">            headers (dict): headers to include with the request</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The body of the response after deserialising from JSON</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AuthenticationError: When authentication details provided are</span>
+<span class="sd">                invalid</span>
+<span class="sd">            InvalidResponseError: When the status code of the response is not</span>
+<span class="sd">                200</span>
+<span class="sd">            APIError: When any other explict errors are returned from the API</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">url</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_url</span><span class="p">(</span><span class="n">endpoint</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_auth_params</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;tsw_session_track_id&#39;</span><span class="p">):</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_tracking_params</span><span class="p">())</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">u</span><span class="s1">&#39;url: </span><span class="si">%s</span><span class="s1">; endpoint: </span><span class="si">%s</span><span class="s1">; params: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="n">raw_headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_headers</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+
+        <span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="n">POST</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">raw_headers</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">raw_headers</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">u</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup_session</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">contents</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="p">(</span><span class="s2">&quot;Unable to parse json data from </span><span class="si">{}</span><span class="s2"> response with status &quot;</span>
+                 <span class="s2">&quot;code `</span><span class="si">{}</span><span class="s2">`&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">endpoint</span><span class="p">,</span>
+                    <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;error_code&#39;</span> <span class="ow">in</span> <span class="n">contents</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">contents</span><span class="p">[</span><span class="s1">&#39;error_code&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">AuthenticationError</span><span class="p">(</span>
+                    <span class="n">contents</span><span class="p">[</span><span class="s1">&#39;error_desc&#39;</span><span class="p">],</span>
+                    <span class="n">contents</span><span class="p">[</span><span class="s1">&#39;error_code&#39;</span><span class="p">],</span>
+                    <span class="n">response</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">410</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">CallbackGoneError</span><span class="p">(</span>
+                    <span class="n">contents</span><span class="p">[</span><span class="s1">&#39;error_desc&#39;</span><span class="p">],</span>
+                    <span class="n">contents</span><span class="p">[</span><span class="s1">&#39;error_code&#39;</span><span class="p">],</span>
+                    <span class="n">response</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">APIError</span><span class="p">(</span>
+                <span class="n">contents</span><span class="p">[</span><span class="s1">&#39;error_desc&#39;</span><span class="p">],</span>
+                <span class="n">contents</span><span class="p">[</span><span class="s1">&#39;error_code&#39;</span><span class="p">],</span>
+                <span class="n">response</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="mi">200</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got status code `</span><span class="si">{}</span><span class="s2">` from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">,</span>
+                    <span class="n">endpoint</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">contents</span></div>
+
+<div class="viewcode-block" id="Client.test"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Test the connection</span>
+
+<span class="sd">        Wraps `/f13/test.v1`_</span>
+
+<span class="sd">        will return the running user on sucess and will raise an exception</span>
+<span class="sd">        if the authentication details are invalid.</span>
+
+<span class="sd">        This call is not required, but may be useful for validating auth</span>
+<span class="sd">        credentials, or checking on the health of the ticketswitch API.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`pyticketswitch.user.User`: details about the user calling the API</span>
+
+<span class="sd">        .. _`/f13/test.v1`: http://docs.ingresso.co.uk/#test</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;test.v1&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">user</span></div>
+
+<div class="viewcode-block" id="Client.add_optional_kwargs"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.add_optional_kwargs">[docs]</a>    <span class="k">def</span> <span class="nf">add_optional_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">availability</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">availability_with_performances</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">extra_info</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reviews</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">media</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">cost_range</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">best_value_offer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">max_saving_offer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_cost_offer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">top_price_offer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">no_singles_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">cost_range_details</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">source_info</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="n">tracking_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds additional arguments to the requests.</span>
+
+<span class="sd">        All client methods will take several optional arguments that will</span>
+<span class="sd">        extend the data returned with addtional information about the returned</span>
+<span class="sd">        objects.</span>
+
+<span class="sd">        Generally these are applicable to objects that return events, however</span>
+<span class="sd">        some arguments will also augment performances, cost ranges, and</span>
+<span class="sd">        availability details.</span>
+
+<span class="sd">        `See the main F13 documentation for more details.</span>
+<span class="sd">        &lt;http://docs.ingresso.co.uk/#additional-parameters&gt;`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            params (dict): The parameters dictionary into which any additional</span>
+<span class="sd">                paramters will be added</span>
+<span class="sd">            availability (bool): Includes general information</span>
+<span class="sd">                about availability of events and performances.</span>
+<span class="sd">            availability_with_performances (bool): Includes</span>
+<span class="sd">                detailed information about avilability of events and includes</span>
+<span class="sd">                performance information.</span>
+<span class="sd">            extra_info (bool): Includes additional event</span>
+<span class="sd">                textual content. Defaults to :obj:`False`.</span>
+<span class="sd">            reviews (bool): Includes event reviews when</span>
+<span class="sd">                available. Defaults to :obj:`False`.</span>
+<span class="sd">            media (bool): Includes any media assets associated</span>
+<span class="sd">                with an event. Defaults to :obj:`False`.</span>
+<span class="sd">            cost_range (bool): Include price range estimates.</span>
+<span class="sd">                Defaults to :obj:`False`.</span>
+<span class="sd">            best_value_offer (bool): requires **cost_range**.</span>
+<span class="sd">                Includes the offer with the highest percentage saving in cost</span>
+<span class="sd">                range information. Defaults to :obj:`False`.</span>
+<span class="sd">            max_saving_offer (bool): requires **cost_range**.</span>
+<span class="sd">                Includes the offer with the highest absolute saving in cost</span>
+<span class="sd">                range information. Defaults to :obj:`False`.</span>
+<span class="sd">            min_cost_offer (bool): requires **cost_range**.</span>
+<span class="sd">                Includes the offer with the lowest cost in cost range</span>
+<span class="sd">                information. Defaults to :obj:`False`.</span>
+<span class="sd">            top_price_offer (bool): requires **cost_range**.</span>
+<span class="sd">                Includes the offer with the highest cost in cost range</span>
+<span class="sd">                information. Defaults to :obj:`False`.</span>
+<span class="sd">            no_singles_data (bool): requires **cost_range**.</span>
+<span class="sd">                This returns another cost range object that excludes</span>
+<span class="sd">                availability with only one consecutive seat available.</span>
+<span class="sd">                Defaults to :obj:`False`.</span>
+<span class="sd">            cost_range_details (bool): Cost range information for</span>
+<span class="sd">                each available price band.  Defaults to :obj:`False`.</span>
+<span class="sd">            cost_range_details (bool): Cost range information for</span>
+<span class="sd">                each available price band.  Defaults to :obj:`False`.</span>
+<span class="sd">            source_info (bool): includes information on the source</span>
+<span class="sd">                system. defaults to :obj:`false`.</span>
+<span class="sd">            tracking_id (string): Add custom tracking id to the request</span>
+<span class="sd">            **kwargs: Additional or override parameters to send with the</span>
+<span class="sd">                request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">extra_info</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_extra_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">reviews</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_reviews</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">media</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s1">&#39;req_media_triplet_one&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;req_media_triplet_two&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;req_media_triplet_three&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;req_media_triplet_four&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;req_media_triplet_five&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;req_media_seating_plan&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;req_media_square&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;req_media_landscape&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;req_media_marquee&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;req_video_iframe&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">cost_range</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_cost_range</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">best_value_offer</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_cost_range_best_value_offer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">req_cost_range</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">max_saving_offer</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_cost_range_max_saving_offer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">req_cost_range</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">min_cost_offer</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_cost_range_min_cost_offer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">req_cost_range</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">top_price_offer</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_cost_range_top_price_offer</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">req_cost_range</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">no_singles_data</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_cost_range_no_singles_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">req_cost_range</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cost_range_details</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_cost_range_details</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">availability</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_avail_details</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">availability_with_performances</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_avail_details</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">req_avail_details_with_perfs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tracking_id</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_tracking_params</span><span class="p">(</span>
+                <span class="n">custom_tracking_id</span><span class="o">=</span><span class="n">tracking_id</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">source_info</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_src_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.list_events"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.list_events">[docs]</a>    <span class="k">def</span> <span class="nf">list_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keywords</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">country_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">city_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">latitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">longitude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_dead</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">sort_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">page_length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;List events with the given parameters</span>
+
+<span class="sd">        Wraps `/f13/events.v1`_</span>
+
+<span class="sd">        Called with out arguments this method will return all live events</span>
+<span class="sd">        available to the user.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            keywords (list): list of keyword strings. For example:</span>
+<span class="sd">                ``keywords=[&#39;sadlers&#39;, &#39;nutcracker&#39;]``. Defaults to</span>
+<span class="sd">                :obj:`None`.</span>
+<span class="sd">            start_date (datetime.datetime): only show events that</span>
+<span class="sd">                have a performance after this date. Defaults to :obj:`None`.</span>
+<span class="sd">            end_date (datetime.datetime): only show events that have</span>
+<span class="sd">                a performance before this date. Defaults to :obj:`None`.</span>
+<span class="sd">            country_code (string): only show events in this country.</span>
+<span class="sd">                the country is specified by it&#39;s ISO 3166-1 country code.</span>
+<span class="sd">                Defaults to :obj:`None`.</span>
+<span class="sd">            city_code: (string): specified by the internal city code. As</span>
+<span class="sd">                a rule of thumb this is the lowercase city name followed by</span>
+<span class="sd">                a hyphen followed by the ISO 3166-1 country code. For example:</span>
+<span class="sd">                ``london-uk``, ``new_york-us``, ``berlin-de``.  Defaults to</span>
+<span class="sd">                :obj:`None`.</span>
+<span class="sd">            latitude (float): only show events near this latitude.</span>
+<span class="sd">                valid only in combination with longitude and radius. Defaults</span>
+<span class="sd">                to :obj:`None`.</span>
+<span class="sd">            longitude (float): only show events near this longitude.</span>
+<span class="sd">                valid only in combination with latitude and radius. Defaults</span>
+<span class="sd">                to :obj:`None`.</span>
+<span class="sd">            radius (float): only show events inside this radius</span>
+<span class="sd">                relative to the provided coordinates (latitude &amp; longitude</span>
+<span class="sd">                above). Units are kilometers. Defaults to :obj:`None`.</span>
+<span class="sd">            include_dead (bool): when true results will include all</span>
+<span class="sd">                events even if they are dead (are unavailable to purchase</span>
+<span class="sd">                from). Defaults to :obj:`False`.</span>
+<span class="sd">            sort_order (string): order the returned events by the</span>
+<span class="sd">                specified metric. See</span>
+<span class="sd">                :ref:`sorting search results &lt;sorting_search_results&gt;`.</span>
+<span class="sd">                Defaults to :obj:`None`</span>
+<span class="sd">            page (int): the page of a paginated response.</span>
+<span class="sd">            page_length (int): how many performances are</span>
+<span class="sd">                returned per page.</span>
+<span class="sd">            **kwargs: see :meth:`add_optional_kwargs &lt;pyticketswitch.client.Client.add_optional_kwargs&gt;`</span>
+<span class="sd">                for more info.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list, :class:`EventMeta &lt;pyticketswitch.event.EventMeta&gt;`: a list</span>
+<span class="sd">            of :class:`Events &lt;pyticketswitch.event.Event&gt;` objects and meta</span>
+<span class="sd">            information for those events.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidGeoParameters: when latitude, longitude, or radius is</span>
+<span class="sd">                specified without the rest of the required geographic</span>
+<span class="sd">                parameters.</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format</span>
+
+<span class="sd">        .. _`/f13/events.v1`: http://docs.ingresso.co.uk/#events-list</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">keywords</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">keywords</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keywords</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">start_date</span> <span class="ow">or</span> <span class="n">end_date</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">date_range</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">date_range_str</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">country_code</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">country_code</span><span class="o">=</span><span class="n">country_code</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">city_code</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">city_code</span><span class="o">=</span><span class="n">city_code</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">radius</span><span class="p">]):</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">circle</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{lat}</span><span class="s1">:</span><span class="si">{lon}</span><span class="s1">:</span><span class="si">{rad}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">lat</span><span class="o">=</span><span class="n">latitude</span><span class="p">,</span>
+                <span class="n">lon</span><span class="o">=</span><span class="n">longitude</span><span class="p">,</span>
+                <span class="n">rad</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span>
+            <span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">any</span><span class="p">([</span><span class="n">latitude</span><span class="p">,</span> <span class="n">longitude</span><span class="p">,</span> <span class="n">radius</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidGeoParameters</span><span class="p">(</span>
+                <span class="s1">&#39;Geo data must include latitude, longitude, and radius&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">include_dead</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">include_dead</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sort_order</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">sort_order</span><span class="o">=</span><span class="n">sort_order</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">page</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">page_no</span><span class="o">=</span><span class="n">page</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">page_length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">page_len</span><span class="o">=</span><span class="n">page_length</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_optional_kwargs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;events.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;results&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no results key in json response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">raw_events</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Event</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_events</span>
+        <span class="p">]</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">EventMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">events</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.get_events"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_events">[docs]</a>    <span class="k">def</span> <span class="nf">get_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_ids</span><span class="p">,</span>
+                   <span class="n">with_addons</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">with_upsells</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get events with the given id&#39;s</span>
+
+<span class="sd">        Wraps `/f13/events_by_id.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event_ids (list): list of event IDs</span>
+<span class="sd">            with_addons (bool): include add-on events</span>
+<span class="sd">            with_upsells (bool): include upsell events</span>
+<span class="sd">            **kwargs: see :meth:`add_optional_kwargs &lt;pyticketswitch.client.Client.add_optional_kwargs&gt;`</span>
+<span class="sd">                for more info.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict, :class:`EventMeta &lt;pyticketswitch.event.EventMeta&gt;`:</span>
+<span class="sd">            :class:`Events &lt;pyticketswitch.event.Event&gt;` indexed by event</span>
+<span class="sd">            ID and meta information for those events.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format</span>
+
+<span class="sd">        .. _`/f13/events_by_id.v1`: http://docs.ingresso.co.uk/#events-by-id</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">event_ids</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">event_id_list</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">event_ids</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_optional_kwargs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">with_addons</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">add_add_ons</span><span class="o">=</span><span class="n">with_addons</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">with_upsells</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">add_upsells</span><span class="o">=</span><span class="n">with_upsells</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;events_by_id.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;events_by_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no events_by_id key in json response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">events_by_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;events_by_id&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">event_id</span><span class="p">:</span> <span class="n">Event</span><span class="o">.</span><span class="n">from_events_by_id_api_data</span><span class="p">(</span><span class="n">raw_event</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">event_id</span><span class="p">,</span> <span class="n">raw_event</span> <span class="ow">in</span> <span class="n">events_by_id</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">raw_event</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">EventMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">events</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.get_event"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_event">[docs]</a>    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a specific event by id</span>
+
+<span class="sd">        Helper method to avoid having to do something like this lots of times::</span>
+
+<span class="sd">            &gt;&gt;&gt; client.get_events([&#39;6IF&#39;])[&#39;6IF&#39;]</span>
+<span class="sd">            &lt;Event 6IF:Matthew Bourne&#39;s Nutcracker TEST&gt;</span>
+
+<span class="sd">        Instead this interface is much less stuttery::</span>
+
+<span class="sd">            &gt;&gt;&gt; client.get_event(&#39;6IF&#39;)</span>
+<span class="sd">            &lt;Event 6IF:Matthew Bourne&#39;s Nutcracker TEST&gt;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event_id (str): ID of the event to retrieve</span>
+<span class="sd">            **kwargs: see :meth:`add_optional_kwargs &lt;pyticketswitch.client.Client.add_optional_kwargs&gt;`</span>
+<span class="sd">                for more info.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Event &lt;pyticketswitch.event.Event&gt;`, :class:`EventMeta &lt;pyticketswitch.event.EventMeta&gt;`:</span>
+<span class="sd">            the target event and meta information about the event.</span>
+
+<span class="sd">            will return :obj:`None` if the event does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_events</span><span class="p">([</span><span class="n">event_id</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">events</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">event_id</span><span class="p">),</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.get_months"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_months">[docs]</a>    <span class="k">def</span> <span class="nf">get_months</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a summary of availability accross months.</span>
+
+<span class="sd">        Wraps `/f13/months.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event_id (str): ID of the event to retrieve</span>
+<span class="sd">            **kwargs: see :meth:`add_optional_kwargs &lt;pyticketswitch.client.Client.add_optional_kwargs&gt;`</span>
+<span class="sd">                for more info.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: :class:`Months &lt;pyticketswitch.month.Month&gt;` ordered chronologically</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format</span>
+
+<span class="sd">        .. _`/f13/months.v1`: http://docs.ingresso.co.uk/#months</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;event_id&#39;</span><span class="p">:</span> <span class="n">event_id</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_optional_kwargs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;months.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;results&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no results key in json response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">raw_months</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;month&#39;</span><span class="p">,</span> <span class="p">[])</span>
+
+        <span class="n">months</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Month</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_months</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">months</span></div>
+
+<div class="viewcode-block" id="Client.list_performances"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.list_performances">[docs]</a>    <span class="k">def</span> <span class="nf">list_performances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_id</span><span class="p">,</span> <span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">page_length</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">page</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List performances for a specified event</span>
+
+<span class="sd">        Wraps `/f13/performances.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event_id (str): identifier for the event.</span>
+<span class="sd">            start_date (datetime.datetime):</span>
+<span class="sd">                list performances only if they occur after this date.</span>
+<span class="sd">            end_date (datetime.datetime):</span>
+<span class="sd">                list performances only if they occur before this date.</span>
+<span class="sd">            page (int): the page of a paginated response.</span>
+<span class="sd">            page_length (int): how many performances are</span>
+<span class="sd">                returned per page.</span>
+<span class="sd">            **kwargs: see :meth:`add_optional_kwargs &lt;pyticketswitch.client.Client.add_optional_kwargs&gt;`</span>
+<span class="sd">                for more info.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list, :class:`PerformanceMeta &lt;pyticketswitch.performance.PerformanceMeta&gt;`:</span>
+<span class="sd">            A list of</span>
+<span class="sd">            :class:`Performances &lt;pyticketswitch.performance.Performance&gt;`</span>
+<span class="sd">            for the given event and meta information about the performances.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format</span>
+
+<span class="sd">        .. _`/f13/performances.v1`: http://docs.ingresso.co.uk/#performances-list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;event_id&#39;</span><span class="p">:</span> <span class="n">event_id</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">page</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">page_no</span><span class="o">=</span><span class="n">page</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">page_length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">page_len</span><span class="o">=</span><span class="n">page_length</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">start_date</span> <span class="ow">or</span> <span class="n">end_date</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">date_range</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">date_range_str</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_optional_kwargs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;performances.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;results&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no results key in json response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">raw_performances</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;performance&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">performances</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Performance</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_performances</span>
+        <span class="p">]</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">PerformanceMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">performances</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.get_performances"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_performances">[docs]</a>    <span class="k">def</span> <span class="nf">get_performances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">performance_ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get performances with the given ID&#39;s</span>
+
+<span class="sd">        Wraps `/f13/performances_by_id.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            performance_ids (list): list of performance IDs to fetch.</span>
+<span class="sd">            **kwargs: see :meth:`add_optional_kwargs &lt;pyticketswitch.client.Client.add_optional_kwargs&gt;`</span>
+<span class="sd">                for more info.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict, :class:`PerformanceMeta &lt;pyticketswitch.performance.PerformanceMeta&gt;`:</span>
+<span class="sd">            :class:`Performances &lt;pyticketswitch.performance.Performance&gt;`</span>
+<span class="sd">            indexed by performance ID and meta information about the</span>
+<span class="sd">            performances.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format.</span>
+
+<span class="sd">        .. _`/f13/performances_by_id.v1`: http://docs.ingresso.co.uk/#performances-by-id</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;perf_id_list&#39;</span><span class="p">:</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">performance_ids</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_optional_kwargs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;performances_by_id.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;performances_by_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no performances_by_id key in json response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">raw_performances</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;performances_by_id&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">performances</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">performance_id</span><span class="p">:</span> <span class="n">Performance</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">performance_id</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_performances</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">PerformanceMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">performances</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.get_performance"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_performance">[docs]</a>    <span class="k">def</span> <span class="nf">get_performance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">performance_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a specific performance by id</span>
+
+<span class="sd">        Helper method to avoid having to do something like this lots of times::</span>
+
+<span class="sd">            &gt;&gt;&gt; client.get_performances([&#39;6IF-B1H&#39;])[&#39;6IF-B1H&#39;]</span>
+<span class="sd">            &lt;Performance 6IF-B1H: 2017-06-02T19:30:00+01:00&gt;</span>
+
+<span class="sd">        Instead this interface is much less stuttery::</span>
+
+<span class="sd">            &gt;&gt;&gt; client.get_performance(&#39;6IF-B1H&#39;)</span>
+<span class="sd">            &lt;Performance 6IF-B1H: 2017-06-02T19:30:00+01:00&gt;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            performance_id (str): ID of the performance to retrieve</span>
+<span class="sd">            **kwargs: see :meth:`add_optional_kwargs &lt;pyticketswitch.client.Client.add_optional_kwargs&gt;`</span>
+<span class="sd">                for more info.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Performance &lt;pyticketswitch.event.Event&gt;`, :class:`PerformanceMeta &lt;pyticketswitch.performance.PerformanceMeta&gt;`:</span>
+<span class="sd">            the target Performance and meta information about the performance.</span>
+
+<span class="sd">            will return :obj:`None` if the performance does not exist.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">performances</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_performances</span><span class="p">([</span><span class="n">performance_id</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">performances</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">performance_id</span><span class="p">),</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.get_availability"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_availability">[docs]</a>    <span class="k">def</span> <span class="nf">get_availability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">performance_id</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">discounts</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">example_seats</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                         <span class="n">seat_blocks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">user_commission</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch available tickets and prices for a given performance</span>
+
+<span class="sd">        Wraps `/f13/availability.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            performance_id (string): identifier of the target performance.</span>
+<span class="sd">            number_of_seats (int): number of seats that we after,</span>
+<span class="sd">                Defaults to :obj:`None`.</span>
+<span class="sd">            discounts (bool): request all discount options for all</span>
+<span class="sd">                price bands in response. Defaults to :obj:`False`.</span>
+
+<span class="sd">            example_seats (bool): request example seats for seated</span>
+<span class="sd">                events. Defaults to :obj:`False`.</span>
+<span class="sd">            seat_blocks (bool): request seating information if</span>
+<span class="sd">                available. Defaults to :obj:`False`.</span>
+<span class="sd">            user_commission (bool): request user commission for each</span>
+<span class="sd">                price band/discount. Defaults to :obj:`False`</span>
+<span class="sd">            **kwargs: see :meth:`add_optional_kwargs &lt;pyticketswitch.client.Client.add_optional_kwargs&gt;`</span>
+<span class="sd">                for more info.</span>
+
+<span class="sd">        .. note:: setting **discounts** or the **user_commission** arguments to</span>
+<span class="sd">                  :obj:`True` will increase the response time of your request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">           list, :class:`AvailabilityMeta &lt;pyticketswitch.availability.AvailabilityMeta&gt;`:</span>
+<span class="sd">           a list of :class:`TicketTypes &lt;pyticketswitch.ticket_type.TicketType&gt;`</span>
+<span class="sd">           and and meta data about the response.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            BackendBrokenError: when the backend system is responding but</span>
+<span class="sd">                may be under heavy load</span>
+<span class="sd">            BackendDownError: when the backend system is not responding</span>
+<span class="sd">            BackendThrottleError: when your call got throttled and timed out</span>
+<span class="sd">                while waiting for a response.</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format.</span>
+
+<span class="sd">        .. _`/f13/availability.v1`: http://docs.ingresso.co.uk/#availability</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;perf_id&#39;</span><span class="p">:</span> <span class="n">performance_id</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">number_of_seats</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">no_of_seats</span><span class="o">=</span><span class="n">number_of_seats</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">discounts</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">add_discounts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">example_seats</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">add_example_seats</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">seat_blocks</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">add_seat_blocks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">user_commission</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">req_predicted_commission</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_optional_kwargs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;availability.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;availability&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no availability key in json response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">AvailabilityMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="n">raw_availability</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;availability&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">availability</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">TicketType</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_availability</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ticket_type&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">availability</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.get_send_methods"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_send_methods">[docs]</a>    <span class="k">def</span> <span class="nf">get_send_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">performance_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch available delivery methods for a given performance</span>
+
+<span class="sd">        Wraps `/f13/send_methods.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            performance_id (string): identifier of the target performance.</span>
+<span class="sd">            **kwargs: see :meth:`add_optional_kwargs &lt;pyticketswitch.client.Client.add_optional_kwargs&gt;`</span>
+<span class="sd">                for more info.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">           list, :class:`CurrencyMeta &lt;pyticketswitch.currency.CurrencyMeta&gt;`:</span>
+<span class="sd">           a list of :class:`SendMethods &lt;pyticketswitch.send_method.SendMethod&gt;`</span>
+<span class="sd">           and information about the currencies of the prices in the response</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format.</span>
+
+<span class="sd">        .. _`/f13/send_methods.v1`: http://docs.ingresso.co.uk/#send-methods</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;perf_id&#39;</span><span class="p">:</span> <span class="n">performance_id</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_optional_kwargs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;send_methods.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;send_methods&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no send_methods key in json response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">raw_send_methods</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;send_methods&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">send_methods</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">SendMethod</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_send_methods</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;send_method&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">]</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">CurrencyMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">send_methods</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.get_discounts"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_discounts">[docs]</a>    <span class="k">def</span> <span class="nf">get_discounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">performance_id</span><span class="p">,</span> <span class="n">ticket_type_code</span><span class="p">,</span> <span class="n">price_band_code</span><span class="p">,</span> <span class="n">user_commission</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fetch available discounts for a ticket_type/price band combination</span>
+
+<span class="sd">        Wraps `/f13/discounts.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            performance_id (string): identifier of the target performance.</span>
+<span class="sd">            ticket_type_code (string): code for the target ticket type.</span>
+<span class="sd">            price_band_code (string): code for the target price band.</span>
+<span class="sd">            user_commission (bool): if True then return the user_commission,</span>
+<span class="sd">                otherwise do not return the user_commission. Defaults to False.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">           list, :class:`CurrencyMeta &lt;pyticketswitch.currency.CurrencyMeta&gt;`:</span>
+<span class="sd">           a list of :class:`Discounts &lt;pyticketswitch.discount.Discount&gt;`</span>
+<span class="sd">           and information about the currencies of the prices in the response.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format.</span>
+
+<span class="sd">        .. _`/f13/discounts.v1`: http://docs.ingresso.co.uk/#discounts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;perf_id&#39;</span><span class="p">:</span> <span class="n">performance_id</span><span class="p">,</span>
+            <span class="s1">&#39;ticket_type_code&#39;</span><span class="p">:</span> <span class="n">ticket_type_code</span><span class="p">,</span>
+            <span class="s1">&#39;price_band_code&#39;</span><span class="p">:</span> <span class="n">price_band_code</span><span class="p">,</span>
+            <span class="s1">&#39;req_predicted_commission&#39;</span><span class="p">:</span> <span class="n">user_commission</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;discounts.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;discounts&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no discounts key in json response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">raw_discounts</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discounts&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">discounts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Discount</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_discounts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discount&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="p">]</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">CurrencyMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">discounts</span><span class="p">,</span> <span class="n">meta</span></div>
+
+    <span class="k">def</span> <span class="nf">_trolley_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discounts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">send_codes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ticket_type_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">performance_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price_band_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handle arguments common to the</span>
+<span class="sd">        :meth:`Client.get_trolley &lt;pyticketswitch.client.Client.get_trolley&gt;`</span>
+<span class="sd">        and the</span>
+<span class="sd">        :meth:`Client.make_reservation &lt;pyticketswitch.client.Client.make_reservation&gt;`</span>
+<span class="sd">        methods.</span>
+
+<span class="sd">        These two methods accept identical arguments and these resolve</span>
+<span class="sd">        to identical parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (string): trolley token from a previous trolley</span>
+<span class="sd">                call.</span>
+<span class="sd">            number_of_seats (int): number of seats to add to the</span>
+<span class="sd">                trolley.</span>
+<span class="sd">            discounts (list): list containing discount codes for each</span>
+<span class="sd">                requested seat.</span>
+<span class="sd">            seats (list): list of seat IDs.</span>
+<span class="sd">            send_codes (dict): send codes indexed on backend source</span>
+<span class="sd">                code.</span>
+<span class="sd">            ticket_type_code: (string): code of ticket type to add to</span>
+<span class="sd">                the trolley.</span>
+<span class="sd">            performance_id: (string): id of the performance to add to</span>
+<span class="sd">                the trolley.</span>
+<span class="sd">            price_band_code: (string): code of price band to add to</span>
+<span class="sd">                the trolley</span>
+<span class="sd">            item_numbers_to_remove: (list): list of item numbers to</span>
+<span class="sd">                remove from trolley.</span>
+<span class="sd">            **kwargs: arbitary additional raw keyword arguments to add the</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidParametersError: when there is an issue with the provided</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">token</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">trolley_token</span><span class="o">=</span><span class="n">token</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">performance_id</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">perf_id</span><span class="o">=</span><span class="n">performance_id</span><span class="p">)</span>
+
+        <span class="c1"># TODO: check if 0 is a legit number to be passing in here.</span>
+        <span class="c1"># for the moment I&#39;m assuming that it isn&#39;t</span>
+        <span class="k">if</span> <span class="n">number_of_seats</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">no_of_seats</span><span class="o">=</span><span class="n">number_of_seats</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ticket_type_code</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ticket_type_code</span><span class="o">=</span><span class="n">ticket_type_code</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">price_band_code</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">price_band_code</span><span class="o">=</span><span class="n">price_band_code</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">item_numbers_to_remove</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">token</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidParametersError</span><span class="p">(</span>
+                <span class="s1">&#39;got item_numbers_to_remove but no token specified&#39;</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">item_numbers_to_remove</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">remove_items_list</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">item_numbers_to_remove</span><span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">seats</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s1">&#39;seat</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="n">seat</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">seat</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">seats</span><span class="p">)</span>
+            <span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">discounts</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s1">&#39;disc</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">):</span> <span class="n">discount</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">discount</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">discounts</span><span class="p">)</span>
+            <span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">send_codes</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">send_codes</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidParametersError</span><span class="p">(</span>
+                <span class="s1">&#39;send_codes should be a dictionary in the format of `{source_code: send_code}`&#39;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">send_codes</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_send_code&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source_code</span><span class="p">):</span> <span class="n">send_code</span>
+                <span class="k">for</span> <span class="n">source_code</span><span class="p">,</span> <span class="n">send_code</span> <span class="ow">in</span> <span class="n">send_codes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_optional_kwargs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">params</span>
+
+<div class="viewcode-block" id="Client.get_trolley"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_trolley">[docs]</a>    <span class="k">def</span> <span class="nf">get_trolley</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discounts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">send_codes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ticket_type_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">performance_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price_band_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Retrieve the contents of a trolley from the API.</span>
+
+<span class="sd">        Wraps `/f13/trolley.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (string): trolley token from a previous trolley</span>
+<span class="sd">                call.</span>
+<span class="sd">            number_of_seats (int): number of seats to add to the</span>
+<span class="sd">                trolley.</span>
+<span class="sd">            discounts (list): list containing discount codes for each</span>
+<span class="sd">                requested seat.</span>
+<span class="sd">            seats (list): list of seat IDs.</span>
+<span class="sd">            send_codes (dict): send codes indexed on backend source</span>
+<span class="sd">                code.</span>
+<span class="sd">            ticket_type_code: (string): code of ticket type to add to</span>
+<span class="sd">                the trolley.</span>
+<span class="sd">            performance_id: (string): id of the performance to add to</span>
+<span class="sd">                the trolley.</span>
+<span class="sd">            price_band_code: (string): code of price band to add to</span>
+<span class="sd">                the trolley.</span>
+<span class="sd">            item_numbers_to_remove: (list): list of item numbers to</span>
+<span class="sd">                remove from trolley.</span>
+<span class="sd">            **kwargs: arbitary additional raw keyword arguments to add the</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Trolley &lt;pyticketswitch.trolley.Trolley&gt;`, :class:`CurrencyMeta &lt;pyticketswitch.currency.CurrencyMeta&gt;`:</span>
+<span class="sd">            the contents of the trolley and meta data associated with the</span>
+<span class="sd">            trolley.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidParametersError: when there is an issue with the provided</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">        .. _`/f13/trolley.v1`: http://docs.ingresso.co.uk/#trolley</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trolley_params</span><span class="p">(</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="n">number_of_seats</span><span class="p">,</span> <span class="n">discounts</span><span class="o">=</span><span class="n">discounts</span><span class="p">,</span>
+            <span class="n">seats</span><span class="o">=</span><span class="n">seats</span><span class="p">,</span> <span class="n">send_codes</span><span class="o">=</span><span class="n">send_codes</span><span class="p">,</span>
+            <span class="n">ticket_type_code</span><span class="o">=</span><span class="n">ticket_type_code</span><span class="p">,</span> <span class="n">performance_id</span><span class="o">=</span><span class="n">performance_id</span><span class="p">,</span>
+            <span class="n">price_band_code</span><span class="o">=</span><span class="n">price_band_code</span><span class="p">,</span>
+            <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="n">item_numbers_to_remove</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;trolley.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="n">trolley</span> <span class="o">=</span> <span class="n">Trolley</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">CurrencyMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">trolley</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.get_upsells"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_upsells">[docs]</a>    <span class="k">def</span> <span class="nf">get_upsells</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discounts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">send_codes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ticket_type_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">performance_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price_band_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Retrieve a list of upsell events related to a trolley from the API.</span>
+
+<span class="sd">        Upsell events are related to a main event but can be purchased</span>
+<span class="sd">        separately. This call accepts a trolley token or any combination of</span>
+<span class="sd">        parameters to create a valid trolley, but does not alter any existing</span>
+<span class="sd">        trolley (it is idempotent).</span>
+
+<span class="sd">        Wraps `/f13/upsells.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (string): trolley token from a previous trolley</span>
+<span class="sd">                call.</span>
+<span class="sd">            number_of_seats (int): trolley with number of seats added.</span>
+<span class="sd">            discounts (list): list containing discount codes for each</span>
+<span class="sd">                requested seat.</span>
+<span class="sd">            seats (list): trolley with added list of seat IDs.</span>
+<span class="sd">            send_codes (dict): send codes indexed on backend source</span>
+<span class="sd">                code.</span>
+<span class="sd">            ticket_type_code: (string): trolley with tickets of</span>
+<span class="sd">                ticket type added.</span>
+<span class="sd">            performance_id: (string): trolley with tickets from the</span>
+<span class="sd">                specified performance added.</span>
+<span class="sd">            price_band_code: (string): trolley with tickets from a</span>
+<span class="sd">                specified price band added.</span>
+<span class="sd">            item_numbers_to_remove: (list): trolley with a list of</span>
+<span class="sd">                item numbers removed.</span>
+<span class="sd">            **kwargs: arbitary additional raw keyword arguments to add the</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list, :class:`EventMeta &lt;pyticketswitch.event.EventMeta&gt;`:</span>
+<span class="sd">            a list of :class:`Events &lt;pyticketswitch.event.Event&gt;` of related upsell</span>
+<span class="sd">            events</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidParametersError: when there is an issue with the provided</span>
+<span class="sd">                parameters.</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format.</span>
+
+<span class="sd">        .. _`/f13/upsells.v1`: http://docs.ingresso.co.uk/#related-events</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trolley_params</span><span class="p">(</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="n">number_of_seats</span><span class="p">,</span> <span class="n">discounts</span><span class="o">=</span><span class="n">discounts</span><span class="p">,</span>
+            <span class="n">seats</span><span class="o">=</span><span class="n">seats</span><span class="p">,</span> <span class="n">send_codes</span><span class="o">=</span><span class="n">send_codes</span><span class="p">,</span>
+            <span class="n">ticket_type_code</span><span class="o">=</span><span class="n">ticket_type_code</span><span class="p">,</span> <span class="n">performance_id</span><span class="o">=</span><span class="n">performance_id</span><span class="p">,</span>
+            <span class="n">price_band_code</span><span class="o">=</span><span class="n">price_band_code</span><span class="p">,</span>
+            <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="n">item_numbers_to_remove</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;upsells.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;results&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no results key in JSON response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">raw_upsell_events</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">upsell_events</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Event</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_upsell_events</span>
+        <span class="p">]</span>
+
+        <span class="n">upsell_meta</span> <span class="o">=</span> <span class="n">EventMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">upsell_events</span><span class="p">,</span> <span class="n">upsell_meta</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.get_addons"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_addons">[docs]</a>    <span class="k">def</span> <span class="nf">get_addons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discounts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">send_codes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ticket_type_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">performance_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price_band_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Retrieve a list of add-on events from the API.</span>
+
+<span class="sd">        Wraps `/f13/add_ons.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (string): trolley token from a previous trolley</span>
+<span class="sd">                call.</span>
+<span class="sd">            number_of_seats (int): trolley with number of seats added.</span>
+<span class="sd">            discounts (list): list containing discount codes for each</span>
+<span class="sd">                requested seat.</span>
+<span class="sd">            seats (list): trolley with added list of seat IDs.</span>
+<span class="sd">            send_codes (dict): send codes indexed on backend source</span>
+<span class="sd">                code.</span>
+<span class="sd">            ticket_type_code: (string): trolley with tickets of</span>
+<span class="sd">                ticket type added.</span>
+<span class="sd">            performance_id: (string): trolley with tickets from the</span>
+<span class="sd">                specified performance added.</span>
+<span class="sd">            price_band_code: (string): trolley with tickets from a</span>
+<span class="sd">                specified price band added.</span>
+<span class="sd">            item_numbers_to_remove: (list): trolley with a list of</span>
+<span class="sd">                item numbers removed.</span>
+<span class="sd">            **kwargs: arbitrary additional raw keyword arguments to add to the</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list, :class:`EventMeta &lt;pyticketswitch.event.EventMeta&gt;`:</span>
+<span class="sd">            a list of :class:`Events &lt;pyticketswitch.event.Event&gt;` of add-on events</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidParametersError: when there is an issue with the provided</span>
+<span class="sd">                parameters.</span>
+<span class="sd">            InvalidResponse: when the response is in an unexpected format.</span>
+
+<span class="sd">        .. _`/f13/add_ons.v1`: http://docs.ingresso.co.uk/#add-ons</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trolley_params</span><span class="p">(</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="n">number_of_seats</span><span class="p">,</span> <span class="n">discounts</span><span class="o">=</span><span class="n">discounts</span><span class="p">,</span>
+            <span class="n">seats</span><span class="o">=</span><span class="n">seats</span><span class="p">,</span> <span class="n">send_codes</span><span class="o">=</span><span class="n">send_codes</span><span class="p">,</span>
+            <span class="n">ticket_type_code</span><span class="o">=</span><span class="n">ticket_type_code</span><span class="p">,</span> <span class="n">performance_id</span><span class="o">=</span><span class="n">performance_id</span><span class="p">,</span>
+            <span class="n">price_band_code</span><span class="o">=</span><span class="n">price_band_code</span><span class="p">,</span>
+            <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="n">item_numbers_to_remove</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;add_ons.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;results&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidResponseError</span><span class="p">(</span>
+                <span class="s2">&quot;got no results key in json response&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">add_on_results</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">raw_add_on_events</span> <span class="o">=</span> <span class="n">add_on_results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;event&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">add_on_events</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Event</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">raw_add_on_events</span>
+        <span class="p">]</span>
+
+        <span class="n">add_on_meta</span> <span class="o">=</span> <span class="n">EventMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">add_on_events</span><span class="p">,</span> <span class="n">add_on_meta</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.make_reservation"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.make_reservation">[docs]</a>    <span class="k">def</span> <span class="nf">make_reservation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discounts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">send_codes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ticket_type_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">performance_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price_band_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;Attempt to reserve all the items in the given trolley</span>
+
+<span class="sd">        Wraps `/f13/reserve.v1`_</span>
+
+<span class="sd">        This method will take all the same arguments as</span>
+<span class="sd">        :func:`get_trolley &lt;pyticketswitch.client.Client.get_trolley&gt;`. You can</span>
+<span class="sd">        either build a trolley via the</span>
+<span class="sd">        :func:`get_trolley &lt;pyticketswitch.client.Client.get_trolley&gt;` method</span>
+<span class="sd">        and pass the returned trolley token into the reservation call, or</span>
+<span class="sd">        alternatively you can provide the trolley parameters directly to this</span>
+<span class="sd">        method.</span>
+
+<span class="sd">        .. note:: If you are interested in bundling multiple orders into a</span>
+<span class="sd">                  single purchase then see the :ref:`Bundling &lt;bundling&gt;`</span>
+<span class="sd">                  documentation for more details.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token (string): trolley token from a previous trolley</span>
+<span class="sd">                call.</span>
+<span class="sd">            number_of_seats (int): number of seats to add to the</span>
+<span class="sd">                trolley.</span>
+<span class="sd">            discounts (list): list containing discount codes for each</span>
+<span class="sd">                requested seat.</span>
+<span class="sd">            seats (list): list of seat id&#39;s.</span>
+<span class="sd">            send_codes (dict): send codes indexed on backend source</span>
+<span class="sd">                code.</span>
+<span class="sd">            ticket_type_code: (string): code of ticket type to add to</span>
+<span class="sd">                the trolley.</span>
+<span class="sd">            performance_id: (string): id of the performance to add to</span>
+<span class="sd">                the trolley.</span>
+<span class="sd">            price_band_code: (string): code of price band to add to</span>
+<span class="sd">                the trolley</span>
+<span class="sd">            item_numbers_to_remove: (list): list of item numbers to</span>
+<span class="sd">                remove from trolley.</span>
+<span class="sd">            **kwargs: arbitary additional raw keyword arguments to add the</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Reservation &lt;pyticketswitch.reservation.Reservation&gt;`, :class:`CurrencyMeta &lt;pyticketswitch.currency.CurrencyMeta&gt;`:</span>
+<span class="sd">            Information about the reservation and meta data asscociated with</span>
+<span class="sd">            the reservation.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            InvalidParametersError: when there is an issue with the provided</span>
+<span class="sd">                parameters.</span>
+
+<span class="sd">        .. _`/f13/reserve.v1`: http://docs.ingresso.co.uk/#reserve</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trolley_params</span><span class="p">(</span>
+            <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">number_of_seats</span><span class="o">=</span><span class="n">number_of_seats</span><span class="p">,</span> <span class="n">discounts</span><span class="o">=</span><span class="n">discounts</span><span class="p">,</span>
+            <span class="n">seats</span><span class="o">=</span><span class="n">seats</span><span class="p">,</span> <span class="n">send_codes</span><span class="o">=</span><span class="n">send_codes</span><span class="p">,</span>
+            <span class="n">ticket_type_code</span><span class="o">=</span><span class="n">ticket_type_code</span><span class="p">,</span> <span class="n">performance_id</span><span class="o">=</span><span class="n">performance_id</span><span class="p">,</span>
+            <span class="n">price_band_code</span><span class="o">=</span><span class="n">price_band_code</span><span class="p">,</span>
+            <span class="n">item_numbers_to_remove</span><span class="o">=</span><span class="n">item_numbers_to_remove</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;reserve.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">POST</span><span class="p">)</span>
+
+        <span class="n">reservation</span> <span class="o">=</span> <span class="n">Reservation</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">CurrencyMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.release_reservation"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.release_reservation">[docs]</a>    <span class="k">def</span> <span class="nf">release_reservation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transaction_uuid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Release an existing reservation.</span>
+
+<span class="sd">        Wraps `/f13/release.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            transaction_uuid (str): the identifier of the reservaiton.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: :obj:`True` if the reservation was successfully released</span>
+<span class="sd">            otherwise :obj:`False`.</span>
+
+<span class="sd">        .. _`/f13/release.v1`: http://docs.ingresso.co.uk/#release</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;transaction_uuid&#39;</span><span class="p">:</span> <span class="n">transaction_uuid</span><span class="p">}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;release.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">POST</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;released_ok&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Client.get_status"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.get_status">[docs]</a>    <span class="k">def</span> <span class="nf">get_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transaction_uuid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transaction_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">customer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">external_sale_page</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the status of reservation, purchase or transaction.</span>
+
+<span class="sd">        .. note:: The **transaction_id** field is for backwards compatability</span>
+<span class="sd">            with the old XML API. You can use either **transaction_id** or</span>
+<span class="sd">            **transaction_uuid**, however please use the **transaction_uuid** as</span>
+<span class="sd">            **transaction_id** will be deprecated shortly.</span>
+
+<span class="sd">        Wraps `/f13/status.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            transaction_uuid (str): identifier for the transaction.</span>
+<span class="sd">            transaction_id (str): identifier for the old transaction ids.</span>
+<span class="sd">                Note: one of these two must be set.</span>
+<span class="sd">            customer (bool): include customer information if</span>
+<span class="sd">                available. Defaults to :obj:`False`.</span>
+<span class="sd">            external_sale_page (bool): include the saved html of the</span>
+<span class="sd">                sale/confirmation page if you asked us to save it for you.</span>
+<span class="sd">                Defaults to :obj:`None`</span>
+<span class="sd">            **kwargs: arbitary keyword parameters to pass directly to the API.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Status &lt;pyticketswitch.status.Status&gt;`, :class:`CurrencyMeta &lt;pyticketswitch.currency.CurrencyMeta&gt;`:</span>
+<span class="sd">            the current status of the transaction and acompanying meta</span>
+<span class="sd">            information.</span>
+
+<span class="sd">        .. _`/f13/status.v1`: http://docs.ingresso.co.uk/#status</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">customer</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">add_customer</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">external_sale_page</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">add_external_sale_page</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_optional_kwargs</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">transaction_id</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">transaction_id</span><span class="o">=</span><span class="n">transaction_id</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;trans_id_status.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">transaction_uuid</span><span class="o">=</span><span class="n">transaction_uuid</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;status.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">CurrencyMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">status</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.make_purchase"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.make_purchase">[docs]</a>    <span class="k">def</span> <span class="nf">make_purchase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">transaction_uuid</span><span class="p">,</span> <span class="n">customer</span><span class="p">,</span> <span class="n">payment_method</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">send_confirmation_email</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Purchase tickets for an existing reservation.</span>
+
+<span class="sd">        Wraps `/f13/purchase.v1`_</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            transaction_uuid (str): the identifier of the existing</span>
+<span class="sd">                reservation/transaction</span>
+<span class="sd">            customer: `Customer &lt;pyticketswitch.customer.Customer&gt;`</span>
+<span class="sd">                information.</span>
+<span class="sd">            payment_method: the customer&#39;s payment details. Can be</span>
+<span class="sd">                :class:`CardDetails &lt;pyticketswitch.payment_methods.CardDetails&gt;`</span>
+<span class="sd">                or</span>
+<span class="sd">                :class:`RedirectionDetails &lt;pyticketswitch.payment_methods.RedirectionDetails&gt;`.</span>
+<span class="sd">            send_confirmation_email (bool): on a successful purchase, when this</span>
+<span class="sd">                parameter is :obj:`True`, then we will send the customer a</span>
+<span class="sd">                confirmation email. If you would prefer to send your own</span>
+<span class="sd">                confirmation email then you can set this parameter to</span>
+<span class="sd">                :obj:`False`.</span>
+<span class="sd">            **kwargs: arbitary keyword arguments to send with the request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Status &lt;pyticketswitch.status.Status&gt;`,</span>
+<span class="sd">            :class:`Callout &lt;pyticketswitch.callout.Callout&gt;`: the current</span>
+<span class="sd">            status of the transaction and/or a potential callout to redirect</span>
+<span class="sd">            the customer to.</span>
+
+<span class="sd">            This method should only ever return either a status or a callout,</span>
+<span class="sd">            never both.</span>
+
+<span class="sd">            If this method generates a</span>
+<span class="sd">            :class:`Callout &lt;pyticketswitch.callout.Callout&gt;` then the customer</span>
+<span class="sd">            should be redirected to the specified third party payment provider.</span>
+
+<span class="sd">            See :ref:`Handling callouts &lt;handling_callouts&gt;` for more information.</span>
+
+<span class="sd">        .. _`/f13/purchase.v1`: http://docs.ingresso.co.uk/#purchase</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;transaction_uuid&#39;</span><span class="p">:</span> <span class="n">transaction_uuid</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">send_confirmation_email</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">send_confirmation_email</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">customer_params</span> <span class="o">=</span> <span class="n">customer</span><span class="o">.</span><span class="n">as_api_parameters</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">customer_params</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">customer_params</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">payment_method</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">payment_method</span><span class="o">.</span><span class="n">as_api_parameters</span><span class="p">())</span>
+
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="s1">&#39;purchase.v1&#39;</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">POST</span><span class="p">)</span>
+
+        <span class="n">callout_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;callout&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">callout_data</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">callout</span> <span class="o">=</span> <span class="n">Callout</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">callout_data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">callout</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">CurrencyMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span></div>
+
+<div class="viewcode-block" id="Client.next_callout"><a class="viewcode-back" href="../../api.html#pyticketswitch.client.Client.next_callout">[docs]</a>    <span class="k">def</span> <span class="nf">next_callout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">this_token</span><span class="p">,</span> <span class="n">next_token</span><span class="p">,</span> <span class="n">returned_data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets the next callout in a callout chain.</span>
+
+<span class="sd">        Wraps `/f13/callback.v1`_</span>
+
+<span class="sd">        At the end of the callout chain the call will return the status of</span>
+<span class="sd">        the transaction.</span>
+
+<span class="sd">        See :ref:`Handling callouts &lt;handling_callouts&gt;` for more information.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            this_token (str): the token for the current redirect.</span>
+<span class="sd">            next_token (str): the token for the potential next redirect.</span>
+<span class="sd">            returned_data (dict): dictionary of query string paramters appended</span>
+<span class="sd">                to your return url.</span>
+<span class="sd">            **kwargs: arbitary keyword arguments to send with the request.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Status &lt;pyticketswitch.status.Status&gt;`,</span>
+<span class="sd">            :class:`Callout &lt;pyticketswitch.callout.Callout&gt;`: the current</span>
+<span class="sd">            status of the transaction and/or a potential callout to redirect</span>
+<span class="sd">            the customer to.</span>
+
+<span class="sd">            This method should only ever return either a status or a callout,</span>
+<span class="sd">            never both.</span>
+
+<span class="sd">        .. _`/f13/callback.v1`: http://docs.ingresso.co.uk/#purchasing-with-redirect</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="s2">&quot;callback.v1/this.</span><span class="si">{}</span><span class="s2">/next.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">this_token</span><span class="p">,</span> <span class="n">next_token</span><span class="p">)</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="n">returned_data</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_request</span><span class="p">(</span><span class="n">endpoint</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="n">POST</span><span class="p">)</span>
+
+        <span class="n">callout_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;callout&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">callout_data</span><span class="p">:</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">callout</span> <span class="o">=</span> <span class="n">Callout</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">callout_data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">callout</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="n">Status</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="n">meta</span> <span class="o">=</span> <span class="n">CurrencyMeta</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">status</span><span class="p">,</span> <span class="n">callout</span><span class="p">,</span> <span class="n">meta</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

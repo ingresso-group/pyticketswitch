@@ -1,0 +1,272 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.price_band &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.price_band</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch.cost_range</span> <span class="k">import</span> <span class="n">CostRange</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.discount</span> <span class="k">import</span> <span class="n">Discount</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.seat</span> <span class="k">import</span> <span class="n">Seat</span><span class="p">,</span> <span class="n">SeatBlock</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.commission</span> <span class="k">import</span> <span class="n">Commission</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span><span class="p">,</span> <span class="n">SeatPricingMixin</span>
+
+
+<div class="viewcode-block" id="PriceBand"><a class="viewcode-back" href="../../api.html#pyticketswitch.price_band.PriceBand">[docs]</a><span class="k">class</span> <span class="nc">PriceBand</span><span class="p">(</span><span class="n">SeatPricingMixin</span><span class="p">,</span> <span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes a set of tickets with the same ticket type and price.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        code (str): the price band identifier.</span>
+<span class="sd">        default_discount (:class:`Discount &lt;pyticketswitch.discount.Discount&gt;`):</span>
+<span class="sd">            this is the discount that will be assumed if no other discount</span>
+<span class="sd">            is specified at reservation time. It holds the prices for the price</span>
+<span class="sd">            band.</span>
+<span class="sd">        allows_leaving_single_seats (str): indicates if this price band will</span>
+<span class="sd">            allow customers to leave a single seat with no neighbours. Values</span>
+<span class="sd">            are &#39;always&#39;, &#39;never&#39;, or &#39;if_necessary&#39;.</span>
+<span class="sd">        description (str): human readable description of the price band if</span>
+<span class="sd">            available.</span>
+<span class="sd">        cost_range (:class:`CostRange &lt;pyticketswitch.cost_range.CostRange&gt;`):</span>
+<span class="sd">            summary data for the price band including offers.</span>
+<span class="sd">        no_singles_cost_range (:class:`CostRange &lt;pyticketswitch.cost_range.CostRange&gt;`):</span>
+<span class="sd">            summary data for the price band including offers.</span>
+<span class="sd">        example_seats (list): list of :class:`Seats &lt;pyticketswitch.seat.Seat&gt;`</span>
+<span class="sd">            that can be used as examples of what the user might get when they</span>
+<span class="sd">            reserved tickets in this price band.</span>
+<span class="sd">        example_seats_are_real (bool): when :obj:`True` this field indicates</span>
+<span class="sd">            that the example seats are in fact real seats and will be the ones</span>
+<span class="sd">            we attempt to reserve at the reservation stage. When :obj:`False`</span>
+<span class="sd">            these seats merely examples retrieved from cached data, and have</span>
+<span class="sd">            likely already been purchased.</span>
+<span class="sd">        seat_blocks (list): list of</span>
+<span class="sd">            :class:`SeatBlocks &lt;pyticketswitch.seat.SeatBlock&gt;`. When available</span>
+<span class="sd">            this are the contiguous seats that are available for purchase.</span>
+<span class="sd">            :class:`SeatBlocks &lt;pyticketswitch.seat.SeatBlock&gt;` contain</span>
+<span class="sd">            :class:`Seats &lt;pyticketswitch.seat.Seat&gt;`.</span>
+<span class="sd">        user_commission (:class:`Commission &lt;pyticketswitch.commission.Commission&gt;`):</span>
+<span class="sd">            the commission payable to the user on the sale of tickets in this</span>
+<span class="sd">            price band. Only available when requested.</span>
+<span class="sd">        gross_commission (:class:`Commission &lt;pyticketswitch.commission.Commission&gt;`):</span>
+<span class="sd">            the gross commission payable. This is not generally available.</span>
+<span class="sd">        availability (int): the number of tickets/seats available in this price</span>
+<span class="sd">            band.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">,</span> <span class="n">default_discount</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cost_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">no_singles_cost_range</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">example_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">example_seats_are_real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">seat_blocks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_commission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">discounts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">allows_leaving_single_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">availability</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">non_offer_seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">non_offer_surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">percentage_saving</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">absolute_saving</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">code</span> <span class="o">=</span> <span class="n">code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cost_range</span> <span class="o">=</span> <span class="n">cost_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">allows_leaving_single_seats</span> <span class="o">=</span> <span class="n">allows_leaving_single_seats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">no_singles_cost_range</span> <span class="o">=</span> <span class="n">no_singles_cost_range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_discount</span> <span class="o">=</span> <span class="n">default_discount</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">example_seats</span> <span class="o">=</span> <span class="n">example_seats</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">example_seats_are_real</span> <span class="o">=</span> <span class="n">example_seats_are_real</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seat_blocks</span> <span class="o">=</span> <span class="n">seat_blocks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_commission</span> <span class="o">=</span> <span class="n">user_commission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">discounts</span> <span class="o">=</span> <span class="n">discounts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">availability</span> <span class="o">=</span> <span class="n">availability</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seatprice</span> <span class="o">=</span> <span class="n">seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surcharge</span> <span class="o">=</span> <span class="n">surcharge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_offer_seatprice</span> <span class="o">=</span> <span class="n">non_offer_seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_offer_surcharge</span> <span class="o">=</span> <span class="n">non_offer_surcharge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">percentage_saving</span> <span class="o">=</span> <span class="n">percentage_saving</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">absolute_saving</span> <span class="o">=</span> <span class="n">absolute_saving</span>
+
+<div class="viewcode-block" id="PriceBand.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.price_band.PriceBand.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new **PriceBand** object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a price band.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`PriceBand &lt;pyticketswitch.order.PriceBand&gt;`: a new</span>
+<span class="sd">            :class:`PriceBand &lt;pyticketswitch.order.PriceBand&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">api_cost_range</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cost_range&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">api_no_singles_cost_range</span> <span class="o">=</span> <span class="n">api_cost_range</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;no_singles_cost_range&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">cost_range</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">no_singles_cost_range</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">api_cost_range</span><span class="p">:</span>
+            <span class="n">api_cost_range</span><span class="p">[</span><span class="s1">&#39;singles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">cost_range</span> <span class="o">=</span> <span class="n">CostRange</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">api_cost_range</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">api_no_singles_cost_range</span><span class="p">:</span>
+            <span class="n">api_no_singles_cost_range</span><span class="p">[</span><span class="s1">&#39;singles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">no_singles_cost_range</span> <span class="o">=</span> <span class="n">CostRange</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span>
+                <span class="n">api_no_singles_cost_range</span><span class="p">)</span>
+
+        <span class="n">discount</span> <span class="o">=</span> <span class="n">Discount</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;price_band_code&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;price_band_desc&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;availability&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;number_available&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;cost_range&#39;</span><span class="p">:</span> <span class="n">cost_range</span><span class="p">,</span>
+            <span class="s1">&#39;no_singles_cost_range&#39;</span><span class="p">:</span> <span class="n">no_singles_cost_range</span><span class="p">,</span>
+            <span class="s1">&#39;default_discount&#39;</span><span class="p">:</span> <span class="n">discount</span><span class="p">,</span>
+            <span class="s1">&#39;example_seats_are_real&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;example_seats_are_real&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+            <span class="s1">&#39;allows_leaving_single_seats&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allows_leaving_single_seats&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="n">example_seats_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;example_seats&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">example_seats_data</span><span class="p">:</span>
+            <span class="n">example_seats</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Seat</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">seat</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">seat</span> <span class="ow">in</span> <span class="n">example_seats_data</span>
+            <span class="p">]</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">example_seats</span><span class="o">=</span><span class="n">example_seats</span><span class="p">)</span>
+
+        <span class="n">seat_block_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;free_seat_blocks&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">seat_block_data</span><span class="p">:</span>
+            <span class="n">separators_by_row</span> <span class="o">=</span> <span class="n">seat_block_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;separators_by_row&#39;</span><span class="p">)</span>
+            <span class="n">restricted_view_seats</span> <span class="o">=</span> <span class="n">seat_block_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;restricted_view_seats&#39;</span><span class="p">)</span>
+            <span class="n">seats_by_text_message</span> <span class="o">=</span> <span class="n">seat_block_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;seats_by_text_message&#39;</span><span class="p">)</span>
+            <span class="n">blocks_by_row</span> <span class="o">=</span> <span class="n">seat_block_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;blocks_by_row&#39;</span><span class="p">)</span>
+
+            <span class="n">seat_blocks</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">blocks_by_row</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">row_id</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">blocks_by_row</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">row</span><span class="p">:</span>
+                        <span class="n">separator</span> <span class="o">=</span> <span class="n">separators_by_row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">row_id</span><span class="p">)</span>
+                        <span class="n">seat_block</span> <span class="o">=</span> <span class="n">SeatBlock</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span>
+                            <span class="n">block</span><span class="o">=</span><span class="n">block</span><span class="p">,</span>
+                            <span class="n">row_id</span><span class="o">=</span><span class="n">row_id</span><span class="p">,</span>
+                            <span class="n">separator</span><span class="o">=</span><span class="n">separator</span><span class="p">,</span>
+                            <span class="n">restricted_view_seats</span><span class="o">=</span><span class="n">restricted_view_seats</span><span class="p">,</span>
+                            <span class="n">seats_by_text_message</span><span class="o">=</span><span class="n">seats_by_text_message</span><span class="p">,</span>
+                        <span class="p">)</span>
+                        <span class="n">seat_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seat_block</span><span class="p">)</span>
+
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">seat_blocks</span><span class="o">=</span><span class="n">seat_blocks</span><span class="p">)</span>
+
+        <span class="n">user_commission_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;predicted_user_commission&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">user_commission_data</span><span class="p">:</span>
+            <span class="n">user_commission</span> <span class="o">=</span> <span class="n">Commission</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">user_commission_data</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">user_commission</span><span class="o">=</span><span class="n">user_commission</span><span class="p">)</span>
+
+        <span class="n">discounts_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;possible_discounts&#39;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;discount&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">discounts_data</span><span class="p">:</span>
+            <span class="n">discounts</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Discount</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">discount_data</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">discount_data</span> <span class="ow">in</span> <span class="n">discounts_data</span>
+            <span class="p">]</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">discounts</span><span class="o">=</span><span class="n">discounts</span><span class="p">)</span>
+
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">SeatPricingMixin</span><span class="o">.</span><span class="n">kwargs_from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PriceBand.get_seats"><a class="viewcode-back" href="../../api.html#pyticketswitch.price_band.PriceBand.get_seats">[docs]</a>    <span class="k">def</span> <span class="nf">get_seats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all seats in child seat blocks</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: list of :class:`Seats &lt;pyticketswitch.seat.Seat&gt;`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">seat_blocks</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">seat</span>
+            <span class="k">for</span> <span class="n">seat_block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">seat_blocks</span>
+            <span class="k">for</span> <span class="n">seat</span> <span class="ow">in</span> <span class="n">seat_block</span><span class="o">.</span><span class="n">seats</span> <span class="ow">or</span> <span class="p">[]</span>
+        <span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;PriceBand </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;PriceBand </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">code</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

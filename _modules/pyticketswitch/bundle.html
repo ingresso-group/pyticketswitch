@@ -1,0 +1,227 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.bundle &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.bundle</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch.order</span> <span class="k">import</span> <span class="n">Order</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.debitor</span> <span class="k">import</span> <span class="n">Debitor</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.purchase_result</span> <span class="k">import</span> <span class="n">PurchaseResult</span>
+
+
+<div class="viewcode-block" id="Bundle"><a class="viewcode-back" href="../../api.html#pyticketswitch.bundle.Bundle">[docs]</a><span class="k">class</span> <span class="nc">Bundle</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A collection of orders into the same backend system</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        source_code (str): the identifier of the backend system.</span>
+<span class="sd">        orders (list): the orders.</span>
+<span class="sd">        description (str): description of the backend system.</span>
+<span class="sd">        total_seatprice (float): the total cost of the seats/tickets in the</span>
+<span class="sd">            bundle.</span>
+<span class="sd">        total_surcharge (float): the total additional charges for the bundle.</span>
+<span class="sd">        total_send_cost (float): the total postage fee for the bundle.</span>
+<span class="sd">        total (float): the total amount of money required to purchase this</span>
+<span class="sd">            bundle.</span>
+<span class="sd">        currency_code (str): the currency that the prices are in.</span>
+<span class="sd">        debitor (:class:`Debitor &lt;pyticketswitch.debitor.Debitor&gt;`):</span>
+<span class="sd">            information about an external debitor that will be used to take</span>
+<span class="sd">            payment for this bundle. When you are selling on credit, or the</span>
+<span class="sd">            source system is taking payment, this will be :obj:`None`.</span>
+<span class="sd">        terms_and_conditions (str): supplier terms and conditions. Only</span>
+<span class="sd">            availabile when requested with the optional ``source_info`` flag.</span>
+<span class="sd">        purchase_result (:class:`PurchaseResult &lt;pyticketswitch.purchase_result.</span>
+<span class="sd">            PurchaseResult&gt;`): the result of the purchase attempt for the bundle</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_code</span><span class="p">,</span> <span class="n">orders</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">total_seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">total_surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">total_send_cost</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">currency_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">debitor</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">terms_and_conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">purchase_result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source_code</span> <span class="o">=</span> <span class="n">source_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orders</span> <span class="o">=</span> <span class="n">orders</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_seatprice</span> <span class="o">=</span> <span class="n">total_seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_surcharge</span> <span class="o">=</span> <span class="n">total_surcharge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_send_cost</span> <span class="o">=</span> <span class="n">total_send_cost</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total</span> <span class="o">=</span> <span class="n">total</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currency_code</span> <span class="o">=</span> <span class="n">currency_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">debitor</span> <span class="o">=</span> <span class="n">debitor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terms_and_conditions</span> <span class="o">=</span> <span class="n">terms_and_conditions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">purchase_result</span> <span class="o">=</span> <span class="n">purchase_result</span>
+
+<div class="viewcode-block" id="Bundle.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.bundle.Bundle.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new Bundle object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a bundle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Bundle &lt;pyticketswitch.bundle.Bundle&gt;`: a new</span>
+<span class="sd">            :class:`Bundle &lt;pyticketswitch.bundle.Bundle&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;source_code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_source_code&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;description&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_source_desc&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;currency_code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;currency_code&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;terms_and_conditions&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;source_t_and_c&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="n">raw_orders</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_orders</span><span class="p">:</span>
+            <span class="n">orders</span> <span class="o">=</span> <span class="p">[</span><span class="n">Order</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">order</span><span class="p">)</span> <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="n">raw_orders</span><span class="p">]</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">orders</span><span class="o">=</span><span class="n">orders</span><span class="p">)</span>
+
+        <span class="c1"># Below we are explicital checking for not None because we want to</span>
+        <span class="c1"># differentiate between situtations where a value is 0 and a value is</span>
+        <span class="c1"># missing from the response.</span>
+        <span class="n">total_seatprice</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_total_seatprice&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total_seatprice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">total_seatprice</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">total_seatprice</span><span class="p">))</span>
+
+        <span class="n">total_surcharge</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_total_surcharge&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total_surcharge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">total_surcharge</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">total_surcharge</span><span class="p">))</span>
+
+        <span class="n">total_send_cost</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_total_send_cost&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total_send_cost</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">total_send_cost</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">total_send_cost</span><span class="p">))</span>
+
+        <span class="n">total</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bundle_total_cost&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">total</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">total</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">total</span><span class="p">))</span>
+
+        <span class="n">raw_debitor</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;debitor&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_debitor</span><span class="p">:</span>
+            <span class="n">debitor</span> <span class="o">=</span> <span class="n">Debitor</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">raw_debitor</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">debitor</span><span class="o">=</span><span class="n">debitor</span><span class="p">)</span>
+
+        <span class="n">raw_purchase_result</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;purchase_result&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_purchase_result</span><span class="p">:</span>
+            <span class="n">purchase_result</span> <span class="o">=</span> <span class="n">PurchaseResult</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">raw_purchase_result</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">purchase_result</span><span class="o">=</span><span class="n">purchase_result</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Bundle.get_events"><a class="viewcode-back" href="../../api.html#pyticketswitch.bundle.Bundle.get_events">[docs]</a>    <span class="k">def</span> <span class="nf">get_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the events in the bundle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: list of :class:`Event &lt;pyticketswitch.event.Event&gt;` objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">orders</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">order</span><span class="o">.</span><span class="n">event</span>
+            <span class="k">for</span> <span class="n">order</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">orders</span>
+            <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">event</span> <span class="ow">and</span> <span class="n">order</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">id</span>
+        <span class="p">]</span></div>
+
+<div class="viewcode-block" id="Bundle.get_event_ids"><a class="viewcode-back" href="../../api.html#pyticketswitch.bundle.Bundle.get_event_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_event_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the event ids of the events in the bundle.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            set: set of events IDs (str).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">event</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_events</span><span class="p">()}</span></div>
+
+<div class="viewcode-block" id="Bundle.is_purchased"><a class="viewcode-back" href="../../api.html#pyticketswitch.bundle.Bundle.is_purchased">[docs]</a>    <span class="k">def</span> <span class="nf">is_purchased</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if this bundle was successfully purchased.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: if the bundle is purchased or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">purchase_result</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">purchase_result</span><span class="o">.</span><span class="n">success</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Bundle </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source_code</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

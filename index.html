@@ -1,0 +1,199 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Pyticketswitch &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="users/intro.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pyticketswitch">
+<h1>Pyticketswitch<a class="headerlink" href="#pyticketswitch" title="Permalink to this headline">¶</a></h1>
+<p>Release v2.0.9. (<a class="reference internal" href="users/install.html#install"><span class="std std-ref">Installation</span></a>)</p>
+<p>Python wrapper around Ingresso’s <a class="reference external" href="http://docs.ingresso.co.uk/">F13 API</a>.</p>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Search for events and performances.</li>
+<li>Availability details for performances.</li>
+<li>Make live reservations.</li>
+<li>Purchase tickets.</li>
+</ul>
+</div>
+<div class="section" id="user-guide">
+<h2>User Guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="users/intro.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="users/intro.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/intro.html#goals">Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/intro.html#legacy-api">Legacy API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/intro.html#licence">Licence</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="users/install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="users/install.html#pip-install">Pip install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/install.html#source-code">Source code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/install.html#legacy-versions">Legacy Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="users/quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="users/quickstart.html#the-client">The Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/quickstart.html#finding-events">Finding Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/quickstart.html#performances">Performances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/quickstart.html#availability">Availability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/quickstart.html#discounts">Discounts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/quickstart.html#send-methods">Send Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/quickstart.html#making-a-reservation">Making a Reservation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/quickstart.html#making-a-purchase">Making a Purchase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/quickstart.html#retrieving-transactions">Retrieving Transactions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="users/advanced.html">Advanced Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#demo-user-events">Demo User Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#searching-for-an-event">Searching for an Event</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#pagination">Pagination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#requesting-seat-availability">Requesting Seat Availability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#trollies-bundles-orders-and-ticket-orders">Trollies, Bundles, Orders and Ticket orders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#bundling">Bundling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#sorting-search-results">Sorting search results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#taking-payments">Taking payments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#handling-callouts">Handling Callouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#handling-callbacks">Handling Callbacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#setting-tracking-id">Setting tracking ID</a></li>
+<li class="toctree-l2"><a class="reference internal" href="users/advanced.html#frontend-integrations">Frontend Integrations</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="api-documentation">
+<h2>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Developer Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api.html#ticketswitch-client">Ticketswitch Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#core">Core</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#bundles-and-orders">Bundles and Orders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#pricing">Pricing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#event-details">Event Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#seats">Seats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#payment-details">Payment Details</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#callouts">Callouts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#meta-objects">Meta Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#utilities">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#mixins">Mixins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#exceptions">Exceptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#miscellaneous">Miscellaneous</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Pyticketswitch</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#user-guide">User Guide</a></li>
+<li><a class="reference internal" href="#api-documentation">API Documentation</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="users/intro.html" title="next chapter">Introduction</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

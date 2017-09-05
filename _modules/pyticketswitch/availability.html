@@ -1,0 +1,355 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.availability &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.availability</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.utils</span> <span class="k">import</span> <span class="n">bitmask_to_numbered_list</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.currency</span> <span class="k">import</span> <span class="n">CurrencyMeta</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.misc</span> <span class="k">import</span> <span class="n">MONTH_NUMBERS</span>
+
+
+<div class="viewcode-block" id="AvailabilityMeta"><a class="viewcode-back" href="../../api.html#pyticketswitch.availability.AvailabilityMeta">[docs]</a><span class="k">class</span> <span class="nc">AvailabilityMeta</span><span class="p">(</span><span class="n">CurrencyMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Meta data about an availability response</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        contiguous_seat_selection_only (bool): indicates that the backend</span>
+<span class="sd">            system will only allow seats to be selected that are in a</span>
+<span class="sd">            contiguous line.</span>
+<span class="sd">        valid_quantities (list): list of valid number of tickets available for</span>
+<span class="sd">            selection.</span>
+<span class="sd">        currencies (dict): dictionary of</span>
+<span class="sd">            :class:`Currency &lt;pytickectswitch.currency.Currency&gt;`) objects</span>
+<span class="sd">            indexed on currency code.</span>
+<span class="sd">        default_currency_code (str): unless other wise specified all prices in</span>
+<span class="sd">            the related response will be in this currency.</span>
+<span class="sd">        desired_currency_code (str):</span>
+<span class="sd">            the currency that the user account is expecting. Useful for</span>
+<span class="sd">            conversions.</span>
+<span class="sd">        backend_is_broken (bool): indicates that the backend system is presently</span>
+<span class="sd">            marked as broken.</span>
+<span class="sd">        backend_is_down (bool): indicates that we are not currently able to</span>
+<span class="sd">            contact the backend system.</span>
+<span class="sd">        backend_throttle_failed (bool): indicates that your call was throttled</span>
+<span class="sd">            and failed to get a slot inside a viable timeframe. When true this</span>
+<span class="sd">            indicates that the backend system is under heavy load.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contiguous_seat_selection_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">valid_quantities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backend_is_down</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">backend_is_broken</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">backend_throttle_failed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">contiguous_seat_selection_only</span> <span class="o">=</span> <span class="n">contiguous_seat_selection_only</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currency</span> <span class="o">=</span> <span class="n">currency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_quantities</span> <span class="o">=</span> <span class="n">valid_quantities</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_is_broken</span> <span class="o">=</span> <span class="n">backend_is_broken</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_is_down</span> <span class="o">=</span> <span class="n">backend_is_down</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backend_throttle_failed</span> <span class="o">=</span> <span class="n">backend_throttle_failed</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AvailabilityMeta</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AvailabilityMeta.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.availability.AvailabilityMeta.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new AvailabilityMeta object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the whole response from the availability call.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`AvailabilityMeta &lt;pyticketswitch.availability.AvailabilityMeta&gt;`:</span>
+<span class="sd">            a new</span>
+<span class="sd">            :class:`AvailabilityMeta &lt;pyticketswitch.availability.AvailabilityMeta&gt;`</span>
+<span class="sd">            object populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">inst</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">AvailabilityMeta</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">inst</span><span class="o">.</span><span class="n">valid_quantities</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;valid_quantities&#39;</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">contiguous_seat_selection_only</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;contiguous_seat_selection_only&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">backend_is_broken</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;backend_is_broken&#39;</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">backend_is_down</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;backend_is_down&#39;</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">backend_throttle_failed</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;backend_throttle_failed&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">inst</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">AvailabilityDetails</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Details about the available tickets of a performance.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        ticket_type_code (str): identifier of the ticket type.</span>
+<span class="sd">        ticket_type_description (str): human readable description of the ticket</span>
+<span class="sd">            type.</span>
+<span class="sd">        price_band_code (str): identifier of the price band.</span>
+<span class="sd">        price_band_description (str): human readable description of the price</span>
+<span class="sd">            band.</span>
+<span class="sd">        seatprice (float): price of an individual seat.</span>
+<span class="sd">        surcharge (float): additional charges per seat.</span>
+<span class="sd">        full_seatprice (float): the non-offer price of an individual seat.</span>
+<span class="sd">        full_surcharge (float): the non-offer additional charges per seat.</span>
+<span class="sd">        currency (str): the currency of the prices.</span>
+<span class="sd">        first_date (datetime.datetime): the first date and time this</span>
+<span class="sd">            combination of ticket type and price band is available from.</span>
+<span class="sd">        last_date (datetime.datetime): the latest date and time this</span>
+<span class="sd">            combination of ticket type and price band is available from.</span>
+<span class="sd">        valid_quantities (list): list of valid number of tickets available for</span>
+<span class="sd">            selection.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ticket_type</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price_band</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ticket_type_description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">price_band_description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full_seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">full_surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">currency</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">first_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">percentage_saving</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">absolute_saving</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">last_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">calendar_masks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">weekday_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">valid_quanities</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ticket_type</span> <span class="o">=</span> <span class="n">ticket_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ticket_type_description</span> <span class="o">=</span> <span class="n">ticket_type_description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price_band</span> <span class="o">=</span> <span class="n">price_band</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">price_band_description</span> <span class="o">=</span> <span class="n">price_band_description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seatprice</span> <span class="o">=</span> <span class="n">seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surcharge</span> <span class="o">=</span> <span class="n">surcharge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_seatprice</span> <span class="o">=</span> <span class="n">full_seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">full_surcharge</span> <span class="o">=</span> <span class="n">full_surcharge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">percentage_saving</span> <span class="o">=</span> <span class="n">percentage_saving</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">absolute_saving</span> <span class="o">=</span> <span class="n">absolute_saving</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currency</span> <span class="o">=</span> <span class="n">currency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">first_date</span> <span class="o">=</span> <span class="n">first_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_date</span> <span class="o">=</span> <span class="n">last_date</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calendar_masks</span> <span class="o">=</span> <span class="n">calendar_masks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weekday_mask</span> <span class="o">=</span> <span class="n">weekday_mask</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid_quanities</span> <span class="o">=</span> <span class="n">valid_quanities</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates AvailabilityDetails from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns availability details.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: a list of</span>
+<span class="sd">            :class:`AvailabilityDetails &lt;pyticketswitch.availability.AvailabilityDetails&gt;`</span>
+<span class="sd">            objects populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">details</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">ticket_type</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ticket_type&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;ticket_type&#39;</span><span class="p">:</span> <span class="n">ticket_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ticket_type_code&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;ticket_type_description&#39;</span><span class="p">:</span> <span class="n">ticket_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ticket_type_desc&#39;</span><span class="p">),</span>
+            <span class="p">}</span>
+
+            <span class="k">for</span> <span class="n">price_band</span> <span class="ow">in</span> <span class="n">ticket_type</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;price_band&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="n">price_band</span><span class="o">=</span><span class="n">price_band</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;price_band_code&#39;</span><span class="p">),</span>
+                    <span class="n">price_band_description</span><span class="o">=</span><span class="n">price_band</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;price_band_desc&#39;</span><span class="p">),</span>
+                <span class="p">)</span>
+
+                <span class="n">raw_details_list</span> <span class="o">=</span> <span class="n">price_band</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;avail_detail&#39;</span><span class="p">,</span> <span class="p">[{}])</span>
+
+                <span class="k">for</span> <span class="n">raw_details</span> <span class="ow">in</span> <span class="n">raw_details_list</span><span class="p">:</span>
+
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;seatprice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;seatprice&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;full_seatprice&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;full_seatprice&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;surcharge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;surcharge&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;full_surcharge&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;full_surcharge&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;percentage_saving&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;percentage_saving&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;absolute_saving&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;absolute_saving&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;currency&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;avail_currency_code&#39;</span><span class="p">)</span>
+
+                    <span class="n">available_dates</span> <span class="o">=</span> <span class="n">raw_details</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;available_dates&#39;</span><span class="p">,</span> <span class="p">{})</span>
+                    <span class="k">if</span> <span class="s1">&#39;first_yyyymmdd&#39;</span> <span class="ow">in</span> <span class="n">available_dates</span><span class="p">:</span>
+                        <span class="n">first</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+                            <span class="n">available_dates</span><span class="p">[</span><span class="s1">&#39;first_yyyymmdd&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span>
+                        <span class="p">)</span>
+                        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;first_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+
+                    <span class="k">if</span> <span class="s1">&#39;last_yyyymmdd&#39;</span> <span class="ow">in</span> <span class="n">available_dates</span><span class="p">:</span>
+                        <span class="n">last</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+                            <span class="n">available_dates</span><span class="p">[</span><span class="s1">&#39;last_yyyymmdd&#39;</span><span class="p">],</span>
+                            <span class="s1">&#39;%Y%m</span><span class="si">%d</span><span class="s1">&#39;</span>
+                        <span class="p">)</span>
+                        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;last_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">last</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;calendar_masks&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="nb">int</span><span class="p">(</span><span class="n">year</span><span class="p">[</span><span class="mi">5</span><span class="p">:]):</span> <span class="p">{</span>
+                            <span class="n">MONTH_NUMBERS</span><span class="p">[</span><span class="n">month</span><span class="p">[:</span><span class="mi">3</span><span class="p">]]:</span> <span class="n">mask</span>
+                            <span class="k">for</span> <span class="n">month</span><span class="p">,</span> <span class="n">mask</span> <span class="ow">in</span> <span class="n">month_masks</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="p">}</span>
+                        <span class="k">for</span> <span class="n">year</span><span class="p">,</span> <span class="n">month_masks</span> <span class="ow">in</span> <span class="n">available_dates</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">year</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;year_&#39;</span><span class="p">)</span>
+                    <span class="p">}</span>
+
+                    <span class="k">if</span> <span class="s1">&#39;available_weekdays_bitmask&#39;</span> <span class="ow">in</span> <span class="n">raw_details</span><span class="p">:</span>
+                        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;weekday_mask&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_details</span><span class="p">[</span><span class="s1">&#39;available_weekdays_bitmask&#39;</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="s1">&#39;valid_quantity_bitmask&#39;</span> <span class="ow">in</span> <span class="n">raw_details</span><span class="p">:</span>
+                        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;valid_quanities&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">bitmask_to_numbered_list</span><span class="p">(</span>
+                            <span class="n">raw_details</span><span class="p">[</span><span class="s1">&#39;valid_quantity_bitmask&#39;</span><span class="p">]</span>
+                        <span class="p">)</span>
+                    <span class="n">avail_details</span> <span class="o">=</span> <span class="n">AvailabilityDetails</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">avail_details</span><span class="o">.</span><span class="n">_weekday_mask</span><span class="p">:</span>
+                        <span class="n">weekday_list</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">):</span>
+                            <span class="n">weekday_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">avail_details</span><span class="o">.</span><span class="n">on_weekday</span><span class="p">(</span><span class="n">day</span><span class="p">))</span>
+                        <span class="n">avail_details</span><span class="o">.</span><span class="n">weekday_list</span> <span class="o">=</span> <span class="n">weekday_list</span>
+                    <span class="n">details</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">avail_details</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">details</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">ticket_type_description</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">combined_price</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">is_available</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">,</span> <span class="n">month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check availablity on a given year/month/day.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            year (int): the year to check. For example, 2005, 2016, 2222, etc</span>
+<span class="sd">            month (int): (optional) the month to check. 1 == jan, 12 == dec, etc</span>
+<span class="sd">            day (int): (optional) the day of the month, zero indexed.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: :obj:`True` when availble inside the given parameters, other</span>
+<span class="sd">            wise :obj:`False`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: when a day is specified but not the month.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">day</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">month</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;a month must be specified to specify a day&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">year</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calendar_masks</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">year_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calendar_masks</span><span class="p">[</span><span class="n">year</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">month</span> <span class="ow">and</span> <span class="n">month</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">year_data</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="n">month_mask</span> <span class="o">=</span> <span class="n">year_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">month</span><span class="p">)</span>
+
+        <span class="c1"># the month mask is a 32 bit int where the right most bit is the first</span>
+        <span class="c1"># day of the month. To find if we have availability on a specfic day,</span>
+        <span class="c1"># we bit shift the mask by the zero indexed day and AND it by 1. If the</span>
+        <span class="c1"># result is a 1 then this combo of ticket type and price band is</span>
+        <span class="c1"># available on that day, otherwise it is not.</span>
+        <span class="k">if</span> <span class="n">day</span> <span class="ow">and</span> <span class="p">(</span><span class="n">month_mask</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">day</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">on_weekday</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">day</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if this combination of ticket_type and price band is available</span>
+<span class="sd">        on a given day of the week, where 0 is monday and sunday is 6.</span>
+
+<span class="sd">        .. note:: the api uses sunday as day 0 where as python uses monday.</span>
+<span class="sd">                  I&#39;ve made a concious decision here to use the python numbers</span>
+<span class="sd">                  to keep it consistant with anything written against this.</span>
+<span class="sd">                  (also sunday as day 0 is silly)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            day: the day of the week zero indexed from monday.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: :obj:`True` when available on the given day of the week,</span>
+<span class="sd">            otherwise :obj:`False`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">adjusted_day</span> <span class="o">=</span> <span class="n">day</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">day</span> <span class="o">&lt;</span> <span class="mi">6</span> <span class="k">else</span> <span class="mi">0</span>
+
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weekday_mask</span> <span class="o">&gt;&gt;</span> <span class="n">adjusted_day</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">combined_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">seatprice</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">surcharge</span>
+
+    <span class="k">def</span> <span class="nf">combined_full_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_seatprice</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_surcharge</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

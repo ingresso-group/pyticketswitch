@@ -1,0 +1,313 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.payment_methods &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.payment_methods</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="k">import</span> <span class="n">ABCMeta</span>
+<span class="kn">from</span> <span class="nn">pyticketswitch.exceptions</span> <span class="k">import</span> <span class="n">InvalidParametersError</span>
+
+
+<div class="viewcode-block" id="PaymentMethod"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.PaymentMethod">[docs]</a><span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span><span class="n">ABCMeta</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">PaymentMethod</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Abstract base class for payment methods&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PaymentMethod.as_api_parameters"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.PaymentMethod.as_api_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">as_api_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate keyword arguments suitable for consumption by the</span>
+<span class="sd">        ticketswitch API</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: dictionary of keyword parameters to pass to the API call.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s1">&#39;as_api_parameters not implemented on &#39;</span> <span class="o">+</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="CardDetails"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.CardDetails">[docs]</a><span class="k">class</span> <span class="nc">CardDetails</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Credit card details</span>
+
+<span class="sd">    This should never be returned by the API and is only used for supplying</span>
+<span class="sd">    card details to the purchase call.</span>
+
+<span class="sd">    Implements</span>
+<span class="sd">    :class:`PaymentMethod &lt;pyticketswitch.payment_methods.PaymentMethod&gt;`.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        card_number (str): the long credit card number.</span>
+<span class="sd">        expiry_month (int): the month the card expires in. Defaults to</span>
+<span class="sd">            :obj:`None`.</span>
+<span class="sd">        expiry_year (int): the year the card expires in. :obj:`None`.</span>
+<span class="sd">        start_month (int): the month the card expires in. Defaults to</span>
+<span class="sd">            :obj:`None`.</span>
+<span class="sd">        start_year (int): the year the card expires in. :obj:`None`.</span>
+<span class="sd">        ccv2 (str): credit card security code. Defaults to :obj:`None`.</span>
+<span class="sd">        issue_number (str): issue number of the card. Defaults to :obj:`None`.</span>
+<span class="sd">        billing_address (:class:`Address &lt;pyticketswitch.address.Address&gt;`):</span>
+<span class="sd">            used when the customer wishes to use an alternate billing address.</span>
+<span class="sd">            when not specified the customer address will be used.</span>
+<span class="sd">        return_url (str): some card debitors may decide that they need to</span>
+<span class="sd">            redirect the user to a third party for verification (for example</span>
+<span class="sd">            3d secure). These parties need a location to return a customer to.</span>
+<span class="sd">            When available, it&#39;s recomended to provide it. In the situation</span>
+<span class="sd">            where a return url is required but not provided, then the payment</span>
+<span class="sd">            will fail.</span>
+<span class="sd">        return_token (str): a unique token that can be used by you to identify</span>
+<span class="sd">            when a card debitor returns to you.</span>
+<span class="sd">        user_agent (str): the customer&#39;s browser&#39;s User-Agent header.</span>
+<span class="sd">            only nessicary when providing a return url.</span>
+<span class="sd">        accept (str): the customer&#39;s browser&#39;s Accept header.</span>
+<span class="sd">        remote_site (str): the remote site&#39;s domain. must match the domain of</span>
+<span class="sd">            the return_url.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">card_number</span><span class="p">,</span> <span class="n">expiry_month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">expiry_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_month</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">ccv2</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">issue_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">billing_address</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">return_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">return_token</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_agent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">accept</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remote_site</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">card_number</span> <span class="o">=</span> <span class="n">card_number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expiry_month</span> <span class="o">=</span> <span class="n">expiry_month</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expiry_year</span> <span class="o">=</span> <span class="n">expiry_year</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_month</span> <span class="o">=</span> <span class="n">start_month</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span> <span class="o">=</span> <span class="n">start_year</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ccv2</span> <span class="o">=</span> <span class="n">ccv2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">issue_number</span> <span class="o">=</span> <span class="n">issue_number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">billing_address</span> <span class="o">=</span> <span class="n">billing_address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_url</span> <span class="o">=</span> <span class="n">return_url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_token</span> <span class="o">=</span> <span class="n">return_token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span> <span class="o">=</span> <span class="n">user_agent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accept</span> <span class="o">=</span> <span class="n">accept</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remote_site</span> <span class="o">=</span> <span class="n">remote_site</span>
+
+<div class="viewcode-block" id="CardDetails.as_api_parameters"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.CardDetails.as_api_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">as_api_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generates a dictionary of parameters to be passed back to the API.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: a set of parameters describing the card details to the API.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;card_number&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">card_number</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="n">missing_expiry_year</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">expiry_year</span>
+        <span class="n">missing_expiry_month</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">expiry_month</span>
+
+        <span class="k">if</span> <span class="n">missing_expiry_year</span> <span class="ow">or</span> <span class="n">missing_expiry_month</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidParametersError</span><span class="p">(</span>
+                <span class="s1">&#39;both expiry_year and expiry_month must be specified&#39;</span><span class="p">)</span>
+
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="n">expiry_date</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:0&gt;2}{:0&gt;2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">expiry_month</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">expiry_year</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">missing_start_year</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span>
+        <span class="n">missing_start_month</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_month</span>
+
+        <span class="n">specifying_start_date</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_month</span>
+
+        <span class="k">if</span> <span class="n">specifying_start_date</span> <span class="ow">and</span> <span class="p">(</span><span class="n">missing_start_year</span> <span class="ow">or</span> <span class="n">missing_start_month</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidParametersError</span><span class="p">(</span>
+                <span class="s1">&#39;both start_year and start_month must be specified or neither specified&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">specifying_start_date</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:0&gt;2}{:0&gt;2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">start_month</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ccv2</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">cv_two</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ccv2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">issue_number</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">issue_number</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">issue_number</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">billing_address</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">billing_address</span><span class="o">.</span><span class="n">as_api_billing_address_parameters</span><span class="p">()</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_url</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">return_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">return_url</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_token</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">return_token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">return_token</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">client_http_user_agent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">client_http_accept</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remote_site</span><span class="p">:</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">remote_site</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">remote_site</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">params</span></div></div>
+
+
+<div class="viewcode-block" id="RedirectionDetails"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.RedirectionDetails">[docs]</a><span class="k">class</span> <span class="nc">RedirectionDetails</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Information that specifies where a customer will be returned to after</span>
+<span class="sd">    being redirected to an external payment provider.</span>
+
+<span class="sd">    Implements</span>
+<span class="sd">    :class:`PaymentMethod &lt;pyticketswitch.payment_methods.PaymentMethod&gt;`.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        token (str): a unique token that can be used by you to identify when</span>
+<span class="sd">            this callout returns to your website.</span>
+<span class="sd">        url (str): the URL that the payment provider should redirect back to on</span>
+<span class="sd">            success/failure of the customers payment.</span>
+<span class="sd">        user_agent (str): the customer&#39;s browser&#39;s User-Agent header.</span>
+<span class="sd">        accept (str): the customer&#39;s browser&#39;s Accept header.</span>
+<span class="sd">        remote_site (str): the remote site&#39;s domain must match the domain of the</span>
+<span class="sd">            return_url.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">user_agent</span><span class="p">,</span> <span class="n">accept</span><span class="p">,</span> <span class="n">remote_site</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">token</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span> <span class="o">=</span> <span class="n">user_agent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">accept</span> <span class="o">=</span> <span class="n">accept</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remote_site</span> <span class="o">=</span> <span class="n">remote_site</span>
+
+<div class="viewcode-block" id="RedirectionDetails.as_api_parameters"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.RedirectionDetails.as_api_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">as_api_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate API keyword args for these details.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: the redirection details in a format the API will understand.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;return_token&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+            <span class="s1">&#39;return_url&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span>
+            <span class="s1">&#39;client_http_user_agent&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_agent</span><span class="p">,</span>
+            <span class="s1">&#39;client_http_accept&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">accept</span><span class="p">,</span>
+            <span class="s1">&#39;remote_site&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">remote_site</span><span class="p">,</span>
+        <span class="p">}</span></div></div>
+
+
+<div class="viewcode-block" id="StripeDetails"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.StripeDetails">[docs]</a><span class="k">class</span> <span class="nc">StripeDetails</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;For use with self generated stripe tokens</span>
+
+<span class="sd">    Can be used to provide stripe tokens directly to the API at purchase time</span>
+<span class="sd">    avoiding a callout/callback cycle.</span>
+
+<span class="sd">    Implements</span>
+<span class="sd">    :class:`PaymentMethod &lt;pyticketswitch.payment_methods.PaymentMethod&gt;`.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        tokens (dict): dictionary of stripe card tokens indexed on bundle source</span>
+<span class="sd">            code. If there are multiple bundles in the trolley, then a unique</span>
+<span class="sd">            stripe token must be provided for each of the bundles you wish to</span>
+<span class="sd">            purchase with stripe.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span>
+
+<div class="viewcode-block" id="StripeDetails.as_api_parameters"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.StripeDetails.as_api_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">as_api_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate API keyword args for these details.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: the stripe details in a format the API will understand.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_callback/stripeToken&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">source</span><span class="p">):</span> <span class="n">token</span>
+            <span class="k">for</span> <span class="n">source</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span></div></div>
+
+
+<span class="n">PaymentMethod</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">CardDetails</span><span class="p">)</span>
+<span class="n">PaymentMethod</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RedirectionDetails</span><span class="p">)</span>
+<span class="n">PaymentMethod</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">StripeDetails</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

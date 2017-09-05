@@ -1,0 +1,593 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Quick Start &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Advanced Guide" href="advanced.html" />
+    <link rel="prev" title="Installation" href="install.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quick-start">
+<span id="quickstart"></span><h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
+<p>This page is intended as a quick introduction to pyticketswitch. As such we
+won’t cover all the options and things you can do, just a brief end to end
+transaction into a test system.</p>
+<p>For the purposes of this example we will use the demo credentials:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">user_id</span><span class="p">:</span> <span class="n">demo</span>
+<span class="n">password</span><span class="p">:</span> <span class="n">demopass</span>
+</pre></div>
+</div>
+<p>If/when you want to play with real products then drop us a line at
+<a class="reference external" href="mailto:commercial&#37;&#52;&#48;ingresso&#46;co&#46;uk">commercial<span>&#64;</span>ingresso<span>&#46;</span>co<span>&#46;</span>uk</a></p>
+<p>Ensure that you have pyticketswitch <a class="reference internal" href="install.html#install"><span class="std std-ref">properly installed</span></a> before
+continuing.</p>
+<div class="section" id="the-client">
+<h2>The Client<a class="headerlink" href="#the-client" title="Permalink to this headline">¶</a></h2>
+<p>The pyticketswitch wrapper is focused around the
+<a class="reference internal" href="../api.html#pyticketswitch.client.Client" title="pyticketswitch.client.Client"><code class="xref py py-class docutils literal"><span class="pre">Client</span></code></a>. Begin by importing it, and
+instantiating it with your credentials:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch</span> <span class="k">import</span> <span class="n">Client</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s1">&#39;demo&#39;</span><span class="p">,</span> <span class="s1">&#39;demopass&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We will use this client for the rest of this example. If you lose it somehow
+(for example by closing your terminal), just instantiate a new one and continue
+where you left off. The client holds no relevant state other than the
+authentication credentials.</p>
+</div>
+<div class="section" id="finding-events">
+<h2>Finding Events<a class="headerlink" href="#finding-events" title="Permalink to this headline">¶</a></h2>
+<p>The top level object exposed by the API is the
+<a class="reference internal" href="../api.html#pyticketswitch.event.Event" title="pyticketswitch.event.Event"><code class="xref py py-class docutils literal"><span class="pre">Event</span></code></a> object and the primary way of
+finding events is
+<a class="reference internal" href="../api.html#pyticketswitch.client.Client.list_events" title="pyticketswitch.client.Client.list_events"><code class="xref py py-func docutils literal"><span class="pre">list_events()</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_events</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span>
+<span class="go">[</span>
+<span class="go">    &lt;Event 6KS: 1-Day Ticket&gt;,</span>
+<span class="go">    &lt;Event 6IF: Matthew Bourne&#39;s Nutcracker TEST&gt;,</span>
+<span class="go">    &lt;Event 6KT: 3-Day Hopper&gt;</span>
+<span class="go">    ...</span>
+<span class="go">]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="../api.html#pyticketswitch.client.Client.list_performances" title="pyticketswitch.client.Client.list_performances"><code class="xref py py-func docutils literal"><span class="pre">list_events</span></code></a>
+is paginated, as such by default the response will only contain 50
+results. See <a class="reference internal" href="advanced.html#id1"><span class="std std-ref">Pagination</span></a> for more information.</p>
+</div>
+<p>This method will take a number of additional parameters that filter and expand
+the results. See <a class="reference internal" href="advanced.html#event-search"><span class="std std-ref">Searching for an event</span></a> for more
+information</p>
+<p>The demo account has access to a handful of fake events and performances that
+should demonstrate most of the common capabilities of the system. For more
+information see <a class="reference internal" href="advanced.html#demo-events"><span class="std std-ref">Demo user events</span></a></p>
+<p>For the rest of this guide we are going to focus on just a single event
+<code class="docutils literal"><span class="pre">6IF:</span> <span class="pre">Matthew</span> <span class="pre">Bourne's</span> <span class="pre">Nutcracker</span> <span class="pre">TEST</span></code></p>
+<p>If you already have and event ID (the <code class="docutils literal"><span class="pre">6IF</span></code> bit) you can query it directly
+with the <a class="reference internal" href="../api.html#pyticketswitch.client.Client.get_event" title="pyticketswitch.client.Client.get_event"><code class="xref py py-func docutils literal"><span class="pre">get_event(event_id)</span></code></a> method:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">get_event</span><span class="p">(</span><span class="s1">&#39;6IF&#39;</span><span class="p">)</span>
+<span class="go">&lt;Event 6IF:Matthew Bourne&#39;s Nutcracker TEST&gt;</span>
+</pre></div>
+</div>
+<p>Events have a number of useful attributes from geographic location to critic
+reviews. See the <a class="reference internal" href="../api.html#pyticketswitch.event.Event" title="pyticketswitch.event.Event"><code class="xref py py-class docutils literal"><span class="pre">Event</span></code></a>’s documentation
+for more details.</p>
+<p>For the time being all we need to know about this event is that it
+<code class="xref py py-attr docutils literal"><span class="pre">is_seated</span></code>, it
+<code class="xref py py-attr docutils literal"><span class="pre">has_performances</span></code>, and
+it <code class="xref py py-attr docutils literal"><span class="pre">needs_performance</span></code>
+to book.</p>
+</div>
+<div class="section" id="performances">
+<h2>Performances<a class="headerlink" href="#performances" title="Permalink to this headline">¶</a></h2>
+<p>To see available performances for a given event we can use the
+<a class="reference internal" href="../api.html#pyticketswitch.client.Client.list_performances" title="pyticketswitch.client.Client.list_performances"><code class="xref py py-func docutils literal"><span class="pre">list_performances(event_id)</span></code></a>
+client method:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">performances</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_performances</span><span class="p">(</span><span class="s1">&#39;6IF&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">performances</span>
+<span class="go">[&lt;Performance 6IF-A86: 2017-02-03T19:30:00+00:00&gt;,</span>
+<span class="go"> &lt;Performance 6IF-A88: 2017-02-05T19:30:00+00:00&gt;,</span>
+<span class="go"> ...,</span>
+<span class="go"> &lt;Performance 6IF-B1H: 2017-06-02T19:30:00+01:00&gt;]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="../api.html#pyticketswitch.client.Client.list_performances" title="pyticketswitch.client.Client.list_performances"><code class="xref py py-func docutils literal"><span class="pre">list_performances</span></code></a>
+is paginated, as such by default the response will only contain 50
+results. See <a class="reference internal" href="advanced.html#id1"><span class="std std-ref">Pagination</span></a> for more information.</p>
+</div>
+<p>For the rest of this guide we will focus on the performance furthest from today
+<code class="docutils literal"><span class="pre">6IF-B1H</span></code>.</p>
+<p>Like with events you can use the
+<a class="reference internal" href="../api.html#pyticketswitch.client.Client.get_performance" title="pyticketswitch.client.Client.get_performance"><code class="xref py py-func docutils literal"><span class="pre">get_performance(performance_id)</span></code></a>
+method to retrieve a specific performance when you have the performance ID:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">client</span><span class="o">.</span><span class="n">get_performance</span><span class="p">(</span><span class="s1">&#39;6IF-B1H&#39;</span><span class="p">)</span>
+<span class="go">&lt;Performance 6IF-B1H: 2017-06-02T19:30:00+01:00&gt;</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The performance might have passed by the time you read this, if it
+has then just select another event from the list. <strong>Try and make sure
+it is not a Saturday</strong>, as this will break (intentionally) at later
+stages.</p>
+</div>
+<p>See <a class="reference internal" href="../api.html#pyticketswitch.performance.Performance" title="pyticketswitch.performance.Performance"><code class="xref py py-class docutils literal"><span class="pre">Performance</span></code></a> Documentation
+for more information on performances. All we need for now is the
+<code class="xref py py-attr docutils literal"><span class="pre">Performance.id</span></code> attribute.</p>
+</div>
+<div class="section" id="availability">
+<h2>Availability<a class="headerlink" href="#availability" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have an <a class="reference internal" href="../api.html#pyticketswitch.event.Event" title="pyticketswitch.event.Event"><code class="xref py py-class docutils literal"><span class="pre">Event</span></code></a> and a
+<a class="reference internal" href="../api.html#pyticketswitch.performance.Performance" title="pyticketswitch.performance.Performance"><code class="xref py py-class docutils literal"><span class="pre">Performance</span></code></a>, we need to find
+out what tickets and prices are available:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ticket_types</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_availability</span><span class="p">(</span><span class="s1">&#39;6IF-B1H&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ticket_types</span>
+<span class="go">[&lt;TicketType CIRCLE: Upper circle&gt;,</span>
+<span class="go"> &lt;TicketType STALLS: Stalls&gt;,</span>
+<span class="go"> &lt;TicketType BALCONY: Balcony&gt;]</span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="../api.html#pyticketswitch.client.Client.get_availability" title="pyticketswitch.client.Client.get_availability"><code class="xref py py-func docutils literal"><span class="pre">get_availability</span></code></a> returns
+a list of <a class="reference internal" href="../api.html#pyticketswitch.ticket_type.TicketType" title="pyticketswitch.ticket_type.TicketType"><code class="xref py py-class docutils literal"><span class="pre">TicketTypes</span></code></a> and an
+<a class="reference internal" href="../api.html#pyticketswitch.availability.AvailabilityMeta" title="pyticketswitch.availability.AvailabilityMeta"><code class="xref py py-class docutils literal"><span class="pre">AvailabilityMeta</span></code></a> object.</p>
+<p>A ticket type can be generally considered to be a part of house, or part of a
+venue. Each ticket type will contain a list of one or more price bands:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ticket_type</span> <span class="o">=</span> <span class="n">ticket_types</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ticket_type</span><span class="o">.</span><span class="n">price_bands</span>
+<span class="go">[&lt;PriceBand A/pool&gt;, &lt;PriceBand B/pool&gt;, &lt;PriceBand C/pool&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_band</span> <span class="o">=</span> <span class="n">ticket_type</span><span class="o">.</span><span class="n">price_bands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_band</span><span class="o">.</span><span class="n">availability</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_band</span><span class="o">.</span><span class="n">combined_price</span><span class="p">()</span>
+<span class="go">35.0</span>
+</pre></div>
+</div>
+<p>Availability indicates the number of tickets available in this price band.</p>
+<p>The combined price is made up of the seatprice (or the facevalue)
+and the surcharge (or booking fee) of a ticket.</p>
+<p>The meta object contains aggregate information relevant to the ticket types and
+their children. For example it contains information on the currency the tickets
+are priced in and what are valid quantities available:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">valid_quantities</span>
+<span class="go">[2, 3, 4, 5]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">meta</span><span class="o">.</span><span class="n">currency</span>
+<span class="go">&lt;Currency gbp&gt;</span>
+</pre></div>
+</div>
+<p>Our event is seated but we are unable to reserve individual seats. However some
+events do allow this, see
+<a class="reference internal" href="advanced.html#seated-availability"><span class="std std-ref">requesting seat availability</span></a> for more information.</p>
+<p>For now all we need to continue is a
+<code class="xref py py-attr docutils literal"><span class="pre">TicketType.code</span></code>
+and a
+<code class="xref py py-attr docutils literal"><span class="pre">PriceBand.code</span></code> so pick one
+of each.</p>
+</div>
+<div class="section" id="discounts">
+<h2>Discounts<a class="headerlink" href="#discounts" title="Permalink to this headline">¶</a></h2>
+<p>Tickets often have a range of discounts that can be applied to them. Usually
+these represent a concession that can be applied to a ticket. For example, the
+ticket might have reduced prices for children or students:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">discounts</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_discounts</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="s1">&#39;6IF-B1H&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band</span><span class="o">.</span><span class="n">code</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">discounts</span>
+<span class="go">[&lt;Discount ADULT:Adult standard&gt;,</span>
+<span class="go"> &lt;Discount CHILD:Child rate&gt;,</span>
+<span class="go"> &lt;Discount STUDENT:Student rate&gt;,</span>
+<span class="go"> &lt;Discount OAP:Senior citizen rate&gt;]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The default discount for a price band is usually the most expensive
+option and can be considered to be the standard price of the ticket
+inside a price band.</p>
+</div>
+<p>Each discount has the explicit price of the ticket when applied to it’s parent
+price band:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">discount</span> <span class="ow">in</span> <span class="n">discounts</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">discount</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">discount</span><span class="o">.</span><span class="n">combined_price</span><span class="p">())</span>
+<span class="gp">...</span>
+<span class="gp">...</span>
+<span class="go">ADULT 35.0</span>
+<span class="go">CHILD 18.0</span>
+<span class="go">STUDENT 26.0</span>
+<span class="go">OAP 28.0</span>
+</pre></div>
+</div>
+<p>In addition to the available discounts The
+<a class="reference internal" href="../api.html#pyticketswitch.client.Client.get_discounts" title="pyticketswitch.client.Client.get_discounts"><code class="xref py py-func docutils literal"><span class="pre">get_discounts()</span></code></a> call
+will return a
+<a class="reference internal" href="../api.html#pyticketswitch.currency.CurrencyMeta" title="pyticketswitch.currency.CurrencyMeta"><code class="xref py py-class docutils literal"><span class="pre">meta</span> <span class="pre">object</span></code></a> that will contain
+information about the currency of the prices contained in the discounts
+response.</p>
+<p>Keep the list of discounts around or make a note of the
+<code class="xref py py-attr docutils literal"><span class="pre">Discount.code</span></code> for adults and
+children (we will need when it comes to making a reservation).</p>
+</div>
+<div class="section" id="send-methods">
+<h2>Send Methods<a class="headerlink" href="#send-methods" title="Permalink to this headline">¶</a></h2>
+<p>After purchasing tickets there are often multiple ways for customers to receive
+their tickets, and these may have additional costs associated with them. We
+refer to this as a <a class="reference internal" href="../api.html#pyticketswitch.send_method.SendMethod" title="pyticketswitch.send_method.SendMethod"><code class="xref py py-class docutils literal"><span class="pre">SendMethod</span></code></a>.</p>
+<p>For example an E-Ticket might be free but posting the ticket in the mail might
+have an associated charge:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">send_methods</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_send_methods</span><span class="p">(</span><span class="s1">&#39;6IF-B1H&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">send_methods</span>
+<span class="go">[&lt;SendMethod COBO:Collect from the venue&gt;,</span>
+<span class="go"> &lt;SendMethod POST:Post (UK &amp; Ireland only)&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">send_method</span> <span class="ow">in</span> <span class="n">send_methods</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="n">send_method</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">send_method</span><span class="o">.</span><span class="n">cost</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">...</span>
+<span class="go">COBO 1.5</span>
+<span class="go">POST 3.5</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">It’s important to check send methods before attempting a
+reservation as certain send methods might become unavailable as
+one gets closer to the performance date. For example it might take
+up to five working days to ship a physical ticket internationally
+so that send method would not be available with 2 days to go
+before a performance as the ticket would not get to it’s
+destination in time.</p>
+</div>
+<p>Some tickets may have restrictions on what countries they are available to:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">send_methods</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">description</span>
+<span class="go">&#39;Post (UK &amp; Ireland only)&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">send_methods</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">permitted_countries</span>
+<span class="go">[&lt;Country ie:Ireland&gt;, &lt;Country uk:United Kingdom&gt;]</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Send methods with additional costs apply to the whole order not
+indivual tickets. For example purchasing five tickets to the same
+show will cost the same to post as purchasing one ticket. Tickets for
+seperate shows by different suppliers may incur multiple send method
+costs; see
+<a class="reference internal" href="advanced.html#trollies-bundles-orders-ticket-orders"><span class="std std-ref">Trollies, Bundles, Orders, and Ticket Orders</span></a>
+for more information.</p>
+</div>
+<p>In addition to the available send methods The
+<a class="reference internal" href="../api.html#pyticketswitch.client.Client.get_send_methods" title="pyticketswitch.client.Client.get_send_methods"><code class="xref py py-func docutils literal"><span class="pre">get_send_methods()</span></code></a> call
+will return a
+<a class="reference internal" href="../api.html#pyticketswitch.currency.CurrencyMeta" title="pyticketswitch.currency.CurrencyMeta"><code class="xref py py-class docutils literal"><span class="pre">meta</span> <span class="pre">object</span></code></a> that will contain
+information about the currency of the prices contained in the send methods
+response.</p>
+<p>We now have all the information we need to make a reservation; the ticket type,
+price band, discount, and a
+<code class="xref py py-attr docutils literal"><span class="pre">SendMethod.code</span></code>!</p>
+</div>
+<div class="section" id="making-a-reservation">
+<h2>Making a Reservation<a class="headerlink" href="#making-a-reservation" title="Permalink to this headline">¶</a></h2>
+<p id="id1">Before making a purchase we have to reserve the tickets. Ingresso is often not
+the only agent connected to a ticketing system and you are almost certainly
+not the only user these tickets are available to. As such it’s important to put
+a lock on the tickets your customer is interested in so that they are not
+snaffled up by some other customer.</p>
+<p>For this example we are going to attempt to reserve 3 tickets (two adults and
+one child) for <code class="docutils literal"><span class="pre">6IF-B1H</span></code>. To do this we make a reservation providing the
+information that we gained from the previous performance, availability,
+discounts and send method calls:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">performance</span><span class="o">.</span><span class="n">id</span>
+<span class="go">&#39;6IF-B1H&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ticket_type</span><span class="o">.</span><span class="n">code</span>
+<span class="go">&#39;CIRCLE&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">price_band</span><span class="o">.</span><span class="n">code</span>
+<span class="go">&#39;A/pool&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adult</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">discounts</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adult</span><span class="o">.</span><span class="n">code</span>
+<span class="go">&#39;ADULT&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">child</span><span class="o">.</span><span class="n">code</span>
+<span class="go">&#39;CHILD&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">reservation</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_reservation</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">performance_id</span><span class="o">=</span><span class="n">performance</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">ticket_type_code</span><span class="o">=</span><span class="n">ticket_type</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">price_band_code</span><span class="o">=</span><span class="n">price_band</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">number_of_seats</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">discounts</span><span class="o">=</span><span class="p">[</span>
+<span class="gp">... </span>        <span class="n">adult</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">adult</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+<span class="gp">... </span>        <span class="n">child</span><span class="o">.</span><span class="n">code</span>
+<span class="gp">... </span>    <span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">...</span>
+</pre></div>
+</div>
+<p>Was the reservation successful? The returned reservation object contains a
+<a class="reference internal" href="../api.html#pyticketswitch.trolley.Trolley" title="pyticketswitch.trolley.Trolley"><code class="xref py py-class docutils literal"><span class="pre">Trolley</span> <span class="pre">object</span></code></a> that will give
+us some information:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span> <span class="o">=</span> <span class="n">reservation</span><span class="o">.</span><span class="n">trolley</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span>
+<span class="go">&lt;Trolley uuid:ee39656e-ecc9-11e6-87c4-0025903268a0&gt;</span>
+</pre></div>
+</div>
+<p>The trolley object contains three important bits of information.</p>
+<p>The presence of a
+<code class="xref py py-attr docutils literal"><span class="pre">transaction_uuid</span></code> lets
+us know that we were at least somewhat successful in our reservation attempt.
+It’s a unique identifier that will allow us to get the status of our
+reservation/transaction going forwards:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">transaction_uuid</span> <span class="o">=</span> <span class="n">trolley</span><span class="o">.</span><span class="n">transaction_uuid</span>
+<span class="go">&#39;ee39656e-ecc9-11e6-87c4-0025903268a0&#39;</span>
+</pre></div>
+</div>
+<p>Although we have put a lock on these tickets this lock will not last forever
+before it’s released and become available for someone else to purchase.
+As such it’s import to check how long we have to make a purchase before our
+reservation expires:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">minutes_left</span>
+<span class="go">13.2</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This time varies across systems, events and performances, so be sure
+check this after making a reservation and ensure you make your
+customer aware that they are on the clock.</p>
+</div>
+<p>Lastly our trolley object will contain some
+<a class="reference internal" href="../api.html#pyticketswitch.bundle.Bundle" title="pyticketswitch.bundle.Bundle"><code class="xref py py-class docutils literal"><span class="pre">Bundles</span></code></a>.
+<a class="reference internal" href="../api.html#pyticketswitch.bundle.Bundle" title="pyticketswitch.bundle.Bundle"><code class="xref py py-class docutils literal"><span class="pre">Bundles</span></code></a> group our orders by the
+ticketing system they are being made into:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span>
+<span class="go">[&lt;Bundle ext_test0&gt;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bundle</span> <span class="o">=</span> <span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>As we are making a single order from a single system we don’t care overly much
+about bundles, all we really need to know is that it contains the currency,
+total price, and more detailed information of our order:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bundle</span><span class="o">.</span><span class="n">currency</span>
+<span class="go">&lt;Currency gbp&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bundle</span><span class="o">.</span><span class="n">total</span>
+<span class="go">89.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bundle</span><span class="o">.</span><span class="n">orders</span>
+<span class="go">[&lt;Order 1&gt;]</span>
+</pre></div>
+</div>
+<p>So what did we actually reserve? Lets inspect the
+<a class="reference internal" href="../api.html#pyticketswitch.order.Order" title="pyticketswitch.order.Order"><code class="xref py py-class docutils literal"><span class="pre">Order</span></code></a>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">order</span> <span class="o">=</span> <span class="n">bundle</span><span class="o">.</span><span class="n">orders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">id</span>
+<span class="go">&#39;6IF&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">performance</span><span class="o">.</span><span class="n">id</span>
+<span class="go">&#39;6IF-B1H&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">ticket_type_code</span>
+<span class="go">&#39;CIRCLE&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">price_band_code</span>
+<span class="go">&#39;A/pool&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">number_of_seats</span>
+<span class="go">3</span>
+</pre></div>
+</div>
+<p>Excellent we got the all the stuff we asked for! But wait there’s more! Our
+event is seated so we should have been allocated the specific seat that we will
+be purchasing:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">order</span><span class="o">.</span><span class="n">get_seats</span><span class="p">()</span>
+<span class="go">[&lt;Seat ZT149&gt;, &lt;Seat ZT148&gt;, &lt;Seat ZT147&gt;]</span>
+</pre></div>
+</div>
+<p>This is just a simple reservation, but the system can handle much more complex
+orders to multiple systems, in multiple currencies, and to multiple events and
+performances. If you are interested in package deals or up-selling then you
+should probably take a look at <a class="reference internal" href="advanced.html#id2"><span class="std std-ref">Bundling</span></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">We have glossed over a lot of information contained in the above
+objects with the aim of getting you purchasing quickly, if you want
+more information then have a read of
+<a class="reference internal" href="advanced.html#trollies-bundles-orders-ticket-orders"><span class="std std-ref">Trollies, Bundles, Orders, and Ticket orders</span></a> .</p>
+</div>
+<p>The only thing we need to carry on to the next steps is the
+<code class="xref py py-attr docutils literal"><span class="pre">transaction_uuid</span></code> that
+identifies our reservation, so make a note of it.</p>
+</div>
+<div class="section" id="making-a-purchase">
+<h2>Making a Purchase<a class="headerlink" href="#making-a-purchase" title="Permalink to this headline">¶</a></h2>
+<p>The final step in the transaction process is actually give us money and for us
+to tell the supplier to put a hold on the requested tickets permanently.</p>
+<p>There are a number of different payment methods available but for the time
+being we will focus on the most common; <em>credit</em>. This where we take nothing
+from you at the time of purchase and invoice you at a later date for the amount
+you owe! This also happens to be the simplest payment method.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">There are other payment methods that you might come across. So it’s a
+good idea to read <a class="reference internal" href="advanced.html#id4"><span class="std std-ref">Taking payments</span></a> before
+going live.</p>
+</div>
+<p>Before we can continue we need to gather some information about the customer
+that we are selling to:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pyticketswitch.customer</span> <span class="k">import</span> <span class="n">Customer</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">customer</span> <span class="o">=</span> <span class="n">Customer</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">first_name</span><span class="o">=</span><span class="s1">&#39;Fred&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">last_name</span><span class="o">=</span><span class="s1">&#39;Flintstone&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">address_lines</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;301 Cobble stone road&#39;</span><span class="p">,</span> <span class="s1">&#39;Bolder Lane&#39;</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">country_code</span><span class="o">=</span><span class="s1">&#39;us&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">email</span><span class="o">=</span><span class="s1">&#39;fred@slate-rock-gravel.com&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">post_code</span><span class="o">=</span><span class="s1">&#39;70777&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">town</span><span class="o">=</span><span class="s1">&#39;Bedrock&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">county</span><span class="o">=</span><span class="s1">&#39;LA&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">phone</span><span class="o">=</span><span class="s1">&#39;0110134345&#39;</span>
+<span class="go">...)</span>
+</pre></div>
+</div>
+<p>The required fields are
+the customers <code class="xref py py-attr docutils literal"><span class="pre">first</span></code> and
+<code class="xref py py-attr docutils literal"><span class="pre">last</span></code> name,
+at least one line of a
+<code class="xref py py-attr docutils literal"><span class="pre">postal</span> <span class="pre">address</span></code>,
+the <code class="xref py py-attr docutils literal"><span class="pre">country</span> <span class="pre">code</span></code> for
+the postal address,
+a contact <code class="xref py py-attr docutils literal"><span class="pre">phone</span> <span class="pre">number</span></code>
+and unless otherwise specified by the
+<code class="xref py py-attr docutils literal"><span class="pre">Reservation.needs_email_address</span></code>
+field a <code class="xref py py-attr docutils literal"><span class="pre">valid</span> <span class="pre">email</span> <span class="pre">address</span></code>.</p>
+<p>You may provide additional information about the customer as you see fit, but
+the more information we have the easier it will be for us or the venue to
+contact them in case of a problem, and it also allows us to protect both you
+and us from fraudulent transactions. <a class="reference external" href="https://ingresso.co.uk/privacy_policy">Here is our privacy policy</a>.</p>
+<p>You can also specify who we can send this information to with the
+<code class="xref py py-attr docutils literal"><span class="pre">supplier_can_use_data</span></code>
+(generally recommened),
+<code class="xref py py-attr docutils literal"><span class="pre">user_can_use_data</span></code>
+(this is your organisation, for example in reporting, or by email),
+<code class="xref py py-attr docutils literal"><span class="pre">world_can_use_data</span></code>
+(in my opinion this should always be off), flags.</p>
+<p>With our customer object in hand we can now make the purchase:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">callback</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">make_purchase</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">transaction_uuid</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">customer</span><span class="p">,</span>
+<span class="go">...)</span>
+</pre></div>
+</div>
+<p>For the time being we can can ignore the callback, just check that we don’t
+have one:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="ow">not</span> <span class="n">callback</span>
+</pre></div>
+</div>
+<p>Assuming no errors were raised, that’s it! Your tickets are booked!</p>
+<p>The status object should contain information about your purchase:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;purchased&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">transaction_id</span>
+<span class="go">&#39;T000-0000-8MU2-Z5E4&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">total</span>
+<span class="go">118.5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">backend_purchase_reference</span>
+<span class="go">&#39;PURCHASE-17461-1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">trolley</span><span class="o">.</span><span class="n">bundles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">orders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_seats</span><span class="p">()</span>
+<span class="go">[&lt;Seat GB506&gt;, &lt;Seat GB505&gt;, &lt;Seat GB504&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="retrieving-transactions">
+<h2>Retrieving Transactions<a class="headerlink" href="#retrieving-transactions" title="Permalink to this headline">¶</a></h2>
+<p>If at any point in the process you need to retrieve the status of a transaction
+or reservation you can do so using the <a class="reference internal" href="../api.html#pyticketswitch.client.Client.get_status" title="pyticketswitch.client.Client.get_status"><code class="xref py py-meth docutils literal"><span class="pre">Client.get_status</span></code></a> call and the <strong>transaction_uuid</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="p">,</span> <span class="n">meta</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_status</span><span class="p">(</span><span class="s1">&#39;ee39656e-ecc9-11e6-87c4-0025903268a0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">status</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;purchased&#39;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>Ready for more? Check out the <a class="reference internal" href="advanced.html#advanced"><span class="std std-ref">advanced</span></a> section.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Quick Start</a><ul>
+<li><a class="reference internal" href="#the-client">The Client</a></li>
+<li><a class="reference internal" href="#finding-events">Finding Events</a></li>
+<li><a class="reference internal" href="#performances">Performances</a></li>
+<li><a class="reference internal" href="#availability">Availability</a></li>
+<li><a class="reference internal" href="#discounts">Discounts</a></li>
+<li><a class="reference internal" href="#send-methods">Send Methods</a></li>
+<li><a class="reference internal" href="#making-a-reservation">Making a Reservation</a></li>
+<li><a class="reference internal" href="#making-a-purchase">Making a Purchase</a></li>
+<li><a class="reference internal" href="#retrieving-transactions">Retrieving Transactions</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="install.html" title="previous chapter">Installation</a></li>
+      <li>Next: <a href="advanced.html" title="next chapter">Advanced Guide</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/users/quickstart.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="../_sources/users/quickstart.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

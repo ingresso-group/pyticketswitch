@@ -1,0 +1,311 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.mixins &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.mixins</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+
+<div class="viewcode-block" id="JSONMixin"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.JSONMixin">[docs]</a><span class="k">class</span> <span class="nc">JSONMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds json encoding functionality to objects.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="JSONMixin.__jsondict__"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.JSONMixin.__jsondict__">[docs]</a>    <span class="k">def</span> <span class="nf">__jsondict__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hide_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">sanitise</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__jsondict__&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">__jsondict__</span><span class="p">(</span><span class="n">hide_none</span><span class="o">=</span><span class="n">hide_none</span><span class="p">,</span> <span class="n">hide_empty</span><span class="o">=</span><span class="n">hide_empty</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">sanitise</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">sanitise</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+            <span class="k">return</span> <span class="n">obj</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">key</span><span class="p">:</span> <span class="n">sanitise</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">obj</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+
+            <span class="c1"># when hiding None&#39;s and the object is None, skip the object</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">hide_none</span> <span class="ow">and</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="c1"># when hiding empty iterators and the object is an iterator and</span>
+            <span class="c1"># it&#39;s empty, skip the object.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">hide_empty</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">obj</span><span class="p">)</span>
+        <span class="p">}</span></div>
+
+<div class="viewcode-block" id="JSONMixin.as_dict_for_json"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.JSONMixin.as_dict_for_json">[docs]</a>    <span class="k">def</span> <span class="nf">as_dict_for_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hide_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a json serialisable dictionary from the object</span>
+
+<span class="sd">        Dates are changed to strings in ISO 8601 format.</span>
+
+<span class="sd">        Lists children are recursively serialised.</span>
+
+<span class="sd">        Dictionary values are recursively serialised, keys are left as is.</span>
+
+<span class="sd">        Objects that implement __jsondict__ return the result of calling</span>
+<span class="sd">        __jsondict__ on the object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            hide_none (bool, optional): when :obj:`True` the returned</span>
+<span class="sd">                dictionary will not include attributes who&#39;s value is</span>
+<span class="sd">                :obj:`None`.</span>
+<span class="sd">            hide_empty (bool, optional): when :obj:`True` the returned</span>
+<span class="sd">                dictionary will not include attributes who&#39;s value is iterable</span>
+<span class="sd">                and has a length of zero.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: a dictionary representation of the object.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__jsondict__</span><span class="p">(</span><span class="n">hide_none</span><span class="o">=</span><span class="n">hide_none</span><span class="p">,</span> <span class="n">hide_empty</span><span class="o">=</span><span class="n">hide_empty</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="JSONMixin.as_json"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.JSONMixin.as_json">[docs]</a>    <span class="k">def</span> <span class="nf">as_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">hide_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate a json represetation of an object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            hide_none (bool): when :obj:`True` the returned</span>
+<span class="sd">                dictionary will not include attributes who&#39;s value is</span>
+<span class="sd">                :obj:`None`.</span>
+<span class="sd">            hide_empty (bool): when :obj:`True` the returned</span>
+<span class="sd">                dictionary will not include attributes who&#39;s value is iterable</span>
+<span class="sd">                and has a length of zero.</span>
+<span class="sd">            **kwargs: passed to :py:func:`json.dumps`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: a json representation of an object</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">as_dict_for_json</span><span class="p">(</span><span class="n">hide_none</span><span class="o">=</span><span class="n">hide_none</span><span class="p">,</span> <span class="n">hide_empty</span><span class="o">=</span><span class="n">hide_empty</span><span class="p">),</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PaginationMixin"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.PaginationMixin">[docs]</a><span class="k">class</span> <span class="nc">PaginationMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds pagination information to a responses meta data.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        page_length (int): the number of items per page.</span>
+<span class="sd">        page_number (int): the current page.</span>
+<span class="sd">        pages_remaining (int): the number of pages remaining.</span>
+<span class="sd">        results_remaining (int): the total number of remaining results after</span>
+<span class="sd">            the current page.</span>
+<span class="sd">        total_results (int): the total number of results.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PaginationMixin.__init__"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.PaginationMixin.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page_length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">page_number</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pages_remaining</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">total_results</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">page_length</span> <span class="o">=</span> <span class="n">page_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">page_number</span> <span class="o">=</span> <span class="n">page_number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pages_remaining</span> <span class="o">=</span> <span class="n">pages_remaining</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_results</span> <span class="o">=</span> <span class="n">total_results</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">PaginationMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PaginationMixin.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.PaginationMixin.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">result_key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">inst</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">PaginationMixin</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">result_key</span><span class="p">:</span>
+            <span class="n">result_key</span> <span class="o">=</span> <span class="s1">&#39;results&#39;</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">result_key</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">paging_data</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;paging_status&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+        <span class="n">inst</span><span class="o">.</span><span class="n">page_length</span> <span class="o">=</span> <span class="n">paging_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page_length&#39;</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">page_number</span> <span class="o">=</span> <span class="n">paging_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;page_number&#39;</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">pages_remaining</span> <span class="o">=</span> <span class="n">paging_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pages_remaining&#39;</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">results_remaining</span> <span class="o">=</span> <span class="n">paging_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;results_remaining&#39;</span><span class="p">)</span>
+        <span class="n">inst</span><span class="o">.</span><span class="n">total_results</span> <span class="o">=</span> <span class="n">paging_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;total_unpaged_results&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">inst</span></div>
+
+<div class="viewcode-block" id="PaginationMixin.is_paginated"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.PaginationMixin.is_paginated">[docs]</a>    <span class="k">def</span> <span class="nf">is_paginated</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Indicates that the response is paginated</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: :obj:`True` when the response is omitting results due to</span>
+<span class="sd">            pagination otherwise :obj:``False``</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_results</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_length</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_results</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_length</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+
+
+<div class="viewcode-block" id="SeatPricingMixin"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.SeatPricingMixin">[docs]</a><span class="k">class</span> <span class="nc">SeatPricingMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adds seat pricing to an object</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        seatprice (float): the price per seat/ticket.</span>
+<span class="sd">        surcharge (float): additional charges per seat/ticket.</span>
+<span class="sd">        non_offer_seatprice (float): the original price per seat/ticket when</span>
+<span class="sd">            not on offer.</span>
+<span class="sd">        non_offer_surcharge (float): the original additional charges per</span>
+<span class="sd">            seat/ticket when not on offer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SeatPricingMixin.__init__"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.SeatPricingMixin.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">non_offer_seatprice</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">non_offer_surcharge</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SeatPricingMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seatprice</span> <span class="o">=</span> <span class="n">seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">surcharge</span> <span class="o">=</span> <span class="n">surcharge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_offer_seatprice</span> <span class="o">=</span> <span class="n">non_offer_seatprice</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_offer_surcharge</span> <span class="o">=</span> <span class="n">non_offer_surcharge</span></div>
+
+<div class="viewcode-block" id="SeatPricingMixin.kwargs_from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.SeatPricingMixin.kwargs_from_api_data">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">kwargs_from_api_data</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;seatprice&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sale_seatprice&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;surcharge&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;sale_surcharge&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;non_offer_seatprice&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;non_offer_sale_seatprice&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;non_offer_surcharge&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;non_offer_sale_surcharge&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">kwargs</span></div>
+
+<div class="viewcode-block" id="SeatPricingMixin.combined_price"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.SeatPricingMixin.combined_price">[docs]</a>    <span class="k">def</span> <span class="nf">combined_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the combined seatprice and surcharge.</span>
+
+<span class="sd">        This method assumes that we have both a seatprice and surcharge.</span>
+<span class="sd">        In the situation where are missing either a seatprice or a surcharge</span>
+<span class="sd">        then we don&#39;t have all the information to be able provide this</span>
+<span class="sd">        information.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: the combined seatprice and surcharge</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: It might seem like the obvious thing to do would be</span>
+<span class="sd">                to assume the missing data was in fact zero and simply allow the</span>
+<span class="sd">                addition to continue. However that would be somewhat dangerous when</span>
+<span class="sd">                we are talking about prices, and it&#39;s better to actually raise an</span>
+<span class="sd">                exception to indicate that there was a problem with the objects</span>
+<span class="sd">                data, than to inform a customer that the tickets are free or have</span>
+<span class="sd">                no booking fees</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">seatprice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;seatprice data missing&#39;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">surcharge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;surcharge data missing&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">seatprice</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">surcharge</span></div>
+
+<div class="viewcode-block" id="SeatPricingMixin.non_offer_combined_price"><a class="viewcode-back" href="../../api.html#pyticketswitch.event.SeatPricingMixin.non_offer_combined_price">[docs]</a>    <span class="k">def</span> <span class="nf">non_offer_combined_price</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the combined non offer seatprice and surcharge.</span>
+
+<span class="sd">        This method assumes that we have both a seatprice and surcharge.</span>
+<span class="sd">        In the situation where are missing either a seatprice or a surcharge</span>
+<span class="sd">        then we don&#39;t have all the information to be able provide this</span>
+<span class="sd">        information.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            float: the combined seatprice and surcharge</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            AssertionError: It might seem like the obvious thing to do would be</span>
+<span class="sd">                to assume the missing data was in fact zero and simply allow the</span>
+<span class="sd">                addition to continue. However that would be somewhat dangerous when</span>
+<span class="sd">                we are talking about prices, and it&#39;s better to actually raise an</span>
+<span class="sd">                exception to indicate that there was a problem with the objects</span>
+<span class="sd">                data, than to inform a customer that the tickets are free or have</span>
+<span class="sd">                no booking fees</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_offer_seatprice</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;non_offer_seatprice data missing&#39;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_offer_surcharge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;non_offer_surcharge data missing&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_offer_seatprice</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">non_offer_surcharge</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

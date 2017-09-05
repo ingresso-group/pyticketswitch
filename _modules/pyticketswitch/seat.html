@@ -1,0 +1,216 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyticketswitch.seat &#8212; pyticketswitch 2.0.9 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '2.0.9',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for pyticketswitch.seat</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">pyticketswitch.mixins</span> <span class="k">import</span> <span class="n">JSONMixin</span>
+
+
+<div class="viewcode-block" id="SeatBlock"><a class="viewcode-back" href="../../api.html#pyticketswitch.seat.SeatBlock">[docs]</a><span class="k">class</span> <span class="nc">SeatBlock</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes a set of contiguous seats.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        length (int): the number of seats in the block.</span>
+<span class="sd">        seats (list): list of :class:`Seats &lt;pyticketswitch.seat.Seat&gt;` in the</span>
+<span class="sd">            block.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">seats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seats</span> <span class="o">=</span> <span class="n">seats</span>
+
+<div class="viewcode-block" id="SeatBlock.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.seat.SeatBlock.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">block</span><span class="p">,</span> <span class="n">row_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                      <span class="n">restricted_view_seats</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seats_by_text_message</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new SeatBlock object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            block (list): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a seat block.</span>
+<span class="sd">            row_id (str): the component of the seat ID corresponding to the row</span>
+<span class="sd">            separator (str): the string separating row and column in the id</span>
+<span class="sd">            restricted_view_seats (list): seat IDs that have restricted view</span>
+<span class="sd">            seats_by_text_message (dict): a mapping of seat text messages to</span>
+<span class="sd">                seat IDs</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`SeatBlock &lt;pyticketswitch.seat.SeatBlock&gt;`: a new</span>
+<span class="sd">            :class:`SeatBlock &lt;pyticketswitch.seat.SeatBlock&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">seats</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">seat_id</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
+
+            <span class="n">column</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">delimiter</span> <span class="o">=</span> <span class="n">separator</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">delimiter</span><span class="p">:</span>
+                <span class="n">delimiter</span> <span class="o">=</span> <span class="n">row_id</span>
+
+            <span class="n">split_id</span> <span class="o">=</span> <span class="n">seat_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delimiter</span><span class="p">)</span>
+            <span class="n">column</span> <span class="o">=</span> <span class="n">split_id</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">restricted</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">restricted_text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="k">if</span> <span class="n">seat_id</span> <span class="ow">in</span> <span class="n">restricted_view_seats</span><span class="p">:</span>
+                <span class="n">restricted</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">for</span> <span class="n">seat_text</span><span class="p">,</span> <span class="n">list_of_seats</span> <span class="ow">in</span> <span class="n">seats_by_text_message</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">seat_id</span> <span class="ow">in</span> <span class="n">list_of_seats</span><span class="p">:</span>
+                    <span class="n">restricted_text</span> <span class="o">=</span> <span class="n">seat_text</span>
+            <span class="n">seat</span> <span class="o">=</span> <span class="n">Seat</span><span class="p">(</span>
+                <span class="n">id_</span><span class="o">=</span><span class="n">seat_id</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row_id</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="n">column</span><span class="p">,</span>
+                <span class="n">separator</span><span class="o">=</span><span class="n">separator</span><span class="p">,</span> <span class="n">is_restricted</span><span class="o">=</span><span class="n">restricted</span><span class="p">,</span>
+                <span class="n">seat_text</span><span class="o">=</span><span class="n">restricted_text</span>
+            <span class="p">)</span>
+            <span class="n">seats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seat</span><span class="p">)</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;seats&#39;</span><span class="p">:</span> <span class="n">seats</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">seats</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Seat"><a class="viewcode-back" href="../../api.html#pyticketswitch.seat.Seat">[docs]</a><span class="k">class</span> <span class="nc">Seat</span><span class="p">(</span><span class="n">JSONMixin</span><span class="p">,</span> <span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Describes a seat in a venue.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        id (str): the identifier for the seat.</span>
+<span class="sd">        column (str): the column of the seat.</span>
+<span class="sd">        row (str): the row of the seat.</span>
+<span class="sd">        separator (str): characters that should be used to seperate the column</span>
+<span class="sd">            and row when presenting seat information.</span>
+<span class="sd">        is_restricted (bool): indicates that the seat has a restricted view.</span>
+<span class="sd">        seat_text_code (str): code indicating text that should be displayed</span>
+<span class="sd">            with the seat when preseting seat information.</span>
+<span class="sd">        seat_text (str): readable explanation of the seats description</span>
+<span class="sd">        barcode (str): barcode specific to this seat. Only available when</span>
+<span class="sd">            supported by the backend system.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">column</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_restricted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">seat_text_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">seat_text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">barcode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">id_</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">column</span> <span class="o">=</span> <span class="n">column</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">row</span> <span class="o">=</span> <span class="n">row</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="n">separator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_restricted</span> <span class="o">=</span> <span class="n">is_restricted</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seat_text</span> <span class="o">=</span> <span class="n">seat_text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seat_text_code</span> <span class="o">=</span> <span class="n">seat_text_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">barcode</span> <span class="o">=</span> <span class="n">barcode</span>
+
+<div class="viewcode-block" id="Seat.from_api_data"><a class="viewcode-back" href="../../api.html#pyticketswitch.seat.Seat.from_api_data">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_api_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new Seat object from API data from ticketswitch.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (dict): the part of the response from a ticketswitch API call</span>
+<span class="sd">                that concerns a seat.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Seat &lt;pyticketswitch.seat.Seat&gt;`: a new</span>
+<span class="sd">            :class:`Seat &lt;pyticketswitch.seat.Seat&gt;` object</span>
+<span class="sd">            populated with the data from the api.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;id_&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;full_id&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;column&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;col_id&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;row&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;row_id&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;is_restricted&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;is_restricted_view&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+            <span class="s1">&#39;seat_text_code&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;seat_text_code&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;seat_text&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;seat_text&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;separator&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;separator&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;barcode&#39;</span><span class="p">:</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;barcode&#39;</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">u</span><span class="s1">&#39;&lt;Seat </span><span class="si">{}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Ingresso Group LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
