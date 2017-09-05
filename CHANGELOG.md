@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Changed
+- docs deployment. create a new work tree in with the following command `git
+  worktree add -B docs docs/_build/html origin/docs`. Then when you want to
+  deploy new documentation you can just `cd` to the `docs/_build/html`
+  directory, and commit your changes as you would for any other repo. Pushing
+  from this folder will update the `docs` orphan branch and deploy your
+  changes.
+
 ## [2.0.9] - 2017-08-29
 ### Added
 - bling to readme

@@ -8,9 +8,10 @@ Pyticketswitch
 [![PyPI](https://img.shields.io/pypi/pyversions/pyticketswitch.svg)](https://pypi.python.org/pypi/pyticketswitch)
 
 
-Python wrapper for the ticketswitch [f13 API](http://docs.ingresso.co.uk/).
+Python wrapper for the ticketswitch [f13 API](https://docs.ingresso.co.uk/).
 
-Docs: http://www.ingresso.co.uk/pyticketswitch/
+**Docs**: https://pyticketswitch.ingresso.co.uk
+**F13 API Documentation**: https://docs.ingresso.co.uk/
 
 Features
 --------
@@ -34,7 +35,6 @@ Contribute
 
 - Issue Tracker: https://github.com/ingresso-group/pyticketswitch/issues
 - Source Code: https://github.com/ingresso-group/pyticketswitch
-- F13 API Documentation: http://docs.ingresso.co.uk/
 
 ### How to contribute ###
 
@@ -88,10 +88,32 @@ make docs
 In-line documentation follows 
 [the google format](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
 
+To publish docs you should create a new git work tree in the docs output
+folder:
+
+`git worktree add -B docs docs/_build/html origin/docs`
+
+This will link that folder to the `docs` orphan branch and changes can be made
+in isolation to the master branch.
+
+Deploying changes can be done in the same manor as committing changes to
+master:
+
+```
+make docs
+cd docs/_build/html
+git add -A
+git commit -m "added the flibbedy jibbet to the widget"
+git push
+cd ../../../
+```
+
+Any changes to the `docs` branch will be automatically deployed to the
+documentation site.
 
 License
 -------
 
-Copyright (c) 2016 Ingresso Group
+Copyright (c) 2017 Ingresso Group
 
 Licensed under the The MIT License.
