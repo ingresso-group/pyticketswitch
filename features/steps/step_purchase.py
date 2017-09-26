@@ -120,6 +120,7 @@ def i_purchase_the_tickets(context):
             context.transaction_uuid,
             context.customer,
             payment_method=context.payment_method,
+            send_confirmation_email=False,
         )
         context.exception = None
         context.status = status
@@ -194,6 +195,7 @@ def i_have_returned_from_a_succesfull_callout(context):
         context.transaction_uuid,
         context.customer,
         payment_method=context.payment_method,
+        send_confirmation_email=False,
     )
     assert_that(status, none())
     assert_that(callout, not_none())
@@ -209,6 +211,7 @@ def i_have_returned_from_a_failed_callout(context):
         context.transaction_uuid,
         context.customer,
         payment_method=context.payment_method,
+        send_confirmation_email=False,
     )
     assert_that(status, none())
     assert_that(callout, not_none())
