@@ -20,10 +20,11 @@ Feature: search for events
         When a search for events in country with code "jp" is performed
         Then all events are in country with code "jp"
 
+    @wip
     Scenario: city search
         Given an API client with valid credentials
-        When a search for events in city with code "belfast-uk" is performed
-        Then all events are in city with code "belfast-uk"
+        When a search for events in city with code "paris-fr" is performed
+        Then all events are in city with code "paris-fr"
 
     Scenario: geo search
         Given an API client with valid credentials
