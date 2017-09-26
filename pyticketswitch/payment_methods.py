@@ -232,10 +232,12 @@ class CiderDetails(object):
 
     Attributes:
         data (dict): dictionary of payment tokens and details
+        system_codes (list): a list of systems for which payment is being made
     """
 
-    def __init__(self, data):
+    def __init__(self, data, system_codes):
         self.data = data
+        self.system_codes = system_codes
 
     def as_api_parameters(self):
         """Generate API keyword args for these details.
@@ -244,7 +246,13 @@ class CiderDetails(object):
             dict: the cider debitor details in the format the API can use.
         """
 
-        return self.data
+        data = {}
+        for system in self.system_codes:
+            data.update({
+                "{0}_callback/{1}".format(system, variable): self.data[variable]
+                for variable in self.data.keys()
+            })
+        return data
 
 
 PaymentMethod.register(CardDetails)

@@ -213,10 +213,13 @@ class TestStripeDetails:
 class TestCiderDetails:
 
     def test_is_payment_method(self):
-        cider_details = CiderDetails({'beep': 'bop'})
+        cider_details = CiderDetails({'beep': 'bop'}, ["test"])
         assert isinstance(cider_details, PaymentMethod)
 
     def test_as_api_parameters(self):
-        cider_details = CiderDetails({'beep': 'boop'})
+        cider_details = CiderDetails({'beep': 'boop'}, ["test", "bip"])
         params = cider_details.as_api_parameters()
-        assert params == {'beep': 'boop'}
+        assert params == {
+            'test_callback/beep': 'boop',
+            'bip_callback/beep': 'boop',
+        }
