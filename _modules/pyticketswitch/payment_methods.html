@@ -5,16 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pyticketswitch.payment_methods &#8212; pyticketswitch 2.0.9 documentation</title>
-    
+    <title>pyticketswitch.payment_methods &#8212; pyticketswitch 2.1.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '2.0.9',
+        VERSION:     '2.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -265,9 +262,44 @@
         <span class="p">}</span></div></div>
 
 
+<div class="viewcode-block" id="CiderDetails"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.CiderDetails">[docs]</a><span class="k">class</span> <span class="nc">CiderDetails</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;For use with multiple payment tokens and details</span>
+
+<span class="sd">    Can be used to provide payment tokens and details directly to the API at</span>
+<span class="sd">    purchase time, avoiding a callout/callback cycle.</span>
+
+<span class="sd">    Implements</span>
+<span class="sd">    :class:`PaymentMethod &lt;pyticketswitch.payment_methods.PaymentMethod&gt;`.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        data (dict): dictionary of payment tokens and details</span>
+<span class="sd">        system_codes (list): a list of systems for which payment is being made</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">system_codes</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">system_codes</span> <span class="o">=</span> <span class="n">system_codes</span>
+
+<div class="viewcode-block" id="CiderDetails.as_api_parameters"><a class="viewcode-back" href="../../api.html#pyticketswitch.payment_methods.CiderDetails.as_api_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">as_api_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate API keyword args for these details.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: the cider debitor details in the format the API can use.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">system</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">system_codes</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+                <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">_callback/</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="p">})</span>
+        <span class="k">return</span> <span class="n">data</span></div></div>
+
+
 <span class="n">PaymentMethod</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">CardDetails</span><span class="p">)</span>
 <span class="n">PaymentMethod</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RedirectionDetails</span><span class="p">)</span>
 <span class="n">PaymentMethod</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">StripeDetails</span><span class="p">)</span>
+<span class="n">PaymentMethod</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">CiderDetails</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -301,7 +333,7 @@
       &copy;2017, Ingresso Group LTD.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

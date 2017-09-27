@@ -5,16 +5,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Developer Interface &#8212; pyticketswitch 2.0.9 documentation</title>
-    
+    <title>Developer Interface &#8212; pyticketswitch 2.1.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.0.9',
+        VERSION:     '2.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -49,7 +46,7 @@
 <h2>Ticketswitch Client<a class="headerlink" href="#ticketswitch-client" title="Permalink to this headline">¶</a></h2>
 <span class="target" id="client-api"></span><dl class="class">
 <dt id="pyticketswitch.client.Client">
-<em class="property">class </em><code class="descclassname">pyticketswitch.client.</code><code class="descname">Client</code><span class="sig-paren">(</span><em>user</em>, <em>password</em>, <em>url=’https://api.ticketswitch.com’</em>, <em>sub_user=None</em>, <em>language=None</em>, <em>tracking_id=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyticketswitch/client.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyticketswitch.client.Client" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyticketswitch.client.</code><code class="descname">Client</code><span class="sig-paren">(</span><em>user</em>, <em>password</em>, <em>url='https://api.ticketswitch.com'</em>, <em>sub_user=None</em>, <em>language=None</em>, <em>tracking_id=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyticketswitch/client.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyticketswitch.client.Client" title="Permalink to this definition">¶</a></dt>
 <dd><p>Client wraps the ticketswitch f13 API.</p>
 <p>Client contains auth details and provides helper methods for calling
 the f13 endpoints.</p>
@@ -883,7 +880,7 @@ should be redirected to the specified third party payment provider.</p>
 
 <dl class="method">
 <dt id="pyticketswitch.client.Client.make_request">
-<code class="descname">make_request</code><span class="sig-paren">(</span><em>endpoint</em>, <em>params</em>, <em>method=’get’</em>, <em>headers={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyticketswitch/client.html#Client.make_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyticketswitch.client.Client.make_request" title="Permalink to this definition">¶</a></dt>
+<code class="descname">make_request</code><span class="sig-paren">(</span><em>endpoint</em>, <em>params</em>, <em>method='get'</em>, <em>headers={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyticketswitch/client.html#Client.make_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyticketswitch.client.Client.make_request" title="Permalink to this definition">¶</a></dt>
 <dd><p>Makes actual requests to the API</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4929,7 +4926,7 @@ and has a length of zero.</li>
 
 <dl class="classmethod">
 <dt id="pyticketswitch.seat.SeatBlock.from_api_data">
-<em class="property">classmethod </em><code class="descname">from_api_data</code><span class="sig-paren">(</span><em>block</em>, <em>row_id=None</em>, <em>separator=”</em>, <em>restricted_view_seats=None</em>, <em>seats_by_text_message=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyticketswitch/seat.html#SeatBlock.from_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyticketswitch.seat.SeatBlock.from_api_data" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">from_api_data</code><span class="sig-paren">(</span><em>block</em>, <em>row_id=None</em>, <em>separator=''</em>, <em>restricted_view_seats=None</em>, <em>seats_by_text_message=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyticketswitch/seat.html#SeatBlock.from_api_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyticketswitch.seat.SeatBlock.from_api_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a new SeatBlock object from API data from ticketswitch.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -5232,6 +5229,44 @@ the return_url.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a set of parameters describing the card details to the API.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyticketswitch.payment_methods.CiderDetails">
+<em class="property">class </em><code class="descclassname">pyticketswitch.payment_methods.</code><code class="descname">CiderDetails</code><span class="sig-paren">(</span><em>data</em>, <em>system_codes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyticketswitch/payment_methods.html#CiderDetails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyticketswitch.payment_methods.CiderDetails" title="Permalink to this definition">¶</a></dt>
+<dd><p>For use with multiple payment tokens and details</p>
+<p>Can be used to provide payment tokens and details directly to the API at
+purchase time, avoiding a callout/callback cycle.</p>
+<p>Implements
+<a class="reference internal" href="#pyticketswitch.payment_methods.PaymentMethod" title="pyticketswitch.payment_methods.PaymentMethod"><code class="xref py py-class docutils literal"><span class="pre">PaymentMethod</span></code></a>.</p>
+<dl class="attribute">
+<dt id="pyticketswitch.CiderDetails.data">
+<code class="descname">data</code><a class="headerlink" href="#pyticketswitch.CiderDetails.data" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em> – dictionary of payment tokens and details</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyticketswitch.CiderDetails.system_codes">
+<code class="descname">system_codes</code><a class="headerlink" href="#pyticketswitch.CiderDetails.system_codes" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em> – a list of systems for which payment is being made</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyticketswitch.payment_methods.CiderDetails.as_api_parameters">
+<code class="descname">as_api_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyticketswitch/payment_methods.html#CiderDetails.as_api_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyticketswitch.payment_methods.CiderDetails.as_api_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate API keyword args for these details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the cider debitor details in the format the API can use.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.6/library/stdtypes.html#dict" title="(in Python v3.6)">dict</a></td>
 </tr>
@@ -6630,7 +6665,7 @@ it is not a datetime.date object.</p>
 <dd><p>Adds json encoding functionality to objects.</p>
 <dl class="attribute">
 <dt id="pyticketswitch.mixins.JSONMixin.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({‘__module__’: ‘pyticketswitch.mixins’, ‘__doc__’: ‘Adds json encoding functionality to objects.’, ‘__jsondict__’: &lt;function JSONMixin.__jsondict__&gt;, ‘as_dict_for_json’: &lt;function JSONMixin.as_dict_for_json&gt;, ‘as_json’: &lt;function JSONMixin.as_json&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘JSONMixin’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘JSONMixin’ objects&gt;})</em><a class="headerlink" href="#pyticketswitch.mixins.JSONMixin.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__module__': 'pyticketswitch.mixins', '__doc__': 'Adds json encoding functionality to objects.', '__jsondict__': &lt;function JSONMixin.__jsondict__&gt;, 'as_dict_for_json': &lt;function JSONMixin.as_dict_for_json&gt;, 'as_json': &lt;function JSONMixin.as_json&gt;, '__dict__': &lt;attribute '__dict__' of 'JSONMixin' objects&gt;, '__weakref__': &lt;attribute '__weakref__' of 'JSONMixin' objects&gt;})</em><a class="headerlink" href="#pyticketswitch.mixins.JSONMixin.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -6640,7 +6675,7 @@ it is not a datetime.date object.</p>
 
 <dl class="attribute">
 <dt id="pyticketswitch.mixins.JSONMixin.__module__">
-<code class="descname">__module__</code><em class="property"> = ‘pyticketswitch.mixins’</em><a class="headerlink" href="#pyticketswitch.mixins.JSONMixin.__module__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__module__</code><em class="property"> = 'pyticketswitch.mixins'</em><a class="headerlink" href="#pyticketswitch.mixins.JSONMixin.__module__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -6750,7 +6785,7 @@ the current page.</p>
 
 <dl class="attribute">
 <dt id="pyticketswitch.mixins.PaginationMixin.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({‘__module__’: ‘pyticketswitch.mixins’, ‘__doc__’: ‘Adds pagination information to a responses meta data.\n\n    Attributes:\n        page_length (int): the number of items per page.\n        page_number (int): the current page.\n        pages_remaining (int): the number of pages remaining.\n        results_remaining (int): the total number of remaining results after\n            the current page.\n        total_results (int): the total number of results.\n\n    ‘, ‘__init__’: &lt;function PaginationMixin.__init__&gt;, ‘from_api_data’: &lt;classmethod object&gt;, ‘is_paginated’: &lt;function PaginationMixin.is_paginated&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘PaginationMixin’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘PaginationMixin’ objects&gt;})</em><a class="headerlink" href="#pyticketswitch.mixins.PaginationMixin.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__module__': 'pyticketswitch.mixins', '__doc__': 'Adds pagination information to a responses meta data.\n\n    Attributes:\n        page_length (int): the number of items per page.\n        page_number (int): the current page.\n        pages_remaining (int): the number of pages remaining.\n        results_remaining (int): the total number of remaining results after\n            the current page.\n        total_results (int): the total number of results.\n\n    ', '__init__': &lt;function PaginationMixin.__init__&gt;, 'from_api_data': &lt;classmethod object&gt;, 'is_paginated': &lt;function PaginationMixin.is_paginated&gt;, '__dict__': &lt;attribute '__dict__' of 'PaginationMixin' objects&gt;, '__weakref__': &lt;attribute '__weakref__' of 'PaginationMixin' objects&gt;})</em><a class="headerlink" href="#pyticketswitch.mixins.PaginationMixin.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -6760,7 +6795,7 @@ the current page.</p>
 
 <dl class="attribute">
 <dt id="pyticketswitch.mixins.PaginationMixin.__module__">
-<code class="descname">__module__</code><em class="property"> = ‘pyticketswitch.mixins’</em><a class="headerlink" href="#pyticketswitch.mixins.PaginationMixin.__module__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__module__</code><em class="property"> = 'pyticketswitch.mixins'</em><a class="headerlink" href="#pyticketswitch.mixins.PaginationMixin.__module__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -6825,7 +6860,7 @@ seat/ticket when not on offer.</p>
 
 <dl class="attribute">
 <dt id="pyticketswitch.mixins.SeatPricingMixin.__dict__">
-<code class="descname">__dict__</code><em class="property"> = mappingproxy({‘__module__’: ‘pyticketswitch.mixins’, ‘__doc__’: ‘Adds seat pricing to an object\n\n    Attributes:\n        seatprice (float): the price per seat/ticket.\n        surcharge (float): additional charges per seat/ticket.\n        non_offer_seatprice (float): the original price per seat/ticket when\n            not on offer.\n        non_offer_surcharge (float): the original additional charges per\n            seat/ticket when not on offer.\n    ‘, ‘__init__’: &lt;function SeatPricingMixin.__init__&gt;, ‘kwargs_from_api_data’: &lt;staticmethod object&gt;, ‘combined_price’: &lt;function SeatPricingMixin.combined_price&gt;, ‘non_offer_combined_price’: &lt;function SeatPricingMixin.non_offer_combined_price&gt;, ‘__dict__’: &lt;attribute ‘__dict__’ of ‘SeatPricingMixin’ objects&gt;, ‘__weakref__’: &lt;attribute ‘__weakref__’ of ‘SeatPricingMixin’ objects&gt;})</em><a class="headerlink" href="#pyticketswitch.mixins.SeatPricingMixin.__dict__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__dict__</code><em class="property"> = mappingproxy({'__module__': 'pyticketswitch.mixins', '__doc__': 'Adds seat pricing to an object\n\n    Attributes:\n        seatprice (float): the price per seat/ticket.\n        surcharge (float): additional charges per seat/ticket.\n        non_offer_seatprice (float): the original price per seat/ticket when\n            not on offer.\n        non_offer_surcharge (float): the original additional charges per\n            seat/ticket when not on offer.\n    ', '__init__': &lt;function SeatPricingMixin.__init__&gt;, 'kwargs_from_api_data': &lt;staticmethod object&gt;, 'combined_price': &lt;function SeatPricingMixin.combined_price&gt;, 'non_offer_combined_price': &lt;function SeatPricingMixin.non_offer_combined_price&gt;, '__dict__': &lt;attribute '__dict__' of 'SeatPricingMixin' objects&gt;, '__weakref__': &lt;attribute '__weakref__' of 'SeatPricingMixin' objects&gt;})</em><a class="headerlink" href="#pyticketswitch.mixins.SeatPricingMixin.__dict__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -6835,7 +6870,7 @@ seat/ticket when not on offer.</p>
 
 <dl class="attribute">
 <dt id="pyticketswitch.mixins.SeatPricingMixin.__module__">
-<code class="descname">__module__</code><em class="property"> = ‘pyticketswitch.mixins’</em><a class="headerlink" href="#pyticketswitch.mixins.SeatPricingMixin.__module__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__module__</code><em class="property"> = 'pyticketswitch.mixins'</em><a class="headerlink" href="#pyticketswitch.mixins.SeatPricingMixin.__module__" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -7909,7 +7944,7 @@ and has a length of zero.</li>
       &copy;2017, Ingresso Group LTD.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
