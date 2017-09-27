@@ -148,6 +148,9 @@ Payment Details
 .. autoclass:: pyticketswitch.payment_methods.CardDetails
    :members:
    :inherited-members:
+.. autoclass:: pyticketswitch.payment_methods.CiderDetails
+   :members:
+   :inherited-members:
 .. autoclass:: pyticketswitch.payment_methods.RedirectionDetails
    :members:
    :inherited-members:
