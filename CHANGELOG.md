@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.1.0] - 2017-09-27
+### Added
+- support for the Cider debitor (Ingresso Payments)
+
 ### Changed
 - docs deployment. create a new work tree in with the following command `git
   worktree add -B docs docs/_build/html origin/docs`. Then when you want to
@@ -21,7 +26,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - missing links in changelog
 - misc docstring improvements
-
 
 ## [2.0.8] - 2017-07-30
 ### Added
@@ -264,7 +268,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Initial release.
 
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.9...HEAD
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.1.0...HEAD
+[2.1.0]:https://github.com/ingresso-group/pyticketswitch/compare/2.0.9...2.1.0
 [2.0.9]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.8...2.0.9
 [2.0.8]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.7...2.0.8
 [2.0.7]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.6...2.0.7
