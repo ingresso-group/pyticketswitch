@@ -221,6 +221,41 @@ class StripeDetails(object):
         }
 
 
+class CiderDetails(object):
+    """For use with multiple payment tokens and details
+
+    Can be used to provide payment tokens and details directly to the API at
+    purchase time, avoiding a callout/callback cycle.
+
+    Implements
+    :class:`PaymentMethod <pyticketswitch.payment_methods.PaymentMethod>`.
+
+    Attributes:
+        data (dict): dictionary of payment tokens and details
+        system_codes (list): a list of systems for which payment is being made
+    """
+
+    def __init__(self, data, system_codes):
+        self.data = data
+        self.system_codes = system_codes
+
+    def as_api_parameters(self):
+        """Generate API keyword args for these details.
+
+        Returns:
+            dict: the cider debitor details in the format the API can use.
+        """
+
+        data = {}
+        for system in self.system_codes:
+            data.update({
+                "{0}_callback/{1}".format(system, variable): self.data[variable]
+                for variable in self.data.keys()
+            })
+        return data
+
+
 PaymentMethod.register(CardDetails)
 PaymentMethod.register(RedirectionDetails)
 PaymentMethod.register(StripeDetails)
+PaymentMethod.register(CiderDetails)

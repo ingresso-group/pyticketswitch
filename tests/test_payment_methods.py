@@ -2,7 +2,7 @@ import pytest
 from pyticketswitch.exceptions import InvalidParametersError
 from pyticketswitch.address import Address
 from pyticketswitch.payment_methods import (
-    PaymentMethod, CardDetails, RedirectionDetails, StripeDetails,
+    PaymentMethod, CardDetails, RedirectionDetails, StripeDetails, CiderDetails
 )
 
 
@@ -207,4 +207,19 @@ class TestStripeDetails:
         assert params == {
             'foo_callback/stripeToken': 'abc123',
             'bar_callback/stripeToken': 'def456',
+        }
+
+
+class TestCiderDetails:
+
+    def test_is_payment_method(self):
+        cider_details = CiderDetails({'beep': 'bop'}, ["test"])
+        assert isinstance(cider_details, PaymentMethod)
+
+    def test_as_api_parameters(self):
+        cider_details = CiderDetails({'beep': 'boop'}, ["test", "bip"])
+        params = cider_details.as_api_parameters()
+        assert params == {
+            'test_callback/beep': 'boop',
+            'bip_callback/beep': 'boop',
         }
