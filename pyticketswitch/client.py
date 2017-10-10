@@ -144,7 +144,7 @@ class Client(object):
         logger.debug('requests session cleaning up')
         session.close()
 
-    def make_request(self, endpoint, params, method=GET, headers={}):
+    def make_request(self, endpoint, params, method=GET, headers={}, timeout=None):
         """Makes actual requests to the API
 
         Args:
@@ -177,9 +177,9 @@ class Client(object):
         session = self.get_session()
 
         if method == POST:
-            response = session.post(url, data=params, headers=raw_headers)
+            response = session.post(url, data=params, headers=raw_headers, timeout=timeout)
         else:
-            response = session.get(url, params=params, headers=raw_headers)
+            response = session.get(url, params=params, headers=raw_headers, timeout=timeout)
 
         logger.debug(six.u(response.content))
 
