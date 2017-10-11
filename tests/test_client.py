@@ -127,7 +127,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
     @pytest.mark.integration
@@ -153,7 +154,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
     def test_make_request_with_subuser(self, monkeypatch):
@@ -180,7 +182,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
     def test_make_request_with_tracking_id(self, monkeypatch):
@@ -201,7 +204,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
     def test_make_request_when_using_per_request_tracking_id(self, monkeypatch):
@@ -225,7 +229,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
         client.add_optional_kwargs(params, tracking_id="456")
@@ -238,7 +243,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
     def test_make_request_bad_response_with_auth_error(self, client, monkeypatch):

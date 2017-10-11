@@ -153,6 +153,7 @@ class Client(object):
             method (str): HTTP method to make the request with
                 valid values are ``post`` and ``get``. Defaults to ``get``.
             headers (dict): headers to include with the request
+            timeout (int): timeout to include with the request
 
         Returns:
             str: The body of the response after deserialising from JSON
