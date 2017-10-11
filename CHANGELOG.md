@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.1.1] - 2017-10-11
+### Added
+- support for customizable timeouts
+
 ## [2.1.0] - 2017-09-27
 ### Added
 - support for the Cider debitor (Ingresso Payments)
