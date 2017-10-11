@@ -127,8 +127,37 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
+
+    @pytest.mark.integration
+    def test_make_request_with_timeout(self, client, monkeypatch):
+        fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
+        params = {
+            'foo': 'bar',
+        }
+        client.language='en-GB'
+        response = client.make_request('events.v1', params, timeout=15)
+        assert response == {'lol': 'beans'}
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            params={
+                'foo': 'bar',
+                'user_id': 'bilbo',
+                'user_passwd': 'baggins',
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            },
+            timeout=15
+        )
+
 
     @pytest.mark.integration
     def test_make_request_with_post(self, client, monkeypatch):
@@ -153,7 +182,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
     def test_make_request_with_subuser(self, monkeypatch):
@@ -180,7 +210,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
     def test_make_request_with_tracking_id(self, monkeypatch):
@@ -201,7 +232,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
     def test_make_request_when_using_per_request_tracking_id(self, monkeypatch):
@@ -225,7 +257,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
         client.add_optional_kwargs(params, tracking_id="456")
@@ -238,7 +271,8 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-            }
+            },
+            timeout=None
         )
 
     def test_make_request_bad_response_with_auth_error(self, client, monkeypatch):

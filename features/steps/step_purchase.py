@@ -94,8 +94,8 @@ def valid_credit_card_details(context):
     context.payment_method = CardDetails(
         '4111 1111 1111 1111',
         ccv2='123',
-        expiry_month=9,
-        expiry_year=17
+        expiry_month=12,
+        expiry_year=30  # I will be long dead - Sam
     )
 
 
