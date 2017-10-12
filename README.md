@@ -76,41 +76,6 @@ cassettes shipped with the repo (to avoid an echo chamber), so the first run
 might be slow, but subsequent runs will be faster. Be mindful of this fake
 though.
 
-
-### Documentation ###
-Documentation is generated with [Syphinx](http://www.sphinx-doc.org/en/stable/)
-and can be triggered from the make file:
-
-```
-make docs
-```
-
-In-line documentation follows 
-[the google format](http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html).
-
-To publish docs you should create a new git work tree in the docs output
-folder:
-
-`git worktree add -B docs docs/_build/html origin/docs`
-
-This will link that folder to the `docs` orphan branch and changes can be made
-in isolation to the master branch.
-
-Deploying changes can be done in the same manor as committing changes to
-master:
-
-```
-make docs
-cd docs/_build/html
-git add -A
-git commit -m "added the flibbedy jibbet to the widget"
-git push
-cd ../../../
-```
-
-Any changes to the `docs` branch will be automatically deployed to the
-documentation site.
-
 License
 -------
 
