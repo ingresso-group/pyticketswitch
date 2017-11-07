@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.1.2] - 2017-11-07
+### Added
+- cost ranges to the months object
+
 ## [2.1.1] - 2017-10-11
 ### Added
 - support for customizable timeouts
