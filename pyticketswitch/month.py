@@ -42,11 +42,9 @@ class Month(JSONMixin, object):
         no_singles_cost_range = None
 
         if api_cost_range:
-            api_cost_range['singles'] = True
             cost_range = CostRange.from_api_data(api_cost_range)
 
         if api_no_singles_cost_range:
-            api_no_singles_cost_range['singles'] = False
             no_singles_cost_range = CostRange.from_api_data(
                 api_no_singles_cost_range)
 
