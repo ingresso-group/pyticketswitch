@@ -1,6 +1,7 @@
 import datetime
 
 from pyticketswitch.misc import MONTH_NUMBERS
+from pyticketswitch.cost_range import CostRange
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.utils import bitmask_to_numbered_list
 
@@ -12,20 +13,46 @@ class Month(JSONMixin, object):
         month (int): number of the month, jan == 1, feb == 2, dec == 12, etc.
         year (int): year of the month. eg. 2014, 2015, 2016.
         description (str): the human readable description of the month.
+        cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+            pricing summary, may also include offers.
+        no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+            pricing summary when no leaving single seats, may also include
+            offers.
 
     """
     def __init__(self, month, year, description=None, dates_bitmask=None,
-                 weekday_bitmask=None):
+                 weekday_bitmask=None, cost_range=None,
+                 no_singles_cost_range=None):
 
         self.month = month
         self.year = year
         self.description = description
         self._dates_bitmask = dates_bitmask
         self._weekday_bitmask = weekday_bitmask
+        self.cost_range = cost_range
+        self.no_singles_cost_range = no_singles_cost_range
 
     @classmethod
     def from_api_data(cls, data):
+
+        api_cost_range = data.get('cost_range', {})
+        api_no_singles_cost_range = api_cost_range.get(
+            'no_singles_cost_range', {})
+        cost_range = None
+        no_singles_cost_range = None
+
+        if api_cost_range:
+            api_cost_range['singles'] = True
+            cost_range = CostRange.from_api_data(api_cost_range)
+
+        if api_no_singles_cost_range:
+            api_no_singles_cost_range['singles'] = False
+            no_singles_cost_range = CostRange.from_api_data(
+                api_no_singles_cost_range)
+
         kwargs = {
+            'cost_range': cost_range,
+            'no_singles_cost_range': no_singles_cost_range,
             'month': MONTH_NUMBERS.get(data.get('month')),
             'year': data.get('year'),
             'description': data.get('month_desc'),
