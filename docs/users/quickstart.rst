@@ -468,15 +468,15 @@ You can also specify who we can send this information to with the
 
 With our customer object in hand we can now make the purchase::
 
-    >>> status, callback = client.make_purchase(
+    >>> status, callout, meta = client.make_purchase(
     ...     transaction_uuid,
     ...     customer,
     ...)
 
-For the time being we can can ignore the callback, just check that we don't 
+For the time being we can can ignore the callout, just check that we don't 
 have one::
 
-    >>> assert not callback
+    >>> assert not callout
 
 
 Assuming no errors were raised, that's it! Your tickets are booked!
