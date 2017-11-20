@@ -31,7 +31,8 @@ class CardDetails(object):
         card_number (str): the long credit card number.
         expiry_month (int): the month the card expires in. Defaults to
             :obj:`None`.
-        expiry_year (int): the year the card expires in. :obj:`None`.
+        expiry_year (int): the year the card expires in. defaults to
+            :obj:`None`.
         start_month (int): the month the card expires in. Defaults to
             :obj:`None`.
         start_year (int): the year the card expires in. :obj:`None`.
@@ -96,7 +97,8 @@ class CardDetails(object):
         params.update(
             expiry_date='{:0>2}{:0>2}'.format(
                 self.expiry_month,
-                self.expiry_year
+                # handle 4 digit years
+                str(self.expiry_year)[-2:]
             )
         )
 
@@ -113,7 +115,7 @@ class CardDetails(object):
             params.update(
                 start_date='{:0>2}{:0>2}'.format(
                     self.start_month,
-                    self.start_year
+                    str(self.start_year)[-2:]
                 )
             )
 

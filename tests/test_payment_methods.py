@@ -162,6 +162,23 @@ class TestCardDetails:
             'client_http_accept': 'application/json',
         }
 
+    def test_as_api_parameters_with_long_expiry_start_year(self):
+        card_details = CardDetails(
+            '4111 1111 1111 1111',
+            expiry_month=5,
+            expiry_year=2017,
+            start_month=3,
+            start_year=1943,
+        )
+
+        params = card_details.as_api_parameters()
+
+        assert params == {
+            'card_number': '4111 1111 1111 1111',
+            'expiry_date': '0517',
+            'start_date': '0343',
+        }
+
 
 class TestRedirectionDetails:
 
