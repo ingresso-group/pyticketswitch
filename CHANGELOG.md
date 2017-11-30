@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- payment details now takes 4 digit years not just 2 digit years
 
 ## [2.1.2] - 2017-11-07
 ### Added
