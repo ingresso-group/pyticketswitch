@@ -11,7 +11,8 @@ class TestDebitor:
                 'publishable_key': 'abc123',
             },
             "debitor_name": "stripe_gbp",
-            "debitor_type": "stripe"
+            "debitor_type": "stripe",
+            "debitor_aggregation_key": "abcd1234"
         }
 
         debitor = Debitor.from_api_data(data)
@@ -22,3 +23,4 @@ class TestDebitor:
         assert debitor.integration_data == {
             'publishable_key': 'abc123',
         }
+        assert debitor.aggregation_key == 'abcd1234'

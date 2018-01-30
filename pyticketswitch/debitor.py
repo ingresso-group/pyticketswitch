@@ -41,13 +41,17 @@ class Debitor(JSONMixin, object):
         integration_data (dict): data used to do front end integrations. For
             the format of this data please consult :ref:`the documentation for
             the relevant debitor type <frontend_integrations>`.
+        aggregation_key (str): a key used to identify if debitors are the same
+            for purposes of payment aggregation between bundles
     """
 
-    def __init__(self, typ=None, name=None, description=None, integration_data=None):
+    def __init__(self, typ=None, name=None, description=None,
+                 integration_data=None, aggregation_key=None):
         self.type = typ
         self.name = name
         self.description = description
         self.integration_data = integration_data
+        self.aggregation_key = aggregation_key
 
     @classmethod
     def from_api_data(cls, data):
@@ -56,6 +60,7 @@ class Debitor(JSONMixin, object):
             'name': data.get('debitor_name'),
             'description': data.get('debitor_desc'),
             'integration_data': data.get('debitor_integration_data', {}),
+            'aggregation_key': data.get('debitor_aggregation_key'),
         }
 
         return cls(**kwargs)
