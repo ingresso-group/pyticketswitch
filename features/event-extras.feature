@@ -87,7 +87,7 @@ Feature: add additional information to request
         And the cost range min seatprice is "18.0"
         And the cost range max seatprice is "47.0"
         And the cost range min surcharge is "3.0"
-        And the cost range max surcharge is "9.5"
+        And the cost range max surcharge is "5.0"
 
     Scenario: get single event with add-ons
         Given an API client with valid credentials
