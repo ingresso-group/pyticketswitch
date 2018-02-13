@@ -1,7 +1,6 @@
 import pytest
 import json
 import requests
-import warnings
 from datetime import datetime
 from mock import Mock
 from pyticketswitch.client import Client, POST
@@ -69,6 +68,7 @@ def mock_make_request_for_trolley(client, monkeypatch):
     mock_make_request = Mock(return_value=response)
     monkeypatch.setattr(client, 'make_request', mock_make_request)
     return mock_make_request
+
 
 class FakeResponse(object):
 
@@ -244,6 +244,7 @@ class TestClient:
         client.add_optional_kwargs(params, tracking_id="123")
         response = client.make_request('events.v1', params)
 
+        assert response
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
             auth=('user', 'pass'),
@@ -1899,4 +1900,15 @@ class TestClient:
                 'Accept-Language': 'en-GB',
             },
             timeout=None,
+        )
+
+    def test_get_auth_params_raises_deprecation_warning(self, client):
+        """Tests that get_auth_params raises deprecation warning"""
+
+        with pytest.warns(DeprecationWarning) as warning_list:
+            params = client.get_auth_params()
+
+        assert not params
+        assert warning_list[0].message.args[0] == (
+            'Call to deprecated function get_auth_params'
         )
