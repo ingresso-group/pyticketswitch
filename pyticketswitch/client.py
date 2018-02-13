@@ -115,7 +115,7 @@ class Client(object):
 
         return extra_params
 
-    def get_auth_for_request(self):
+    def get_auth(self):
         """Get the authentication parameter for the raw request
 
         This method is intended to be overwritten if required.
@@ -209,7 +209,7 @@ class Client(object):
 
         raw_headers = self.get_headers(headers)
 
-        auth = self.get_auth_for_request()
+        auth = self.get_auth()
 
         session = self.get_session()
 
