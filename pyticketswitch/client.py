@@ -93,6 +93,18 @@ class Client(object):
             auth_params.update(sub_id=self.sub_user)
         return auth_params
 
+    def get_auth_for_request(self):
+        """Get the authentication parameter for the raw request
+
+        This method is intended to be overwritten if required.
+
+        Returns:
+            :class:`requests.auth.AuthBase`: the authentication parameter
+                accepted by the `requests` module
+        """
+        if self.user and self.password:
+            return (self.user, self.password)
+
     def get_headers(self, headers):
         """Generate common headers to send with all requests
 
@@ -175,9 +187,7 @@ class Client(object):
 
         raw_headers = self.get_headers(headers)
 
-        auth = None
-        if self.user and self.password:
-            auth = (self.user, self.password)
+        auth = self.get_auth_for_request()
 
         session = self.get_session()
 
