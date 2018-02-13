@@ -88,10 +88,10 @@ class Client(object):
             dict: auth params that passed to requests
 
         """
+        auth_params = {}
         if self.sub_user:
-            return {'user_id': self.user, 'user_passwd': self.password,
-                    'sub_id': self.sub_user}
-        return {'user_id': self.user, 'user_passwd': self.password}
+            auth_params.update(sub_id=self.sub_user)
+        return auth_params
 
     def get_headers(self, headers):
         """Generate common headers to send with all requests
@@ -175,12 +175,14 @@ class Client(object):
 
         raw_headers = self.get_headers(headers)
 
+        auth = (self.user, self.password)
+
         session = self.get_session()
 
         if method == POST:
-            response = session.post(url, data=params, headers=raw_headers, timeout=timeout)
+            response = session.post(url, auth=auth, data=params, headers=raw_headers, timeout=timeout)
         else:
-            response = session.get(url, params=params, headers=raw_headers, timeout=timeout)
+            response = session.get(url, auth=auth, params=params, headers=raw_headers, timeout=timeout)
 
         logger.debug(six.u(response.content))
 

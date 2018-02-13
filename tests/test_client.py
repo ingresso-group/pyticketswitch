@@ -120,10 +120,9 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('bilbo', 'baggins'),
             params={
                 'foo': 'bar',
-                'user_id': 'bilbo',
-                'user_passwd': 'baggins',
             },
             headers={
                 'Accept-Language': 'en-GB',
@@ -147,17 +146,15 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('bilbo', 'baggins'),
             params={
                 'foo': 'bar',
-                'user_id': 'bilbo',
-                'user_passwd': 'baggins',
             },
             headers={
                 'Accept-Language': 'en-GB',
             },
             timeout=15
         )
-
 
     @pytest.mark.integration
     def test_make_request_with_post(self, client, monkeypatch):
@@ -175,10 +172,9 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_post.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('bilbo', 'baggins'),
             data={
                 'foo': 'bar',
-                'user_id': 'bilbo',
-                'user_passwd': 'baggins',
             },
             headers={
                 'Accept-Language': 'en-GB',
@@ -202,10 +198,9 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('beatles', 'lovemedo'),
             params={
                 'foo': 'bar',
-                'user_id': 'beatles',
-                'user_passwd': 'lovemedo',
                 'sub_id': 'ringo',
             },
             headers={
@@ -223,11 +218,11 @@ class TestClient:
         monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
         client.language='en-GB'
         response = client.make_request('events.v1', {})
+        assert response
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('user', 'pass'),
             params={
-                'user_id': 'user',
-                'user_passwd': 'pass',
                 'tsw_session_track_id': 'xyz'
             },
             headers={
@@ -250,9 +245,8 @@ class TestClient:
 
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('user', 'pass'),
             params={
-                'user_id': 'user',
-                'user_passwd': 'pass',
                 'tsw_session_track_id': '123'
             },
             headers={
@@ -264,9 +258,8 @@ class TestClient:
         client.add_optional_kwargs(params, tracking_id="456")
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('user', 'pass'),
             params={
-                'user_id': 'user',
-                'user_passwd': 'pass',
                 'tsw_session_track_id': '456'
             },
             headers={
