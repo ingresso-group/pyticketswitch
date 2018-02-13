@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.0] - 2018-02-13
+### Changed
+- Client now uses HTTP Basic Authentication instead of query string parameters
+- client.get_auth_params() is now deprecated, and should not be used
+
 ## [2.1.3] - 2018-01-30
 ### Added
 - Debitor aggregation_key property
