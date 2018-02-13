@@ -1793,3 +1793,56 @@ class TestClient:
 
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code == 'gbp'
+
+    def test_auth_can_be_overridden_with_subclass(self, monkeypatch):
+        """Test that we can override authentication behavior in subclasses
+
+        Clients should be able to override the get_auth_params and make
+        requests without basic authentication, if they can authenticate in
+        another secure way.
+        """
+
+        # state
+        class MyClient(Client):
+            def __init__(self, user, auth_key, **kwargs):
+                super(MyClient, self).__init__(user, password=None, **kwargs)
+                self.auth_key = auth_key
+
+            def get_auth_params(self):
+                return {
+                    'user_id': self.user,
+                    'auth_key': self.auth_key,
+                }
+
+        client = MyClient('gandalf', auth_key='speakfriendandenter')
+
+        params = {
+            'foo': 'bar',
+        }
+        client.language='en-GB'
+
+        # fakes
+        fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
+        # action
+        response = client.make_request('events.v1', params)
+
+        # results
+        assert response == {'lol': 'beans'}
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            auth=None,
+            params={
+                'foo': 'bar',
+                'user_id': 'gandalf',
+                'auth_key': 'speakfriendandenter',
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            },
+            timeout=None
+        )

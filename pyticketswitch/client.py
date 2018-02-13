@@ -175,7 +175,9 @@ class Client(object):
 
         raw_headers = self.get_headers(headers)
 
-        auth = (self.user, self.password)
+        auth = None
+        if self.user and self.password:
+            auth = (self.user, self.password)
 
         session = self.get_session()
 
