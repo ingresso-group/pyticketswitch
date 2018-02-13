@@ -1,6 +1,7 @@
 import pytest
 import json
 import requests
+import warnings
 from datetime import datetime
 from mock import Mock
 from pyticketswitch.client import Client, POST
@@ -1800,6 +1801,9 @@ class TestClient:
         Clients should be able to override the get_auth_params and make
         requests without basic authentication, if they can authenticate in
         another secure way.
+
+        Since get_auth_params() has been deprecated, this should raise a
+        DeprecationWarning, but still work (for legacy client support).
         """
 
         # state
@@ -1829,7 +1833,8 @@ class TestClient:
         monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
 
         # action
-        response = client.make_request('events.v1', params)
+        with pytest.warns(DeprecationWarning) as warning_info:
+            response = client.make_request('events.v1', params)
 
         # results
         assert response == {'lol': 'beans'}
@@ -1845,4 +1850,53 @@ class TestClient:
                 'Accept-Language': 'en-GB',
             },
             timeout=None
+        )
+        assert warning_info[0].message.args[0] == (
+            'Function get_auth_params() is deprecated and should not be used')
+
+    def test_extra_params_can_be_overriden_by_subclass(self, monkeypatch):
+        """Test that we can override extra parameters in subclass
+
+        Clients should be able to pass in extra parameters by overriding this
+        method.
+        """
+
+        # state
+        class MyClient(Client):
+            def __init__(self, user, myfoo, **kwargs):
+                super(MyClient, self).__init__(user, password=None, **kwargs)
+                self.myfoo = myfoo
+
+            def get_extra_params(self):
+                params = super(MyClient, self).get_extra_params()
+                params.update(myfoo=self.myfoo)
+                return params
+
+        client = MyClient('batman', 'batmanfoo', sub_user='robin')
+        params = {'fruit': 'apple'}
+
+        # fakes
+        fake_response = FakeResponse(status_code=200, json={'a': 'b'})
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
+        # action
+        response = client.make_request('events.v1', params)
+
+        # results
+        assert response == {'a': 'b'}
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            auth=None,
+            params={
+                'sub_id': 'robin',
+                'myfoo': 'batmanfoo',
+                'fruit': 'apple',
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            },
+            timeout=None,
         )
