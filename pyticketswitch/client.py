@@ -78,8 +78,11 @@ class Client(object):
         )
         return url
 
+    @utils.deprecated
     def get_auth_params(self):
         """Get the authentication parameters for inclusion in requests.
+
+        **This method is deprecated** - please use `get_extra_params` instead.
 
         This this method is intended to be overwritten if
         additional/alternative auth params need to be provided
@@ -88,10 +91,41 @@ class Client(object):
             dict: auth params that passed to requests
 
         """
-        if self.sub_user:
-            return {'user_id': self.user, 'user_passwd': self.password,
-                    'sub_id': self.sub_user}
-        return {'user_id': self.user, 'user_passwd': self.password}
+        return {}
+
+    def get_extra_params(self):
+        """Get additional parameters for inclusion in requests.
+
+        This method is intended to be overwritten if additional/alternative
+        parameters need to be provided in the query string or POST body.
+
+        Returns:
+            dict: parameters that will be included in the request
+        """
+        extra_params = {}
+        # Call the deprecated method if it has been overridden
+        if not hasattr(self.get_auth_params, 'is_deprecated'):
+            utils.deprecation_warning(
+                "Function get_auth_params() is deprecated and should not be used",
+                stacklevel=3
+            )
+            extra_params.update(self.get_auth_params())
+        elif self.sub_user:
+            extra_params.update(sub_id=self.sub_user)
+
+        return extra_params
+
+    def get_auth(self):
+        """Get the authentication parameter for the raw request
+
+        This method is intended to be overwritten if required.
+
+        Returns:
+            :class:`requests.auth.AuthBase`: the authentication parameter
+                accepted by the `requests` module
+        """
+        if self.user and self.password:
+            return (self.user, self.password)
 
     def get_headers(self, headers):
         """Generate common headers to send with all requests
@@ -167,7 +201,7 @@ class Client(object):
         """
 
         url = self.get_url(endpoint)
-        params.update(self.get_auth_params())
+        params.update(self.get_extra_params())
         if not params.get('tsw_session_track_id'):
             params.update(self.get_tracking_params())
 
@@ -175,12 +209,14 @@ class Client(object):
 
         raw_headers = self.get_headers(headers)
 
+        auth = self.get_auth()
+
         session = self.get_session()
 
         if method == POST:
-            response = session.post(url, data=params, headers=raw_headers, timeout=timeout)
+            response = session.post(url, auth=auth, data=params, headers=raw_headers, timeout=timeout)
         else:
-            response = session.get(url, params=params, headers=raw_headers, timeout=timeout)
+            response = session.get(url, auth=auth, params=params, headers=raw_headers, timeout=timeout)
 
         logger.debug(six.u(response.content))
 

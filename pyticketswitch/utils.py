@@ -1,3 +1,6 @@
+import functools
+import warnings
+
 from datetime import date, datetime
 from dateutil import parser
 from pyticketswitch.exceptions import InvalidParametersError
@@ -176,3 +179,36 @@ def filter_none_from_parameters(params):
         for key, value in params.items()
         if value is not None
     }
+
+
+def deprecation_warning(message, stacklevel=2):
+    warnings.simplefilter('always', DeprecationWarning)  # turn off filter
+    warnings.warn(message,
+                  category=DeprecationWarning,
+                  stacklevel=stacklevel)
+    warnings.simplefilter('default', DeprecationWarning)  # reset filter
+
+
+def deprecated(func):
+    """Mark a function as deprecated and raise a warning
+
+    This decorator is used to mark functions as deprecated. It will result in
+    a warning being emitted when the function is called.
+
+    Args:
+        func: the function to be wrapped
+
+    Returns:
+        the wrapped function that raises a warning
+    """
+
+    @functools.wraps(func)
+    def wrapped_func(*args, **kwargs):
+        deprecation_warning(
+            "Call to deprecated function {}".format(func.__name__)
+        )
+        return func(*args, **kwargs)
+
+    # Mark the function as deprecated
+    wrapped_func.is_deprecated = True
+    return wrapped_func

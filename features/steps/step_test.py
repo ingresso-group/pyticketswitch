@@ -3,7 +3,7 @@ from behave import when, then
 
 
 @when('the test method is called')
-@vcr.use_cassette('fixtures/cassettes/test.yaml', record_mode='new_episodes')
+@vcr.use_cassette('fixtures/cassettes/test.yaml', record_mode='new_episodes', match_on=['method', 'uri', 'headers'])
 def when_the_test_method_is_called(context):
     try:
         context.user = context.client.test()

@@ -69,6 +69,7 @@ def mock_make_request_for_trolley(client, monkeypatch):
     monkeypatch.setattr(client, 'make_request', mock_make_request)
     return mock_make_request
 
+
 class FakeResponse(object):
 
     def __init__(self, status_code=200, json=None):
@@ -120,10 +121,9 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('bilbo', 'baggins'),
             params={
                 'foo': 'bar',
-                'user_id': 'bilbo',
-                'user_passwd': 'baggins',
             },
             headers={
                 'Accept-Language': 'en-GB',
@@ -147,17 +147,15 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('bilbo', 'baggins'),
             params={
                 'foo': 'bar',
-                'user_id': 'bilbo',
-                'user_passwd': 'baggins',
             },
             headers={
                 'Accept-Language': 'en-GB',
             },
             timeout=15
         )
-
 
     @pytest.mark.integration
     def test_make_request_with_post(self, client, monkeypatch):
@@ -175,10 +173,9 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_post.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('bilbo', 'baggins'),
             data={
                 'foo': 'bar',
-                'user_id': 'bilbo',
-                'user_passwd': 'baggins',
             },
             headers={
                 'Accept-Language': 'en-GB',
@@ -202,10 +199,9 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('beatles', 'lovemedo'),
             params={
                 'foo': 'bar',
-                'user_id': 'beatles',
-                'user_passwd': 'lovemedo',
                 'sub_id': 'ringo',
             },
             headers={
@@ -223,11 +219,11 @@ class TestClient:
         monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
         client.language='en-GB'
         response = client.make_request('events.v1', {})
+        assert response
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('user', 'pass'),
             params={
-                'user_id': 'user',
-                'user_passwd': 'pass',
                 'tsw_session_track_id': 'xyz'
             },
             headers={
@@ -248,11 +244,11 @@ class TestClient:
         client.add_optional_kwargs(params, tracking_id="123")
         response = client.make_request('events.v1', params)
 
+        assert response
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('user', 'pass'),
             params={
-                'user_id': 'user',
-                'user_passwd': 'pass',
                 'tsw_session_track_id': '123'
             },
             headers={
@@ -264,9 +260,8 @@ class TestClient:
         client.add_optional_kwargs(params, tracking_id="456")
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
+            auth=('user', 'pass'),
             params={
-                'user_id': 'user',
-                'user_passwd': 'pass',
                 'tsw_session_track_id': '456'
             },
             headers={
@@ -1800,3 +1795,120 @@ class TestClient:
 
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code == 'gbp'
+
+    def test_auth_can_be_overridden_with_subclass(self, monkeypatch):
+        """Test that we can override authentication behavior in subclasses
+
+        Clients should be able to override the get_auth_params and make
+        requests without basic authentication, if they can authenticate in
+        another secure way.
+
+        Since get_auth_params() has been deprecated, this should raise a
+        DeprecationWarning, but still work (for legacy client support).
+        """
+
+        # state
+        class MyClient(Client):
+            def __init__(self, user, auth_key, **kwargs):
+                super(MyClient, self).__init__(user, password=None, **kwargs)
+                self.auth_key = auth_key
+
+            def get_auth_params(self):
+                return {
+                    'user_id': self.user,
+                    'auth_key': self.auth_key,
+                }
+
+        client = MyClient('gandalf', auth_key='speakfriendandenter')
+
+        params = {
+            'foo': 'bar',
+        }
+        client.language='en-GB'
+
+        # fakes
+        fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
+        # action
+        with pytest.warns(DeprecationWarning) as warning_info:
+            response = client.make_request('events.v1', params)
+
+        # results
+        assert response == {'lol': 'beans'}
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            auth=None,
+            params={
+                'foo': 'bar',
+                'user_id': 'gandalf',
+                'auth_key': 'speakfriendandenter',
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            },
+            timeout=None
+        )
+        assert warning_info[0].message.args[0] == (
+            'Function get_auth_params() is deprecated and should not be used')
+
+    def test_extra_params_can_be_overriden_by_subclass(self, monkeypatch):
+        """Test that we can override extra parameters in subclass
+
+        Clients should be able to pass in extra parameters by overriding this
+        method.
+        """
+
+        # state
+        class MyClient(Client):
+            def __init__(self, user, myfoo, **kwargs):
+                super(MyClient, self).__init__(user, password=None, **kwargs)
+                self.myfoo = myfoo
+
+            def get_extra_params(self):
+                params = super(MyClient, self).get_extra_params()
+                params.update(myfoo=self.myfoo)
+                return params
+
+        client = MyClient('batman', 'batmanfoo', sub_user='robin')
+        params = {'fruit': 'apple'}
+
+        # fakes
+        fake_response = FakeResponse(status_code=200, json={'a': 'b'})
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
+        # action
+        response = client.make_request('events.v1', params)
+
+        # results
+        assert response == {'a': 'b'}
+        fake_get.assert_called_with(
+            'https://api.ticketswitch.com/f13/events.v1/',
+            auth=None,
+            params={
+                'sub_id': 'robin',
+                'myfoo': 'batmanfoo',
+                'fruit': 'apple',
+            },
+            headers={
+                'Accept-Language': 'en-GB',
+            },
+            timeout=None,
+        )
+
+    def test_get_auth_params_raises_deprecation_warning(self, client):
+        """Tests that get_auth_params raises deprecation warning"""
+
+        with pytest.warns(DeprecationWarning) as warning_list:
+            params = client.get_auth_params()
+
+        assert not params
+        assert warning_list[0].message.args[0] == (
+            'Call to deprecated function get_auth_params'
+        )
