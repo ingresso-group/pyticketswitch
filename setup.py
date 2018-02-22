@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
+import json
+
+
+# Version and other information stored in the pyticketswitch module
+with open('pyticketswitch/pkg_info.json') as fp:
+    pkg_info = json.load(fp)
 
 setup(
-    name='pyticketswitch',
-    version='2.2.0',
-    author='Ingresso',
-    author_email='systems@ingresso.co.uk',
+    **pkg_info,
     url='https://github.com/ingresso-group/pyticketswitch/',
     packages=[
         'pyticketswitch',

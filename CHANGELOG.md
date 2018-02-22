@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.1] - 2018-02-22
+### Added
+- requests client now sends Pyticketswitch version in User Agent string
+
 ## [2.2.0] - 2018-02-13
 ### Changed
 - Client now uses HTTP Basic Authentication instead of query string parameters

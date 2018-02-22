@@ -1,6 +1,7 @@
 import requests
 import logging
 import six
+import pyticketswitch
 from pyticketswitch import exceptions, utils
 from pyticketswitch.event import Event, EventMeta
 from pyticketswitch.performance import Performance, PerformanceMeta
@@ -136,6 +137,11 @@ class Client(object):
         """
         if self.language:
             headers.update({'Accept-Language': self.language})
+
+        # Modify user agent to report Pyticketswitch version
+        headers.update({
+            'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__)
+        })
 
         return headers
 
