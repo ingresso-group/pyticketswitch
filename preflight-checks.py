@@ -23,3 +23,16 @@ if __name__ == '__main__':
         for version in [docs.conf.version, docs.conf.release, setup]
     )
     assert all_match, 'Version numbers do not match pyticketswitch.__version__'
+
+    # check that the change log has an entry for this version
+    with open('CHANGELOG.md', 'r') as fh:
+        match = re.search(
+            "## \[{}\]".format(pyticketswitch.__version__), fh.read())
+        assert match, 'no entry in CHANGELOG.md for current version {}'.format(
+            pyticketswitch.__version__
+        )
+        print("CHANGELOG.md: {}".format(
+            pyticketswitch.__version__
+        ))
+
+
