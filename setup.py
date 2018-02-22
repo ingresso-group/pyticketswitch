@@ -9,7 +9,6 @@ with open('pyticketswitch/pkg_info.json') as fp:
     pkg_info = json.load(fp)
 
 setup(
-    **pkg_info,
     url='https://github.com/ingresso-group/pyticketswitch/',
     packages=[
         'pyticketswitch',
@@ -28,4 +27,5 @@ setup(
         'Intended Audience :: Developers',
         'Natural Language :: English',
     ],
+    **pkg_info
 )
