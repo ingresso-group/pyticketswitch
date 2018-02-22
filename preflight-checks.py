@@ -22,4 +22,4 @@ if __name__ == '__main__':
         version == pyticketswitch.__version__
         for version in [docs.conf.version, docs.conf.release, setup]
     )
-    assert all_match
+    assert all_match, 'Version numbers do not match pyticketswitch.__version__'
