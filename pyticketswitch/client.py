@@ -128,9 +128,8 @@ class Client(object):
         if self.user and self.password:
             return (self.user, self.password)
 
-    @property
-    def user_agent(self):
-        """The user agent for the raw request
+    def get_user_agent(self):
+        """Get the user agent for the raw request
 
         This method is intended to be overwritten by subclasses that want
         a custom User-Agent header for the requests
@@ -152,7 +151,7 @@ class Client(object):
 
         # Modify user agent to report Pyticketswitch version
         headers.update({
-            'User-Agent': self.user_agent
+            'User-Agent': self.get_user_agent()
         })
 
         return headers
