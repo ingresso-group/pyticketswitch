@@ -3,6 +3,7 @@ import json
 import requests
 from datetime import datetime
 from mock import Mock
+import pyticketswitch
 from pyticketswitch.client import Client, POST
 from pyticketswitch import exceptions
 from pyticketswitch.trolley import Trolley
@@ -12,6 +13,9 @@ from pyticketswitch.customer import Customer
 from pyticketswitch.payment_methods import CardDetails, RedirectionDetails
 from pyticketswitch.status import Status
 from pyticketswitch.callout import Callout
+
+
+pyticketswitch.__version__ = 'TEST'
 
 
 @pytest.fixture
@@ -127,6 +131,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
+                'User-Agent': 'pyticketswitch TEST',
             },
             timeout=None
         )
@@ -153,6 +158,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
+                'User-Agent': 'pyticketswitch TEST',
             },
             timeout=15
         )
@@ -179,6 +185,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
+                'User-Agent': 'pyticketswitch TEST',
             },
             timeout=None
         )
@@ -206,6 +213,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
+                'User-Agent': 'pyticketswitch TEST',
             },
             timeout=None
         )
@@ -228,6 +236,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
+                'User-Agent': 'pyticketswitch TEST',
             },
             timeout=None
         )
@@ -253,6 +262,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
+                'User-Agent': 'pyticketswitch TEST',
             },
             timeout=None
         )
@@ -266,6 +276,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
+                'User-Agent': 'pyticketswitch TEST',
             },
             timeout=None
         )
@@ -1849,6 +1860,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
+                'User-Agent': 'pyticketswitch TEST',
             },
             timeout=None
         )
@@ -1898,6 +1910,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
+                'User-Agent': 'pyticketswitch TEST',
             },
             timeout=None,
         )

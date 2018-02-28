@@ -1,6 +1,7 @@
 import requests
 import logging
 import six
+import pyticketswitch
 from pyticketswitch import exceptions, utils
 from pyticketswitch.event import Event, EventMeta
 from pyticketswitch.performance import Performance, PerformanceMeta
@@ -127,6 +128,17 @@ class Client(object):
         if self.user and self.password:
             return (self.user, self.password)
 
+    def get_user_agent(self):
+        """Get the user agent for the raw request
+
+        This method is intended to be overwritten by subclasses that want
+        a custom User-Agent header for the requests
+
+        Returns:
+            :str: the user agent string
+        """
+        return "pyticketswitch {}".format(pyticketswitch.__version__)
+
     def get_headers(self, headers):
         """Generate common headers to send with all requests
 
@@ -136,6 +148,11 @@ class Client(object):
         """
         if self.language:
             headers.update({'Accept-Language': self.language})
+
+        # Modify user agent to report Pyticketswitch version
+        headers.update({
+            'User-Agent': self.get_user_agent()
+        })
 
         return headers
 
