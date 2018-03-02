@@ -17,6 +17,8 @@ def data():
         'event_type': 'simple_ticket',
         'source_desc': 'Super Awesome Ticketer',
         'venue_desc': 'Top Notch Theater',
+        'venue_code': 'VENUECODE',
+        'area_code': 'AREACODE',
 
 
         'classes': {
@@ -225,6 +227,8 @@ class TestEvent:
         assert event.source == 'Super Awesome Ticketer'
         assert event.event_type == 'simple_ticket'
         assert event.venue == 'Top Notch Theater'
+        assert event.venue_code == 'VENUECODE'
+        assert event.area_code == 'AREACODE'
 
         assert event.critic_review_percent == 100
 
