@@ -86,6 +86,8 @@ class Event(JSONMixin, object):
             **get_events** or **get_event**.
         raw (dict): the raw data used to generate the object.
         is_addon (bool): indicates that the event is an addon.
+        area_code (str): the internal code for the area.
+        venue_code (str): the internal code for the venue.
 
     """
 
@@ -104,7 +106,7 @@ class Event(JSONMixin, object):
                  venue_info_html=None, media=None, reviews=None,
                  critic_review_percent=None, availability_details=None,
                  component_events=None, valid_quantities=None, fields=None,
-                 raw=None, is_add_on=None):
+                 raw=None, is_add_on=None, area_code=None, venue_code=None):
 
         self.id = id_
         self.status = status
@@ -165,6 +167,9 @@ class Event(JSONMixin, object):
         self.raw = raw
 
         self.is_add_on = is_add_on
+
+        self.venue_code = venue_code
+        self.area_code = area_code
 
     @classmethod
     def class_dict_from_api_data(cls, data):
@@ -313,6 +318,8 @@ class Event(JSONMixin, object):
             'valid_quantities': data.get('valid_quantities'),
             'raw': data,
             'is_add_on': data.get('is_add_on'),
+            'venue_code': data.get('venue_code'),
+            'area_code': data.get('area_code'),
         }
 
         return kwargs
