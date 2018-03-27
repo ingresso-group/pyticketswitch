@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.2] - 2018-03-27
+### Fixed
+- a bug where an empty prefilled address in the status would cause an Address
+  object to be created instead of using None
+
 ## [2.2.1] - 2018-02-22
 ### Added
 - requests client now sends Pyticketswitch version in User Agent string

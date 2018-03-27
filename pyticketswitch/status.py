@@ -157,7 +157,7 @@ class Status(JSONMixin, object):
             kwargs.update(allowed_countries=countries)
 
         address = data.get('prefilled_address')
-        if address is not None:
+        if address:
             kwargs.update(prefilled_address=Address.from_api_data(address))
 
         pending_callout = data.get('pending_callout')
