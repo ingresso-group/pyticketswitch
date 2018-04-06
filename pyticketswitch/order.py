@@ -150,6 +150,7 @@ class Order(JSONMixin, object):
         performance (:class:`Performance <pyticketswitch.performance.Performance>`):
             the performance the order is for.
         price_band_code (str): the price band identifier.
+        price_band_description (str): the optional description for the price band
         ticket_type_code (str): the ticket type identifier.
         ticket_type_description (str): description of the ticket type.
         ticket_orders (list): list of
@@ -177,6 +178,7 @@ class Order(JSONMixin, object):
     """
 
     def __init__(self, item, event=None, performance=None, price_band_code=None,
+                 price_band_description=None,
                  ticket_type_code=None, ticket_type_description=None,
                  ticket_orders=None, number_of_seats=None,
                  total_seatprice=None, total_surcharge=None,
@@ -187,6 +189,7 @@ class Order(JSONMixin, object):
         self.event = event
         self.performance = performance
         self.price_band_code = price_band_code
+        self.price_band_description = price_band_description
         self.ticket_type_code = ticket_type_code
         self.ticket_type_description = ticket_type_description
         self.ticket_orders = ticket_orders
@@ -218,6 +221,7 @@ class Order(JSONMixin, object):
             'item': data.get('item_number'),
             'number_of_seats': data.get('total_no_of_seats'),
             'price_band_code': data.get('price_band_code'),
+            'price_band_description': data.get('price_band_desc'),
             'ticket_type_code': data.get('ticket_type_code'),
             'ticket_type_description': data.get('ticket_type_desc'),
             'seat_request_status': data.get('seat_request_status'),

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.3] - 2018-04-06
+### Added
+- price band descriptions now come through in reservation status
+
 ## [2.2.2] - 2018-03-27
 ### Fixed
 - a bug where an empty prefilled address in the status would cause an Address

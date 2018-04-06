@@ -92,6 +92,7 @@ class TestOrder:
                 "perf_id": "6IF-A7N",
             },
             "price_band_code": "C/pool",
+            "price_band_desc": "Band C",
             "seat_request_status": "got_all",
             "ticket_orders": {
                 "ticket_order": [
@@ -142,6 +143,7 @@ class TestOrder:
 
         assert order.item == 1
         assert order.price_band_code == 'C/pool'
+        assert order.price_band_description == 'Band C'
         assert order.ticket_type_code == 'CIRCLE'
         assert order.ticket_type_description == 'Upper circle'
         assert order.number_of_seats == 3

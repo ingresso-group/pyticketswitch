@@ -41,7 +41,7 @@ Feature: add additional information to request
             """
             {
                 "value": "Roseberry Avenue Islington London UK\n",
-                "value_html": "<div><p>Roseberry Avenue Islington London UK</p></div>\n"
+                "value_html": "<p>Roseberry Avenue Islington London UK</p>"
             }
             """
 
