@@ -309,9 +309,11 @@ class TestEvent:
                     'event_desc': 'Bar Test',
                 },
             ],
+            'venue_is_enforced': False
         }
 
         event = Event.from_events_by_id_api_data(raw_data)
 
         assert event.addon_events
         assert event.upsell_events
+        assert event.venue_is_enforced is False

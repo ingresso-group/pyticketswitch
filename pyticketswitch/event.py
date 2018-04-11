@@ -88,7 +88,7 @@ class Event(JSONMixin, object):
         is_addon (bool): indicates that the event is an addon.
         area_code (str): the internal code for the area.
         venue_code (str): the internal code for the venue.
-
+        venue_is_enforced (bool): indicates if the venue is enforced.
     """
 
     def __init__(self, id_, status=None, event_type=None, source=None,
@@ -106,7 +106,8 @@ class Event(JSONMixin, object):
                  venue_info_html=None, media=None, reviews=None,
                  critic_review_percent=None, availability_details=None,
                  component_events=None, valid_quantities=None, fields=None,
-                 raw=None, is_add_on=None, area_code=None, venue_code=None):
+                 raw=None, is_add_on=None, area_code=None, venue_code=None,
+                 venue_is_enforced=None):
 
         self.id = id_
         self.status = status
@@ -170,6 +171,7 @@ class Event(JSONMixin, object):
 
         self.venue_code = venue_code
         self.area_code = area_code
+        self.venue_is_enforced = venue_is_enforced
 
     @classmethod
     def class_dict_from_api_data(cls, data):
@@ -372,6 +374,9 @@ class Event(JSONMixin, object):
                 for raw_upsell in data.get('upsells')
             ]
             kwargs.update(upsell_events=upsells)
+
+        if data.get('venue_is_enforced') is not None:
+            kwargs.update(venue_is_enforced=data.get('venue_is_enforced'))
 
         return cls(**kwargs)
 
