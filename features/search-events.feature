@@ -12,8 +12,8 @@ Feature: search for events
 
     Scenario: date range search
         Given an API client with valid credentials
-        When a search for events with performances "30"-"33" days from now is performed
-        Then the events all have a performance between "30" and "33" days from now
+        When a search for events with performances "30"-"37" days from now is performed
+        Then the events all have a performance between "30" and "37" days from now
 
     Scenario: country search
         Given an API client with valid credentials

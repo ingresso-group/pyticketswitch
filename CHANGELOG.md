@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.4] - 2018-04-17
+### Added
+- added `area_code`, `venue_code`, `lingo_code` and `venue_is_enforced` to the
+  event object for internal use.
+
 ## [2.2.3] - 2018-04-06
 ### Added
 - price band descriptions now come through in reservation status

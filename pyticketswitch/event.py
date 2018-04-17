@@ -86,7 +86,14 @@ class Event(JSONMixin, object):
             **get_events** or **get_event**.
         raw (dict): the raw data used to generate the object.
         is_addon (bool): indicates that the event is an addon.
-
+        area_code (str): the internal code for the area. This is for internal
+            use only.
+        venue_code (str): the internal code for the venue. This is for internal
+            use only.
+        venue_is_enforced (bool): indicates if the venue is enforced. This is
+            for internal use only.
+        lingo_code (str): a code for the type of event, e.g. theatre or
+            attraction. This is for internal use only.
     """
 
     def __init__(self, id_, status=None, event_type=None, source=None,
@@ -104,7 +111,8 @@ class Event(JSONMixin, object):
                  venue_info_html=None, media=None, reviews=None,
                  critic_review_percent=None, availability_details=None,
                  component_events=None, valid_quantities=None, fields=None,
-                 raw=None, is_add_on=None):
+                 raw=None, is_add_on=None, area_code=None, venue_code=None,
+                 venue_is_enforced=None, lingo_code=None):
 
         self.id = id_
         self.status = status
@@ -165,6 +173,11 @@ class Event(JSONMixin, object):
         self.raw = raw
 
         self.is_add_on = is_add_on
+
+        self.venue_code = venue_code
+        self.area_code = area_code
+        self.venue_is_enforced = venue_is_enforced
+        self.lingo_code = lingo_code
 
     @classmethod
     def class_dict_from_api_data(cls, data):
@@ -256,6 +269,11 @@ class Event(JSONMixin, object):
             for meta_event in api_component_events.get('event', [])
         ]
 
+        lingo_code = None
+        raw_lingo_data = data.get('lingo_data')
+        if raw_lingo_data:
+            lingo_code = raw_lingo_data.get('lingo_code')
+
         kwargs = {
             'id_': id_,
             'description': data.get('event_desc', None),
@@ -313,6 +331,9 @@ class Event(JSONMixin, object):
             'valid_quantities': data.get('valid_quantities'),
             'raw': data,
             'is_add_on': data.get('is_add_on'),
+            'venue_code': data.get('venue_code'),
+            'area_code': data.get('area_code'),
+            'lingo_code': lingo_code,
         }
 
         return kwargs
@@ -365,6 +386,9 @@ class Event(JSONMixin, object):
                 for raw_upsell in data.get('upsells')
             ]
             kwargs.update(upsell_events=upsells)
+
+        if data.get('venue_is_enforced') is not None:
+            kwargs.update(venue_is_enforced=data.get('venue_is_enforced'))
 
         return cls(**kwargs)
 

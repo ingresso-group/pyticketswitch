@@ -17,6 +17,11 @@ def data():
         'event_type': 'simple_ticket',
         'source_desc': 'Super Awesome Ticketer',
         'venue_desc': 'Top Notch Theater',
+        'venue_code': 'VENUECODE',
+        'area_code': 'AREACODE',
+        'lingo_data': {
+            'lingo_code': 'theatre'
+        },
 
 
         'classes': {
@@ -225,6 +230,9 @@ class TestEvent:
         assert event.source == 'Super Awesome Ticketer'
         assert event.event_type == 'simple_ticket'
         assert event.venue == 'Top Notch Theater'
+        assert event.venue_code == 'VENUECODE'
+        assert event.area_code == 'AREACODE'
+        assert event.lingo_code == 'theatre'
 
         assert event.critic_review_percent == 100
 
@@ -305,9 +313,11 @@ class TestEvent:
                     'event_desc': 'Bar Test',
                 },
             ],
+            'venue_is_enforced': False
         }
 
         event = Event.from_events_by_id_api_data(raw_data)
 
         assert event.addon_events
         assert event.upsell_events
+        assert event.venue_is_enforced is False
