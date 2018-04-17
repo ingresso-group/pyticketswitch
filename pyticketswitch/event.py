@@ -86,10 +86,13 @@ class Event(JSONMixin, object):
             **get_events** or **get_event**.
         raw (dict): the raw data used to generate the object.
         is_addon (bool): indicates that the event is an addon.
-        area_code (str): the internal code for the area.
-        venue_code (str): the internal code for the venue.
+        area_code (str): the internal code for the area. Only present when
+            requested (req_internal_codes).
+        venue_code (str): the internal code for the venue. Only present when
+            requested (req_internal_codes).
         venue_is_enforced (bool): indicates if the venue is enforced.
         lingo_code (str): a code for the type of event, e.g. theatre or attraction.
+            Only present when requested (req_lingos).
     """
 
     def __init__(self, id_, status=None, event_type=None, source=None,
