@@ -262,12 +262,7 @@ def then_my_trolley_contains_the_requested_seats(context):
 @vcr.use_cassette('fixtures/cassettes/reserve-status.yaml', record_mode='new_episodes')
 def then_my_send_method_is_the_one_i_requested(context):
 
-    status, _ = context.client.get_status(
-        context.transaction_uuid,
-        # FIXME: this is an internal hack to display send codes for the time
-        # being until is part of the default behaviour.
-        req_internal_codes=1,
-    )
+    status, _ = context.client.get_status(context.transaction_uuid)
 
     send_method = status.trolley.bundles[0].orders[0].send_method
 
