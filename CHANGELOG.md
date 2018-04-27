@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.5] - 2018-04-26
+## Changed
+- updated dependencies - six to 1.11.0
+
 ## [2.2.4] - 2018-04-17
 ### Added
 - added `area_code`, `venue_code`, `lingo_code` and `venue_is_enforced` to the
