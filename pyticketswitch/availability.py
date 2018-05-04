@@ -158,19 +158,25 @@ class AvailabilityDetails(JSONMixin, object):
                     kwargs['currency'] = raw_details.get('avail_currency_code')
 
                     available_dates = raw_details.get('available_dates', {})
-                    if 'first_yyyymmdd' in available_dates:
-                        first = datetime.datetime.strptime(
-                            available_dates['first_yyyymmdd'],
-                            '%Y%m%d'
-                        )
-                        kwargs['first_date'] = first.date()
+                    try:
+                        if 'first_yyyymmdd' in available_dates:
+                            first = datetime.datetime.strptime(
+                                available_dates['first_yyyymmdd'],
+                                '%Y%m%d'
+                            )
+                            kwargs['first_date'] = first.date()
+                    except ValueError:
+                        pass
 
-                    if 'last_yyyymmdd' in available_dates:
-                        last = datetime.datetime.strptime(
-                            available_dates['last_yyyymmdd'],
-                            '%Y%m%d'
-                        )
-                        kwargs['last_date'] = last.date()
+                    try:
+                        if 'last_yyyymmdd' in available_dates:
+                            last = datetime.datetime.strptime(
+                                available_dates['last_yyyymmdd'],
+                                '%Y%m%d'
+                            )
+                            kwargs['last_date'] = last.date()
+                    except ValueError:
+                        pass
 
                     kwargs['calendar_masks'] = {
                         int(year[5:]): {
