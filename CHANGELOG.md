@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.2.6] - 2018-04-26
+### Fixed
+- Catch an error that can be thrown if dates that are just zeros come back from the core
+
 ## [2.2.5] - 2018-04-26
 ## Changed
 - updated dependencies - six to 1.11.0
