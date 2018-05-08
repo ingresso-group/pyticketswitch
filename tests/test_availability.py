@@ -284,6 +284,33 @@ class TestAvailabilityDetails:
         assert details[0].first_date == datetime.date(2016, 11, 29)
         assert details[0].last_date == datetime.date(2017, 6, 21)
 
+    def test_from_api_data_copes_with_zero_dates(self):
+        data = {
+            'ticket_type': [
+                {
+                    'ticket_type_code': 'FOO',
+                    'ticket_type_desc': 'Foo',
+                    'price_band': [
+                        {
+                            'price_band_code': 'PLB',
+                            'price_band_desc': 'Plebians',
+                            'avail_detail': [{
+                                'available_dates': {
+                                    'first_yyyymmdd': '00000000',
+                                    'last_yyyymmdd': '00000000',
+                                }
+                            }],
+                        },
+                    ]
+                },
+            ],
+        }
+        details = AvailabilityDetails.from_api_data(data)
+        assert len(details) == 1
+
+        assert details[0].first_date is None
+        assert details[0].last_date is None
+
     def test_from_api_data_adds_calendar_masks(self):
         data = {
             'ticket_type': [
