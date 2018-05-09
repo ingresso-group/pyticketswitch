@@ -1,3 +1,4 @@
+import decimal
 import requests
 import logging
 import six
@@ -45,19 +46,28 @@ class Client(object):
         language (:obj:`str`, optional): prefered IETF language tag. When
             available this will translate text to the specified language. When
             None language defaults to user's preference. Defaults to None.
+        tracking_id (:obj:`str`, optional): a tracking ID to use with requests
+        use_decimal (bool): parse JSON numbers as decimal. Default is `False`
+            but this use is deprecated and decimals are recommended.
         **kwargs: Additional arbitrary key word arguments to keep with the
             object.
 
     """
 
     def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
-                 language=None, tracking_id=None, **kwargs):
+                 language=None, tracking_id=None, use_decimal=False, **kwargs):
         self.user = user
         self.password = password
         self.url = url
         self.sub_user = sub_user
         self.language = language
         self.tracking_id = tracking_id
+        if not use_decimal:
+            utils.deprecation_warning(
+                "Non-Decimal JSON parsing is deprecated",
+                stacklevel=3
+            )
+        self._parse_float = decimal.Decimal if use_decimal else None
         self.kwargs = kwargs
 
     def get_url(self, end_point):
@@ -240,7 +250,7 @@ class Client(object):
         self.cleanup_session(session)
 
         try:
-            contents = response.json()
+            contents = response.json(parse_float=self._parse_float)
         except ValueError:
             raise exceptions.InvalidResponseError(
                 ("Unable to parse json data from {} response with status "
