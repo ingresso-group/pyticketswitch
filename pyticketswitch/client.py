@@ -62,12 +62,7 @@ class Client(object):
         self.sub_user = sub_user
         self.language = language
         self.tracking_id = tracking_id
-        if not use_decimal:
-            utils.deprecation_warning(
-                "Non-Decimal JSON parsing is deprecated",
-                stacklevel=3
-            )
-        self._parse_float = decimal.Decimal if use_decimal else None
+        self.use_decimal = use_decimal
         self.kwargs = kwargs
 
     def get_url(self, end_point):
@@ -249,8 +244,18 @@ class Client(object):
 
         self.cleanup_session(session)
 
+        if not self.use_decimal:
+            utils.deprecation_warning(
+                "Client has use_decimal set to False. "
+                "Non-Decimal JSON parsing is deprecated and will be removed."
+                "\nSee https://pyticketswitch.ingresso.co.uk/api"
+                "#pyticketswitch.client.Client.use_decimal",
+                stacklevel=3
+            )
+        parse_float = decimal.Decimal if self.use_decimal else float
+
         try:
-            contents = response.json(parse_float=self._parse_float)
+            contents = response.json(parse_float=parse_float)
         except ValueError:
             raise exceptions.InvalidResponseError(
                 ("Unable to parse json data from {} response with status "
