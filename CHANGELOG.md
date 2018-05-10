@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.3.0] - 2018-05-10
+### Added
+- A configuration setting on the client to parse JSON numbers as Decimal instead
+  of float
+
+### Deprecated
+- Using floats is now deprecated and will be removed at some point in the future
+
 ## [2.2.6] - 2018-04-26
 ### Fixed
 - Catch an error that can be thrown if dates that are just zeros come back from the core

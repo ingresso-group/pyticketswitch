@@ -1,3 +1,4 @@
+import decimal
 import pytest
 import json
 import requests
@@ -20,7 +21,7 @@ pyticketswitch.__version__ = 'TEST'
 
 @pytest.fixture
 def client():
-    client = Client(user="bilbo", password="baggins")
+    client = Client(user="bilbo", password="baggins", use_decimal=True)
     return client
 
 
@@ -80,7 +81,7 @@ class FakeResponse(object):
         self.status_code = status_code
         self._json = json
 
-    def json(self):
+    def json(self, **kwargs):
         return self._json
 
     @property
@@ -88,18 +89,10 @@ class FakeResponse(object):
         return json.dumps(self._json)
 
 
-class FakeResponseRaisesValueError(object):
+class FakeResponseRaisesValueError(FakeResponse):
 
-    def __init__(self, status_code=200, json=None):
-        self.status_code = status_code
-        self._json = json
-
-    def json(self):
+    def json(self, **kwargs):
         raise ValueError("ERROR")
-
-    @property
-    def content(self):
-        return json.dumps(self._json)
 
 
 class TestClient:
@@ -191,7 +184,8 @@ class TestClient:
         )
 
     def test_make_request_with_subuser(self, monkeypatch):
-        client = Client(user="beatles", password="lovemedo", sub_user="ringo")
+        client = Client(user="beatles", password="lovemedo",
+                        sub_user="ringo", use_decimal=True)
         fake_response = FakeResponse(status_code=200, json={"lol": "beans"})
         fake_get = Mock(return_value=fake_response)
         session = Mock(spec=requests.Session)
@@ -219,7 +213,8 @@ class TestClient:
         )
 
     def test_make_request_with_tracking_id(self, monkeypatch):
-        client = Client(user="user", password="pass", tracking_id="xyz")
+        client = Client(user="user", password="pass",
+                        tracking_id="xyz", use_decimal=True)
         fake_response = FakeResponse(status_code=200, json={"depro": "fundis"})
         fake_get = Mock(return_value=fake_response)
         session = Mock(spec=requests.Session)
@@ -242,7 +237,8 @@ class TestClient:
         )
 
     def test_make_request_when_using_per_request_tracking_id(self, monkeypatch):
-        client = Client(user="user", password="pass", tracking_id="xyz")
+        client = Client(user="user", password="pass",
+                        tracking_id="xyz", use_decimal=True)
         fake_response = FakeResponse(status_code=200, json={"depro": "fundis"})
         fake_get = Mock(return_value=fake_response)
         session = Mock(spec=requests.Session)
@@ -1830,7 +1826,8 @@ class TestClient:
                     'auth_key': self.auth_key,
                 }
 
-        client = MyClient('gandalf', auth_key='speakfriendandenter')
+        client = MyClient('gandalf', auth_key='speakfriendandenter',
+                          use_decimal=True)
 
         params = {
             'foo': 'bar',
@@ -1885,7 +1882,8 @@ class TestClient:
                 params.update(myfoo=self.myfoo)
                 return params
 
-        client = MyClient('batman', 'batmanfoo', sub_user='robin')
+        client = MyClient('batman', 'batmanfoo',
+                          sub_user='robin', use_decimal=True)
         params = {'fruit': 'apple'}
 
         # fakes
@@ -1925,3 +1923,46 @@ class TestClient:
         assert warning_list[0].message.args[0] == (
             'Call to deprecated function get_auth_params'
         )
+
+    def test_make_request_using_decimal_parsing(self, client, monkeypatch):
+        # fakes
+        response_json = {'amount': 1.0}
+        fake_response = requests.models.Response()
+        fake_response._content = json.dumps(response_json).encode('utf-8')
+        fake_response.status_code = 200
+
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
+        # action
+        result = client.make_request('test.v1', {})
+
+        # results
+        assert 'amount' in result
+        assert type(result['amount']) == decimal.Decimal
+        assert result['amount'] == decimal.Decimal('1.0')
+
+    def test_make_request_using_float_parsing(self, monkeypatch):
+        # state
+        client = Client('bilbo', 'baggins')
+
+        # fakes
+        response_json = {'amount': 1.0}
+        fake_response = requests.models.Response()
+        fake_response._content = json.dumps(response_json).encode('utf-8')
+        fake_response.status_code = 200
+
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
+
+        # action
+        result = client.make_request('test.v1', {})
+
+        # results
+        assert 'amount' in result
+        assert type(result['amount']) == float
+        assert result['amount'] == 1.0

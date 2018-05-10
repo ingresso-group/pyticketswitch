@@ -1,4 +1,5 @@
 import datetime
+import decimal
 import json
 
 
@@ -13,6 +14,9 @@ class JSONMixin(object):
 
             if isinstance(obj, datetime.date):
                 return obj.isoformat()
+
+            if isinstance(obj, decimal.Decimal):
+                return float(obj)
 
             if hasattr(obj, '__jsondict__'):
                 return obj.__jsondict__(hide_none=hide_none, hide_empty=hide_empty)

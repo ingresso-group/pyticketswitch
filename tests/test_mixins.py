@@ -1,6 +1,7 @@
 import pytest
 import datetime
 from dateutil.tz import tzoffset
+from decimal import Decimal
 from pyticketswitch.mixins import JSONMixin, PaginationMixin, SeatPricingMixin
 
 
@@ -92,6 +93,11 @@ class TestJSONMixin:
                 'second': {'bar': 'world!'}
             }
         }
+
+    def test_decimal_as_json(self):
+        obj = self.Foo(Decimal('44.1234'))
+        result = obj.as_json()
+        assert result == '{"bar": 44.1234}'
 
     def test_as_json(self):
         obj = self.Foo('hello world!')
