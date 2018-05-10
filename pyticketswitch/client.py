@@ -244,14 +244,6 @@ class Client(object):
 
         self.cleanup_session(session)
 
-        if not self.use_decimal:
-            utils.deprecation_warning(
-                "Client has use_decimal set to False. "
-                "Non-Decimal JSON parsing is deprecated and will be removed."
-                "\nSee https://pyticketswitch.ingresso.co.uk/api"
-                "#pyticketswitch.client.Client.use_decimal",
-                stacklevel=3
-            )
         parse_float = decimal.Decimal if self.use_decimal else float
 
         try:

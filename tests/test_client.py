@@ -1960,16 +1960,9 @@ class TestClient:
         monkeypatch.setattr(client, 'get_session', Mock(return_value=session))
 
         # action
-        with pytest.warns(DeprecationWarning) as warning_list:
-            result = client.make_request('test.v1', {})
+        result = client.make_request('test.v1', {})
 
         # results
         assert 'amount' in result
         assert type(result['amount']) == float
         assert result['amount'] == 1.0
-        assert warning_list[0].message.args[0] == (
-            'Client has use_decimal set to False. '
-            'Non-Decimal JSON parsing is deprecated and will be removed.'
-            '\nSee https://pyticketswitch.ingresso.co.uk/api'
-            '#pyticketswitch.client.Client.use_decimal'
-        )
