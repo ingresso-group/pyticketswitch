@@ -1,3 +1,4 @@
+from decimal import Decimal
 from pyticketswitch.event import Event
 from pyticketswitch.performance import Performance
 from pyticketswitch.order import TicketOrder, Order
@@ -27,14 +28,46 @@ class TestTicketOrder:
         assert ticket_order.code == 'ADULT'
         assert ticket_order.number_of_seats == 2
         assert ticket_order.description == 'Adult standard'
-        assert isinstance(ticket_order.seatprice, float)
+        assert isinstance(ticket_order.seatprice, (int, float))
         assert ticket_order.seatprice == 25.0
-        assert isinstance(ticket_order.surcharge, float)
+        assert isinstance(ticket_order.surcharge, (int, float))
         assert ticket_order.surcharge == 2.5
-        assert isinstance(ticket_order.total_seatprice, float)
+        assert isinstance(ticket_order.total_seatprice, (int, float))
         assert ticket_order.total_seatprice == 50.0
-        assert isinstance(ticket_order.total_surcharge, float)
+        assert isinstance(ticket_order.total_surcharge, (int, float))
         assert ticket_order.total_surcharge == 5.0
+        assert len(ticket_order.seats) == 2
+        assert ticket_order.seats[0].id == 'ABC123'
+        assert ticket_order.seats[1].id == 'DEF456'
+
+    def test_from_api_data_with_decimal(self):
+        data = {
+            'discount_code': 'ADULT',
+            'discount_desc': 'Adult standard',
+            'no_of_seats': 2,
+            'sale_seatprice': 25,
+            'sale_surcharge': Decimal('2.50'),
+            'total_sale_seatprice': 50,
+            'total_sale_surcharge': Decimal('5.00'),
+            'seats': [
+                {'full_id': 'ABC123'},
+                {'full_id': 'DEF456'},
+            ],
+        }
+
+        ticket_order = TicketOrder.from_api_data(data)
+
+        assert ticket_order.code == 'ADULT'
+        assert ticket_order.number_of_seats == 2
+        assert ticket_order.description == 'Adult standard'
+        assert isinstance(ticket_order.seatprice, (int, Decimal))
+        assert ticket_order.seatprice == Decimal('25.0')
+        assert isinstance(ticket_order.surcharge, (int, Decimal))
+        assert ticket_order.surcharge == Decimal('2.5')
+        assert isinstance(ticket_order.total_seatprice, (int, Decimal))
+        assert ticket_order.total_seatprice == Decimal('50.0')
+        assert isinstance(ticket_order.total_surcharge, (int, Decimal))
+        assert ticket_order.total_surcharge == Decimal('5.0')
         assert len(ticket_order.seats) == 2
         assert ticket_order.seats[0].id == 'ABC123'
         assert ticket_order.seats[1].id == 'DEF456'
@@ -174,6 +207,91 @@ class TestOrder:
         assert isinstance(order.user_commission, Commission)
         assert order.user_commission.including_vat == 2.0
         assert order.user_commission.excluding_vat == 2.1
+        assert order.user_commission.currency_code == 'gbp'
+
+    def test_from_api_data_with_decimal(self):
+
+        data = {
+            "backend_purchase_reference": 'GHI098',
+            "event": {
+                "event_id": "6IF",
+            },
+            "item_number": 1,
+            "performance": {
+                "perf_id": "6IF-A7N",
+            },
+            "price_band_code": "C/pool",
+            "price_band_desc": "Band C",
+            "seat_request_status": "got_all",
+            "ticket_orders": {
+                "ticket_order": [
+                    {"discount_code": "ADULT"},
+                    {"discount_code": "CHILD"},
+                ]
+            },
+            "ticket_type_code": "CIRCLE",
+            "ticket_type_desc": "Upper circle",
+            "total_no_of_seats": 3,
+            "total_sale_seatprice": 51,
+            "total_sale_surcharge": Decimal('5.40'),
+            "requested_seat_ids": [
+                'ABC123',
+                'DEF456',
+            ],
+            'send_method': {
+                'send_code': 'POST',
+                'send_cost': Decimal('3.5'),
+                'send_desc': 'Post (UK & Ireland only)',
+                'send_type': 'post',
+                'permitted_countries': {
+                    'country': [
+                        {
+                            'country_code': 'ie',
+                            'country_desc': 'Ireland'
+                        },
+                        {
+                            'country_code': 'uk',
+                            'country_desc': 'United Kingdom'
+                        }
+                    ]
+                }
+            },
+            'predicted_gross_commission': {
+                'amount_including_vat': Decimal('4.0'),
+                'amount_excluding_vat': Decimal('4.5'),
+                'commission_currency_code': 'gbp',
+            },
+            'predicted_user_commission': {
+                'amount_including_vat': Decimal('2.0'),
+                'amount_excluding_vat': Decimal('2.1'),
+                'commission_currency_code': 'gbp',
+            },
+        }
+
+        order = Order.from_api_data(data)
+
+        assert order.item == 1
+        assert order.price_band_code == 'C/pool'
+        assert order.price_band_description == 'Band C'
+        assert order.ticket_type_code == 'CIRCLE'
+        assert order.ticket_type_description == 'Upper circle'
+        assert order.number_of_seats == 3
+        assert order.total_seatprice == 51
+        assert order.total_surcharge == Decimal('5.40')
+
+        assert len(order.ticket_orders) == 2
+
+        assert len(order.requested_seat_ids) == 2
+
+        assert order.total_including_send_cost() == (51 + Decimal('5.40') + Decimal('3.5'))
+
+        assert isinstance(order.gross_commission, Commission)
+        assert order.gross_commission.including_vat == Decimal('4.0')
+        assert order.gross_commission.excluding_vat == Decimal('4.5')
+        assert order.gross_commission.currency_code == 'gbp'
+        assert isinstance(order.user_commission, Commission)
+        assert order.user_commission.including_vat == Decimal('2.0')
+        assert order.user_commission.excluding_vat == Decimal('2.1')
         assert order.user_commission.currency_code == 'gbp'
 
     def test_from_api_data_with_send_method(self):

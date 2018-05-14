@@ -1,3 +1,4 @@
+from decimal import Decimal
 from pyticketswitch.send_method import SendMethod
 
 
@@ -29,6 +30,37 @@ class TestSendMethod:
         assert isinstance(method, SendMethod)
         assert method.code == 'POST'
         assert method.cost == 3.5
+        assert method.description == 'Post (UK & Ireland only)'
+        assert method.type == 'post'
+        assert method.final_comment == 'allow some time'
+        assert len(method.permitted_countries) == 2
+
+    def test_from_api_data_with_decimal(self):
+        data = {
+            'send_code': 'POST',
+            'send_cost': Decimal('3.5'),
+            'send_desc': 'Post (UK & Ireland only)',
+            'send_type': 'post',
+            'send_final_comment': 'allow some time',
+            'permitted_countries': {
+                'country': [
+                    {
+                        'country_code': 'ie',
+                        'country_desc': 'Ireland'
+                    },
+                    {
+                        'country_code': 'uk',
+                        'country_desc': 'United Kingdom'
+                    }
+                ]
+            }
+        }
+
+        method = SendMethod.from_api_data(data)
+
+        assert isinstance(method, SendMethod)
+        assert method.code == 'POST'
+        assert method.cost == Decimal('3.5')
         assert method.description == 'Post (UK & Ireland only)'
         assert method.type == 'post'
         assert method.final_comment == 'allow some time'
