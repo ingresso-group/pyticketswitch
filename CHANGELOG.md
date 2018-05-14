@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.3.1] - 2018-05-14
+### Fixed
+- Fixed a bug in the Bundle object where properties were being converted into
+  floats, irrespective of the parser setting on the client
+
 ## [2.3.0] - 2018-05-10
 ### Added
 - A configuration setting on the client to parse JSON numbers as Decimal instead

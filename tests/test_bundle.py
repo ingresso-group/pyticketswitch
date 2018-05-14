@@ -1,3 +1,4 @@
+from decimal import Decimal
 from pyticketswitch.bundle import Bundle
 from pyticketswitch.event import Event
 from pyticketswitch.order import Order
@@ -40,17 +41,69 @@ class TestBundle(object):
         assert bundle.orders[1].item == 2
         assert bundle.description == 'External Test Backend 0'
 
-        assert isinstance(bundle.total_seatprice, float)
+        assert isinstance(bundle.total_seatprice, (int, float))
         assert bundle.total_seatprice == 51.0
 
-        assert isinstance(bundle.total_surcharge, float)
+        assert isinstance(bundle.total_surcharge, (int, float))
         assert bundle.total_surcharge == 2.2
 
-        assert isinstance(bundle.total_send_cost, float)
+        assert isinstance(bundle.total_send_cost, (int, float))
         assert bundle.total_send_cost == 1.5
 
-        assert isinstance(bundle.total, float)
+        assert isinstance(bundle.total, (int, float))
         assert bundle.total == 54.7
+
+        assert isinstance(bundle.debitor, Debitor)
+        assert bundle.debitor.type == 'dummy'
+
+        assert isinstance(bundle.purchase_result, PurchaseResult)
+        assert bundle.purchase_result.success
+
+    def test_from_api_data_with_decimals(self):
+        data = {
+            'bundle_order_count': 1,
+            'bundle_source_code': 'ext_test0',
+            'bundle_source_desc': 'External Test Backend 0',
+            'bundle_total_cost': Decimal('54.7'),
+            'bundle_total_seatprice': Decimal('51'),
+            'bundle_total_send_cost': Decimal('1.5'),
+            'bundle_total_surcharge': Decimal('2.2'),
+            'currency_code': 'gbp',
+            'order': [
+                {'item_number': 1},
+                {'item_number': 2},
+            ],
+            "debitor": {
+                "debitor_type": "dummy"
+            },
+            "source_t_and_c": 'some legal stuff',
+            "purchase_result": {
+                "success": True,
+            },
+        }
+
+        bundle = Bundle.from_api_data(data)
+
+        assert bundle.source_code == 'ext_test0'
+        assert bundle.currency_code == 'gbp'
+        assert bundle.terms_and_conditions == 'some legal stuff'
+
+        assert len(bundle.orders) == 2
+        assert bundle.orders[0].item == 1
+        assert bundle.orders[1].item == 2
+        assert bundle.description == 'External Test Backend 0'
+
+        assert isinstance(bundle.total_seatprice, Decimal)
+        assert bundle.total_seatprice == Decimal('51.0')
+
+        assert isinstance(bundle.total_surcharge, Decimal)
+        assert bundle.total_surcharge == Decimal('2.2')
+
+        assert isinstance(bundle.total_send_cost, Decimal)
+        assert bundle.total_send_cost == Decimal('1.5')
+
+        assert isinstance(bundle.total, Decimal)
+        assert bundle.total == Decimal('54.7')
 
         assert isinstance(bundle.debitor, Debitor)
         assert bundle.debitor.type == 'dummy'
