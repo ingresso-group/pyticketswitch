@@ -61,19 +61,19 @@ class TicketOrder(JSONMixin, object):
         # missing from the response.
         raw_seatprice = data.get('sale_seatprice')
         if raw_seatprice is not None:
-            kwargs.update(seatprice=float(raw_seatprice))
+            kwargs.update(seatprice=raw_seatprice)
 
         raw_surcharge = data.get('sale_surcharge')
         if raw_surcharge is not None:
-            kwargs.update(surcharge=float(raw_surcharge))
+            kwargs.update(surcharge=raw_surcharge)
 
         raw_total_seatprice = data.get('total_sale_seatprice')
         if raw_total_seatprice is not None:
-            kwargs.update(total_seatprice=float(raw_total_seatprice))
+            kwargs.update(total_seatprice=raw_total_seatprice)
 
         raw_total_surcharge = data.get('total_sale_surcharge')
         if raw_total_surcharge is not None:
-            kwargs.update(total_surcharge=float(raw_total_surcharge))
+            kwargs.update(total_surcharge=raw_total_surcharge)
 
         seats_data = data.get('seats')
         if seats_data:
@@ -249,11 +249,11 @@ class Order(JSONMixin, object):
 
         raw_total_seatprice = data.get('total_sale_seatprice')
         if raw_total_seatprice is not None:
-            kwargs.update(total_seatprice=float(raw_total_seatprice))
+            kwargs.update(total_seatprice=raw_total_seatprice)
 
         raw_total_surcharge = data.get('total_sale_surcharge')
         if raw_total_surcharge is not None:
-            kwargs.update(total_surcharge=float(raw_total_surcharge))
+            kwargs.update(total_surcharge=raw_total_surcharge)
 
         raw_send_method = data.get('send_method')
         if raw_send_method:

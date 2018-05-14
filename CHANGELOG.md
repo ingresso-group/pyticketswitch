@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.3.2] - 2018-05-14
+### Fixed
+- Fixed the same bug in Order, TicketOrder and SendMethod objects, where prices
+  were being coerced to float.
+
 ## [2.3.1] - 2018-05-14
 ### Fixed
 - Fixed a bug in the Bundle object where properties were being converted into

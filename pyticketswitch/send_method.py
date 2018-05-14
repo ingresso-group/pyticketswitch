@@ -53,7 +53,7 @@ class SendMethod(JSONMixin, object):
         }
 
         cost = data.get('send_cost', 0.0)
-        kwargs.update(cost=float(cost))
+        kwargs.update(cost=cost)
 
         permitted_countries_raw = data.get('permitted_countries', {})
 
