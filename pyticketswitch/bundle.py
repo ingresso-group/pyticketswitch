@@ -77,19 +77,19 @@ class Bundle(JSONMixin, object):
         # missing from the response.
         total_seatprice = data.get('bundle_total_seatprice')
         if total_seatprice is not None:
-            kwargs.update(total_seatprice=float(total_seatprice))
+            kwargs.update(total_seatprice=total_seatprice)
 
         total_surcharge = data.get('bundle_total_surcharge')
         if total_surcharge is not None:
-            kwargs.update(total_surcharge=float(total_surcharge))
+            kwargs.update(total_surcharge=total_surcharge)
 
         total_send_cost = data.get('bundle_total_send_cost')
         if total_send_cost is not None:
-            kwargs.update(total_send_cost=float(total_send_cost))
+            kwargs.update(total_send_cost=total_send_cost)
 
         total = data.get('bundle_total_cost')
         if total is not None:
-            kwargs.update(total=float(total))
+            kwargs.update(total=total)
 
         raw_debitor = data.get('debitor')
         if raw_debitor:
