@@ -203,6 +203,8 @@ def then_events_have_performance_between_days(context, start, end):
     end_date = now + datetime.timedelta(days=int(end))
 
     for event in context.events:
+        if not event.has_performances:
+            continue
         performances, meta = context.client.list_performances(
             event.id,
             start_date=start_date,
