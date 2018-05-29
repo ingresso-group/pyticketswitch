@@ -25,11 +25,14 @@ class Trolley(JSONMixin, object):
         order_count (int): the number of orders in the trolley.
         purchase_result (:class:`PurchaseResult <pyticketswitch.callout.Callout>`):
             the result of the purchase attempt when available.
-
+        input_contained_unavailable_order (bool): indicates that the call used
+            to create or modify this trolley object included at least one order
+            that was not available.
     """
     def __init__(self, token=None, transaction_uuid=None, transaction_id=None,
                  bundles=None, discarded_orders=None, minutes_left=None,
-                 order_count=None, purchase_result=None):
+                 order_count=None, purchase_result=None,
+                 input_contained_unavailable_order=False):
         self.token = token
         self.transaction_uuid = transaction_uuid
         self.transaction_id = transaction_id
@@ -38,6 +41,7 @@ class Trolley(JSONMixin, object):
         self.minutes_left = minutes_left
         self.order_count = order_count
         self.purchase_result = purchase_result
+        self.input_contained_unavailable_order = input_contained_unavailable_order
 
     @classmethod
     def from_api_data(cls, data):
@@ -82,6 +86,8 @@ class Trolley(JSONMixin, object):
             'transaction_uuid': raw_contents.get('transaction_uuid'),
             'transaction_id': raw_contents.get('transaction_id'),
             'order_count': data.get('trolley_order_count'),
+            'input_contained_unavailable_order': data.get(
+                'input_contained_unavailable_order', False),
         }
 
         minutes = data.get('minutes_left_on_reserve')

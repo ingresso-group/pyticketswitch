@@ -1074,7 +1074,8 @@ class Client(object):
     def get_trolley(self, token=None, number_of_seats=None, discounts=None,
                     seats=None, send_codes=None, ticket_type_code=None,
                     performance_id=None, price_band_code=None,
-                    item_numbers_to_remove=None, **kwargs):
+                    item_numbers_to_remove=None,
+                    raise_on_unavailable_order=False, **kwargs):
 
         """Retrieve the contents of a trolley from the API.
 
@@ -1090,14 +1091,17 @@ class Client(object):
             seats (list): list of seat IDs.
             send_codes (dict): send codes indexed on backend source
                 code.
-            ticket_type_code: (string): code of ticket type to add to
+            ticket_type_code (string): code of ticket type to add to
                 the trolley.
-            performance_id: (string): id of the performance to add to
+            performance_id (string): id of the performance to add to
                 the trolley.
-            price_band_code: (string): code of price band to add to
+            price_band_code (string): code of price band to add to
                 the trolley.
-            item_numbers_to_remove: (list): list of item numbers to
+            item_numbers_to_remove (list): list of item numbers to
                 remove from trolley.
+            raise_on_unavailable_order (bool): When set to ``True`` this method
+                will raise an exception when the API was not able to add an
+                order to the trolley as it was unavailable.
             **kwargs: arbitary additional raw keyword arguments to add the
                 parameters.
 
@@ -1109,6 +1113,9 @@ class Client(object):
         Raises:
             InvalidParametersError: when there is an issue with the provided
                 parameters.
+            OrderUnavailableError: when ``raise_on_unavailable_order`` is set
+                to ``True`` and the requested addition to a trolley was
+                unavailable.
 
         .. _`/f13/trolley.v1`: http://docs.ingresso.co.uk/#trolley
 
@@ -1125,6 +1132,11 @@ class Client(object):
 
         trolley = Trolley.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
+
+        if raise_on_unavailable_order:
+            if trolley and trolley.input_contained_unavailable_order:
+                raise exceptions.OrderUnavailableError(
+                    "inputs contained unavailable order")
 
         return trolley, meta
 
@@ -1271,7 +1283,8 @@ class Client(object):
     def make_reservation(self, token=None, number_of_seats=None, discounts=None,
                          seats=None, send_codes=None, ticket_type_code=None,
                          performance_id=None, price_band_code=None,
-                         item_numbers_to_remove=None, **kwargs):
+                         item_numbers_to_remove=None,
+                         raise_on_unavailable_order=False, **kwargs):
 
         """Attempt to reserve all the items in the given trolley
 
@@ -1307,6 +1320,9 @@ class Client(object):
                 the trolley
             item_numbers_to_remove: (list): list of item numbers to
                 remove from trolley.
+            raise_on_unavailable_order (bool): When set to ``True`` this method
+                will raise an exception when the API was not able to add an
+                order to the trolley as it was unavailable.
             **kwargs: arbitary additional raw keyword arguments to add the
                 parameters.
 
@@ -1318,6 +1334,9 @@ class Client(object):
         Raises:
             InvalidParametersError: when there is an issue with the provided
                 parameters.
+            OrderUnavailableError: when ``raise_on_unavailable_order`` is set
+                to ``True`` and the requested addition to a trolley was
+                unavailable.
 
         .. _`/f13/reserve.v1`: http://docs.ingresso.co.uk/#reserve
 
@@ -1335,15 +1354,22 @@ class Client(object):
         reservation = Reservation.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
 
+        if raise_on_unavailable_order:
+            if reservation and reservation.input_contained_unavailable_order:
+                raise exceptions.OrderUnavailableError(
+                    "inputs contained unavailable order")
+
         return reservation, meta
 
-    def release_reservation(self, transaction_uuid):
+    def release_reservation(self, transaction_uuid, **kwargs):
         """Release an existing reservation.
 
         Wraps `/f13/release.v1`_
 
         Args:
             transaction_uuid (str): the identifier of the reservaiton.
+            **kwargs: arbitary additional raw keyword arguments to add the
+                parameters.
 
         Returns:
             bool: :obj:`True` if the reservation was successfully released
@@ -1354,7 +1380,8 @@ class Client(object):
         """
 
         params = {'transaction_uuid': transaction_uuid}
-        response = self.make_request('release.v1', params, method=POST)
+        kwargs.update(params)
+        response = self.make_request('release.v1', kwargs, method=POST)
 
         return response.get('released_ok', False)
 

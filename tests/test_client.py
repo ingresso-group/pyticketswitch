@@ -1324,6 +1324,34 @@ class TestClient:
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code == 'gbp'
 
+    def test_get_trolley_with_unavailable_order(self, client, monkeypatch):
+        """
+        This test is to check that an unavailable order doesn't raise
+        any exceptions unless `raise_on_unavailable_order` is set to true
+        """
+        response = {
+            'trolley_contents': {},
+            'trolley_token': 'DEF456',
+            'currency_code': 'gbp',
+            'input_contained_unavailable_order': True,
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        # this should not raise any exceptions
+        client.get_trolley()
+
+        # but this should
+        with pytest.raises(exceptions.OrderUnavailableError):
+            client.get_trolley(raise_on_unavailable_order=True)
+
+
     def test_get_upsells(self, client, monkeypatch):
         # fakes
         response = {
@@ -1412,6 +1440,26 @@ class TestClient:
 
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code == 'gbp'
+
+    def test_make_reservation_with_unavailable_order(self, client, monkeypatch):
+        """
+        This test is to check that an unavailable order doesn't raise
+        any exceptions unless `raise_on_unavailable_order` is set to true
+        """
+        data = {
+            "input_contained_unavailable_order": True,
+            "unreserved_orders": [],
+        }
+
+        mock_make_request = Mock(return_value=data)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        # this should not raise any exceptions
+        client.make_reservation()
+
+        # but this should
+        with pytest.raises(exceptions.OrderUnavailableError):
+            client.make_reservation(raise_on_unavailable_order=True)
 
     def test_get_status(self, client, monkeypatch):
         response = {

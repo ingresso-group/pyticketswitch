@@ -51,3 +51,7 @@ class BackendThrottleError(BackendError):
 
 class CallbackGoneError(APIError):
     pass
+
+
+class OrderUnavailableError(PyticketswitchError):
+    pass

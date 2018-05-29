@@ -59,3 +59,13 @@ class TestReservation:
 
         assert len(reservation.unreserved_orders) == 1
         assert reservation.minutes_left == 15
+
+    def test_from_api_data_with_unavailable_orders(self):
+        data = {
+            "input_contained_unavailable_order": True,
+            "unreserved_orders": [],
+        }
+
+        reservation = Reservation.from_api_data(data)
+
+        assert reservation.input_contained_unavailable_order is True
