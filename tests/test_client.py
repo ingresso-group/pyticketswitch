@@ -1457,6 +1457,38 @@ class TestClient:
         with pytest.raises(exceptions.OrderUnavailableError):
             client.make_reservation(raise_on_unavailable_order=True)
 
+    def test_make_reservation_with_unavailable_order_but_successfull_reservation(self, client, monkeypatch):
+        """
+        This checks that when we raise an exception on unavailable order, but
+        other parts of the trolley are successfully reserved, that we don't
+        lose the transaction_uuid
+        """
+        data = {
+            "input_contained_unavailable_order": True,
+            'reserved_trolley': {
+                'transaction_uuid': 'DEF456'
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
+
+        mock_make_request = Mock(return_value=data)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        # but this should
+        with pytest.raises(exceptions.OrderUnavailableError) as excinfo:
+            client.make_reservation(raise_on_unavailable_order=True)
+
+        exception = excinfo.value
+        assert exception.reservation
+        assert exception.reservation.trolley.transaction_uuid == 'DEF456'
+        assert exception.meta.default_currency_code == 'gbp'
+
+
     def test_get_status(self, client, monkeypatch):
         response = {
             'trolley_contents': {

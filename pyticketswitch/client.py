@@ -1364,7 +1364,9 @@ class Client(object):
         if raise_on_unavailable_order:
             if reservation and reservation.input_contained_unavailable_order:
                 raise exceptions.OrderUnavailableError(
-                    "inputs contained unavailable order")
+                    "inputs contained unavailable order",
+                    reservation=reservation,
+                    meta=meta)
 
         return reservation, meta
 

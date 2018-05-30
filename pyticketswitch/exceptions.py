@@ -54,4 +54,8 @@ class CallbackGoneError(APIError):
 
 
 class OrderUnavailableError(PyticketswitchError):
-    pass
+
+    def __init__(self, msg, reservation=None, meta=None, *args, **kwargs):
+        super(OrderUnavailableError, self).__init__(msg, *args, **kwargs)
+        self.reservation = reservation
+        self.meta = meta
