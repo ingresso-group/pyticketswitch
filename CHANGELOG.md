@@ -14,7 +14,9 @@ invalid parameters had be given.
   objects.
 - an optional `raise_on_unavailable_order` argument to `get_trolley` and
   `make_reservation` that will raise an exception when the API reports that
-  the order that was be added to a trolley was unavailable.
+  the order that was be added to a trolley was unavailable. If the call
+  successfully reserved something the exception will also include the
+  reservation and any metadata.
 
 ## [2.3.2] - 2018-05-14
 ### Fixed
