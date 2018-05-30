@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+These changes help when dealing with situations where the trolley related
+calls would return empty or unmodified trolleys without making it clear that
+invalid parameters had be given.
+
+### Added
+- `input_contained_unavailable_order` flag to `Trolley` and `Reservation`
+  objects.
+- an optional `raise_on_unavailable_order` argument to `get_trolley` and
+  `make_reservation` that will raise an exception when the API reports that
+  the order that was be added to a trolley was unavailable.
 
 ## [2.3.2] - 2018-05-14
 ### Fixed
