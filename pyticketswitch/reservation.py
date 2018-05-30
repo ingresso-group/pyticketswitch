@@ -46,9 +46,12 @@ class Reservation(Status):
 
     """
 
-    def __init__(self, unreserved_orders=None, *args, **kwargs):
+    def __init__(self, unreserved_orders=None,
+                 input_contained_unavailable_order=False, *args, **kwargs):
+
         super(Reservation, self).__init__(*args, **kwargs)
         self.unreserved_orders = unreserved_orders
+        self.input_contained_unavailable_order = input_contained_unavailable_order
 
     @classmethod
     def from_api_data(cls, data):
@@ -75,7 +78,9 @@ class Reservation(Status):
                 for order in raw_unreserved_orders
             ]
 
-        inst.unreserved_orders=unreserved_orders
+        inst.unreserved_orders = unreserved_orders
+        inst.input_contained_unavailable_order = data.get(
+            'input_contained_unavailable_order', False)
 
         return inst
 

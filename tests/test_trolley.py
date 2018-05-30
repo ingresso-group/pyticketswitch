@@ -68,6 +68,23 @@ class TestTrolley:
         assert trolley.discarded_orders[0].item == 3
         assert trolley.discarded_orders[1].item == 6
 
+    def test_from_api_data_with_empty_trolley(self):
+        data = {
+            "discarded_orders": [],
+            "input_contained_unavailable_order": True,
+            "trolley_token": "abc123",
+            "trolley_token_contents": {
+                "trolley_bundle_count": 0,
+                "trolley_order_count": 0
+            }
+        }
+
+        trolley = Trolley.from_api_data(data)
+
+        assert trolley.token == 'abc123'
+        assert trolley.input_contained_unavailable_order is True
+
+
     def test_get_events(self):
 
         event_one = Event(id_='abc123')
