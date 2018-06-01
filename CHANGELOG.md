@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.4.0] - 2018-06-01
 These changes help when dealing with situations where the trolley related
 calls would return empty or unmodified trolleys without making it clear that
 invalid parameters had be given.
@@ -343,9 +345,22 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.1.0...HEAD
-[2.1.0]:https://github.com/ingresso-group/pyticketswitch/compare/2.0.9...2.1.0
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.0...HEAD
+[2.4.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.3.2...2.4.0
+[2.3.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.3.1...2.3.2
+[2.3.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.3.0...2.3.1
+[2.3.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.2.6...2.3.0
+[2.2.6]: https://github.com/ingresso-group/pyticketswitch/compare/2.2.5...2.2.6
+[2.2.5]: https://github.com/ingresso-group/pyticketswitch/compare/2.2.4...2.2.5
+[2.2.4]: https://github.com/ingresso-group/pyticketswitch/compare/2.2.3...2.2.4
+[2.2.3]: https://github.com/ingresso-group/pyticketswitch/compare/2.2.2...2.2.3
+[2.2.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.2.1...2.2.2
+[2.2.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.2.0...2.2.1
+[2.2.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.1.3...2.2.0
+[2.1.3]: https://github.com/ingresso-group/pyticketswitch/compare/2.1.2...2.1.3
+[2.1.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.1.1...2.1.2
+[2.1.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.1.0...2.1.1
+[2.1.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.9...2.1.0
 [2.0.9]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.8...2.0.9
 [2.0.8]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.7...2.0.8
 [2.0.7]: https://github.com/ingresso-group/pyticketswitch/compare/2.0.6...2.0.7
