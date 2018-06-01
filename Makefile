@@ -22,6 +22,7 @@ docs:
 	@echo "Build successful! View the docs homepage at docs/_build/html/index.html."
 
 publish:
+	python preflight-checks.py
 	pip install twine
 	python setup.py sdist
 	python setup.py bdist_wheel --universal

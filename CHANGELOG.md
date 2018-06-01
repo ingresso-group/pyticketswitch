@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.4.1] - 2018-06-01
+### Updated
+- module version. (also added preflight checks to `make publish` to avoid
+  embarrassing situations like this in future)
+
 ## [2.4.0] - 2018-06-01
 These changes help when dealing with situations where the trolley related
 calls would return empty or unmodified trolleys without making it clear that

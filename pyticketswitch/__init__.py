@@ -1,4 +1,4 @@
 from pyticketswitch.client import Client  # NOQA
 
 
-__version__ = "2.3.2"
+__version__ = "2.4.1"
