@@ -1211,8 +1211,7 @@ represented as an event on the API, but it doesn't need a performance, neither
 does a season pass, nor a voucher.
 
 This is indicated by the :attr:`Event.needs_performance
-<passport.event.Event.needs_performance>` flag on the :class:`Event
-<passport.event.Event>`::
+<pyticketswitch.event.Event.needs_performance>` flag::
 
     >>> from pyticketswitch import Client
     >>> client = Client('demo', 'demopass')
@@ -1227,17 +1226,17 @@ This is indicated by the :attr:`Event.needs_performance
 While the customer may not need to provide you with any additional
 information, you still need to provide a valid performance id to a number of
 calls such as :meth:`Client.get_availability
-<passport.Client.get_availability>`, :meth:`Client.get_send_methods
-<passport.Client.get_send_methods>`, or :meth:`Client.make_reservation
-<passport.Client.make_reservation>`.
+<pyticketswitch.Client.get_availability>`, :meth:`Client.get_send_methods
+<pyticketswitch.Client.get_send_methods>`, or :meth:`Client.make_reservation
+<pyticketswitch.Client.make_reservation>`.
 
 You should still fetch this in the normal way via
-:meth:`Client.list_performances <passport.Client.list_performances>`, however
-only one :class:`Performance <passport.performance.Performance>` will be
-returned. Additionally :attr:`PerformanceMeta.auto_select
-<passport.performance.PerformanceMeta.auto_select>` should be set to ``True``,
-indicating that this performance should be automatically selected for the
-customer::
+:meth:`Client.list_performances <pyticketswitch.Client.list_performances>`,
+however only one :class:`Performance <pyticketswitch.performance.Performance>`
+will be returned. Additionally :attr:`PerformanceMeta.auto_select
+<pyticketswitch.performance.PerformanceMeta.auto_select>` should be set to
+``True``, indicating that this performance should be automatically selected
+for the customer::
 
     >>> from pyticketswitch import Client
     >>> client = Client('demo', 'demopass')
@@ -1250,7 +1249,7 @@ customer::
 
 .. warning:: Auto-generated performances change every day, you should be
              calling :meth:`Client.list_performances
-             <passport.Client.list_performances>` at least once a day in order
-             to ensure you have the correct performance ID.
+             <pyticketswitch.Client.list_performances>` at least once a day in
+             order to ensure you have the correct performance ID.
 
 .. _`stripe`: https://stripe.com/gb
