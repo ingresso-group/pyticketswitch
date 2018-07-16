@@ -59,9 +59,9 @@ def data():
         'has_no_perfs': True,
         'show_perf_time': True,
         'is_seated': True,
-        'needs_departure_date': True,
-        'needs_duration': True,
-        'needs_performance': True,
+        'need_departure_date': True,
+        'need_duration': True,
+        'need_performance': True,
 
         'event_upsell_list': {
             'event_id': ['DEF2', 'GHI3', 'JKL4'],
