@@ -1234,8 +1234,7 @@ calls such as :meth:`Client.get_availability
 You should still fetch this in the normal way via
 :meth:`Client.list_performances <passport.Client.list_performances>`, however
 only one :class:`Performance <passport.performance.Performance>` will be
-returned, it will have todays date.
-Additionally :attr:`PerformanceMeta.auto_select
+returned. Additionally :attr:`PerformanceMeta.auto_select
 <passport.performance.PerformanceMeta.auto_select>` should be set to ``True``,
 indicating that this performance should be automatically selected for the
 customer::
