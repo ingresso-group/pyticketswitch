@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- a bug where `needs_performance` for all events was set to `False`.
 
 ## [2.4.1] - 2018-06-01
 ### Updated
