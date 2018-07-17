@@ -43,8 +43,11 @@ class Event(JSONMixin, object):
             event will require a departure date.
         needs_duration (bool): indicates that ticket purchases for this
             event will require a duration.
-        needs_performance (bool): indicates that ticket purchases for this
-            event will require a performance id.
+        needs_performance (bool): indicates that you should ask your customer
+            what date/time they want to attend this event on.
+            See :ref:`Events that don't need performance selection
+            <events_that_dont_need_performance_selection>` for more
+            information.
         upsell_list (list): list of event id's.
         cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             pricing summary from cached availability. Only present when
@@ -303,9 +306,9 @@ class Event(JSONMixin, object):
             'has_performances': has_performances,
             'show_performance_time': data.get('show_perf_time', False),
             'is_seated': data.get('is_seated', False),
-            'needs_departure_date': data.get('needs_departure_date', False),
-            'needs_duration': data.get('needs_duration', False),
-            'needs_performance': data.get('needs_performance', False),
+            'needs_departure_date': data.get('need_departure_date', False),
+            'needs_duration': data.get('need_duration', False),
+            'needs_performance': data.get('need_performance', False),
 
             'upsell_list': data.get('event_upsell_list', {}).get('event_id', []),
 

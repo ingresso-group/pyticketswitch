@@ -137,7 +137,10 @@ class PerformanceMeta(PaginationMixin, CurrencyMeta, object):
     Attributes:
         auto_select (bool): indicates that the performance list will contain
             only one performance and this performance should be automatically
-            selected for the customer.
+            selected for the customer. See :ref:`Events that don't need
+            performance selection
+            <events_that_dont_need_performance_selection>` for more
+            information.
         has_names: (bool): indicates that the related performances have names
     """
 

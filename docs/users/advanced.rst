@@ -1148,8 +1148,8 @@ that will be set with each request performed by `make_request` method::
     >>> client.make_request('test.v1', {})
 
 This is useful when using a common id for tracking requests across the 
-whole infrastructure, and if set might prove very helpful
-when debugging failing queries.
+whole infrastructure, and if set might prove helpful when debugging failing
+queries.
 
 Additionally it's also possible to set a tracking id not only
 when instantiating the API Client but also using separate
@@ -1199,5 +1199,60 @@ you can determine how you should be capturing these details::
 
 You can then use the integration data to initialise a card details capture or
 similar front end integration.
+
+Events that don't need performance selection
+============================================
+
+.. _events_that_dont_need_performance_selection:
+
+Some events available via the API don't require the customer to specify a
+date/time on which they want to attend. For example a t-shirt might be
+represented as an event on the API, but it doesn't need a performance, neither
+does a season pass, nor a voucher.
+
+This is indicated by the :attr:`Event.needs_performance
+<pyticketswitch.event.Event.needs_performance>` flag::
+
+    >>> from pyticketswitch import Client
+    >>> client = Client('demo', 'demopass')
+    >>> event, meta = client.get_event('7AA')
+    >>> event.needs_performance
+    True
+    >>> event, meta = client.get_event('6KS')
+    >>> event.needs_performance
+    False
+    >>> 
+
+While the customer may not need to provide you with any additional
+information, you still need to provide a valid performance id to a number of
+calls such as :meth:`Client.get_availability
+<pyticketswitch.client.Client.get_availability>`,
+:meth:`Client.get_send_methods
+<pyticketswitch.client.Client.get_send_methods>`, or
+:meth:`Client.make_reservation
+<pyticketswitch.client.Client.make_reservation>`.
+
+You should still fetch this in the normal way via
+:meth:`Client.list_performances
+<pyticketswitch.client.Client.list_performances>`, however only one
+:class:`Performance <pyticketswitch.performance.Performance>` will be
+returned. Additionally :attr:`PerformanceMeta.auto_select
+<pyticketswitch.performance.PerformanceMeta.auto_select>` should be set to
+``True``, indicating that this performance should be automatically selected
+for the customer::
+
+    >>> from pyticketswitch import Client
+    >>> client = Client('demo', 'demopass')
+    >>> perfs, meta = client.list_performances('6KS')
+    >>> perfs
+    [<Performance 6KS-E3L>]
+    >>> meta.auto_select
+    True
+    >>> 
+
+.. warning:: Auto-generated performances change every day, you should be
+             calling :meth:`Client.list_performances
+             <pyticketswitch.client.Client.list_performances>` at least once a
+             day in order to ensure you have the correct performance ID.
 
 .. _`stripe`: https://stripe.com/gb

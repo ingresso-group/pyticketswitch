@@ -118,6 +118,12 @@ def when_get_events(context, event_ids):
     context.events, _ = context.client.get_events(event_ids)
 
 
+@when(u'I fetch event "{event_id}"')
+@vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
+def when_get_event(context, event_id):
+    assert event_id
+    context.event, _ = context.client.get_event(event_id)
+
 @when(u'we attempt to fetch events with the ID\'s "{event_ids}" requesting availability')
 @vcr.use_cassette('fixtures/cassettes/get-events-single.yaml', record_mode='new_episodes')
 def when_get_events_with_availability(context, event_ids):
@@ -424,3 +430,13 @@ def then_the_upsells_do_not_contain_event(context, event_ids):
 
     upsell_event_ids = [event.id for event in context.event.upsell_events]
     assert set(upsell_event_ids).isdisjoint(set(event_ids))
+
+
+@then(u'the event needs a performance to be selected')
+def then_the_event_needs_a_performance_to_be_selected(context):
+    assert context.event.needs_performance
+
+
+@then(u'the event does not need a performance to be selected')
+def then_the_event_does_not_need_a_performance_to_be_selected(context):
+    assert context.event.needs_performance

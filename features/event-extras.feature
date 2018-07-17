@@ -73,8 +73,8 @@ Feature: add additional information to request
                 "name": "video",
                 "url": "https://www.youtube.com/embed/G1JpEHGizk4?rel=0",
                 "secure": true,
-                "width": 420,
-                "height": 315
+                "width": 400,
+                "height": 300
             }
         }
         """
