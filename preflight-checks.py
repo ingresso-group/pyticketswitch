@@ -34,5 +34,3 @@ if __name__ == '__main__':
         print("CHANGELOG.md: {}".format(
             pyticketswitch.__version__
         ))
-
-

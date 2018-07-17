@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [2.4.2] - 2018-07-17
 ### Fixed
 - a bug where `needs_performance` for all events was set to `False`.
 
@@ -352,7 +354,9 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.0...HEAD
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.2...HEAD
+[2.4.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.1...2.4.2
+[2.4.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.3.2...2.4.0
 [2.3.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.3.0...2.3.1
