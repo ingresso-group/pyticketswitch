@@ -1148,8 +1148,8 @@ that will be set with each request performed by `make_request` method::
     >>> client.make_request('test.v1', {})
 
 This is useful when using a common id for tracking requests across the 
-whole infrastructure, and if set might prove very helpful
-when debugging failing queries.
+whole infrastructure, and if set might prove helpful when debugging failing
+queries.
 
 Additionally it's also possible to set a tracking id not only
 when instantiating the API Client but also using separate
@@ -1226,14 +1226,17 @@ This is indicated by the :attr:`Event.needs_performance
 While the customer may not need to provide you with any additional
 information, you still need to provide a valid performance id to a number of
 calls such as :meth:`Client.get_availability
-<pyticketswitch.Client.get_availability>`, :meth:`Client.get_send_methods
-<pyticketswitch.Client.get_send_methods>`, or :meth:`Client.make_reservation
-<pyticketswitch.Client.make_reservation>`.
+<pyticketswitch.client.Client.get_availability>`,
+:meth:`Client.get_send_methods
+<pyticketswitch.client.Client.get_send_methods>`, or
+:meth:`Client.make_reservation
+<pyticketswitch.client.Client.make_reservation>`.
 
 You should still fetch this in the normal way via
-:meth:`Client.list_performances <pyticketswitch.Client.list_performances>`,
-however only one :class:`Performance <pyticketswitch.performance.Performance>`
-will be returned. Additionally :attr:`PerformanceMeta.auto_select
+:meth:`Client.list_performances
+<pyticketswitch.client.Client.list_performances>`, however only one
+:class:`Performance <pyticketswitch.performance.Performance>` will be
+returned. Additionally :attr:`PerformanceMeta.auto_select
 <pyticketswitch.performance.PerformanceMeta.auto_select>` should be set to
 ``True``, indicating that this performance should be automatically selected
 for the customer::
@@ -1249,7 +1252,7 @@ for the customer::
 
 .. warning:: Auto-generated performances change every day, you should be
              calling :meth:`Client.list_performances
-             <pyticketswitch.Client.list_performances>` at least once a day in
-             order to ensure you have the correct performance ID.
+             <pyticketswitch.client.Client.list_performances>` at least once a
+             day in order to ensure you have the correct performance ID.
 
 .. _`stripe`: https://stripe.com/gb
