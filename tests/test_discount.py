@@ -19,6 +19,7 @@ class TestDiscount:
         data = {
             'discount_code': 'ADULT',
             'discount_desc': 'Adult standard',
+            'discount_disallowed_seat_nos': [0, 2, 3, 4],
             'price_band_code': 'A/pool',
             'sale_seatprice': 160,
             'sale_surcharge': 5.5,
@@ -36,6 +37,7 @@ class TestDiscount:
 
         assert discount.code == 'ADULT'
         assert discount.description == 'Adult standard'
+        assert discount.disallowed_seat_nos == [0, 2, 3, 4]
         assert discount.price_band_code == 'A/pool'
         assert discount.seatprice == 160.0
         assert discount.surcharge == 5.5

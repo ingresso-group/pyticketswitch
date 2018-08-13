@@ -8,6 +8,8 @@ class Discount(SeatPricingMixin, JSONMixin, object):
     Attributes:
         code (str): the identifier for the discount.
         description (str): a human readable description for the discount.
+        disallowed_seat_nos (list): a list of seat numbers, that this discount
+            code cannot be specified for.
         price_band_code (str): identifier for the related price band.
         is_offer (bool): indicates that the discount is an offer.
         availability (int): the number tickets available with this discount.
@@ -21,13 +23,14 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             predicted commission for the partner.
     """
 
-    def __init__(self, code, description=None, price_band_code=None,
-                 availability=None, is_offer=False, percentage_saving=0,
-                 absolute_saving=0, gross_commission=None, user_commission=None,
-                 *args, **kwargs):
+    def __init__(self, code, description=None, disallowed_seat_nos=None,
+                 price_band_code=None, availability=None, is_offer=False,
+                 percentage_saving=0, absolute_saving=0, gross_commission=None,
+                 user_commission=None, *args, **kwargs):
         super(Discount, self).__init__(*args, **kwargs)
         self.code = code
         self.description = description
+        self.disallowed_seat_nos = disallowed_seat_nos
         self.price_band_code = price_band_code
         self.is_offer = is_offer
         self.availability = availability
@@ -61,6 +64,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         kwargs = {
             'code': data.get('discount_code'),
             'description': data.get('discount_desc'),
+            'disallowed_seat_nos': data.get('discount_disallowed_seat_nos'),
             'price_band_code': data.get('price_band_code'),
             'is_offer': data.get('is_offer', False),
             'seatprice': data.get('sale_seatprice'),

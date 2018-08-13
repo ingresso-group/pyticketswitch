@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.5.0] - 2018-08-13
+### Added
+- Added the `disallowed_seat_nos` field to `Discount` which was missing.
+
 ## [2.4.2] - 2018-07-17
 ### Fixed
 - a bug where `needs_performance` for all events was set to `False`.
