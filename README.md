@@ -11,6 +11,7 @@ Pyticketswitch
 Python wrapper for the ticketswitch [f13 API](https://docs.ingresso.co.uk/).
 
 **Docs**: https://pyticketswitch.ingresso.co.uk
+
 **F13 API Documentation**: https://docs.ingresso.co.uk/
 
 Features
