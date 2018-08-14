@@ -3,7 +3,7 @@ python:
   - 2.7
   - 3.6
 install:
-  - pip install tox-travis
   - pip install -r requirements/test.txt
   - pip install codecov
-script: tox
+  - (cd .. && pip install -e pyticketswitch)
+script: make test
