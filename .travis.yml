@@ -5,4 +5,5 @@ python:
 install:
   - pip install -r requirements/test.txt
   - pip install codecov
+  - (cd .. && pip install -e pyticketswitch)
 script: make test

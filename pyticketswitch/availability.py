@@ -14,6 +14,8 @@ class AvailabilityMeta(CurrencyMeta):
             contiguous line.
         valid_quantities (list): list of valid number of tickets available for
             selection.
+        max_bundle_size (int): maximum bundle size for this event. If it is
+            `None` then there is no maximum size.
         currencies (dict): dictionary of
             :class:`Currency <pytickectswitch.currency.Currency>`) objects
             indexed on currency code.
