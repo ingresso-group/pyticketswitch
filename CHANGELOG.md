@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.4.3] - 2018-08-14
+### Added
+- added `max_bundle_size` to availability meta.
+
 ## [2.4.2] - 2018-07-17
 ### Fixed
 - a bug where `needs_performance` for all events was set to `False`.
