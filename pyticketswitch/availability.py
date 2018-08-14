@@ -14,6 +14,8 @@ class AvailabilityMeta(CurrencyMeta):
             contiguous line.
         valid_quantities (list): list of valid number of tickets available for
             selection.
+        max_bundle_size (int): maximum bundle size for this event. If it is
+            `None` then there is no maximum size.
         currencies (dict): dictionary of
             :class:`Currency <pytickectswitch.currency.Currency>`) objects
             indexed on currency code.
@@ -32,11 +34,12 @@ class AvailabilityMeta(CurrencyMeta):
 
     """
     def __init__(self, contiguous_seat_selection_only=True, currency=None,
-                 valid_quantities=None, backend_is_down=False,
+                 valid_quantities=None, max_bundle_size=None, backend_is_down=False,
                  backend_is_broken=False, backend_throttle_failed=False,
                  *args, **kwargs):
         self.contiguous_seat_selection_only = contiguous_seat_selection_only
         self.currency = currency
+        self.max_bundle_size = max_bundle_size
         self.valid_quantities = valid_quantities
         self.backend_is_broken = backend_is_broken
         self.backend_is_down = backend_is_down
@@ -60,6 +63,7 @@ class AvailabilityMeta(CurrencyMeta):
         inst = super(AvailabilityMeta, cls).from_api_data(data)
 
         inst.valid_quantities = data.get('valid_quantities')
+        inst.max_bundle_size = data.get('max_bundle_size')
         inst.contiguous_seat_selection_only = data.get('contiguous_seat_selection_only', True)
         inst.backend_is_broken = data.get('backend_is_broken')
         inst.backend_is_down = data.get('backend_is_down')

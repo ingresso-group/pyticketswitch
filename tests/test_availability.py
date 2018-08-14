@@ -111,6 +111,7 @@ def data_meta():
                 "currency_code": "gbp",
             },
         },
+        "max_bundle_size": 1,
         "valid_quantities": [
             1, 4, 6, 7
         ],
@@ -122,11 +123,11 @@ def data_meta():
 class TestAvailabilityMeta:
 
     def test_from_api_data(self, data_meta):
-
         meta = AvailabilityMeta.from_api_data(data_meta)
 
         assert meta.contiguous_seat_selection_only is True
         assert meta.default_currency_code == 'gbp'
+        assert meta.max_bundle_size == 1
         assert meta.valid_quantities == [1, 4, 6, 7]
         assert meta.backend_is_broken is False
         assert meta.backend_is_down is False
