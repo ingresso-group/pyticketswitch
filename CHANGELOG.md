@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [2.5.0] - 2018-08-14
+### Added
+- Added the `disallowed_seat_nos` field to `Discount` which was missing.
+
 ## [2.4.3] - 2018-08-14
 ### Added
 - added `max_bundle_size` to availability meta.
@@ -358,7 +363,8 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.2...HEAD
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.0...HEAD
+[2.5.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.2...2.5.0
 [2.4.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.1...2.4.2
 [2.4.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.3.2...2.4.0
