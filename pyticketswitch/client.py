@@ -289,7 +289,7 @@ class Client(object):
 
         return contents
 
-    def test(self):
+    def test(self, **kwargs):
         """Test the connection
 
         Wraps `/f13/test.v1`_
@@ -300,13 +300,16 @@ class Client(object):
         This call is not required, but may be useful for validating auth
         credentials, or checking on the health of the ticketswitch API.
 
+        Args:
+            kwargs: miscellaneous parameters passed directly to the API.
+
         Returns:
             :obj:`pyticketswitch.user.User`: details about the user calling the API
 
         .. _`/f13/test.v1`: http://docs.ingresso.co.uk/#test
 
         """
-        response = self.make_request('test.v1', {})
+        response = self.make_request('test.v1', kwargs)
 
         user = User.from_api_data(response)
 

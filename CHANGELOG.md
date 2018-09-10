@@ -5,7 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-
+### Added
+- the `Client.test()` function will now take additional kwargs that are passed
+  directly to the API. This is useful for debugging purposes.
 
 ## [2.5.0] - 2018-08-14
 ### Added

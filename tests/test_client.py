@@ -1570,6 +1570,22 @@ class TestClient:
         assert isinstance(user, User)
         assert user.id == 'foobar'
 
+    def test_test_with_kwargs(self, client, monkeypatch):
+        response = {'user_id': 'foobar'}
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        user = client.test(foo='bar', lol='beans')
+
+        mock_make_request.assert_called_with('test.v1', {
+            'foo': 'bar',
+            'lol': 'beans'
+        })
+
+        assert isinstance(user, User)
+        assert user.id == 'foobar'
+
     def test_release_reservation(self, client, monkeypatch):
         response = {'released_ok': True}
 
