@@ -5,7 +5,6 @@ Feature: get the transaction/reservation status
     I want to be able retrieve the state of the transaction
 
     Scenario: get a completed transaction
-        Given an API client with valid credentials
-        And I have a completed transaction
+        Given I have a completed transaction
         When I fetch the status of the transaction
         Then the status is "purchased"
