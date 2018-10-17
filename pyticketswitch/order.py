@@ -261,11 +261,15 @@ class Order(JSONMixin, object):
             kwargs.update(send_method=send_method)
 
         raw_gross_commission = data.get('predicted_gross_commission')
+        if raw_gross_commission is None:
+            raw_gross_commission = data.get('gross_commission')
         if raw_gross_commission:
             gross_commission = Commission.from_api_data(raw_gross_commission)
             kwargs.update(gross_commission=gross_commission)
 
         raw_user_commission = data.get('predicted_user_commission')
+        if raw_user_commission is None:
+            raw_user_commission = data.get('user_commission')
         if raw_user_commission:
             user_commission = Commission.from_api_data(raw_user_commission)
             kwargs.update(user_commission=user_commission)
