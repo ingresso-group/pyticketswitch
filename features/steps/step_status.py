@@ -4,7 +4,7 @@ from hamcrest import assert_that, equal_to
 
 @given('I have a completed transaction')
 def given_i_have_a_completed_transaction(context):
-    context.execute_steps("""
+    context.execute_steps(u"""
         Given my account is set up to allow a user to buy on credit
         And an event with availability
         And I have reserved tickets for my customer for this event
