@@ -1,11 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [2.5.1] - 2018-10-18
+### Fixed
+- Now the order object will contain the commission at purchase time.
 
 ## [2.5.0] - 2018-08-14
 ### Added
