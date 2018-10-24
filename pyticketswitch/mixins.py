@@ -104,10 +104,11 @@ class PaginationMixin(object):
     """
 
     def __init__(self, page_length=None, page_number=None, pages_remaining=None,
-                 total_results=None, *args, **kwargs):
+                 total_results=None, results_remaining=None, *args, **kwargs):
         self.page_length = page_length
         self.page_number = page_number
         self.pages_remaining = pages_remaining
+        self.results_remaining = results_remaining
         self.total_results = total_results
         super(PaginationMixin, self).__init__(*args, **kwargs)
 
