@@ -14,8 +14,8 @@ class PaymentMethod(object):
         Returns:
             dict: dictionary of keyword parameters to pass to the API call.
         """
-        raise NotImplemented('as_api_parameters not implemented on ' +
-                             self.__class__)
+        raise NotImplementedError(
+            'as_api_parameters not implemented on ' + self.__class__)
 
 
 class CardDetails(object):

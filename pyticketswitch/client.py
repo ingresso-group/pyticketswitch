@@ -1447,7 +1447,7 @@ class Client(object):
         return status, meta
 
     def make_purchase(self, transaction_uuid, customer, payment_method=None,
-                      send_confirmation_email=True, **kwargs):
+                      send_confirmation_email=True, agent_reference=None, **kwargs):
         """Purchase tickets for an existing reservation.
 
         Wraps `/f13/purchase.v1`_
@@ -1466,7 +1466,9 @@ class Client(object):
                 confirmation email. If you would prefer to send your own
                 confirmation email then you can set this parameter to
                 :obj:`False`.
-            **kwargs: arbitary keyword arguments to send with the request.
+            agent_reference (str): an optional custom transaction reference to be
+                stored in the Ingresso platform
+            **kwargs: arbitrary keyword arguments to send with the request.
 
         Returns:
             :class:`Status <pyticketswitch.status.Status>`,
@@ -1499,6 +1501,9 @@ class Client(object):
 
         if payment_method:
             params.update(payment_method.as_api_parameters())
+
+        if agent_reference:
+            params.update(agent_reference=agent_reference)
 
         params.update(kwargs)
 
