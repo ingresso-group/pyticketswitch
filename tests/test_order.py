@@ -386,3 +386,30 @@ class TestOrder:
 
         assert order.gross_commission is None
         assert order.user_commission is None
+
+    def test_from_api_data_with_actual_commission(self):
+        data = {
+            "gross_commission": {
+                "amount_excluding_vat": 18.75,
+                "amount_including_vat": 22.5,
+                "commission_currency_code": "gbp"
+            },
+            "item_number": 1,
+            "user_commission": {
+                "amount_excluding_vat": 12.5,
+                "amount_including_vat": 15,
+                "commission_currency_code": "gbp"
+            }
+        }
+        order = Order.from_api_data(data)
+
+        assert type(order.user_commission) is Commission
+        assert order.user_commission.including_vat == 15
+        assert order.user_commission.excluding_vat == 12.5
+        assert order.user_commission.currency_code == "gbp"
+
+        assert type(order.gross_commission) is Commission
+        assert order.gross_commission.including_vat == 22.5
+        assert order.gross_commission.excluding_vat == 18.75
+        assert order.gross_commission.currency_code == "gbp"
+

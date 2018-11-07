@@ -2046,3 +2046,60 @@ class TestClient:
         assert 'amount' in result
         assert type(result['amount']) == float
         assert result['amount'] == 1.0
+
+    def test_make_purchase_with_agent_reference(self, client, monkeypatch):
+        # state
+        response = {
+            "callout": {
+                "bundle_source_code": "ext_test0",
+            },
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        customer = Customer('fred', 'flintstone', ['301 cobblestone way'], 'us')
+
+        redirection_details = RedirectionDetails(
+            token='abc123',
+            url='https://myticketingco.biz/confirmation/abc123',
+            user_agent='Mozilla/5.0',
+            accept='text/html,text/plain,application/json',
+            remote_site='myticketingco.biz',
+        )
+
+        client.make_purchase(
+            'abc123',
+            customer,
+            payment_method=redirection_details,
+            agent_reference='myticketingco_ff01'
+        )
+
+        expected_params = {
+            'transaction_uuid': 'abc123',
+            'first_name': 'fred',
+            'last_name': 'flintstone',
+            'address_line_one': '301 cobblestone way',
+            'country_code': 'us',
+            'return_token': 'abc123',
+            'return_url': 'https://myticketingco.biz/confirmation/abc123',
+            'client_http_user_agent': 'Mozilla/5.0',
+            'client_http_accept': 'text/html,text/plain,application/json',
+            'remote_site': 'myticketingco.biz',
+            'supplier_can_use_customer_data': False,
+            'user_can_use_customer_data': False,
+            'world_can_use_customer_data': False,
+            'send_confirmation_email': True,
+            'agent_reference': 'myticketingco_ff01',
+        }
+
+        mock_make_request.assert_called_with(
+            'purchase.v1',
+            expected_params,
+            method=POST
+        )

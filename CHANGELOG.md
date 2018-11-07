@@ -1,11 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.6.0] - 2018-11-02
+### Added
+- agent_reference parameter to make_purchase
+### Updated
+- library dependencies, including security fixes
+
+## [2.5.1] - 2018-10-18
+### Fixed
+- Now the order object will contain the commission at purchase time.
 
 ## [2.5.0] - 2018-08-14
 ### Added
@@ -363,8 +372,10 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.0...HEAD
-[2.5.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.2...2.5.0
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.1...HEAD
+[2.5.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.0...2.5.1
+[2.5.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.3...2.5.0
+[2.4.3]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.2...2.4.3
 [2.4.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.1...2.4.2
 [2.4.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.3.2...2.4.0
