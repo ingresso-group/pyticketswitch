@@ -3,7 +3,7 @@ Feature: list performances
     As a developer
     I want to be able retrieve a performance information.
 
-    Scenario: event with a set of chronilogical performances
+    Scenario: event with a set of chronological performances
         Given an API client with valid credentials
         When I fetch performances for the event "6IF"
         Then I get a list of performances

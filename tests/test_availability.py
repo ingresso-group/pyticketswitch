@@ -389,7 +389,7 @@ class TestAvailabilityDetails:
                             'price_band_code': 'PLB',
                             'price_band_desc': 'Plebians',
                             'avail_detail': [{
-                                'valid_quantity_bitmask': 14,
+                                'valid_quantities': [2, 3, 4],
                             }],
                         },
                     ]
@@ -399,7 +399,7 @@ class TestAvailabilityDetails:
         details = AvailabilityDetails.from_api_data(data)
         assert len(details) == 1
 
-        assert details[0].valid_quanities == [2, 3, 4]
+        assert details[0].valid_quantities == [2, 3, 4]
 
     def test_is_available_with_valid_year(self, avail_details):
         assert avail_details.is_available(2016) is True
