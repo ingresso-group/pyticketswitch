@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.6.0] - 2018-11-02
+### Added
+- agent_reference parameter to make_purchase
+### Updated
+- library dependencies, including security fixes
 
 ## [2.5.1] - 2018-10-18
 ### Fixed

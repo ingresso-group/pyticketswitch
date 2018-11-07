@@ -136,7 +136,7 @@ class Status(JSONMixin, object):
 
         external_sale_page_raw = data.get('external_sale_page_raw')
         if external_sale_page_raw:
-            raise NotImplemented("don't know what this looks like yet")
+            raise NotImplementedError("don't know what this looks like yet")
 
         reserve_user_data = data.get('reserve_user')
         if reserve_user_data:
