@@ -148,6 +148,7 @@ class TestPaginationMixin:
             page_length=50,
             page_number=1,
             pages_remaining=15,
+            results_remaining=700,
             total_results=750,
         )
 
@@ -158,6 +159,7 @@ class TestPaginationMixin:
             page_length=50,
             page_number=1,
             pages_remaining=0,
+            results_remaining=0,
             total_results=30,
         )
 
@@ -168,6 +170,7 @@ class TestPaginationMixin:
             page_length=50,
             page_number=15,
             pages_remaining=0,
+            results_remaining=0,
             total_results=750,
         )
 
@@ -178,6 +181,7 @@ class TestPaginationMixin:
             page_length=None,
             page_number=None,
             pages_remaining=None,
+            results_remaining=None,
             total_results=None,
         )
 
