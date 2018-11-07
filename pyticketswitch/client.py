@@ -37,7 +37,7 @@ class Client(object):
         password (str): Password for the user used to connect to the api.
         url (:obj:`str`, optional): Root url for the API.
             Defaults to https://api.ticketswitch.com.
-        sub_user (:obj:`str`, optional): the sub user is used to idicate a
+        sub_user (:obj:`str`, optional): the sub user is used to indicate a
             specific agent of the holder of the main users account requests
             is being made for. For example a travel agent might hold the main
             account but an agent in the london office might specify `london` as
@@ -366,8 +366,6 @@ class Client(object):
                 This returns another cost range object that excludes
                 availability with only one consecutive seat available.
                 Defaults to :obj:`False`.
-            cost_range_details (bool): Cost range information for
-                each available price band.  Defaults to :obj:`False`.
             cost_range_details (bool): Cost range information for
                 each available price band.  Defaults to :obj:`False`.
             source_info (bool): includes information on the source
