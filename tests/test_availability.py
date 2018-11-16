@@ -258,6 +258,29 @@ class TestAvailabilityDetails:
 
         assert details[0].currency == 'gbp'
 
+    def test_from_api_data_adds_cached_number_available(self):
+        data = {
+            'ticket_type': [
+                {
+                    'ticket_type_code': 'FOO',
+                    'ticket_type_desc': 'Foo',
+                    'price_band': [
+                        {
+                            'price_band_code': 'PLB',
+                            'price_band_desc': 'Plebians',
+                            'avail_detail': [{
+                                'cached_number_available': 4,
+                            }],
+                        },
+                    ]
+                },
+            ],
+        }
+        details = AvailabilityDetails.from_api_data(data)
+        assert len(details) == 1
+
+        assert details[0].cached_number_available == 4
+
     def test_from_api_data_adds_first_last_dates(self):
         data = {
             'ticket_type': [
@@ -389,7 +412,7 @@ class TestAvailabilityDetails:
                             'price_band_code': 'PLB',
                             'price_band_desc': 'Plebians',
                             'avail_detail': [{
-                                'valid_quantity_bitmask': 14,
+                                'valid_quantities': [2, 3, 4],
                             }],
                         },
                     ]
@@ -399,7 +422,7 @@ class TestAvailabilityDetails:
         details = AvailabilityDetails.from_api_data(data)
         assert len(details) == 1
 
-        assert details[0].valid_quanities == [2, 3, 4]
+        assert details[0].valid_quantities == [2, 3, 4]
 
     def test_is_available_with_valid_year(self, avail_details):
         assert avail_details.is_available(2016) is True

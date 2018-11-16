@@ -6,7 +6,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [2.6.0] - 2018-11-02
+## [2.7.0] - 2018-11-08
+### Added
+- `cached_number_available` to availability details
+### Fixed
+- `valid_quantities` being typo `valid_quanities` in availability details
+### Updated
+- `valid_quantities` to use the `valid_quantities` rather than the
+  `quantity_options` bitmask which is no longer output by default.
+
+## [2.6.0] - 2018-11-07
 ### Added
 - `agent_reference` parameter to `make_purchase`
 - `results_remaining` as parameter to `PaginationMixin.__init__`
@@ -373,7 +382,8 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.6.0...HEAD
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.0...HEAD
+[2.7.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.6.0...2.7.0
 [2.6.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.1...2.6.0
 [2.5.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.0...2.5.1
 [2.5.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.3...2.5.0

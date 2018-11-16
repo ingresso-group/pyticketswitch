@@ -1,5 +1,4 @@
 import datetime
-from pyticketswitch.utils import bitmask_to_numbered_list
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.currency import CurrencyMeta
 from pyticketswitch.misc import MONTH_NUMBERS
@@ -93,6 +92,8 @@ class AvailabilityDetails(JSONMixin, object):
             combination of ticket type and price band is available from.
         valid_quantities (list): list of valid number of tickets available for
             selection.
+        cached_number_available (int): the maximum number of consecutive
+            tickets available.
 
     """
 
@@ -102,7 +103,8 @@ class AvailabilityDetails(JSONMixin, object):
                  full_surcharge=None, currency=None, first_date=None,
                  percentage_saving=None, absolute_saving=None,
                  last_date=None, calendar_masks=None,
-                 weekday_mask=None, valid_quanities=None):
+                 weekday_mask=None, valid_quantities=None,
+                 cached_number_available=None):
 
         self.ticket_type = ticket_type
         self.ticket_type_description = ticket_type_description
@@ -119,7 +121,8 @@ class AvailabilityDetails(JSONMixin, object):
         self.last_date = last_date
         self._calendar_masks = calendar_masks
         self._weekday_mask = weekday_mask
-        self.valid_quanities = valid_quanities
+        self.valid_quantities = valid_quantities
+        self.cached_number_available = cached_number_available
 
     @classmethod
     def from_api_data(cls, data):
@@ -194,10 +197,12 @@ class AvailabilityDetails(JSONMixin, object):
                     if 'available_weekdays_bitmask' in raw_details:
                         kwargs['weekday_mask'] = raw_details['available_weekdays_bitmask']
 
-                    if 'valid_quantity_bitmask' in raw_details:
-                        kwargs['valid_quanities'] = bitmask_to_numbered_list(
-                            raw_details['valid_quantity_bitmask']
-                        )
+                    if 'valid_quantities' in raw_details:
+                        kwargs['valid_quantities'] = raw_details['valid_quantities']
+
+                    kwargs['cached_number_available'] = (
+                        raw_details.get('cached_number_available'))
+
                     avail_details = AvailabilityDetails(**kwargs)
 
                     if avail_details._weekday_mask:
