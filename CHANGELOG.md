@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [2.7.1] - 2018-11-09
 ### Added
-- `get_reserve` method to the client to get a cached reserve reponse
+- `get_reservation` method to the client to get a cached reserve reponse
 
 ## [2.7.0] - 2018-11-08
 ### Added
