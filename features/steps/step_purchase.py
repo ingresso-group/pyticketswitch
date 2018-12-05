@@ -61,6 +61,7 @@ def reserve_tickets_for_this_event(context):
 
     assert reservation
     assert reservation.trolley.transaction_uuid
+    context.reservation = reservation
     context.transaction_uuid = reservation.trolley.transaction_uuid
 
 
