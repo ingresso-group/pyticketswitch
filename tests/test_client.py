@@ -1517,7 +1517,7 @@ class TestClient:
         assert exception.reservation.trolley.transaction_uuid == 'DEF456'
         assert exception.meta.default_currency_code == 'gbp'
 
-    def test_get_reservation_with_unavailable_order_but_successfull_reservation(self, client, monkeypatch):
+    def test_get_reservation_with_unavailable_order_but_successful_reservation(self, client, monkeypatch):
         """
         This checks that when we raise an exception on unavailable order, but
         other parts of the trolley are successfully reserved, that we don't
