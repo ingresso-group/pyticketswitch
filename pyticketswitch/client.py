@@ -1392,6 +1392,59 @@ class Client(object):
 
         return response.get('released_ok', False)
 
+    def get_reservation(self, transaction_uuid,
+                        raise_on_unavailable_order=False, **kwargs):
+        """
+        This method retrieves a previously made reservation response, verbatim.
+        It is faster than the `get_status` method as it is not getting the
+        status of the reservation, it is simply retrieving the previously sent
+        reservation response, verbatim. Reservation responses are held for 24
+        hours, this exceeds the length of time that reservations are valid for.
+        Do not interpret this response as meaning that a reservation is still
+        being held as it is simply a copy of the original reservation response.
+
+        Wraps `/f13/reserve_page_archive.v1`_
+
+        Args:
+            transaction_uuid (string): transaction UUID from a previous
+                reservation call.
+            raise_on_unavailable_order (bool): When set to ``True`` this method
+                will raise an exception when the API was not able to add an
+                order to the trolley as it was unavailable.
+            **kwargs: arbitary additional raw keyword arguments to add the
+                parameters.
+
+        Returns:
+            :class:`Reservation <pyticketswitch.reservation.Reservation>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            Information about the reservation and meta data asscociated with
+            the reservation.
+
+        Raises:
+            InvalidParametersError: when there is an issue with the provided
+                parameters.
+            OrderUnavailableError: when ``raise_on_unavailable_order`` is set
+                to ``True`` and the requested addition to a trolley was
+                unavailable.
+
+        .. _`/f13/reserve_page_archive.v1`: http://docs.ingresso.co.uk/#reserve_page_archive
+
+        """
+        params = {"transaction_uuid": transaction_uuid}
+        response = self.make_request('reserve_page_archive.v1', params,
+                                     method=GET)
+
+        reservation = Reservation.from_api_data(response)
+        meta = CurrencyMeta.from_api_data(response)
+
+        if raise_on_unavailable_order:
+            if reservation and reservation.input_contained_unavailable_order:
+                raise exceptions.OrderUnavailableError(
+                    "inputs contained unavailable order",
+                    reservation=reservation,
+                    meta=meta)
+
+        return reservation, meta
+
     def get_status(self, transaction_uuid=None, transaction_id=None,
                    customer=False, external_sale_page=False, **kwargs):
         """Get the status of reservation, purchase or transaction.
