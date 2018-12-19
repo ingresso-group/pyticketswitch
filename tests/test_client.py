@@ -1860,6 +1860,43 @@ class TestClient:
         assert 'gbp' in meta.currencies
         assert meta.default_currency_code == 'gbp'
 
+    def test_get_purchase(self, client, monkeypatch):
+        response = {
+            'transaction_status': 'purchased',
+            'trolley_contents': {
+                'transaction_uuid': 'DEF456'
+            },
+            'currency_code': 'gbp',
+            'currency_details': {
+                'gbp': {
+                    'currency_code': 'gbp',
+                }
+            }
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        status, callout, meta = client.get_purchase('abc123')
+
+        expected_params = {
+            'transaction_uuid': 'abc123',
+        }
+
+        mock_make_request.assert_called_with(
+            'purchase_page_archive.v1',
+            expected_params,
+            method=GET
+        )
+
+        assert callout is None
+        assert isinstance(status, Status)
+        assert status.trolley.transaction_uuid == 'DEF456'
+        assert status.status == 'purchased'
+
+        assert 'gbp' in meta.currencies
+        assert meta.default_currency_code == 'gbp'
+
     def test_next_callout(self, client, monkeypatch):
         response = {
             'transaction_status': 'purchased',

@@ -1356,17 +1356,8 @@ class Client(object):
 
         response = self.make_request('reserve.v1', params, method=POST)
 
-        reservation = Reservation.from_api_data(response)
-        meta = CurrencyMeta.from_api_data(response)
-
-        if raise_on_unavailable_order:
-            if reservation and reservation.input_contained_unavailable_order:
-                raise exceptions.OrderUnavailableError(
-                    "inputs contained unavailable order",
-                    reservation=reservation,
-                    meta=meta)
-
-        return reservation, meta
+        return self.process_reservation_response(response,
+                                                 raise_on_unavailable_order)
 
     def release_reservation(self, transaction_uuid, **kwargs):
         """Release an existing reservation.
@@ -1412,7 +1403,7 @@ class Client(object):
                 will raise an exception when the API was not able to add an
                 order to the trolley as it was unavailable.
             **kwargs: arbitary additional raw keyword arguments to add the
-                parameters.
+                parameters. These will be ignored.
 
         Returns:
             :class:`Reservation <pyticketswitch.reservation.Reservation>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
@@ -1433,17 +1424,8 @@ class Client(object):
         response = self.make_request('reserve_page_archive.v1', params,
                                      method=GET)
 
-        reservation = Reservation.from_api_data(response)
-        meta = CurrencyMeta.from_api_data(response)
-
-        if raise_on_unavailable_order:
-            if reservation and reservation.input_contained_unavailable_order:
-                raise exceptions.OrderUnavailableError(
-                    "inputs contained unavailable order",
-                    reservation=reservation,
-                    meta=meta)
-
-        return reservation, meta
+        return self.process_reservation_response(response,
+                                                 raise_on_unavailable_order)
 
     def get_status(self, transaction_uuid=None, transaction_id=None,
                    customer=False, external_sale_page=False, **kwargs):
@@ -1560,18 +1542,48 @@ class Client(object):
 
         response = self.make_request('purchase.v1', params, method=POST)
 
-        callout_data = response.get('callout')
+        return self.process_purchase_response(response)
 
-        if callout_data:
-            status = None
-            callout = Callout.from_api_data(callout_data)
-        else:
-            callout = None
-            status = Status.from_api_data(response)
+    def get_purchase(self, transaction_uuid, **kwargs):
+        """
+        This method retrieves a previously made purchase response, verbatim.
+        It is faster than the `get_status` method as it is not getting the
+        status of the purchase, it is simply retrieving the previously sent
+        purchase response, verbatim. Purchase responses are held for one year.
+        Do not interpret this response as meaning that a purchase has not been
+        cancelled as it is simply a copy of the original purchase response.
 
-        meta = CurrencyMeta.from_api_data(response)
+        Wraps `/f13/purchase_page_archive.v1`_
 
-        return status, callout, meta
+        Args:
+            transaction_uuid (string): transaction UUID from a previous
+                purchase call.
+            **kwargs: arbitary additional raw keyword arguments to add the
+                parameters (these will be ignored).
+
+        Returns:
+            :class:`Status <pyticketswitch.status.Status>`,
+            :class:`Callout <pyticketswitch.callout.Callout>`: the current
+            status of the transaction and/or a potential callout to redirect
+            the customer to.
+
+            This method should only ever return either a status or a callout,
+            never both.
+
+            If this method generates a
+            :class:`Callout <pyticketswitch.callout.Callout>` then the customer
+            should be redirected to the specified third party payment provider.
+
+            See :ref:`Handling callouts <handling_callouts>` for more information.
+
+        .. _`/f13/purchase_page_archive.v1`: http://docs.ingresso.co.uk/#purchase_page_archive
+
+        """
+        params = {"transaction_uuid": transaction_uuid}
+        response = self.make_request('purchase_page_archive.v1', params,
+                                     method=GET)
+
+        return self.process_purchase_response(response)
 
     def next_callout(self, this_token, next_token, returned_data, **kwargs):
         """Gets the next callout in a callout chain.
@@ -1610,6 +1622,34 @@ class Client(object):
 
         response = self.make_request(endpoint, params, method=POST)
 
+        callout_data = response.get('callout')
+
+        if callout_data:
+            status = None
+            callout = Callout.from_api_data(callout_data)
+        else:
+            callout = None
+            status = Status.from_api_data(response)
+
+        meta = CurrencyMeta.from_api_data(response)
+
+        return status, callout, meta
+
+    def process_reservation_response(self, response,
+                                     raise_on_unavailable_order):
+        reservation = Reservation.from_api_data(response)
+        meta = CurrencyMeta.from_api_data(response)
+
+        if raise_on_unavailable_order:
+            if reservation and reservation.input_contained_unavailable_order:
+                raise exceptions.OrderUnavailableError(
+                    "inputs contained unavailable order",
+                    reservation=reservation,
+                    meta=meta)
+
+        return reservation, meta
+
+    def process_purchase_response(self, response):
         callout_data = response.get('callout')
 
         if callout_data:

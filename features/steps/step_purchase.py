@@ -110,6 +110,17 @@ def invalid_credit_card_details(context):
     )
 
 
+@given(u'I have already purchased tickets')
+def given_I_have_already_purchased_tickets(context):
+    context.execute_steps(u"""
+        Given my account is set up to allow a user to buy on credit
+        And an event with availability
+        And I have reserved tickets for my customer for this event
+        And my user has provided valid customer information
+        When I purchase the tickets
+        Then the purchase is succesful""")
+
+
 @when(u'I purchase the tickets')
 @vcr_post.use_cassette('fixtures/cassettes/purchase-purchase.yaml', record_mode='new_episodes')
 def i_purchase_the_tickets(context):
