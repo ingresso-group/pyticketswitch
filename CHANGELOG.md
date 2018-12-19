@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.7.2] - 2018-12-19
+### Added
+- `get_purchase` method to the client to get a cached purchase reponse
+
 ## [2.7.1] - 2018-11-09
 ### Added
 - `get_reservation` method to the client to get a cached reserve reponse
