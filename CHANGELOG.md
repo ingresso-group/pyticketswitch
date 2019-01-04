@@ -5,10 +5,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
-## [2.7.1] - 2018-01-03
+
+## [2.7.3] - 2018-01-03
 ### Added
 - Add `is_auto_quantity_add_on` to addon details
  
+## [2.7.2] - 2018-12-19
+### Added
+- `get_purchase` method to the client to get a cached purchase reponse
+
+## [2.7.1] - 2018-11-09
+### Added
+- `get_reservation` method to the client to get a cached reserve reponse
+
 ## [2.7.0] - 2018-11-08
 ### Added
 - `cached_number_available` to availability details
