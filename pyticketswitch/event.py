@@ -89,6 +89,10 @@ class Event(JSONMixin, object):
             **get_events** or **get_event**.
         raw (dict): the raw data used to generate the object.
         is_addon (bool): indicates that the event is an addon.
+        is_auto_quantity_add_on (bool): Indicates whether add on quantity will
+            be modified based on the number of ticket orders, if true number
+            of add ons will be equal to total number of tickets for all
+            parent events in the trolley.
         area_code (str): the internal code for the area. This is for internal
             use only.
         venue_code (str): the internal code for the venue. This is for internal
@@ -114,8 +118,9 @@ class Event(JSONMixin, object):
                  venue_info_html=None, media=None, reviews=None,
                  critic_review_percent=None, availability_details=None,
                  component_events=None, valid_quantities=None, fields=None,
-                 raw=None, is_add_on=None, area_code=None, venue_code=None,
-                 venue_is_enforced=None, lingo_code=None):
+                 raw=None, is_add_on=False, area_code=None,
+                 venue_code=None, venue_is_enforced=None,
+                 lingo_code=None, is_auto_quantity_add_on=False):
 
         self.id = id_
         self.status = status
@@ -176,6 +181,7 @@ class Event(JSONMixin, object):
         self.raw = raw
 
         self.is_add_on = is_add_on
+        self.is_auto_quantity_add_on = is_auto_quantity_add_on
 
         self.venue_code = venue_code
         self.area_code = area_code
@@ -333,7 +339,10 @@ class Event(JSONMixin, object):
             'component_events': component_events,
             'valid_quantities': data.get('valid_quantities'),
             'raw': data,
-            'is_add_on': data.get('is_add_on'),
+
+            'is_add_on': data.get('is_add_on', False),
+            'is_auto_quantity_add_on': data.get('is_auto_quantity_add_on', False),
+
             'venue_code': data.get('venue_code'),
             'area_code': data.get('area_code'),
             'lingo_code': lingo_code,

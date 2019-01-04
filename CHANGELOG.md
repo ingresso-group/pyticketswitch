@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.5.1] - 2018-01-03
+### Added
+- Add `is_auto_quantity_add_on` to addon details
 
 ## [2.5.0] - 2018-08-14
 ### Added
@@ -363,8 +366,18 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
+<<<<<<< HEAD
 [Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.0...HEAD
 [2.5.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.2...2.5.0
+=======
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.3...HEAD
+[2.7.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.0...2.7.3
+[2.7.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.6.0...2.7.0
+[2.6.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.1...2.6.0
+[2.5.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.0...2.5.1
+[2.5.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.3...2.5.0
+[2.4.3]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.2...2.4.3
+>>>>>>> 150dbc6... Add is_auto_quantity_add_on option to pyticketswitch (#90)
 [2.4.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.1...2.4.2
 [2.4.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.4.0...2.4.1
 [2.4.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.3.2...2.4.0

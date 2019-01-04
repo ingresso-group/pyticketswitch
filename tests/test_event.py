@@ -298,6 +298,16 @@ class TestEvent:
 
         assert event.is_add_on
 
+    def test_from_api_data_with_is_auto_quantity_add_on(self):
+        data = {
+            'event_id': 'ABC2',
+            'is_auto_quantity_add_on': True,
+        }
+
+        event = Event.from_api_data(data)
+
+        assert event.is_auto_quantity_add_on
+
     def test_from_events_by_id_api_data(self, data):
         raw_data = {
             'event': data,
