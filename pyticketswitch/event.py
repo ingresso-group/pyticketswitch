@@ -118,9 +118,9 @@ class Event(JSONMixin, object):
                  venue_info_html=None, media=None, reviews=None,
                  critic_review_percent=None, availability_details=None,
                  component_events=None, valid_quantities=None, fields=None,
-                 raw=None, is_add_on=False, is_auto_quantity_add_on=False,
-                 area_code=None, venue_code=None,
-                 venue_is_enforced=None, lingo_code=None):
+                 raw=None, is_add_on=False, area_code=None,
+                 venue_code=None, venue_is_enforced=None,
+                 lingo_code=None, is_auto_quantity_add_on=False):
 
         self.id = id_
         self.status = status
