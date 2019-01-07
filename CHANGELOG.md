@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [2.5.1] - 2018-01-03
+## [2.5.2] - 2018-01-03
 ### Added
 - Add `is_auto_quantity_add_on` to addon details
 
