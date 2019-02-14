@@ -932,7 +932,8 @@ class Client(object):
 
         return send_methods, meta
 
-    def get_discounts(self, performance_id, ticket_type_code, price_band_code, user_commission=False):
+    def get_discounts(self, performance_id, ticket_type_code, price_band_code,
+                      user_commission=False, **kwargs):
         """Fetch available discounts for a ticket_type/price band combination
 
         Wraps `/f13/discounts.v1`_
@@ -943,6 +944,8 @@ class Client(object):
             price_band_code (string): code for the target price band.
             user_commission (bool): if True then return the user_commission,
                 otherwise do not return the user_commission. Defaults to False.
+            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+                for more info.
 
         Returns:
            list, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
@@ -960,6 +963,7 @@ class Client(object):
             'price_band_code': price_band_code,
             'req_predicted_commission': user_commission,
         }
+        self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request('discounts.v1', params)
 
