@@ -6,10 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.7.4] - 2018-02-14
+### Added
+- Add `kwargs` to `get_discount` method of the client
+
 ## [2.7.3] - 2018-01-03
 ### Added
 - Add `is_auto_quantity_add_on` to addon details
- 
+
 ## [2.7.2] - 2018-12-19
 ### Added
 - `get_purchase` method to the client to get a cached purchase reponse
@@ -213,7 +217,7 @@ invalid parameters had be given.
   previous api wrapper, and replace it with some thing alot cleaner. If you
   still want to use the XML API and wrapper then pin your repos at 1.13.1 as
   this will be last version of this library that will support it. The XML API
-  is not likely to go away anytime soon and the wrapper should continue to 
+  is not likely to go away anytime soon and the wrapper should continue to
   work.
 - TL;DR everything was removed and rewritten.
 
@@ -394,8 +398,11 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.3...HEAD
-[2.7.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.0...2.7.3
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.4...HEAD
+[2.7.4]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.3...2.7.4
+[2.7.3]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.2...2.7.3
+[2.7.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.1...2.7.2
+[2.7.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.0...2.7.1
 [2.7.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.6.0...2.7.0
 [2.6.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.1...2.6.0
 [2.5.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.5.0...2.5.1
