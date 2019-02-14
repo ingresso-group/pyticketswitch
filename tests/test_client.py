@@ -1204,13 +1204,15 @@ class TestClient:
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        discounts, meta = client.get_discounts('ABC123-1', 'STALLS', 'A/pool')
+        discounts, meta = client.get_discounts('ABC123-1', 'STALLS', 'A/pool',
+                                               an_optional_kwarg='kwarg_value')
 
         mock_make_request.assert_called_with('discounts.v1', {
             'perf_id': 'ABC123-1',
             'ticket_type_code': 'STALLS',
             'price_band_code': 'A/pool',
             'req_predicted_commission': False,
+            'an_optional_kwarg': 'kwarg_value',
         })
 
         assert len(discounts) == 2
