@@ -1,6 +1,6 @@
 -r common.txt
 
-pytest
+pytest>=3.6
 pytest-cov
 tox
 vcrpy
