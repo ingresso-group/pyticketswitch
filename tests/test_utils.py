@@ -1,5 +1,6 @@
 import pytest
 import datetime
+import decimal
 from datetime import date
 from dateutil.tz import tzoffset
 from decimal import Decimal
@@ -298,6 +299,10 @@ class TestAddPrices:
     def test_one_argument(self):
         with pytest.raises(TypeError):
             utils.add_prices(1)
+
+    def test_invalid_string_price(self):
+        with pytest.raises(decimal.InvalidOperation):
+            utils.add_prices('not a price', 5)
 
 
 class TestFilterNoneFromParameters:

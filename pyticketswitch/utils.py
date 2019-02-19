@@ -185,6 +185,8 @@ def add_prices(*prices):
 
     Raises:
         TypeError: when fewer than 2 prices are provided
+        decimal.InvalidOperation: when the string representation
+            of an argument cannot be parsed as a decimal
     """
     if len(prices) < 2:
         raise TypeError(
