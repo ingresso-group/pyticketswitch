@@ -3,6 +3,7 @@ import warnings
 
 from datetime import date, datetime
 from dateutil import parser
+from decimal import Decimal
 from pyticketswitch.exceptions import InvalidParametersError
 
 
@@ -161,6 +162,46 @@ def get_price(data, key):
         price = float(price)
 
     return price
+
+
+def add_prices(*prices):
+    """Adds two or more prices together
+
+    Args:
+        *prices: Prices to add together. They, can be a
+            :py:class:`float`, :py:class:`int`,
+            :py:class:`Decimal <decimal.Decimal>` or :py:class:`str`
+
+    Returns:
+        :class:`Decimal <decimal.Decimal>`, str, float or int.
+        The sum of the prices, using the most specific of these types that
+        is used in the input arguments, where specificity is in the order
+
+        - :py:class:`Decimal <decimal.Decimal>`
+        - :py:class:`str`
+        - :py:class:`float`
+        - :py:class:`int`
+
+
+    Raises:
+        TypeError: when fewer than 2 prices are provided
+    """
+    if len(prices) < 2:
+        raise TypeError(
+            'add_prices expected at least 2 arguments, got {}'.format(len(prices))
+        )
+    converted = [
+        Decimal(str(price)) if price is not None else None
+        for price in prices
+    ]
+    combined = sum(converted)
+    if any(isinstance(price, Decimal) for price in prices):
+        return Decimal(combined)
+    if any(isinstance(price, str) for price in prices):
+        return str(combined)
+    if any(isinstance(price, float) for price in prices):
+        return float(combined)
+    return int(combined)
 
 
 def filter_none_from_parameters(params):

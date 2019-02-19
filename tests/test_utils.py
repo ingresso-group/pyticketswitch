@@ -2,6 +2,7 @@ import pytest
 import datetime
 from datetime import date
 from dateutil.tz import tzoffset
+from decimal import Decimal
 from pyticketswitch import utils
 from pyticketswitch import exceptions
 
@@ -246,6 +247,57 @@ class TestGetPrice:
         price = utils.get_price(data, 'price')
         assert isinstance(price, float)
         assert price == 0
+
+
+class TestAddPrices:
+
+    def test_adding_two_floats(self):
+        combined = utils.add_prices(1.0, 1.0)
+        assert combined == 2.0
+
+    def test_adding_two_decimals(self):
+        combined = utils.add_prices(Decimal('1.0'), Decimal('1.0'))
+        assert combined == Decimal('2.0')
+
+    def test_adding_two_ints(self):
+        combined = utils.add_prices(1, 1)
+        assert combined == 2
+
+    def test_adding_two_strs(self):
+        combined = utils.add_prices('1.0', '1.0')
+        assert combined == '2.0'
+
+    def test_adding_inexact_floats(self):
+        combined = utils.add_prices(1.1, 2.2)
+        assert combined == 3.3
+
+    def test_adding_three_floats(self):
+        combined = utils.add_prices(1.0, 1.0, 1.0)
+        assert combined == 3.0
+
+    def test_adding_a_decimal_and_a_float(self):
+        combined = utils.add_prices(Decimal('1.0'), 1.0)
+        assert combined == Decimal('2.0')
+
+    def test_adding_a_float_and_a_decimal(self):
+        combined = utils.add_prices(1.0, Decimal('1.0'))
+        assert combined == Decimal('2.0')
+
+    def test_adding_a_float_to_none(self):
+        with pytest.raises(TypeError):
+            utils.add_prices(1.0, None)
+
+    def test_adding_a_decimal_to_none(self):
+        with pytest.raises(TypeError):
+            utils.add_prices(Decimal('1.0'), None)
+
+    def test_zero_arguments(self):
+        with pytest.raises(TypeError):
+            utils.add_prices()
+
+    def test_one_argument(self):
+        with pytest.raises(TypeError):
+            utils.add_prices(1)
 
 
 class TestFilterNoneFromParameters:

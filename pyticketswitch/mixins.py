@@ -2,6 +2,8 @@ import datetime
 import decimal
 import json
 
+from pyticketswitch import utils
+
 
 class JSONMixin(object):
     """Adds json encoding functionality to objects."""
@@ -202,9 +204,7 @@ class SeatPricingMixin(object):
         assert self.seatprice is not None, 'seatprice data missing'
         assert self.surcharge is not None, 'surcharge data missing'
 
-        combined = (decimal.Decimal(str(self.seatprice)) +
-                    decimal.Decimal(str(self.surcharge)))
-        return self.seatprice.__class__(combined)
+        return utils.add_prices(self.seatprice, self.surcharge)
 
     def non_offer_combined_price(self):
         """Returns the combined non offer seatprice and surcharge.
@@ -229,6 +229,4 @@ class SeatPricingMixin(object):
         """
         assert self.non_offer_seatprice is not None, 'non_offer_seatprice data missing'
         assert self.non_offer_surcharge is not None, 'non_offer_surcharge data missing'
-        combined = (decimal.Decimal(str(self.non_offer_seatprice)) +
-                    decimal.Decimal(str(self.non_offer_surcharge)))
-        return self.non_offer_seatprice.__class__(combined)
+        return utils.add_prices(self.non_offer_seatprice, self.non_offer_surcharge)
