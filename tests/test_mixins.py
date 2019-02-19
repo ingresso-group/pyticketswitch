@@ -263,6 +263,14 @@ class TestSeatPricingMixin:
         inst = SeatPricingMixin(seatprice=1.1, surcharge=2.2)
         assert inst.combined_price() == 3.3
 
+    def test_combined_price_decimal(self):
+        inst = SeatPricingMixin(
+            seatprice=Decimal('123.45'),
+            surcharge=Decimal('6.78')
+        )
+        assert inst.combined_price() == Decimal('130.23')
+
+
     def test_non_offer_combined_price(self):
         inst = SeatPricingMixin(non_offer_seatprice=123.45,
                                 non_offer_surcharge=6.78)
@@ -280,4 +288,11 @@ class TestSeatPricingMixin:
 
     def test_non_offer_combined_price_inexact_floats(self):
         inst = SeatPricingMixin(non_offer_seatprice=1.1, non_offer_surcharge=2.2)
-        assert inst.combined_price() == 3.3
+        assert inst.non_offer_combined_price() == 3.3
+
+    def test_non_offer_combined_price_decimal(self):
+        inst = SeatPricingMixin(
+            non_offer_seatprice=Decimal('123.45'),
+            non_offer_surcharge=Decimal('6.78')
+        )
+        assert inst.non_offer_combined_price() == Decimal('130.23')
