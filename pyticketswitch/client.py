@@ -1666,3 +1666,45 @@ class Client(object):
         meta = CurrencyMeta.from_api_data(response)
 
         return status, callout, meta
+
+    def cancel(self, transaction_uuid, cancel_items_list=None, **kwargs):
+        """Attempt cancellation of item numbers from the transaction, specified in
+        `cancel_items_list`. If there is no `cancel_items_list` then attempt
+        cancellation of entire transaction.
+
+        Wraps `/f13/cancel.v1`_
+
+        Args:
+            transaction_uuid (str): identifier for the transaction.
+            transaction_id (str): identifier for the old transaction ids.
+                Note: one of these two must be set.
+            customer (bool): include customer information if
+                available. Defaults to :obj:`False`.
+            external_sale_page (bool): include the saved html of the
+                sale/confirmation page if you asked us to save it for you.
+                Defaults to :obj:`None`
+            **kwargs: arbitary keyword parameters to pass directly to the API.
+
+        Returns:
+            :class:`CancellationResult <pyticketswitch.cancellation.CancellationResult>`,
+            :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            the result of the attempted cancellation and the accompanying meta
+            information.
+
+        .. _`/f13/cancel.v1`: http://docs.ingresso.co.uk/#cancel
+
+        """
+        params = {
+            "transaction_uuid": transaction_uuid,
+        }
+        if cancel_items_list:
+            params.update(cancel_items_list=",".join(map(str, cancel_items_list)))
+
+        self.add_optional_kwargs(params, **kwargs)
+
+        response = self.make_request('cancel.v1', params, method=POST)
+
+        status = Status.from_api_data(response)
+        meta = CurrencyMeta.from_api_data(response)
+
+        return status, meta

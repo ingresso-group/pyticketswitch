@@ -2203,3 +2203,13 @@ class TestClient:
             expected_params,
             method=POST
         )
+
+    def test_cancel(self, client, monkeypatch):
+        # state
+        response = {
+        }
+
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        assert False

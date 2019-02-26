@@ -1,4 +1,4 @@
 {
-  "pyticketswitch/*.py": { "alternate": "tests/{dirname}/test_{basename}.py" },
-  "tests/**/test_*.py": { "alternate": "pyticketswitch/{dirname}/{basename}.py" }
+  "pyticketswitch/*.py": { "alternate": "tests/test_{basename}.py" },
+  "tests/test_*.py": { "alternate": "pyticketswitch/{dirname}/{basename}.py" }
 }
