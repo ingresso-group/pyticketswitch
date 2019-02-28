@@ -1677,7 +1677,7 @@ class Client(object):
 
         Args:
             transaction_uuid (str): identifier for the transaction.
-            cancel_items_list: a list of item numbers to cancel.
+            cancel_items_list (list): a list of item numbers to cancel.
             **kwargs: arbitary keyword parameters to pass directly to the API.
 
         Returns:
