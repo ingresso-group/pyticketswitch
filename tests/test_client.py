@@ -2204,14 +2204,14 @@ class TestClient:
             method=POST
         )
 
-    def test_cancel(self, client, monkeypatch):
+    def test_cancel_purchase(self, client, monkeypatch):
         # state
         with open("test_data/successful_cancellation.json", 'r') as file_handle:
             response = json.load(file_handle)
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        cancellation_result, meta = client.cancel('abc123')
+        cancellation_result, meta = client.cancel_purchase('abc123')
 
         assert cancellation_result.is_fully_cancelled()
         assert cancellation_result.cancelled_item_numbers == [1]

@@ -1668,7 +1668,7 @@ class Client(object):
 
         return status, callout, meta
 
-    def cancel(self, transaction_uuid, cancel_items_list=None, **kwargs):
+    def cancel_purchase(self, transaction_uuid, cancel_items_list=None, **kwargs):
         """Attempt cancellation of item numbers from the transaction, specified in
         `cancel_items_list`. If there is no `cancel_items_list` then attempt
         cancellation of entire transaction.
