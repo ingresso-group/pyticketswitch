@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.8.1] - 2018-02-28
+### Fixed
+- Made the preflight checks a pytest (to capture version issues earlier).
+
 ## [2.8.0] - 2018-02-28
 ### Added
 - Added the `cancel_purchase` function to the client to facilitate cancellations.

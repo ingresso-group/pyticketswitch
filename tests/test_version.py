@@ -2,8 +2,8 @@ import docs.conf
 import pyticketswitch
 import re
 
-if __name__ == '__main__':
 
+def test_versions():
     # check all the version numbers are consistent.
     print('pyticketswitch/init.py: {}'.format(pyticketswitch.__version__))
     print('docs/conf.py (version): {}'.format(docs.conf.version))
