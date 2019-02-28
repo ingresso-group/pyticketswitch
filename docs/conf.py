@@ -64,7 +64,7 @@ author = 'Ingresso Group LTD'
 #
 # The short X.Y version.
 
-version = '2.7.4'
+version = '2.8.0'
 
 # The full version, including alpha/beta/rc tags.
 release = '2.7.4'
