@@ -4,19 +4,20 @@ import logging
 import six
 import pyticketswitch
 from pyticketswitch import exceptions, utils
-from pyticketswitch.event import Event, EventMeta
-from pyticketswitch.performance import Performance, PerformanceMeta
 from pyticketswitch.availability import AvailabilityMeta
-from pyticketswitch.ticket_type import TicketType
-from pyticketswitch.send_method import SendMethod
-from pyticketswitch.month import Month
-from pyticketswitch.discount import Discount
-from pyticketswitch.trolley import Trolley
-from pyticketswitch.reservation import Reservation
-from pyticketswitch.status import Status
-from pyticketswitch.user import User
-from pyticketswitch.currency import CurrencyMeta
 from pyticketswitch.callout import Callout
+from pyticketswitch.cancellation import CancellationResult
+from pyticketswitch.currency import CurrencyMeta
+from pyticketswitch.discount import Discount
+from pyticketswitch.event import Event, EventMeta
+from pyticketswitch.month import Month
+from pyticketswitch.performance import Performance, PerformanceMeta
+from pyticketswitch.reservation import Reservation
+from pyticketswitch.send_method import SendMethod
+from pyticketswitch.status import Status
+from pyticketswitch.ticket_type import TicketType
+from pyticketswitch.trolley import Trolley
+from pyticketswitch.user import User
 
 
 logger = logging.getLogger(__name__)
@@ -1676,13 +1677,7 @@ class Client(object):
 
         Args:
             transaction_uuid (str): identifier for the transaction.
-            transaction_id (str): identifier for the old transaction ids.
-                Note: one of these two must be set.
-            customer (bool): include customer information if
-                available. Defaults to :obj:`False`.
-            external_sale_page (bool): include the saved html of the
-                sale/confirmation page if you asked us to save it for you.
-                Defaults to :obj:`None`
+            cancel_items_list: a list of item numbers to cancel.
             **kwargs: arbitary keyword parameters to pass directly to the API.
 
         Returns:
@@ -1704,7 +1699,7 @@ class Client(object):
 
         response = self.make_request('cancel.v1', params, method=POST)
 
-        status = Status.from_api_data(response)
+        result = CancellationResult.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
 
-        return status, meta
+        return result, meta
