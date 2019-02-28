@@ -166,6 +166,169 @@ successful_cancellation_data = {
     "cancelled_item_numbers": [1],
 }
 
+failed_cancellation_data = {
+    "trolley_contents": {
+        "trolley_bundle_count": 1,
+        "trolley_order_count": 1,
+        "bundle": [
+            {
+                "bundle_total_seatprice": 32,
+                "bundle_total_send_cost": 1.5,
+                "order": [
+                    {
+                        "price_band_code": "A/pool",
+                        "internal_reserve_sub_ref2": "NUT SUB 2",
+                        "backend_cancellation_reference": "",
+                        "total_sale_surcharge": 5,
+                        "item_number": 1,
+                        "performance": {
+                            "running_time": 120,
+                            "has_pool_seats": True,
+                            "event_id": "6IF",
+                            "time_desc": "7.30 PM",
+                            "is_limited": False,
+                            "perf_id": "6IF-D9P",
+                            "is_ghost": False,
+                            "iso8601_date_and_time": "2019-04-26T19:30:00+01:00",
+                            "date_desc": "Fri, 26th April 2019",
+                        },
+                        "backend_purchase_reference": "PURCHASE-286D",
+                        "user_commission": {
+                            "amount_including_vat": 11.4,
+                            "commission_currency_code": "gbp",
+                            "amount_excluding_vat": 9.5,
+                        },
+                        "send_method": {
+                            "send_cost": 1.5,
+                            "send_desc": "Collect from venue",
+                            "send_final_comment": "Instructions for collecting tickets at the venue box office:\n- Tickets must be collected by the cardholder with valid photo identification and the payment card.\n- The cardholderâs signature will be required on receipt of these tickets.\n- Tickets are only available for collection on the day of the performance.\n- Guests are advised to arrive at least 30 minutes before the performance time.\n- If the cardholder is unable to collect these tickets please contact Guest Services on 0800 640 8101.\n\nCan we help?\nIf you require further information please contact our Guest Services team:\nLive chat or call 0800 640 8101 (Monday â Sunday, 9am â 9pm GMT/BST)",
+                            "send_type": "collect",
+                            "send_code": "COBO",
+                            "send_final_type": "collect",
+                        },
+                        "ticket_type_desc": "Stalls",
+                        "gross_commission": {
+                            "amount_including_vat": 11.4,
+                            "amount_excluding_vat": 9.5,
+                            "commission_currency_code": "gbp",
+                        },
+                        "cancellation_status": "not_permitted",
+                        "ticket_orders": {
+                            "ticket_order": [
+                                {
+                                    "total_sale_seatprice": 21,
+                                    "sale_surcharge": 3,
+                                    "total_sale_combined": 24,
+                                    "sale_seatprice": 21,
+                                    "seats": [
+                                        {
+                                            "full_id": "YG167",
+                                            "is_restricted_view": False,
+                                            "col_id": "167",
+                                            "row_id": "YG",
+                                        }
+                                    ],
+                                    "discount_code": "ADULT",
+                                    "discount_desc": "Adult standard",
+                                    "sale_combined": 24,
+                                    "total_sale_surcharge": 3,
+                                    "no_of_seats": 1,
+                                },
+                                {
+                                    "total_sale_surcharge": 2,
+                                    "sale_combined": 13,
+                                    "discount_desc": "Adult 18+ including behind the scenes tour",
+                                    "discount_code": "CHILD",
+                                    "no_of_seats": 1,
+                                    "sale_surcharge": 2,
+                                    "total_sale_seatprice": 11,
+                                    "seats": [
+                                        {
+                                            "row_id": "YG",
+                                            "col_id": "168",
+                                            "is_restricted_view": False,
+                                            "full_id": "YG168",
+                                        }
+                                    ],
+                                    "sale_seatprice": 11,
+                                    "total_sale_combined": 13,
+                                },
+                            ]
+                        },
+                        "cancellation_comment": "",
+                        "total_sale_combined": 37,
+                        "total_no_of_seats": 2,
+                        "price_band_desc": "Top price (band A)",
+                        "seat_request_status": "not_requested",
+                        "ticket_type_code": "STALLS",
+                        "total_sale_seatprice": 32,
+                        "event": {
+                            "has_no_perfs": False,
+                            "min_running_time": 120,
+                            "need_departure_date": False,
+                            "need_duration": False,
+                            "city_code": "london-uk",
+                            "show_perf_time": True,
+                            "is_seated": True,
+                            "event_uri_desc": "Matthew-Bourne%27s-Nutcracker%21",
+                            "source_code": "ext_test0",
+                            "source_desc": "Test SystemZero for on-credit backend group",
+                            "event_desc": "Matthew Bourne's Nutcracker!",
+                            "event_type": "simple_ticket",
+                            "event_status": "live",
+                            "event_upsell_list": {"event_id": ["6IE", "6KU"]},
+                            "venue_uri_desc": "Sadler%27s-Wells",
+                            "critic_review_percent": 80,
+                            "country_desc": "United Kingdom",
+                            "venue_desc": "Sadler's Wells",
+                            "max_running_time": 120,
+                            "geo_data": {"latitude": 51.5, "longitude": -0.15},
+                            "event_id": "6IF",
+                            "need_performance": True,
+                            "postcode": "EC1R 4TN",
+                            "city_desc": "London",
+                            "is_add_on": False,
+                            "country_code": "uk",
+                            "classes": {"theatre": "Theatre"},
+                            "is_auto_quantity_add_on": False,
+                            "custom_filter": [],
+                        },
+                        "internal_reserve_sub_ref": "NUT SUB 1",
+                        "requested_seat_ids": [],
+                        "internal_purchase_sub_ref": "SUBREF-1:NUT SUB 2:NUT SUB 1",
+                    }
+                ],
+                "purchase_result": {
+                    "can_cancel_individual_orders": False,
+                    "success": True,
+                    "backend_purchase_reference": "PURCHASE-286D",
+                    "is_semi_credit": False,
+                },
+                "bundle_total_surcharge": 5,
+                "bundle_order_count": 1,
+                "bundle_source_code": "ext_test0",
+                "bundle_total_cost": 38.5,
+                "bundle_source_desc": "Test SystemZero for on-credit backend group",
+                "currency_code": "gbp",
+            }
+        ],
+        "transaction_uuid": "284d9c3a-d698-11e6-be8c-002590326962",
+        "purchase_result": {"success": True, "is_partial": False},
+        "transaction_id": "U000-0000-2M96-DEVX",
+    },
+    "currency_details": {
+        "gbp": {
+            "currency_pre_symbol": "Â£",
+            "currency_post_symbol": "",
+            "currency_factor": 100,
+            "currency_code": "gbp",
+            "currency_number": 826,
+            "currency_places": 2,
+        }
+    },
+    "cancelled_item_numbers": [],
+}
+
 partial_cancellation_data = {
    "trolley_contents" : {
       "trolley_bundle_count" : 1,
@@ -634,13 +797,11 @@ class TestCancellationResult:
         [
             (successful_cancellation_data, True),
             (must_also_cancel_data, False),
-            (partial_cancellation_data, False)
+            (partial_cancellation_data, False),
+            (failed_cancellation_data, False),
         ],
     )
     def test_is_fully_cancelled(self, data, expected_result):
         cancellation_result = CancellationResult.from_api_data(data)
 
         assert cancellation_result.is_fully_cancelled() == expected_result
-
-
-

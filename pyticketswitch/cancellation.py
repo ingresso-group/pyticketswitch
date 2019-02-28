@@ -22,3 +22,13 @@ class CancellationResult(JSONMixin):
             kwargs.update(must_also_cancel=must_also_cancel)
 
         return cls(**kwargs)
+
+    def is_fully_cancelled(self):
+        if len(self.trolley.bundles) == 0:
+            return False
+        for bundle in self.trolley.bundles:
+            for order in bundle.orders:
+                if order.cancellation_status != "cancelled":
+                    return False
+
+        return True
