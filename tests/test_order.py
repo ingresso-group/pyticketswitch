@@ -117,6 +117,9 @@ class TestOrder:
 
         data = {
             "backend_purchase_reference": 'GHI098',
+            "backend_cancellation_reference": 'GHI098-cancelled',
+            "cancellation_status": "possible",
+            "cancellation_comment": "",
             "event": {
                 "event_id": "6IF",
             },
@@ -184,6 +187,9 @@ class TestOrder:
         assert order.total_surcharge == 5.40
         assert order.seat_request_status == "got_all"
         assert order.backend_purchase_reference == 'GHI098'
+        assert order.backend_cancellation_reference == 'GHI098-cancelled'
+        assert order.cancellation_status == "possible"
+        assert order.cancellation_comment == ""
 
         assert isinstance(order.event, Event)
         assert order.event.id == '6IF'

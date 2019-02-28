@@ -4,19 +4,20 @@ import logging
 import six
 import pyticketswitch
 from pyticketswitch import exceptions, utils
-from pyticketswitch.event import Event, EventMeta
-from pyticketswitch.performance import Performance, PerformanceMeta
 from pyticketswitch.availability import AvailabilityMeta
-from pyticketswitch.ticket_type import TicketType
-from pyticketswitch.send_method import SendMethod
-from pyticketswitch.month import Month
-from pyticketswitch.discount import Discount
-from pyticketswitch.trolley import Trolley
-from pyticketswitch.reservation import Reservation
-from pyticketswitch.status import Status
-from pyticketswitch.user import User
-from pyticketswitch.currency import CurrencyMeta
 from pyticketswitch.callout import Callout
+from pyticketswitch.cancellation import CancellationResult
+from pyticketswitch.currency import CurrencyMeta
+from pyticketswitch.discount import Discount
+from pyticketswitch.event import Event, EventMeta
+from pyticketswitch.month import Month
+from pyticketswitch.performance import Performance, PerformanceMeta
+from pyticketswitch.reservation import Reservation
+from pyticketswitch.send_method import SendMethod
+from pyticketswitch.status import Status
+from pyticketswitch.ticket_type import TicketType
+from pyticketswitch.trolley import Trolley
+from pyticketswitch.user import User
 
 
 logger = logging.getLogger(__name__)
@@ -1666,3 +1667,39 @@ class Client(object):
         meta = CurrencyMeta.from_api_data(response)
 
         return status, callout, meta
+
+    def cancel_purchase(self, transaction_uuid, cancel_items_list=None, **kwargs):
+        """Attempt cancellation of item numbers from the transaction, specified in
+        `cancel_items_list`. If there is no `cancel_items_list` then attempt
+        cancellation of entire transaction.
+
+        Wraps `/f13/cancel.v1`_
+
+        Args:
+            transaction_uuid (str): identifier for the transaction.
+            cancel_items_list (list): a list of item numbers to cancel.
+            **kwargs: arbitary keyword parameters to pass directly to the API.
+
+        Returns:
+            :class:`CancellationResult <pyticketswitch.cancellation.CancellationResult>`,
+            :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            the result of the attempted cancellation and the accompanying meta
+            information.
+
+        .. _`/f13/cancel.v1`: http://docs.ingresso.co.uk/#cancel
+
+        """
+        params = {
+            "transaction_uuid": transaction_uuid,
+        }
+        if cancel_items_list:
+            params.update(cancel_items_list=",".join(map(str, cancel_items_list)))
+
+        self.add_optional_kwargs(params, **kwargs)
+
+        response = self.make_request('cancel.v1', params, method=POST)
+
+        result = CancellationResult.from_api_data(response)
+        meta = CurrencyMeta.from_api_data(response)
+
+        return result, meta

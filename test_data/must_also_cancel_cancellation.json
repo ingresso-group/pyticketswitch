@@ -1,0 +1,133 @@
+{
+    "must_also_cancel": [
+        {
+            "cancellation_comment": "",
+            "send_method": {
+                "send_cost_in_desired": 8.76,
+                "send_type": "post",
+                "send_final_type": "post",
+                "send_desc": "Post worldwide",
+                "send_cost": 10,
+                "send_code": "POST"
+            },
+            "ticket_orders": {
+                "ticket_order": [
+                    {
+                        "seats": [
+                            {
+                                "is_restricted_view": false,
+                                "row_id": "YC",
+                                "full_id": "YC472",
+                                "col_id": "472"
+                            },
+                            {
+                                "full_id": "YC473",
+                                "col_id": "473",
+                                "row_id": "YC",
+                                "is_restricted_view": false
+                            },
+                            {
+                                "col_id": "474",
+                                "full_id": "YC474",
+                                "row_id": "YC",
+                                "is_restricted_view": false
+                            }
+                        ],
+                        "sale_combined_in_desired": 135.75,
+                        "sale_surcharge_in_desired": 13.14,
+                        "sale_seatprice": 140,
+                        "total_sale_surcharge": 45,
+                        "total_sale_combined": 465,
+                        "discount_desc": "",
+                        "total_sale_combined_in_desired": 407.24,
+                        "sale_surcharge": 15,
+                        "total_sale_surcharge_in_desired": 39.41,
+                        "no_of_seats": 3,
+                        "total_sale_seatprice": 420,
+                        "sale_combined": 155,
+                        "sale_seatprice_in_desired": 122.61,
+                        "total_sale_seatprice_in_desired": 367.83,
+                        "discount_code": ""
+                    }
+                ]
+            },
+            "total_sale_combined_in_desired": 407.24,
+            "total_sale_seatprice": 420,
+            "seat_request_status": "not_requested",
+            "backend_cancellation_reference": "",
+            "requested_seat_ids": [],
+            "internal_purchase_sub_ref": "",
+            "ticket_type_desc": "Menu French Cancan",
+            "internal_reserve_sub_ref": "",
+            "price_band_code": "A/pool",
+            "user_commission": {
+                "commission_currency_code": "eur",
+                "amount_including_vat": 0,
+                "amount_excluding_vat": 0
+            },
+            "total_sale_combined": 465,
+            "backend_purchase_reference": "PURCHASE-3AFD",
+            "event": {
+                "custom_filter": [],
+                "min_running_time": 120,
+                "geo_data": {"latitude": 0, "longitude": 0},
+                "postcode": "75018",
+                "event_id": "BPT",
+                "venue_uri_desc": "Bal-du-Moulin-Rouge",
+                "has_no_perfs": false,
+                "need_performance": true,
+                "source_code": "ext_test1",
+                "event_uri_desc": "Moulin-Rouge-%28Dinner-Show%29",
+                "event_type": "simple_ticket",
+                "is_auto_quantity_add_on": false,
+                "country_code": "fr",
+                "venue_desc": "Bal du Moulin Rouge",
+                "show_perf_time": true,
+                "classes": {"attract": "Attractions", "theatre": "Theatre"},
+                "source_desc": "Test System One",
+                "max_running_time": 120,
+                "event_status": "live",
+                "need_departure_date": false,
+                "need_duration": false,
+                "event_desc": "Moulin Rouge (Dinner Show)",
+                "country_desc": "France",
+                "is_seated": true,
+                "is_add_on": false
+            },
+            "gross_commission": {
+                "amount_including_vat": 60,
+                "amount_excluding_vat": 50,
+                "commission_currency_code": "eur"
+            },
+            "total_no_of_seats": 3,
+            "ticket_type_code": "CANCAN",
+            "performance": {
+                "is_limited": false,
+                "running_time": 120,
+                "iso8601_date_and_time": "2019-04-01T19:00:00+02:00",
+                "event_id": "BPT",
+                "perf_id": "BPT-E6P",
+                "date_desc": "Mon, 1st April 2019",
+                "has_pool_seats": true,
+                "is_ghost": false,
+                "time_desc": "7.00 PM"
+            },
+            "total_sale_surcharge_in_desired": 39.41,
+            "internal_reserve_sub_ref2": "",
+            "cancellation_status": "possible",
+            "total_sale_seatprice_in_desired": 367.83,
+            "item_number": 2,
+            "total_sale_surcharge": 45
+        }
+    ],
+    "currency_details": {
+        "eur": {
+            "currency_pre_symbol": "â¬",
+            "currency_post_symbol": "",
+            "currency_number": 978,
+            "currency_code": "eur",
+            "currency_places": 2,
+            "currency_factor": 100
+        }
+    }
+}
