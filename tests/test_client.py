@@ -16,8 +16,6 @@ from pyticketswitch.status import Status
 from pyticketswitch.callout import Callout
 
 
-pyticketswitch.__version__ = 'TEST'
-
 
 @pytest.fixture
 def client():
@@ -124,7 +122,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-                'User-Agent': 'pyticketswitch TEST',
+                'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__),
             },
             timeout=None
         )
@@ -151,7 +149,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-                'User-Agent': 'pyticketswitch TEST',
+                'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__),
             },
             timeout=15
         )
@@ -178,7 +176,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-                'User-Agent': 'pyticketswitch TEST',
+                'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__),
             },
             timeout=None
         )
@@ -207,7 +205,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-                'User-Agent': 'pyticketswitch TEST',
+                'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__),
             },
             timeout=None
         )
@@ -231,7 +229,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-                'User-Agent': 'pyticketswitch TEST',
+                'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__),
             },
             timeout=None
         )
@@ -258,7 +256,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-                'User-Agent': 'pyticketswitch TEST',
+                'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__),
             },
             timeout=None
         )
@@ -272,7 +270,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-                'User-Agent': 'pyticketswitch TEST',
+                'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__),
             },
             timeout=None
         )
@@ -2037,7 +2035,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-                'User-Agent': 'pyticketswitch TEST',
+                'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__),
             },
             timeout=None
         )
@@ -2088,7 +2086,7 @@ class TestClient:
             },
             headers={
                 'Accept-Language': 'en-GB',
-                'User-Agent': 'pyticketswitch TEST',
+                'User-Agent': 'pyticketswitch {}'.format(pyticketswitch.__version__),
             },
             timeout=None,
         )
@@ -2203,3 +2201,16 @@ class TestClient:
             expected_params,
             method=POST
         )
+
+    def test_cancel_purchase(self, client, monkeypatch):
+        # state
+        with open("test_data/successful_cancellation.json", 'r') as file_handle:
+            response = json.load(file_handle)
+        mock_make_request = Mock(return_value=response)
+        monkeypatch.setattr(client, 'make_request', mock_make_request)
+
+        cancellation_result, meta = client.cancel_purchase('abc123')
+
+        assert cancellation_result.is_fully_cancelled()
+        assert cancellation_result.cancelled_item_numbers == [1]
+        assert 'gbp' in meta.currencies

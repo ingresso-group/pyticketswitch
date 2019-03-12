@@ -148,6 +148,9 @@ class Order(JSONMixin, object):
             from the trolley it will retain it's item number.
         event (:class:`Event <pyticketswitch.event.Event>`): the event
             the order is for.
+        cancellation_status (str): "possible" if can cancel, "not_permitted" if can't
+            cancel and "cancelled" if cancelled.
+        cancellation_comment (str): A comment about the cancellation attempt.
         performance (:class:`Performance <pyticketswitch.performance.Performance>`):
             the performance the order is for.
         price_band_code (str): the price band identifier.
@@ -169,6 +172,9 @@ class Order(JSONMixin, object):
         backend_purchase_reference (str): a reference from the source
             supplier for this order. This is generally empty until the order
             has been successfully purchased.
+        backend_cancellation_reference (str): a reference from the source supplier for
+            the cancellation of this order. This is generally empty until a
+            cancellation has been attempted.
         send_method (:class:`SendMethod <pyticketswitch.send_method.SendMethod>`):
             method of ticket delivery. Only present when requested.
         gross_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
@@ -178,16 +184,19 @@ class Order(JSONMixin, object):
 
     """
 
-    def __init__(self, item, event=None, performance=None, price_band_code=None,
-                 price_band_description=None,
+    def __init__(self, item, event=None, cancellation_status=None,
+                 cancellation_comment=None, performance=None,
+                 price_band_code=None, price_band_description=None,
                  ticket_type_code=None, ticket_type_description=None,
                  ticket_orders=None, number_of_seats=None,
                  total_seatprice=None, total_surcharge=None,
                  seat_request_status=None, requested_seat_ids=None,
-                 backend_purchase_reference=None, send_method=None,
-                 gross_commission=None, user_commission=None):
+                 backend_purchase_reference=None, backend_cancellation_reference=None,
+                 send_method=None, gross_commission=None, user_commission=None):
         self.item = item
         self.event = event
+        self.cancellation_status = cancellation_status
+        self.cancellation_comment = cancellation_comment
         self.performance = performance
         self.price_band_code = price_band_code
         self.price_band_description = price_band_description
@@ -200,6 +209,7 @@ class Order(JSONMixin, object):
         self.seat_request_status = seat_request_status
         self.requested_seat_ids = requested_seat_ids
         self.backend_purchase_reference = backend_purchase_reference
+        self.backend_cancellation_reference = backend_cancellation_reference
         self.send_method = send_method
         self.gross_commission = gross_commission
         self.user_commission = user_commission
@@ -228,6 +238,9 @@ class Order(JSONMixin, object):
             'seat_request_status': data.get('seat_request_status'),
             'requested_seat_ids': data.get('requested_seat_ids'),
             'backend_purchase_reference': data.get('backend_purchase_reference'),
+            'backend_cancellation_reference': data.get('backend_cancellation_reference'),
+            'cancellation_status': data.get('cancellation_status'),
+            'cancellation_comment': data.get('cancellation_comment'),
         }
 
         raw_event = data.get('event')

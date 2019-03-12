@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.8.1] - 2018-02-28
+### Fixed
+- Made the preflight checks a pytest (to capture version issues earlier).
+
+## [2.8.0] - 2018-02-28
+### Added
+- Added the `cancel_purchase` function to the client to facilitate cancellations.
+
 ## [2.7.4] - 2018-02-14
 ### Added
 - Add `kwargs` to `get_discount` method of the client
@@ -398,7 +406,8 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.4...HEAD
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.8.0...HEAD
+[2.8.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.4...2.8.0
 [2.7.4]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.3...2.7.4
 [2.7.3]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.2...2.7.3
 [2.7.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.1...2.7.2
