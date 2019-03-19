@@ -412,7 +412,9 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.8.0...HEAD
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.8.2...HEAD
+[2.8.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.8.1...2.8.2
+[2.8.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.8.0...2.8.1
 [2.8.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.4...2.8.0
 [2.7.4]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.3...2.7.4
 [2.7.3]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.2...2.7.3
