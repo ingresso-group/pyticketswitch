@@ -4,6 +4,7 @@ from pyticketswitch.seat import Seat
 from pyticketswitch.send_method import SendMethod
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.commission import Commission
+from pyticketswitch import utils
 
 
 class TicketOrder(JSONMixin, object):
@@ -108,7 +109,7 @@ class TicketOrder(JSONMixin, object):
         """
         assert self.seatprice is not None, 'seatprice data missing'
         assert self.surcharge is not None, 'surcharge data missing'
-        return self.seatprice + self.surcharge
+        return utils.add_prices(self.seatprice, self.surcharge)
 
     def total_combined_price(self):
         """Returns the combined total seatprice and surcharge.
@@ -133,7 +134,7 @@ class TicketOrder(JSONMixin, object):
         """
         assert self.total_seatprice is not None, 'seatprice data missing'
         assert self.total_surcharge is not None, 'surcharge data missing'
-        return self.total_seatprice + self.total_surcharge
+        return utils.add_prices(self.total_seatprice, self.total_surcharge)
 
     def __repr__(self):
         return u'<TicketOrder {}>'.format(self.code)
@@ -329,7 +330,9 @@ class Order(JSONMixin, object):
         return ', '.join(seat_text for seat_text in text_set.values())
 
     def total_including_send_cost(self):
-        return self.total_seatprice + self.total_surcharge + self.send_method.cost
+        return utils.add_prices(
+            self.total_seatprice, self.total_surcharge, self.send_method.cost
+        )
 
     def __repr__(self):
         return u'<Order {}>'.format(self.item)

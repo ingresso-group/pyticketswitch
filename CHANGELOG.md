@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.8.2] - 2018-03-19
+### Fixed
+- Convert floating point monetary values to Decimal when performing addition to
+  get rid of floating point addition errors. This is a non-breaking change as
+  the types returned remain the same as when using the python `+` operator.
+
 ## [2.8.1] - 2018-02-28
 ### Fixed
 - Made the preflight checks a pytest (to capture version issues earlier).
@@ -406,7 +412,9 @@ invalid parameters had be given.
 ## 1.0.0 - 2014-09-08
 - Initial release.
 
-[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.8.0...HEAD
+[Unreleased]: https://github.com/ingresso-group/pyticketswitch/compare/2.8.2...HEAD
+[2.8.2]: https://github.com/ingresso-group/pyticketswitch/compare/2.8.1...2.8.2
+[2.8.1]: https://github.com/ingresso-group/pyticketswitch/compare/2.8.0...2.8.1
 [2.8.0]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.4...2.8.0
 [2.7.4]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.3...2.7.4
 [2.7.3]: https://github.com/ingresso-group/pyticketswitch/compare/2.7.2...2.7.3

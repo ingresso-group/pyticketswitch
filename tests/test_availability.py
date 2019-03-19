@@ -220,8 +220,8 @@ class TestAvailabilityDetails:
                             'avail_detail': [{
                                 'seatprice': 47.0,
                                 'surcharge': 6.5,
-                                'full_seatprice': 47.0,
-                                'full_surcharge': 6.5,
+                                'full_seatprice': 48.0,
+                                'full_surcharge': 7.5,
                             }],
                         },
                     ]
@@ -233,7 +233,10 @@ class TestAvailabilityDetails:
 
         assert details[0].seatprice == 47.0
         assert details[0].surcharge == 6.5
-        assert details[0].combined_full_price() == 53.5
+        assert details[0].full_seatprice == 48.0
+        assert details[0].full_surcharge == 7.5
+        assert details[0].combined_price() == 53.5
+        assert details[0].combined_full_price() == 55.5
 
     def test_from_api_data_adds_currency(self):
         data = {
