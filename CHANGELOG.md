@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [2.8.2] - 2018-02-28
+## [2.8.2] - 2018-03-19
 ### Fixed
 - Convert floating point monetary values to Decimal when performing addition to
   get rid of floating point addition errors. This is a non-breaking change as
