@@ -15,7 +15,7 @@ test:
 	flake8 pyticketswitch
 	pylint pyticketswitch
 	py.test
-	behave
+	behave --stop
 
 docs:
 	cd docs && make html

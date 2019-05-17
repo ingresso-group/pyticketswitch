@@ -123,6 +123,7 @@ class TestOrder:
             "event": {
                 "event_id": "6IF",
             },
+            "external_management_url": "https://example.com/",
             "item_number": 1,
             "performance": {
                 "perf_id": "6IF-A7N",
@@ -190,6 +191,7 @@ class TestOrder:
         assert order.backend_cancellation_reference == 'GHI098-cancelled'
         assert order.cancellation_status == "possible"
         assert order.cancellation_comment == ""
+        assert order.external_management_url == "https://example.com/"
 
         assert isinstance(order.event, Event)
         assert order.event.id == '6IF'
