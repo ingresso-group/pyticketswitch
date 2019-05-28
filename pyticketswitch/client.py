@@ -132,7 +132,7 @@ class Client(object):
                 accepted by the `requests` module
         """
         if self.user and self.password:
-            return (self.user, self.password)
+            return (self.user.encode("utf-8"), self.password.encode("utf-8"))
 
     def get_user_agent(self):
         """Get the user agent for the raw request

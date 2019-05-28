@@ -116,7 +116,7 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
-            auth=('bilbo', 'baggins'),
+            auth=(b'bilbo', b'baggins'),
             params={
                 'foo': 'bar',
             },
@@ -143,7 +143,7 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
-            auth=('bilbo', 'baggins'),
+            auth=(b'bilbo', b'baggins'),
             params={
                 'foo': 'bar',
             },
@@ -170,7 +170,7 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_post.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
-            auth=('bilbo', 'baggins'),
+            auth=(b'bilbo', b'baggins'),
             data={
                 'foo': 'bar',
             },
@@ -198,7 +198,7 @@ class TestClient:
         assert response == {'lol': 'beans'}
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
-            auth=('beatles', 'lovemedo'),
+            auth=(b'beatles', b'lovemedo'),
             params={
                 'foo': 'bar',
                 'sub_id': 'ringo',
@@ -223,7 +223,7 @@ class TestClient:
         assert response
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
-            auth=('user', 'pass'),
+            auth=(b'user', b'pass'),
             params={
                 'tsw_session_track_id': 'xyz'
             },
@@ -250,7 +250,7 @@ class TestClient:
         assert response
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
-            auth=('user', 'pass'),
+            auth=(b'user', b'pass'),
             params={
                 'tsw_session_track_id': '123'
             },
@@ -264,7 +264,7 @@ class TestClient:
         client.add_optional_kwargs(params, tracking_id="456")
         fake_get.assert_called_with(
             'https://api.ticketswitch.com/f13/events.v1/',
-            auth=('user', 'pass'),
+            auth=(b'user', b'pass'),
             params={
                 'tsw_session_track_id': '456'
             },
