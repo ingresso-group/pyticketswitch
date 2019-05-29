@@ -181,6 +181,7 @@ class Order(JSONMixin, object):
             predicted commission to be shared between ingresso and the partner.
         user_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
             predicted commission for the partner.
+        external_management_url (str): redirect URL on confirmation page
 
     """
 
@@ -192,7 +193,8 @@ class Order(JSONMixin, object):
                  total_seatprice=None, total_surcharge=None,
                  seat_request_status=None, requested_seat_ids=None,
                  backend_purchase_reference=None, backend_cancellation_reference=None,
-                 send_method=None, gross_commission=None, user_commission=None):
+                 send_method=None, gross_commission=None, user_commission=None,
+                 external_management_url=None):
         self.item = item
         self.event = event
         self.cancellation_status = cancellation_status
@@ -213,6 +215,7 @@ class Order(JSONMixin, object):
         self.send_method = send_method
         self.gross_commission = gross_commission
         self.user_commission = user_commission
+        self.external_management_url = external_management_url
 
     @classmethod
     def from_api_data(cls, data):
@@ -241,6 +244,7 @@ class Order(JSONMixin, object):
             'backend_cancellation_reference': data.get('backend_cancellation_reference'),
             'cancellation_status': data.get('cancellation_status'),
             'cancellation_comment': data.get('cancellation_comment'),
+            'external_management_url': data.get('external_management_url')
         }
 
         raw_event = data.get('event')

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.8.3] - 2018-05-29
+### Fixed
+- Allows utf-8 usernames and passwords
+### Added
+- Adds external_management_url to Order class
+
 ## [2.8.2] - 2018-03-19
 ### Fixed
 - Convert floating point monetary values to Decimal when performing addition to

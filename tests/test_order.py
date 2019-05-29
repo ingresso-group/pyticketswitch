@@ -118,6 +118,7 @@ class TestOrder:
         data = {
             "backend_purchase_reference": 'GHI098',
             "backend_cancellation_reference": 'GHI098-cancelled',
+            "external_management_url": 'www.example.com/some-more-decisions',
             "cancellation_status": "possible",
             "cancellation_comment": "",
             "event": {
@@ -190,6 +191,7 @@ class TestOrder:
         assert order.backend_cancellation_reference == 'GHI098-cancelled'
         assert order.cancellation_status == "possible"
         assert order.cancellation_comment == ""
+        assert order.external_management_url == 'www.example.com/some-more-decisions'
 
         assert isinstance(order.event, Event)
         assert order.event.id == '6IF'
