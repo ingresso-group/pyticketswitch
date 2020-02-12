@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.8.4] - 2018-05-29
+### Added
+- Adds `is_offer`, `percentage_saving`, `source_code` to PriceBand and AvailabilityMeta PR:(#100)
+
 ## [2.8.3] - 2018-05-29
 ### Fixed
 - Allows utf-8 usernames and passwords

@@ -270,7 +270,6 @@ class TestSeatPricingMixin:
         )
         assert inst.combined_price() == Decimal('130.23')
 
-
     def test_non_offer_combined_price(self):
         inst = SeatPricingMixin(non_offer_seatprice=123.45,
                                 non_offer_surcharge=6.78)

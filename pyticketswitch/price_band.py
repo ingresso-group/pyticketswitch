@@ -41,8 +41,10 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
             price band. Only available when requested.
         gross_commission (:class:`Commission <pyticketswitch.commission.Commission>`):
             the gross commission payable. This is not generally available.
-        availability (int): the number of tickets/seats available in this price
-            band.
+        availability (int): the number of tickets/seats available in this price band.
+        percentage_saving (int): the total percentage saving of the combined seatprice
+            and surcharge
+        is_offer (bool): whether or not the priceband has an offer
 
     """
 
@@ -51,7 +53,8 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
                  example_seats_are_real=True, seat_blocks=None, user_commission=None,
                  discounts=None, allows_leaving_single_seats=None, availability=None,
                  seatprice=None, surcharge=None, non_offer_seatprice=None,
-                 non_offer_surcharge=None, percentage_saving=0, absolute_saving=0):
+                 non_offer_surcharge=None, percentage_saving=0, absolute_saving=0,
+                 is_offer=None):
 
         self.code = code
         self.description = description
@@ -71,6 +74,7 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
         self.non_offer_surcharge = non_offer_surcharge
         self.percentage_saving = percentage_saving
         self.absolute_saving = absolute_saving
+        self.is_offer = is_offer
 
     @classmethod
     def from_api_data(cls, data):
@@ -111,6 +115,8 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
             'default_discount': discount,
             'example_seats_are_real': data.get('example_seats_are_real', True),
             'allows_leaving_single_seats': data.get('allows_leaving_single_seats'),
+            'percentage_saving': data.get('percentage_saving'),
+            'is_offer': data.get('is_offer'),
         }
 
         example_seats_data = data.get('example_seats')
