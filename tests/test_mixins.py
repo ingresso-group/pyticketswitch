@@ -237,6 +237,7 @@ class TestSeatPricingMixin:
             'sale_surcharge': 5.5,
             'non_offer_sale_seatprice': 200,
             'non_offer_sale_surcharge': 5.5,
+            'percentage_saving': 19
         }
 
         kwargs = SeatPricingMixin.kwargs_from_api_data(data)
@@ -245,6 +246,7 @@ class TestSeatPricingMixin:
         assert kwargs['surcharge'] == 5.5
         assert kwargs['non_offer_seatprice'] == 200
         assert kwargs['non_offer_surcharge'] == 5.5
+        assert kwargs['percentage_saving'] == 19
 
     def test_combined_price(self):
         inst = SeatPricingMixin(seatprice=123.45, surcharge=6.78)
@@ -269,7 +271,6 @@ class TestSeatPricingMixin:
             surcharge=Decimal('6.78')
         )
         assert inst.combined_price() == Decimal('130.23')
-
 
     def test_non_offer_combined_price(self):
         inst = SeatPricingMixin(non_offer_seatprice=123.45,

@@ -160,6 +160,8 @@ class SeatPricingMixin(object):
             not on offer.
         non_offer_surcharge (float): the original additional charges per
             seat/ticket when not on offer.
+        percentage_saving (int): the total percentage saving of the combined seatprice
+            and surcharge
     """
 
     def __init__(self, seatprice=None, surcharge=None, non_offer_seatprice=None,
@@ -177,6 +179,7 @@ class SeatPricingMixin(object):
             'surcharge': data.get('sale_surcharge'),
             'non_offer_seatprice': data.get('non_offer_sale_seatprice'),
             'non_offer_surcharge': data.get('non_offer_sale_surcharge'),
+            'percentage_saving': data.get('percentage_saving'),
         }
         return kwargs
 

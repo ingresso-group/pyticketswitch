@@ -83,6 +83,7 @@ class TestPriceBand:
             'sale_surcharge': 5.5,
             'non_offer_sale_seatprice': 200,
             'non_offer_sale_surcharge': 6.5,
+            "percentage_saving": 20,
         }
 
         price_band = PriceBand.from_api_data(data)
@@ -112,6 +113,7 @@ class TestPriceBand:
         assert price_band.surcharge == 5.5
         assert price_band.non_offer_seatprice == 200
         assert price_band.non_offer_surcharge == 6.5
+        assert price_band.percentage_saving == 20
 
     def test_get_seats(self):
 
