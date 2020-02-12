@@ -112,6 +112,7 @@ def data_meta():
             },
         },
         "max_bundle_size": 1,
+        "source_code": "BackendCode",
         "valid_quantities": [
             1, 4, 6, 7
         ],
@@ -132,6 +133,7 @@ class TestAvailabilityMeta:
         assert meta.backend_is_broken is False
         assert meta.backend_is_down is False
         assert meta.backend_throttle_failed is False
+        assert meta.source_code == "BackendCode"
 
     def test_from_api_data_with_backend_issues(self):
 

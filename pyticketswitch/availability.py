@@ -30,12 +30,13 @@ class AvailabilityMeta(CurrencyMeta):
         backend_throttle_failed (bool): indicates that your call was throttled
             and failed to get a slot inside a viable timeframe. When true this
             indicates that the backend system is under heavy load.
+        source_code (str): the code for the backend system
 
     """
     def __init__(self, contiguous_seat_selection_only=True, currency=None,
                  valid_quantities=None, max_bundle_size=None, backend_is_down=False,
                  backend_is_broken=False, backend_throttle_failed=False,
-                 *args, **kwargs):
+                 source_code=None, *args, **kwargs):
         self.contiguous_seat_selection_only = contiguous_seat_selection_only
         self.currency = currency
         self.max_bundle_size = max_bundle_size
@@ -43,6 +44,7 @@ class AvailabilityMeta(CurrencyMeta):
         self.backend_is_broken = backend_is_broken
         self.backend_is_down = backend_is_down
         self.backend_throttle_failed = backend_throttle_failed
+        self.source_code = source_code
         super(AvailabilityMeta, self).__init__(*args, **kwargs)
 
     @classmethod
@@ -67,6 +69,7 @@ class AvailabilityMeta(CurrencyMeta):
         inst.backend_is_broken = data.get('backend_is_broken')
         inst.backend_is_down = data.get('backend_is_down')
         inst.backend_throttle_failed = data.get('backend_throttle_failed')
+        inst.source_code = data.get('source_code')
 
         return inst
 
