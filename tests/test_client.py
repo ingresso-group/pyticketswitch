@@ -1043,6 +1043,7 @@ class TestClient:
             'backend_is_down': False,
             'backend_throttle_failed': False,
             'contiguous_seat_selection_only': True,
+            'must_select_whole_seat_block': True,
             'currency_code': 'gbp',
             'currency_details': {
                 'gbp': {
@@ -1062,6 +1063,7 @@ class TestClient:
         })
 
         assert meta.contiguous_seat_selection_only is True
+        assert meta.must_select_whole_seat_block is True
         assert meta.default_currency_code == 'gbp'
         assert meta.valid_quantities == [2, 3, 4, 5, 6, 7]
 

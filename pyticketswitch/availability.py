@@ -16,7 +16,7 @@ class AvailabilityMeta(CurrencyMeta):
         max_bundle_size (int): maximum bundle size for this event. If it is
             `None` then there is no maximum size.
         currencies (dict): dictionary of
-            :class:`Currency <pytickectswitch.currency.Currency>`) objects
+            :class:`Currency <pyticketswitch.currency.Currency>`) objects
             indexed on currency code.
         default_currency_code (str): unless other wise specified all prices in
             the related response will be in this currency.
@@ -31,12 +31,15 @@ class AvailabilityMeta(CurrencyMeta):
             and failed to get a slot inside a viable timeframe. When true this
             indicates that the backend system is under heavy load.
         source_code (str): the code for the backend system
+        must_select_whole_seat_block (bool): indicates that the backend
+            system will only allow seats to be selected that are in the same
+            seat_block
 
     """
     def __init__(self, contiguous_seat_selection_only=True, currency=None,
                  valid_quantities=None, max_bundle_size=None, backend_is_down=False,
                  backend_is_broken=False, backend_throttle_failed=False,
-                 source_code=None, *args, **kwargs):
+                 source_code=None, must_select_whole_seat_block=False, *args, **kwargs):
         self.contiguous_seat_selection_only = contiguous_seat_selection_only
         self.currency = currency
         self.max_bundle_size = max_bundle_size
@@ -45,6 +48,7 @@ class AvailabilityMeta(CurrencyMeta):
         self.backend_is_down = backend_is_down
         self.backend_throttle_failed = backend_throttle_failed
         self.source_code = source_code
+        self.must_select_whole_seat_block = must_select_whole_seat_block
         super(AvailabilityMeta, self).__init__(*args, **kwargs)
 
     @classmethod
