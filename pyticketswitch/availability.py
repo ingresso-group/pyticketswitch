@@ -32,8 +32,8 @@ class AvailabilityMeta(CurrencyMeta):
             indicates that the backend system is under heavy load.
         source_code (str): the code for the backend system
         must_select_whole_seat_block (bool): indicates that the backend
-            system will only allow seats to be selected that are in the same
-            seat_block
+            system will only allow seats to be selected if you select all the
+            seats in the seat_block.
 
     """
     def __init__(self, contiguous_seat_selection_only=True, currency=None,
