@@ -70,6 +70,7 @@ class AvailabilityMeta(CurrencyMeta):
         inst.backend_is_down = data.get('backend_is_down')
         inst.backend_throttle_failed = data.get('backend_throttle_failed')
         inst.source_code = data.get('source_code')
+        inst.must_select_whole_seat_block = data.get('must_select_whole_seat_block')
 
         return inst
 
