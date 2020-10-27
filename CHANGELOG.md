@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.8.5] - 2020-10-23
+### Added
+- Adds must_select_whole_seat_block to AvailabilityMeta PR:(#101)
+
 ## [2.8.4] - 2018-05-29
 ### Added
 - Adds `is_offer`, `percentage_saving`, `source_code` to PriceBand and AvailabilityMeta PR:(#100)
