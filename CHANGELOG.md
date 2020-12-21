@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.8.6] - 2020-12-21
+### Added
+- Adds is_date_matched_addon and is_time_matched_addon to Event PR:(#102)
+
 ## [2.8.5] - 2020-10-23
 ### Added
 - Adds must_select_whole_seat_block to AvailabilityMeta PR:(#101)
