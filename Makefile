@@ -22,7 +22,7 @@ docs:
 	@echo "Build successful! View the docs homepage at docs/_build/html/index.html."
 
 publish:
-	pip install twine
+	pip install twine wheel
 	python setup.py sdist
 	python setup.py bdist_wheel --universal
 	twine upload dist/*
