@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.8.7] - 2021-06-30
+### Fixed
+- The event object missing `valid_quantities` when requested via `get_event`
+  and `get_events` PR:(#103)
+
 ## [2.8.6] - 2020-12-21
 ### Added
 - Adds is_date_matched_addon and is_time_matched_addon to Event PR:(#102)
