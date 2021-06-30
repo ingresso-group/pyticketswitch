@@ -402,6 +402,9 @@ class Event(JSONMixin, object):
         if data.get('venue_is_enforced') is not None:
             kwargs.update(venue_is_enforced=data.get('venue_is_enforced'))
 
+        if data.get('valid_quantities') is not None:
+            kwargs.update(valid_quantities=data.get('valid_quantities'))
+
         return cls(**kwargs)
 
     def __repr__(self):
