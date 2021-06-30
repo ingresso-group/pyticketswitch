@@ -323,7 +323,8 @@ class TestEvent:
                     'event_desc': 'Bar Test',
                 },
             ],
-            'venue_is_enforced': False
+            'venue_is_enforced': False,
+            'valid_quantities': [2, 4, 6, 8]
         }
 
         event = Event.from_events_by_id_api_data(raw_data)
@@ -331,3 +332,4 @@ class TestEvent:
         assert event.addon_events
         assert event.upsell_events
         assert event.venue_is_enforced is False
+        assert event.valid_quantities == [2, 4, 6, 8]
