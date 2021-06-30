@@ -93,6 +93,10 @@ class Event(JSONMixin, object):
             be modified based on the number of ticket orders, if true number
             of add ons will be equal to total number of tickets for all
             parent events in the trolley.
+        is_date_matched_add_on (bool): indicates whether an addon should match
+            it's parent event's date
+        is_time_matched_add_on (bool): indicates whether an addon should match
+            it's parent event's time
         area_code (str): the internal code for the area. This is for internal
             use only.
         venue_code (str): the internal code for the venue. This is for internal
@@ -120,7 +124,8 @@ class Event(JSONMixin, object):
                  component_events=None, valid_quantities=None, fields=None,
                  raw=None, is_add_on=False, area_code=None,
                  venue_code=None, venue_is_enforced=None,
-                 lingo_code=None, is_auto_quantity_add_on=False):
+                 lingo_code=None, is_auto_quantity_add_on=False,
+                 is_date_matched_add_on=False, is_time_matched_add_on=False):
 
         self.id = id_
         self.status = status
@@ -182,6 +187,8 @@ class Event(JSONMixin, object):
 
         self.is_add_on = is_add_on
         self.is_auto_quantity_add_on = is_auto_quantity_add_on
+        self.is_date_matched_add_on = is_date_matched_add_on
+        self.is_time_matched_add_on = is_time_matched_add_on
 
         self.venue_code = venue_code
         self.area_code = area_code
@@ -342,6 +349,8 @@ class Event(JSONMixin, object):
 
             'is_add_on': data.get('is_add_on', False),
             'is_auto_quantity_add_on': data.get('is_auto_quantity_add_on', False),
+            'is_date_matched_add_on': data.get('is_date_matched_add_on', False),
+            'is_time_matched_add_on': data.get('is_time_matched_add_on', False),
 
             'venue_code': data.get('venue_code'),
             'area_code': data.get('area_code'),
