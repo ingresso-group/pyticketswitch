@@ -33,6 +33,13 @@ class TestSeat:
             'seat_text_code': 'NEARTOILET',
             'separator': '-',
             'barcode': '0987654321',
+            'seat_apple_wallet_urls': {
+                'apple_wallet_gen_url': 'https://apple-wallet-api-dev.ticketswitch.io/generate_passes'
+            },
+            'seat_google_wallet_urls': {
+                'gpay_jwt_url': 'https://google-wallet-api-dev.ticketswitch.io/transactions/googlePayJWT',
+                'gpay_save_url': 'https://google-wallet-api-dev.ticketswitch.io/transactions/saveToGooglePay'
+            }
         }
 
         seat = Seat.from_api_data(data)
