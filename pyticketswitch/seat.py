@@ -125,11 +125,41 @@ class Seat(JSONMixin, object):
             'seat_text': data.get('seat_text'),
             'separator': data.get('separator', ''),
             'barcode': data.get('barcode'),
-            'seat_apple_wallet_urls': data.get('seat_apple_wallet_urls'),
-            'seat_google_wallet_urls': data.get('seat_google_pay_urls'),
+            'seat_apple_wallet_urls': AppleWallet(data.get('seat_apple_wallet_urls')) if data.get('seat_apple_wallet_urls') else None,
+            'seat_google_wallet_urls': GoogleWallet(data.get('seat_google_wallet_urls')) if data.get('seat_google_wallet_urls') else None,
         }
 
         return cls(**kwargs)
 
     def __repr__(self):
         return u'<Seat {}>'.format(self.id)
+
+
+class GoogleWallet(JSONMixin, object):
+    """Describes the urls for a google wallet.
+
+    Attributes:
+        gpay_jwt_url (str): json web token used to generate a google wallet pass
+        gpay_save_url (str): url that prompts adds a pass to a user's google wallet
+    """
+
+    def __init__(self, urls={}):
+        self.gpay_jwt_url = urls.get('gpay_jwt_url')
+        self.gpay_save_url = urls.get('gpay_save_url')
+
+    def __repr__(self):
+        return '<GoogleWallet>'
+
+
+class AppleWallet(JSONMixin, object):
+    """Describes the urls for an apple wallet.
+
+    Attributes:
+        apple_wallet_gen_url (str): url that prompts adds a pass to a user's apple wallet
+    """
+
+    def __init__(self, urls={}):
+        self.apple_wallet_gen_url = urls.get('apple_wallet_gen_url')
+
+    def __repr__(self):
+        return '<AppleWallet>'
