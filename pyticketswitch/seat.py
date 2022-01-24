@@ -84,13 +84,13 @@ class Seat(JSONMixin, object):
         barcode (str): barcode specific to this seat. Only available when
             supported by the backend system.
         seat_apple_wallet_urls: object containing urls to save an apple wallet pass
-        seat_google_wallet_urls: object containing urls to save a google wallet pass
+        seat_google_pay_urls: object containing urls to save a google wallet pass
 
     """
 
     def __init__(self, id_=None, column=None, row=None, is_restricted=False,
                  seat_text_code=None, seat_text=None, separator=None,
-                 barcode=None, seat_google_wallet_urls=None, seat_apple_wallet_urls=None):
+                 barcode=None, seat_google_pay_urls=None, seat_apple_wallet_urls=None):
         self.id = id_
         self.column = column
         self.row = row
@@ -100,7 +100,7 @@ class Seat(JSONMixin, object):
         self.seat_text_code = seat_text_code
         self.barcode = barcode
         self.seat_apple_wallet_urls = seat_apple_wallet_urls
-        self.seat_google_wallet_urls = seat_google_wallet_urls
+        self.seat_google_pay_urls = seat_google_pay_urls
 
     @classmethod
     def from_api_data(cls, data):
@@ -126,7 +126,7 @@ class Seat(JSONMixin, object):
             'separator': data.get('separator', ''),
             'barcode': data.get('barcode'),
             'seat_apple_wallet_urls': AppleWallet(data.get('seat_apple_wallet_urls')) if data.get('seat_apple_wallet_urls') else None,
-            'seat_google_wallet_urls': GoogleWallet(data.get('seat_google_wallet_urls')) if data.get('seat_google_wallet_urls') else None,
+            'seat_google_pay_urls': GoogleWallet(data.get('seat_google_pay_urls')) if data.get('seat_google_pay_urls') else None,
         }
 
         return cls(**kwargs)

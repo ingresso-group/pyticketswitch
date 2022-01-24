@@ -29,7 +29,7 @@ class TestSeat:
             'seat_apple_wallet_urls': {
                 'apple_wallet_gen_url': 'https://apple-wallet-api-dev.ticketswitch.io/generate_passes'
             },
-            'seat_google_wallet_urls': {
+            'seat_google_pay_urls': {
                 'gpay_jwt_url': 'https://google-wallet-api-dev.ticketswitch.io/transactions/googlePayJWT',
                 'gpay_save_url': 'https://google-wallet-api-dev.ticketswitch.io/transactions/saveToGooglePay'
             }
@@ -45,6 +45,6 @@ class TestSeat:
         assert seat.seat_text_code == 'NEARTOILET'
         assert seat.barcode == '0987654321'
         assert seat.seat_apple_wallet_urls.apple_wallet_gen_url == 'https://apple-wallet-api-dev.ticketswitch.io/generate_passes'
-        assert seat.seat_google_wallet_urls.gpay_jwt_url == 'https://google-wallet-api-dev.ticketswitch.io/transactions/googlePayJWT'
-        assert seat.seat_google_wallet_urls.gpay_save_url == 'https://google-wallet-api-dev.ticketswitch.io/transactions/saveToGooglePay'
+        assert seat.seat_google_pay_urls.gpay_jwt_url == 'https://google-wallet-api-dev.ticketswitch.io/transactions/googlePayJWT'
+        assert seat.seat_google_pay_urls.gpay_save_url == 'https://google-wallet-api-dev.ticketswitch.io/transactions/saveToGooglePay'
         
