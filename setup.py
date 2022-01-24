@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='pyticketswitch',
-    version='2.8.7',
+    version='2.8.8',
     author='Ingresso',
     author_email='systems@ingresso.co.uk',
     url='https://github.com/ingresso-group/pyticketswitch/',

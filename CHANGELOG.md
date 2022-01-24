@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.8.8] - 2022-01-20
+### Added
+- Added seat_apple_wallet_urls and seat_apple_wallet_urls to Seat PR:(#105)
+
 ## [2.8.7] - 2021-06-30
 ### Fixed
 - The event object missing `valid_quantities` when requested via `get_event`
