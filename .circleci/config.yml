@@ -40,8 +40,5 @@ workflows:
   version: 2
   test_all:
     jobs:
-      - test:
-          filters:
-            branches:
-              only: master
+      - test
 
