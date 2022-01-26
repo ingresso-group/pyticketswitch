@@ -29,13 +29,16 @@ class CostRange(JSONMixin, object):
             with the lowest cost.
         top_price_offer (:class:`Offer <pyticketswitch.offer.Offer>`): offer
             with the top price.
-
+        total_tax_component: all the tax included in seatprice
+        seatprice_tax_sub_component: the base (seatprice) part of the tax
+        surcharge_tax_sub_component: the surcharge part of the tax
     """
 
     def __init__(self, valid_quantities=None, max_surcharge=None, max_seatprice=None,
                  min_surcharge=None, min_seatprice=None, allows_singles=True,
                  currency=None, best_value_offer=None, max_saving_offer=None,
-                 min_cost_offer=None, top_price_offer=None):
+                 min_cost_offer=None, top_price_offer=None, total_tax_component=None,
+                 seatprice_tax_sub_component=None, surcharge_tax_sub_component=None):
 
         self.valid_quantities = valid_quantities
         self.max_seatprice = max_seatprice
@@ -47,6 +50,9 @@ class CostRange(JSONMixin, object):
         self.max_saving_offer = max_saving_offer
         self.min_cost_offer = min_cost_offer
         self.top_price_offer = top_price_offer
+        self.total_tax_component = total_tax_component
+        self.seatprice_tax_sub_component = seatprice_tax_sub_component
+        self.surcharge_tax_sub_component = surcharge_tax_sub_component
 
     @classmethod
     def from_api_data(cls, data):
@@ -107,6 +113,9 @@ class CostRange(JSONMixin, object):
             self.min_cost_offer,
             self.top_price_offer
         ])
+    
+    def has_tax(self):
+        return self.total_tax_component is not None
 
     def get_min_combined_price(self):
         return self.min_surcharge + self.min_seatprice
