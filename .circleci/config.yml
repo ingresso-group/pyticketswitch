@@ -1,0 +1,50 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - run:
+          name: Generate python version cache key
+          command: python3 --version > PY_VERSION
+      - restore_cache:
+          key:  v1-{{ checksum "PY_VERSION" }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements/test.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Install pip packages
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install --upgrade pip
+            make install
+      - save_cache:
+          key:  v1-{{ checksum "PY_VERSION" }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements/test.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: pip freeze
+          command: venv/bin/pip freeze
+      - run:
+          name: flake8
+          command: venv/bin/flake8 pyticketswitch
+      - run:
+          name: pylint
+          command: venv/bin/py.test
+      - run:
+          name: behave
+          command: venv/bin/behave
+
+workflows:
+  version: 2
+  test_all:
+    jobs:
+      - test
+  generate:
+    jobs:
+      - update_docs:
+          filters:
+            branches:
+              only: master
+
