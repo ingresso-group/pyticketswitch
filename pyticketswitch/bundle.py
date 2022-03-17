@@ -1,7 +1,6 @@
 from pyticketswitch.order import Order
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.debitor import Debitor
-from pyticketswitch.purchase_result import PurchaseResult
 
 
 class Bundle(JSONMixin, object):
@@ -26,6 +25,9 @@ class Bundle(JSONMixin, object):
             availabile when requested with the optional ``source_info`` flag.
         purchase_result (:class:`PurchaseResult <pyticketswitch.purchase_result.
             PurchaseResult>`): the result of the purchase attempt for the bundle
+        send_cost_tax_component (float): tax of send cost.
+        total_combined_tax_component (float): total tax.
+        total_surcharge_tax_sub_component (float): total surcharge tax.
 
     """
 
@@ -98,7 +100,7 @@ class Bundle(JSONMixin, object):
         if raw_debitor:
             debitor = Debitor.from_api_data(raw_debitor)
             kwargs.update(debitor=debitor)
-        
+
         total = data.get('bundle_total_cost')
         if total is not None:
             kwargs.update(total=total)
@@ -111,7 +113,6 @@ class Bundle(JSONMixin, object):
         if total_combined_tax_component is not None:
             kwargs.update(total_combined_tax_component=total_combined_tax_component)
 
-        
         total_surcharge_tax_sub_component = data.get('bundle_total_surcharge_tax_sub_component')
         if total_surcharge_tax_sub_component is not None:
             kwargs.update(total_surcharge_tax_sub_component=total_surcharge_tax_sub_component)

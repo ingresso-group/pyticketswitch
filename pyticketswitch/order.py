@@ -21,7 +21,10 @@ class TicketOrder(JSONMixin, object):
             ticket order.
         total_seatprice (float): seatprice for all tickets in the ticket order.
         total_surcharge (float): surcharge for all tickets in the ticket order.
-
+        raw_combined_tax_component (float): combined tax.
+        raw_surcharge_tax_sub_component (float): surcharge tax.
+        raw_total_combined_tax_component (float): total combined tax.
+        raw_total_surcharge_tax_sub_component (float): total surcharge tax.
     """
 
     def __init__(self, code, seats=None, number_of_seats=None, description=None,
@@ -83,7 +86,7 @@ class TicketOrder(JSONMixin, object):
         raw_combined_tax_component = data.get('sale_combined_tax_component')
         if raw_combined_tax_component is not None:
             kwargs.update(raw_combined_tax_component=raw_combined_tax_component)
-        
+
         raw_surcharge_tax_sub_component = data.get('sale_surcharge_tax_sub_component')
         if raw_surcharge_tax_sub_component is not None:
             kwargs.update(raw_surcharge_tax_sub_component=raw_surcharge_tax_sub_component)
@@ -202,6 +205,8 @@ class Order(JSONMixin, object):
         user_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
             predicted commission for the partner.
         external_management_url (str): redirect URL on confirmation page
+        total_sale_combined_tax_component (float): total combined tax component of the order.
+        total_sale_surcharge_tax_sub_component (float): total surcharge tax sub component of the order.
 
     """
 
@@ -313,14 +318,14 @@ class Order(JSONMixin, object):
         if raw_user_commission:
             user_commission = Commission.from_api_data(raw_user_commission)
             kwargs.update(user_commission=user_commission)
-        
-        total_sale_combined_tax_component = data.get('total_sale_combined_tax_component')
-        if total_sale_combined_tax_component is not None:
-            kwargs.update(total_sale_combined_tax_component=total_sale_combined_tax_component)
 
-        total_sale_surcharge_tax_sub_component = data.get('total_sale_surcharge_tax_sub_component')
-        if total_sale_surcharge_tax_sub_component is not None:
-            kwargs.update(total_sale_surcharge_tax_sub_component=total_sale_surcharge_tax_sub_component)
+        raw_total_combined_tax_component = data.get('total_sale_combined_tax_component')
+        if raw_total_combined_tax_component is not None:
+            kwargs.update(total_sale_combined_tax_component=raw_total_combined_tax_component)
+
+        raw_total_surcharge_tax_sub_component = data.get('total_sale_surcharge_tax_sub_component')
+        if raw_total_surcharge_tax_sub_component is not None:
+            kwargs.update(total_sale_surcharge_tax_sub_component=raw_total_surcharge_tax_sub_component)
 
         return cls(**kwargs)
 

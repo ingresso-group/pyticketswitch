@@ -23,6 +23,10 @@ class TestCostRange:
             "top_price_offer": {
                 "absolute_saving": 9,
             },
+            "max_combined_combined_tax_component": 35.0,
+            "max_combined_surcharge_tax_sub_component": 0.0,
+            "min_combined_combined_tax_component": 35.0,
+            "min_combined_surcharge_tax_sub_component": 0.0,
             "valid_quantities": [1, 2, 3, 4]
         }
         cost_range = CostRange.from_api_data(data)
@@ -39,6 +43,11 @@ class TestCostRange:
 
         assert cost_range.currency == 'usd'
         assert cost_range.valid_quantities == [1, 2, 3, 4]
+
+        assert cost_range.max_combined_combined_tax_component == 35.0
+        assert cost_range.max_combined_surcharge_tax_sub_component == 0.0
+        assert cost_range.min_combined_combined_tax_component == 35.0
+        assert cost_range.min_combined_surcharge_tax_sub_component == 0.0
 
     def test_has_offer_with_no_offers(self):
         cost_range = CostRange()

@@ -37,18 +37,18 @@ Feature: add tickets to the trolley
 
     Scenario: add item to an existing trolley
         Given an API client with valid credentials
-        And I have an existing trolley with items from "6IF" in it
+        And I have an existing trolley with items from "7AB" in it
         And my customer wants tickets to "6IE"
         When I add the tickets to the trolley
         Then I get a trolley token
-        And my trolley contains tickets for "6IF"
+        And my trolley contains tickets for "7AB"
         And my trolley contains tickets for "6IE"
 
     Scenario: remove item from an existing trolley
         Given an API client with valid credentials
-        And I have an existing trolley with items from "6IF" in it
+        And I have an existing trolley with items from "7AB" in it
         And I have an existing trolley with items from "6IE" in it
         When I remove some tickets for "6IE" from the trolley
         Then I get a trolley token
-        And my trolley contains tickets for "6IF"
+        And my trolley contains tickets for "7AB"
         And my trolley does not contain tickets for "6IE"

@@ -56,8 +56,6 @@ class CostRange(JSONMixin, object):
         self.min_combined_combined_tax_component = min_combined_combined_tax_component
         self.min_combined_surcharge_tax_sub_component = min_combined_surcharge_tax_sub_component
 
-
-
     @classmethod
     def from_api_data(cls, data):
         """Creates a new CostRange object from API data from ticketswitch.
@@ -107,21 +105,21 @@ class CostRange(JSONMixin, object):
         if top_price_offer:
             top_price_offer = Offer.from_api_data(top_price_offer)
             kwargs.update(top_price_offer=top_price_offer)
-        
+
         max_combined_combined_tax_component = data.get('max_combined_combined_tax_component')
-        if max_combined_combined_tax_component:
+        if max_combined_combined_tax_component is not None:
             kwargs.update(max_combined_combined_tax_component=max_combined_combined_tax_component)
-        
+
         max_combined_surcharge_tax_sub_component = data.get('max_combined_surcharge_tax_sub_component')
-        if max_combined_surcharge_tax_sub_component:
+        if max_combined_surcharge_tax_sub_component is not None:
             kwargs.update(max_combined_surcharge_tax_sub_component=max_combined_surcharge_tax_sub_component)
-        
+
         min_combined_combined_tax_component = data.get('min_combined_combined_tax_component')
-        if min_combined_combined_tax_component:
+        if min_combined_combined_tax_component is not None:
             kwargs.update(min_combined_combined_tax_component=min_combined_combined_tax_component)
-        
+
         min_combined_surcharge_tax_sub_component = data.get('min_combined_surcharge_tax_sub_component')
-        if min_combined_surcharge_tax_sub_component:
+        if min_combined_surcharge_tax_sub_component is not None:
             kwargs.update(min_combined_surcharge_tax_sub_component=min_combined_surcharge_tax_sub_component)
 
         return cls(**kwargs)
