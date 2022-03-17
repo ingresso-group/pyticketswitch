@@ -29,13 +29,17 @@ class CostRange(JSONMixin, object):
             with the lowest cost.
         top_price_offer (:class:`Offer <pyticketswitch.offer.Offer>`): offer
             with the top price.
+        max_combined_combined_tax_component (float): max combined tax
+        max_combined_surcharge_tax_sub_component (float): max combined surcharge tax
+        min_combined_combined_tax_component (float): min combined tax
+        min_combined_surcharge_tax_sub_component (float): min combined surcharge tax
 
     """
 
     def __init__(self, valid_quantities=None, max_surcharge=None, max_seatprice=None,
                  min_surcharge=None, min_seatprice=None, allows_singles=True,
                  currency=None, best_value_offer=None, max_saving_offer=None,
-                 min_cost_offer=None, top_price_offer=None):
+                 min_cost_offer=None, top_price_offer=None, max_combined_combined_tax_component=None, max_combined_surcharge_tax_sub_component=None, min_combined_combined_tax_component=None, min_combined_surcharge_tax_sub_component=None):
 
         self.valid_quantities = valid_quantities
         self.max_seatprice = max_seatprice
@@ -47,6 +51,12 @@ class CostRange(JSONMixin, object):
         self.max_saving_offer = max_saving_offer
         self.min_cost_offer = min_cost_offer
         self.top_price_offer = top_price_offer
+        self.max_combined_combined_tax_component = max_combined_combined_tax_component
+        self.max_combined_surcharge_tax_sub_component = max_combined_surcharge_tax_sub_component
+        self.min_combined_combined_tax_component = min_combined_combined_tax_component
+        self.min_combined_surcharge_tax_sub_component = min_combined_surcharge_tax_sub_component
+
+
 
     @classmethod
     def from_api_data(cls, data):
@@ -97,6 +107,22 @@ class CostRange(JSONMixin, object):
         if top_price_offer:
             top_price_offer = Offer.from_api_data(top_price_offer)
             kwargs.update(top_price_offer=top_price_offer)
+        
+        max_combined_combined_tax_component = data.get('max_combined_combined_tax_component')
+        if max_combined_combined_tax_component:
+            kwargs.update(max_combined_combined_tax_component=max_combined_combined_tax_component)
+        
+        max_combined_surcharge_tax_sub_component = data.get('max_combined_surcharge_tax_sub_component')
+        if max_combined_surcharge_tax_sub_component:
+            kwargs.update(max_combined_surcharge_tax_sub_component=max_combined_surcharge_tax_sub_component)
+        
+        min_combined_combined_tax_component = data.get('min_combined_combined_tax_component')
+        if min_combined_combined_tax_component:
+            kwargs.update(min_combined_combined_tax_component=min_combined_combined_tax_component)
+        
+        min_combined_surcharge_tax_sub_component = data.get('min_combined_surcharge_tax_sub_component')
+        if min_combined_surcharge_tax_sub_component:
+            kwargs.update(min_combined_surcharge_tax_sub_component=min_combined_surcharge_tax_sub_component)
 
         return cls(**kwargs)
 

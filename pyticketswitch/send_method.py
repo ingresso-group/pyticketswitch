@@ -15,11 +15,12 @@ class SendMethod(JSONMixin, object):
         self_print_voucher_url (str): url for the client to download their
             voucher from
         final_comment (str): comment about dispatching tickets
+        send_cost_tax_component (int): tax of the send cost
     """
 
     def __init__(self, code, cost=None, description=None, typ=None,
                  permitted_countries=None, can_generate_self_print=False,
-                 self_print_voucher_url=None, final_comment=None):
+                 self_print_voucher_url=None, final_comment=None, send_cost_tax_component=None):
         self.code = code
         self.cost = cost
         self.description = description
@@ -28,6 +29,7 @@ class SendMethod(JSONMixin, object):
         self.can_generate_self_print = can_generate_self_print
         self.self_print_voucher_url = self_print_voucher_url
         self.final_comment = final_comment
+        self.send_cost_tax_component = send_cost_tax_component
 
     @classmethod
     def from_api_data(cls, data):
@@ -66,6 +68,10 @@ class SendMethod(JSONMixin, object):
             ]
 
             kwargs.update(permitted_countries=permitted_countries)
+
+        send_cost_tax_component = data.get('send_cost_tax_component')
+        if permitted_countries_raw is not None:
+            kwargs.update(send_cost_tax_component=send_cost_tax_component)
 
         return cls(**kwargs)
 
