@@ -68,9 +68,6 @@ class TestBundle(object):
         assert isinstance(bundle.debitor, Debitor)
         assert bundle.debitor.type == 'dummy'
 
-        # assert isinstance(bundle.purchase_result, PurchaseResult)
-        # assert bundle.purchase_result.success
-
     def test_from_api_data_with_decimals(self):
         data = {
             'bundle_order_count': 1,
@@ -131,9 +128,6 @@ class TestBundle(object):
 
         assert isinstance(bundle.debitor, Debitor)
         assert bundle.debitor.type == 'dummy'
-
-        # assert isinstance(bundle.purchase_result, PurchaseResult)
-        # assert bundle.purchase_result.success
 
     def test_get_events(self):
 
