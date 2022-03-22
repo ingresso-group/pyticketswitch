@@ -54,7 +54,7 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
                  discounts=None, allows_leaving_single_seats=None, availability=None,
                  seatprice=None, surcharge=None, non_offer_seatprice=None,
                  non_offer_surcharge=None, percentage_saving=0, absolute_saving=0,
-                 is_offer=None):
+                 is_offer=None, tax_component=0):
 
         self.code = code
         self.description = description
@@ -75,6 +75,7 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
         self.percentage_saving = percentage_saving
         self.absolute_saving = absolute_saving
         self.is_offer = is_offer
+        self.tax_component = tax_component
 
     @classmethod
     def from_api_data(cls, data):
@@ -117,6 +118,7 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
             'allows_leaving_single_seats': data.get('allows_leaving_single_seats'),
             'percentage_saving': data.get('percentage_saving'),
             'is_offer': data.get('is_offer'),
+            'tax_component': data.get('sale_combined_tax_component', 0.0),
         }
 
         example_seats_data = data.get('example_seats')

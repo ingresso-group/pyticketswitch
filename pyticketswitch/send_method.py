@@ -19,7 +19,7 @@ class SendMethod(JSONMixin, object):
 
     def __init__(self, code, cost=None, description=None, typ=None,
                  permitted_countries=None, can_generate_self_print=False,
-                 self_print_voucher_url=None, final_comment=None):
+                 self_print_voucher_url=None, final_comment=None, tax_component=None):
         self.code = code
         self.cost = cost
         self.description = description
@@ -28,6 +28,7 @@ class SendMethod(JSONMixin, object):
         self.can_generate_self_print = can_generate_self_print
         self.self_print_voucher_url = self_print_voucher_url
         self.final_comment = final_comment
+        self.tax_component = tax_component
 
     @classmethod
     def from_api_data(cls, data):
@@ -50,6 +51,7 @@ class SendMethod(JSONMixin, object):
             'can_generate_self_print': data.get('can_generate_self_print'),
             'self_print_voucher_url': data.get('self_print_voucher_url'),
             'final_comment': data.get('send_final_comment'),
+            'tax_component': data.get('send_cost_tax_component', 0.0)
         }
 
         cost = data.get('send_cost', 0.0)
