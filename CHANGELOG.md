@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
-## [2.8.9] - 2022-03-22
+## [2.8.9] - 2022-03-23
 ### Added
 - Added tax_component to Discounts PR:(#TOCHANGE)
 
