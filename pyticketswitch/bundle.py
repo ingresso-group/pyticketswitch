@@ -31,10 +31,23 @@ class Bundle(JSONMixin, object):
 
     """
 
-    def __init__(self, source_code, orders=None, description=None,
-                 total_seatprice=None, total_surcharge=None,
-                 total_send_cost=None, total=None, currency_code=None,
-                 debitor=None, terms_and_conditions=None, purchase_result=None, send_cost_tax_component=None, total_combined_tax_component=None, total_surcharge_tax_sub_component=None):
+    def __init__(
+        self,
+        source_code,
+        orders=None,
+        description=None,
+        total_seatprice=None,
+        total_surcharge=None,
+        total_send_cost=None,
+        total=None,
+        currency_code=None,
+        debitor=None,
+        terms_and_conditions=None,
+        purchase_result=None,
+        send_cost_tax_component=None,
+        total_combined_tax_component=None,
+        total_surcharge_tax_sub_component=None,
+    ):
         self.source_code = source_code
         self.orders = orders
         self.description = description
@@ -48,7 +61,9 @@ class Bundle(JSONMixin, object):
         self.purchase_result = purchase_result
         self.send_cost_tax_component = send_cost_tax_component
         self.total_combined_tax_component = total_combined_tax_component
-        self.total_surcharge_tax_sub_component = total_surcharge_tax_sub_component
+        self.total_surcharge_tax_sub_component = (
+            total_surcharge_tax_sub_component
+        )
 
     @classmethod
     def from_api_data(cls, data):
@@ -109,13 +124,21 @@ class Bundle(JSONMixin, object):
         if send_cost_tax_component is not None:
             kwargs.update(send_cost_tax_component=send_cost_tax_component)
 
-        total_combined_tax_component = data.get('bundle_total_combined_tax_component')
+        total_combined_tax_component = data.get(
+            'bundle_total_combined_tax_component'
+        )
         if total_combined_tax_component is not None:
-            kwargs.update(total_combined_tax_component=total_combined_tax_component)
+            kwargs.update(
+                total_combined_tax_component=total_combined_tax_component
+            )
 
-        total_surcharge_tax_sub_component = data.get('bundle_total_surcharge_tax_sub_component')
+        total_surcharge_tax_sub_component = data.get(
+            'bundle_total_surcharge_tax_sub_component'
+        )
         if total_surcharge_tax_sub_component is not None:
-            kwargs.update(total_surcharge_tax_sub_component=total_surcharge_tax_sub_component)
+            kwargs.update(
+                total_surcharge_tax_sub_component=total_surcharge_tax_sub_component
+            )
 
         return cls(**kwargs)
 

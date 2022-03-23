@@ -36,10 +36,24 @@ class CostRange(JSONMixin, object):
 
     """
 
-    def __init__(self, valid_quantities=None, max_surcharge=None, max_seatprice=None,
-                 min_surcharge=None, min_seatprice=None, allows_singles=True,
-                 currency=None, best_value_offer=None, max_saving_offer=None,
-                 min_cost_offer=None, top_price_offer=None, max_combined_combined_tax_component=None, max_combined_surcharge_tax_sub_component=None, min_combined_combined_tax_component=None, min_combined_surcharge_tax_sub_component=None):
+    def __init__(
+        self,
+        valid_quantities=None,
+        max_surcharge=None,
+        max_seatprice=None,
+        min_surcharge=None,
+        min_seatprice=None,
+        allows_singles=True,
+        currency=None,
+        best_value_offer=None,
+        max_saving_offer=None,
+        min_cost_offer=None,
+        top_price_offer=None,
+        max_combined_combined_tax_component=None,
+        max_combined_surcharge_tax_sub_component=None,
+        min_combined_combined_tax_component=None,
+        min_combined_surcharge_tax_sub_component=None,
+    ):
 
         self.valid_quantities = valid_quantities
         self.max_seatprice = max_seatprice
@@ -51,10 +65,18 @@ class CostRange(JSONMixin, object):
         self.max_saving_offer = max_saving_offer
         self.min_cost_offer = min_cost_offer
         self.top_price_offer = top_price_offer
-        self.max_combined_combined_tax_component = max_combined_combined_tax_component
-        self.max_combined_surcharge_tax_sub_component = max_combined_surcharge_tax_sub_component
-        self.min_combined_combined_tax_component = min_combined_combined_tax_component
-        self.min_combined_surcharge_tax_sub_component = min_combined_surcharge_tax_sub_component
+        self.max_combined_combined_tax_component = (
+            max_combined_combined_tax_component
+        )
+        self.max_combined_surcharge_tax_sub_component = (
+            max_combined_surcharge_tax_sub_component
+        )
+        self.min_combined_combined_tax_component = (
+            min_combined_combined_tax_component
+        )
+        self.min_combined_surcharge_tax_sub_component = (
+            min_combined_surcharge_tax_sub_component
+        )
 
     @classmethod
     def from_api_data(cls, data):
@@ -106,31 +128,49 @@ class CostRange(JSONMixin, object):
             top_price_offer = Offer.from_api_data(top_price_offer)
             kwargs.update(top_price_offer=top_price_offer)
 
-        max_combined_combined_tax_component = data.get('max_combined_combined_tax_component')
+        max_combined_combined_tax_component = data.get(
+            'max_combined_combined_tax_component'
+        )
         if max_combined_combined_tax_component is not None:
-            kwargs.update(max_combined_combined_tax_component=max_combined_combined_tax_component)
+            kwargs.update(
+                max_combined_combined_tax_component=max_combined_combined_tax_component
+            )
 
-        max_combined_surcharge_tax_sub_component = data.get('max_combined_surcharge_tax_sub_component')
+        max_combined_surcharge_tax_sub_component = data.get(
+            'max_combined_surcharge_tax_sub_component'
+        )
         if max_combined_surcharge_tax_sub_component is not None:
-            kwargs.update(max_combined_surcharge_tax_sub_component=max_combined_surcharge_tax_sub_component)
+            kwargs.update(
+                max_combined_surcharge_tax_sub_component=max_combined_surcharge_tax_sub_component
+            )
 
-        min_combined_combined_tax_component = data.get('min_combined_combined_tax_component')
+        min_combined_combined_tax_component = data.get(
+            'min_combined_combined_tax_component'
+        )
         if min_combined_combined_tax_component is not None:
-            kwargs.update(min_combined_combined_tax_component=min_combined_combined_tax_component)
+            kwargs.update(
+                min_combined_combined_tax_component=min_combined_combined_tax_component
+            )
 
-        min_combined_surcharge_tax_sub_component = data.get('min_combined_surcharge_tax_sub_component')
+        min_combined_surcharge_tax_sub_component = data.get(
+            'min_combined_surcharge_tax_sub_component'
+        )
         if min_combined_surcharge_tax_sub_component is not None:
-            kwargs.update(min_combined_surcharge_tax_sub_component=min_combined_surcharge_tax_sub_component)
+            kwargs.update(
+                min_combined_surcharge_tax_sub_component=min_combined_surcharge_tax_sub_component
+            )
 
         return cls(**kwargs)
 
     def has_offer(self):
-        return any([
-            self.best_value_offer,
-            self.max_saving_offer,
-            self.min_cost_offer,
-            self.top_price_offer
-        ])
+        return any(
+            [
+                self.best_value_offer,
+                self.max_saving_offer,
+                self.min_cost_offer,
+                self.top_price_offer,
+            ]
+        )
 
     def get_min_combined_price(self):
         return self.min_surcharge + self.min_seatprice
@@ -158,9 +198,16 @@ class CostRangeDetails(JSONMixin, object):
 
     """
 
-    def __init__(self, ticket_type_code, price_band_code, cost_range,
-                 ticket_type_description=None, price_band_description=None,
-                 cost_range_no_singles=None, **kwargs):
+    def __init__(
+        self,
+        ticket_type_code,
+        price_band_code,
+        cost_range,
+        ticket_type_description=None,
+        price_band_description=None,
+        cost_range_no_singles=None,
+        **kwargs
+    ):
 
         self.ticket_type_code = ticket_type_code
         self.price_band_code = price_band_code
@@ -188,15 +235,15 @@ class CostRangeDetails(JSONMixin, object):
                 if not cost_range:
                     continue
 
-                kwargs.update(
-                    cost_range=CostRange.from_api_data(cost_range)
-                )
+                kwargs.update(cost_range=CostRange.from_api_data(cost_range))
 
                 no_singles = cost_range.get('no_singles_cost_range')
 
                 if no_singles:
                     kwargs.update(
-                        cost_range_no_singles=CostRange.from_api_data(no_singles)
+                        cost_range_no_singles=CostRange.from_api_data(
+                            no_singles
+                        )
                     )
 
                 details.append(cls(**kwargs))

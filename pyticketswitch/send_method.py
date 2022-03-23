@@ -18,9 +18,18 @@ class SendMethod(JSONMixin, object):
         send_cost_tax_component (int): tax of the send cost
     """
 
-    def __init__(self, code, cost=None, description=None, typ=None,
-                 permitted_countries=None, can_generate_self_print=False,
-                 self_print_voucher_url=None, final_comment=None, send_cost_tax_component=None):
+    def __init__(
+        self,
+        code,
+        cost=None,
+        description=None,
+        typ=None,
+        permitted_countries=None,
+        can_generate_self_print=False,
+        self_print_voucher_url=None,
+        final_comment=None,
+        send_cost_tax_component=None,
+    ):
         self.code = code
         self.cost = cost
         self.description = description
@@ -77,4 +86,5 @@ class SendMethod(JSONMixin, object):
 
     def __repr__(self):
         return u'<SendMethod {}:{}>'.format(
-            self.code, self.description.encode('ascii', 'ignore'))
+            self.code, self.description.encode('ascii', 'ignore')
+        )
