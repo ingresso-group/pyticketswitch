@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: cimg/python:3.9
     steps:
-      - run: apk add --no-cache bash curl git openssh-client
+      #      - run: apk add --no-cache bash curl git openssh-client
       - checkout
       - run:
           name: Generate python version cache key
