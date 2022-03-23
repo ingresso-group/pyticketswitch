@@ -70,7 +70,7 @@ class SendMethod(JSONMixin, object):
             kwargs.update(permitted_countries=permitted_countries)
 
         send_cost_tax_component = data.get('send_cost_tax_component')
-        if permitted_countries_raw is not None:
+        if send_cost_tax_component is not None:
             kwargs.update(send_cost_tax_component=send_cost_tax_component)
 
         return cls(**kwargs)
