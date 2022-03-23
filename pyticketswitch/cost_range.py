@@ -113,7 +113,7 @@ class CostRange(JSONMixin, object):
             self.min_cost_offer,
             self.top_price_offer
         ])
-    
+
     def has_tax(self):
         return self.total_tax_component is not None
 
