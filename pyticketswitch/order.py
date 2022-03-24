@@ -111,13 +111,9 @@ class TicketOrder(JSONMixin, object):
                 raw_surcharge_tax_sub_component=raw_surcharge_tax_sub_component
             )
 
-        total_sale_combined = data.get(
-            'total_sale_combined'
-        )
+        total_sale_combined = data.get('total_sale_combined')
         if total_sale_combined is not None:
-            kwargs.update(
-                total_sale_combined=total_sale_combined
-            )
+            kwargs.update(total_sale_combined=total_sale_combined)
 
         raw_total_combined_tax_component = data.get(
             'total_sale_combined_tax_component'
@@ -378,13 +374,9 @@ class Order(JSONMixin, object):
             user_commission = Commission.from_api_data(raw_user_commission)
             kwargs.update(user_commission=user_commission)
 
-        total_sale_combined = data.get(
-            'total_sale_combined'
-        )
+        total_sale_combined = data.get('total_sale_combined')
         if total_sale_combined is not None:
-            kwargs.update(
-                total_sale_combined=total_sale_combined
-            )
+            kwargs.update(total_sale_combined=total_sale_combined)
 
         raw_total_combined_tax_component = data.get(
             'total_sale_combined_tax_component'

@@ -70,15 +70,11 @@ class CostRange(JSONMixin, object):
         self.max_combined_combined_tax_component = (
             max_combined_combined_tax_component
         )
-        self.max_combined_surcharge_tax_sub = (
-            max_combined_surcharge_tax_sub
-        )
+        self.max_combined_surcharge_tax_sub = max_combined_surcharge_tax_sub
         self.min_combined_combined_tax_component = (
             min_combined_combined_tax_component
         )
-        self.min_combined_surcharge_tax_sub = (
-            min_combined_surcharge_tax_sub
-        )
+        self.min_combined_surcharge_tax_sub = min_combined_surcharge_tax_sub
 
     @classmethod
     def from_api_data(cls, data):
@@ -186,7 +182,7 @@ class CostRange(JSONMixin, object):
                 self.max_combined_combined_tax_component,
                 self.max_combined_surcharge_tax_sub,
                 self.min_combined_combined_tax_component,
-                self.min_combined_surcharge_tax_sub
+                self.min_combined_surcharge_tax_sub,
             ]
         )
 

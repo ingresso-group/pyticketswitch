@@ -23,10 +23,22 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             code cannot be specified for.
     """
 
-    def __init__(self, code, description=None, price_band_code=None,
-                 availability=None, is_offer=False, percentage_saving=0,
-                 absolute_saving=0, gross_commission=None, user_commission=None,
-                 disallowed_seat_nos=None, tax_component=None, *args, **kwargs):
+    def __init__(
+        self,
+        code,
+        description=None,
+        price_band_code=None,
+        availability=None,
+        is_offer=False,
+        percentage_saving=0,
+        absolute_saving=0,
+        gross_commission=None,
+        user_commission=None,
+        disallowed_seat_nos=None,
+        tax_component=None,
+        *args,
+        **kwargs
+    ):
         super(Discount, self).__init__(*args, **kwargs)
         self.code = code
         self.description = description
@@ -89,4 +101,5 @@ class Discount(SeatPricingMixin, JSONMixin, object):
 
     def __repr__(self):
         return u'<Discount {}:{}>'.format(
-            self.code, self.description.encode('ascii', 'ignore'))
+            self.code, self.description.encode('ascii', 'ignore')
+        )
