@@ -23,6 +23,10 @@ class TestCostRange:
             "top_price_offer": {
                 "absolute_saving": 9,
             },
+            "max_combined_combined_tax_component": 35.0,
+            "max_combined_surcharge_tax_sub_component": 0.0,
+            "min_combined_combined_tax_component": 35.0,
+            "min_combined_surcharge_tax_sub_component": 0.0,
             "valid_quantities": [1, 2, 3, 4]
         }
         cost_range = CostRange.from_api_data(data)
@@ -39,6 +43,11 @@ class TestCostRange:
 
         assert cost_range.currency == 'usd'
         assert cost_range.valid_quantities == [1, 2, 3, 4]
+
+        assert cost_range.max_combined_combined_tax_component == 35.0
+        assert cost_range.max_combined_surcharge_tax_sub == 0.0
+        assert cost_range.min_combined_combined_tax_component == 35.0
+        assert cost_range.min_combined_surcharge_tax_sub == 0.0
 
     def test_has_offer_with_no_offers(self):
         cost_range = CostRange()
@@ -71,6 +80,20 @@ class TestCostRange:
     def test_get_max_combined_price(self):
         cost_range = CostRange(max_seatprice=22, max_surcharge=8)
         assert cost_range.get_max_combined_price() == 30.0
+
+    def test_has_tax_with_combined_tax_components(self):
+        cost_range = CostRange(
+            max_combined_combined_tax_component=35.0,
+            min_combined_combined_tax_component=0.0,
+        )
+        assert cost_range.has_tax() is True
+
+    def test_has_tax_with_surcharge_tax_sub_components(self):
+        cost_range = CostRange(
+            max_combined_surcharge_tax_sub=35.0,
+            min_combined_surcharge_tax_sub=0.0,
+        )
+        assert cost_range.has_tax() is True
 
 
 class TestCostRangeDetails:

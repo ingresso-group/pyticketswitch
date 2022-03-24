@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.9.0] - 2022-03-24
+### Added
+- Added tax_component to Discounts, SendMethod, PriceBand, Bundle, CostRange and Order PR:(#107)
+
 ## [2.8.8] - 2022-01-20
 ### Added
 - Added seat_apple_wallet_urls and seat_apple_wallet_urls to Seat PR:(#105)
