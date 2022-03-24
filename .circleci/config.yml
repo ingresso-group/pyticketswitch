@@ -23,6 +23,8 @@ jobs:
           name: Install pip packages
           command: |
             python3 -m venv venv
+            pwd
+            ls
             venv/bin/pip install --upgrade -r requirements-test.txt
       - save_cache:
           key:  v1-{{ checksum "PY_VERSION" }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements/test.txt" }}
