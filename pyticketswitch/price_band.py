@@ -54,7 +54,7 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
                  discounts=None, allows_leaving_single_seats=None, availability=None,
                  seatprice=None, surcharge=None, non_offer_seatprice=None,
                  non_offer_surcharge=None, percentage_saving=0, absolute_saving=0,
-                 is_offer=None, tax_component=0):
+                 is_offer=None, tax_component=None):
 
         self.code = code
         self.description = description
@@ -118,7 +118,6 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
             'allows_leaving_single_seats': data.get('allows_leaving_single_seats'),
             'percentage_saving': data.get('percentage_saving'),
             'is_offer': data.get('is_offer'),
-            'tax_component': data.get('sale_combined_tax_component', 0.0),
         }
 
         example_seats_data = data.get('example_seats')
@@ -165,6 +164,10 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
                 for discount_data in discounts_data
             ]
             kwargs.update(discounts=discounts)
+
+        tax_component = data.get('sale_combined_tax_component')
+        if tax_component is not None:
+            kwargs.update(tax_component=tax_component)
 
         kwargs.update(SeatPricingMixin.kwargs_from_api_data(data))
 
