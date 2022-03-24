@@ -1,5 +1,0 @@
--r requirements.txt
-mock
-flake8
-behave
-vcrpy
