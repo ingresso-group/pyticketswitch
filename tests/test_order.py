@@ -21,6 +21,7 @@ class TestTicketOrder:
                 {'full_id': 'ABC123'},
                 {'full_id': 'DEF456'},
             ],
+            "total_sale_combined": 55.0,
             'sale_combined_tax_component': 35.0,
             'sale_surcharge_tax_sub_component': 0.0,
             'total_sale_combined_tax_component': 35.0,
@@ -52,6 +53,8 @@ class TestTicketOrder:
         assert ticket_order.raw_total_combined_tax_component == 35.0
         assert isinstance(ticket_order.raw_total_surcharge_tax_sub_component, (int, float))
         assert ticket_order.raw_total_surcharge_tax_sub_component == 0.0
+        assert isinstance(ticket_order.total_sale_combined, (int, float))
+        assert ticket_order.total_sale_combined == 55.0
 
     def test_from_api_data_with_decimal(self):
         data = {
@@ -66,6 +69,7 @@ class TestTicketOrder:
                 {'full_id': 'ABC123'},
                 {'full_id': 'DEF456'},
             ],
+            'total_sale_combined': Decimal('55.0'),
             'sale_combined_tax_component': Decimal('35.0'),
             'sale_surcharge_tax_sub_component': Decimal('0.0'),
             'total_sale_combined_tax_component': Decimal('35.0'),
@@ -97,6 +101,8 @@ class TestTicketOrder:
         assert ticket_order.raw_total_combined_tax_component == Decimal('35.0')
         assert isinstance(ticket_order.raw_total_surcharge_tax_sub_component, (int, Decimal))
         assert ticket_order.raw_total_surcharge_tax_sub_component == Decimal('0.0')
+        assert isinstance(ticket_order.total_sale_combined, (int, Decimal))
+        assert ticket_order.total_sale_combined == Decimal('55.0')
 
     def test_repr(self):
         ticket_order = TicketOrder('abc123')
@@ -201,7 +207,8 @@ class TestOrder:
                 'commission_currency_code': 'gbp',
             },
             "total_sale_combined_tax_component": 35.0,
-            "total_sale_surcharge_tax_sub_component": 0.0
+            "total_sale_surcharge_tax_sub_component": 0.0,
+            "total_sale_combined": 56.40
         }
 
         order = Order.from_api_data(data)
@@ -247,6 +254,7 @@ class TestOrder:
 
         assert order.total_sale_combined_tax_component == 35.0
         assert order.total_sale_surcharge_tax_sub_component == 0.0
+        assert order.total_sale_combined == 56.40
 
     def test_from_api_data_with_decimal(self):
 
@@ -307,6 +315,7 @@ class TestOrder:
             },
             "total_sale_combined_tax_component": Decimal('35.0'),
             "total_sale_surcharge_tax_sub_component": Decimal('0.0'),
+            "total_sale_combined": Decimal("56.40")
         }
 
         order = Order.from_api_data(data)
@@ -337,6 +346,7 @@ class TestOrder:
 
         assert order.total_sale_combined_tax_component == Decimal('35.0')
         assert order.total_sale_surcharge_tax_sub_component == Decimal('0.0')
+        assert order.total_sale_combined == Decimal('56.40')
 
     def test_from_api_data_with_send_method(self):
 
