@@ -1,6 +1,7 @@
 from pyticketswitch.order import Order
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.debitor import Debitor
+from pyticketswitch.purchase_result import PurchaseResult
 
 
 class Bundle(JSONMixin, object):
@@ -115,6 +116,11 @@ class Bundle(JSONMixin, object):
         if raw_debitor:
             debitor = Debitor.from_api_data(raw_debitor)
             kwargs.update(debitor=debitor)
+
+        raw_purchase_result = data.get('purchase_result')
+        if raw_purchase_result:
+            purchase_result = PurchaseResult.from_api_data(raw_purchase_result)
+            kwargs.update(purchase_result=purchase_result)
 
         total = data.get('bundle_total_cost')
         if total is not None:
