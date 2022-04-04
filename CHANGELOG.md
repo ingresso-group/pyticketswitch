@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.9.1] - 2022-04-04
+### Fixed
+- Re add purchase result (#109)
+
 ## [2.9.0] - 2022-03-24
 ### Added
 - Added tax_component to Discounts, SendMethod, PriceBand, Bundle, CostRange and Order PR:(#107)
