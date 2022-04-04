@@ -31,6 +31,7 @@ class TestDiscount:
             'number_available': 6,
             'predicted_gross_commission': gross_commission_data,
             'predicted_user_commission': user_commission_data,
+            'sale_combined_tax_component': 50
         }
 
         discount = Discount.from_api_data(data)
@@ -53,6 +54,7 @@ class TestDiscount:
         assert discount.user_commission.including_vat == user_commission_data['amount_including_vat']
         assert discount.user_commission.excluding_vat == user_commission_data['amount_excluding_vat']
         assert discount.user_commission.currency_code == user_commission_data['commission_currency_code']
+        assert discount.tax_component == 50
 
     def test_from_api_data_without_commission(self):
         data = {

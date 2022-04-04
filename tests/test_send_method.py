@@ -22,7 +22,8 @@ class TestSendMethod:
                         'country_desc': 'United Kingdom'
                     }
                 ]
-            }
+            },
+            'send_cost_tax_component': 0.95
         }
 
         method = SendMethod.from_api_data(data)
@@ -34,6 +35,7 @@ class TestSendMethod:
         assert method.type == 'post'
         assert method.final_comment == 'allow some time'
         assert len(method.permitted_countries) == 2
+        assert method.send_cost_tax_component == 0.95
 
     def test_from_api_data_with_decimal(self):
         data = {
@@ -53,7 +55,8 @@ class TestSendMethod:
                         'country_desc': 'United Kingdom'
                     }
                 ]
-            }
+            },
+            'send_cost_tax_component': Decimal('0.95')
         }
 
         method = SendMethod.from_api_data(data)
@@ -65,6 +68,7 @@ class TestSendMethod:
         assert method.type == 'post'
         assert method.final_comment == 'allow some time'
         assert len(method.permitted_countries) == 2
+        assert method.send_cost_tax_component == Decimal('0.95')
 
     def test_from_api_data_without_permitted_countries(self):
         data = {

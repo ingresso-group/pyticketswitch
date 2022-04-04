@@ -6,6 +6,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.9.1] - 2022-04-04
+### Fixed
+- Re add purchase result (#109)
+
+## [2.9.0] - 2022-03-24
+### Added
+- Added tax_component to Discounts, SendMethod, PriceBand, Bundle, CostRange and Order PR:(#107)
+
+## [2.8.8] - 2022-01-20
+### Added
+- Added seat_apple_wallet_urls and seat_apple_wallet_urls to Seat PR:(#105)
+
 ## [2.8.7] - 2021-06-30
 ### Fixed
 - The event object missing `valid_quantities` when requested via `get_event`
