@@ -10,7 +10,7 @@ jobs:
           name: Generate python version cache key
           command: python3 --version > PY_VERSION
       - restore_cache:
-          key:  v1-{{ checksum "PY_VERSION" }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements/test.txt" }}
+          key:  v2-{{ checksum "PY_VERSION" }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements/test.txt" }}
           paths:
             - "venv"
       - run:
@@ -19,7 +19,7 @@ jobs:
             python3 -m venv venv
             venv/bin/pip install --upgrade -r requirements/test.txt
       - save_cache:
-          key:  v1-{{ checksum "PY_VERSION" }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements/test.txt" }}
+          key:  v2-{{ checksum "PY_VERSION" }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements/test.txt" }}
           paths:
             - "venv"
       - run:
