@@ -69,8 +69,8 @@ class AvailabilityMeta(CurrencyMeta):
 
         inst.valid_quantities = data.get('valid_quantities')
         inst.max_bundle_size = data.get('max_bundle_size')
-        inst.contiguous_seat_selection_only = data.get(
-            'contiguous_seat_selection_only', True)
+        inst.contiguous_seat_selection_only = data.get('contiguous_seat_selection_only',
+                True)
         inst.backend_is_broken = data.get('backend_is_broken')
         inst.backend_is_down = data.get('backend_is_down')
         inst.backend_throttle_failed = data.get('backend_throttle_failed')
@@ -170,7 +170,7 @@ class AvailabilityDetails(JSONMixin, object):
                     kwargs['surcharge'] = raw_details.get('surcharge', 0.0)
                     kwargs['full_surcharge'] = raw_details.get('full_surcharge', 0.0)
                     kwargs['percentage_saving'] = raw_details.get(
-                        'percentage_saving', 0.0)
+                            'percentage_saving', 0.0)
                     kwargs['absolute_saving'] = raw_details.get('absolute_saving', 0.0)
                     kwargs['currency'] = raw_details.get('avail_currency_code')
 

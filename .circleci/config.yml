@@ -1,5 +1,11 @@
 version: 2.1
 jobs:
+  test2:
+    docker:
+      - image: docker:stable
+    steps:
+      - run: apk add --no-cache bash curl git openssh-client
+      - checkout
   test:
     docker:
       - image: cimg/python:3.9
@@ -34,15 +40,11 @@ jobs:
       - run:
           name: behave
           command: venv/bin/behave
-      - run: go test -v -coverpkg=./... -coverprofile=coverage.txt -covermode=atomic ./...
-        #     - run:
-        #          name: Report code coverage
-        #          command: |
-        #            bash <(curl -s https://codecov.io/bash) -t 58cee431-7146-4cd2-acc7-943a61b19dc4
 
 workflows:
   version: 2
   test:
     jobs:
+      - test2
       - test
 

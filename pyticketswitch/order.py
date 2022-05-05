@@ -127,8 +127,9 @@ class TicketOrder(JSONMixin, object):
             'total_sale_surcharge_tax_sub_component'
         )
         if raw_total_surcharge_tax_sub_component is not None:
-            kwargs['raw_total_surcharge_tax_sub_component'] = \
-                raw_total_surcharge_tax_sub_component
+            kwargs.update(
+                raw_total_surcharge_tax_sub_component=raw_total_surcharge_tax_sub_component
+            )
 
         seats_data = data.get('seats')
         if seats_data:
@@ -233,10 +234,8 @@ class Order(JSONMixin, object):
         user_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
             predicted commission for the partner.
         external_management_url (str): redirect URL on confirmation page
-        total_sale_combined_tax_component (float):
-            total combined tax component of the order.
-        total_sale_surcharge_tax_sub_component (float):
-            total surcharge tax sub component of the order.
+        total_sale_combined_tax_component (float): total combined tax component of the order.
+        total_sale_surcharge_tax_sub_component (float): total surcharge tax sub component of the order.
 
     """
 
@@ -391,14 +390,14 @@ class Order(JSONMixin, object):
             'total_sale_surcharge_tax_sub_component'
         )
         if raw_total_surcharge_tax_sub_component is not None:
-            kwargs['total_sale_surcharge_tax_sub_component'] =\
-                raw_total_surcharge_tax_sub_component
+            kwargs.update(
+                total_sale_surcharge_tax_sub_component=raw_total_surcharge_tax_sub_component
+            )
 
         return cls(**kwargs)
 
     def get_seats(self):
-        """Get all seats from all :class:`TicketOrder
-            <pyticketswitch.order.TicketOrder>` children.
+        """Get all seats from all :class:`TicketOrder <pyticketswitch.order.TicketOrder>` children.
 
         Returns:
             list: list of `Seats <pyticketswitch.seat.Seat>`.
