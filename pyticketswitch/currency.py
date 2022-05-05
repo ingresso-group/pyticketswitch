@@ -165,7 +165,8 @@ class CurrencyMeta(JSONMixin, object):
         )
 
     def get_currency(self, code=None):
-        """Get the :class:`Currency <pyticketswitch.currency.Currency>` object for the given code.
+        """Get the :class:
+            `Currency <pyticketswitch.currency.Currency>` object for the given code.
 
         Args:
             code (str, optional): ISO 4217 currency code.

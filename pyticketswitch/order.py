@@ -415,7 +415,8 @@ class Order(JSONMixin, object):
         ]
 
     def get_seat_ids(self):
-        """Get all seat ids from all :class:`TicketOrders <pyticketswitch.order.TickerOrder>`
+        """Get all seat ids from all :class:
+            `TicketOrders <pyticketswitch.order.TickerOrder>`
 
         Returns:
             list: list of seat ids.
