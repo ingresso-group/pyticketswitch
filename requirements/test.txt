@@ -10,3 +10,4 @@ pyhamcrest
 flake8
 requests-mock
 pylint
+coverage
