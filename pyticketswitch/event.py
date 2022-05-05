@@ -55,7 +55,8 @@ class Event(JSONMixin, object):
         no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             pricining summary from cached availability. Only present when
             requested.
-        cost_range_details (:class:`CostRangeDetails <pyticketswitch.cost_range.CostRangeDetails>`):
+        cost_range_details (:class:`CostRangeDetails
+                <pyticketswitch.cost_range.CostRangeDetails>`):
             summary pricing information broken down by availability. This is
             cached data. Only present when requested.
         content (dict): dictionary of
@@ -79,7 +80,8 @@ class Event(JSONMixin, object):
             objects. Only present when requested.
         critic_review_percent (float): summary of critic review star rating.
             rated from 1 (lowest) to 5 (highest).
-        availability_details (:class:`AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`):
+        availability_details (:class:`AvailabilityDetails
+                <pyticketswitch.availability.AvailabilityDetails>`):
             summary of availability details from cached data. Only present when
             requested.
         component_events (list): list of :class:`Events <pyticketswitch.event.Event>`
