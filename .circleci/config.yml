@@ -35,6 +35,9 @@ jobs:
           name: behave
           command: venv/bin/behave
       - run:
+          name: pytest
+          command: python -m pytest
+      - run:
           name: coverage
           command: python -m coverage run -m pytest
 
