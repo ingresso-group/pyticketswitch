@@ -34,6 +34,9 @@ jobs:
       - run:
           name: behave
           command: venv/bin/behave
+      - run:
+          name: coverage
+          command: coverage run -m pytest
 
 workflows:
   version: 2
