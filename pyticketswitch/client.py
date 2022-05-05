@@ -492,7 +492,8 @@ class Client(object):
             page (int): the page of a paginated response.
             page_length (int): how many performances are
                 returned per page.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -575,7 +576,9 @@ class Client(object):
             event_ids (list): list of event IDs
             with_addons (bool): include add-on events
             with_upsells (bool): include upsell events
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs:
+                see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -634,11 +637,13 @@ class Client(object):
 
         Args:
             event_id (str): ID of the event to retrieve
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
-            :class:`Event <pyticketswitch.event.Event>`, :class:`EventMeta <pyticketswitch.event.EventMeta>`:
+            :class:`Event <pyticketswitch.event.Event>`,
+                :class:`EventMeta <pyticketswitch.event.EventMeta>`:
             the target event and meta information about the event.
 
             will return :obj:`None` if the event does not exist.
@@ -654,7 +659,8 @@ class Client(object):
 
         Args:
             event_id (str): ID of the event to retrieve
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -702,7 +708,8 @@ class Client(object):
             page (int): the page of a paginated response.
             page_length (int): how many performances are
                 returned per page.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -755,7 +762,8 @@ class Client(object):
 
         Args:
             performance_ids (list): list of performance IDs to fetch.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -809,11 +817,13 @@ class Client(object):
 
         Args:
             performance_id (str): ID of the performance to retrieve
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
-            :class:`Performance <pyticketswitch.event.Event>`, :class:`PerformanceMeta <pyticketswitch.performance.PerformanceMeta>`:
+            :class:`Performance <pyticketswitch.event.Event>`,
+                :class:`PerformanceMeta <pyticketswitch.performance.PerformanceMeta>`:
             the target Performance and meta information about the performance.
 
             will return :obj:`None` if the performance does not exist.
@@ -842,7 +852,8 @@ class Client(object):
                 available. Defaults to :obj:`False`.
             user_commission (bool): request user commission for each
                 price band/discount. Defaults to :obj:`False`
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         .. note:: setting **discounts** or the **user_commission** arguments to
@@ -907,7 +918,8 @@ class Client(object):
 
         Args:
             performance_id (string): identifier of the target performance.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -953,7 +965,8 @@ class Client(object):
             price_band_code (string): code for the target price band.
             user_commission (bool): if True then return the user_commission,
                 otherwise do not return the user_commission. Defaults to False.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -1125,7 +1138,8 @@ class Client(object):
                 parameters.
 
         Returns:
-            :class:`Trolley <pyticketswitch.trolley.Trolley>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            :class:`Trolley <pyticketswitch.trolley.Trolley>`,
+                :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
             the contents of the trolley and meta data associated with the
             trolley.
 
@@ -1346,7 +1360,8 @@ class Client(object):
                 parameters.
 
         Returns:
-            :class:`Reservation <pyticketswitch.reservation.Reservation>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            :class:`Reservation <pyticketswitch.reservation.Reservation>`,
+                :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
             Information about the reservation and meta data asscociated with
             the reservation.
 
@@ -1420,7 +1435,8 @@ class Client(object):
                 parameters. These will be ignored.
 
         Returns:
-            :class:`Reservation <pyticketswitch.reservation.Reservation>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            :class:`Reservation <pyticketswitch.reservation.Reservation>`,
+                :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
             Information about the reservation and meta data asscociated with
             the reservation.
 
@@ -1431,7 +1447,8 @@ class Client(object):
                 to ``True`` and the requested addition to a trolley was
                 unavailable.
 
-        .. _`/f13/reserve_page_archive.v1`: http://docs.ingresso.co.uk/#reserve_page_archive
+        .. _`/f13/reserve_page_archive.v1`:
+            http://docs.ingresso.co.uk/#reserve_page_archive
 
         """
         params = {"transaction_uuid": transaction_uuid}
@@ -1464,7 +1481,8 @@ class Client(object):
             **kwargs: arbitary keyword parameters to pass directly to the API.
 
         Returns:
-            :class:`Status <pyticketswitch.status.Status>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            :class:`Status <pyticketswitch.status.Status>`,
+                :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
             the current status of the transaction and acompanying meta
             information.
 
@@ -1507,7 +1525,8 @@ class Client(object):
             payment_method: the customer's payment details. Can be
                 :class:`CardDetails <pyticketswitch.payment_methods.CardDetails>`
                 or
-                :class:`RedirectionDetails <pyticketswitch.payment_methods.RedirectionDetails>`.
+                :class:
+                `RedirectionDetails <pyticketswitch.payment_methods.RedirectionDetails>`.
             send_confirmation_email (bool): on a successful purchase, when this
                 parameter is :obj:`True`, then we will send the customer a
                 confirmation email. If you would prefer to send your own
@@ -1590,7 +1609,8 @@ class Client(object):
 
             See :ref:`Handling callouts <handling_callouts>` for more information.
 
-        .. _`/f13/purchase_page_archive.v1`: http://docs.ingresso.co.uk/#purchase_page_archive
+        .. _`/f13/purchase_page_archive.v1`:
+            http://docs.ingresso.co.uk/#purchase_page_archive
 
         """
         params = {"transaction_uuid": transaction_uuid}

@@ -233,8 +233,10 @@ class Order(JSONMixin, object):
         user_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
             predicted commission for the partner.
         external_management_url (str): redirect URL on confirmation page
-        total_sale_combined_tax_component (float): total combined tax component of the order.
-        total_sale_surcharge_tax_sub_component (float): total surcharge tax sub component of the order.
+        total_sale_combined_tax_component (float):
+            total combined tax component of the order.
+        total_sale_surcharge_tax_sub_component (float):
+            total surcharge tax sub component of the order.
 
     """
 
@@ -395,7 +397,8 @@ class Order(JSONMixin, object):
         return cls(**kwargs)
 
     def get_seats(self):
-        """Get all seats from all :class:`TicketOrder <pyticketswitch.order.TicketOrder>` children.
+        """Get all seats from all :class:
+            `TicketOrder <pyticketswitch.order.TicketOrder>` children.
 
         Returns:
             list: list of `Seats <pyticketswitch.seat.Seat>`.
