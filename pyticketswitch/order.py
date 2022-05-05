@@ -21,12 +21,28 @@ class TicketOrder(JSONMixin, object):
             ticket order.
         total_seatprice (float): seatprice for all tickets in the ticket order.
         total_surcharge (float): surcharge for all tickets in the ticket order.
-
+        raw_combined_tax_component (float): combined tax.
+        raw_surcharge_tax_sub_component (float): surcharge tax.
+        raw_total_combined_tax_component (float): total combined tax.
+        raw_total_surcharge_tax_sub_component (float): total surcharge tax.
     """
 
-    def __init__(self, code, seats=None, number_of_seats=None, description=None,
-                 seatprice=None, surcharge=None, total_seatprice=None,
-                 total_surcharge=None):
+    def __init__(
+        self,
+        code,
+        seats=None,
+        number_of_seats=None,
+        description=None,
+        seatprice=None,
+        surcharge=None,
+        total_seatprice=None,
+        total_surcharge=None,
+        raw_combined_tax_component=None,
+        raw_surcharge_tax_sub_component=None,
+        total_sale_combined=None,
+        raw_total_combined_tax_component=None,
+        raw_total_surcharge_tax_sub_component=None,
+    ):
         self.code = code
         self.seats = seats
         self.description = description
@@ -35,6 +51,13 @@ class TicketOrder(JSONMixin, object):
         self.surcharge = surcharge
         self.total_seatprice = total_seatprice
         self.total_surcharge = total_surcharge
+        self.raw_combined_tax_component = raw_combined_tax_component
+        self.raw_surcharge_tax_sub_component = raw_surcharge_tax_sub_component
+        self.total_sale_combined = total_sale_combined
+        self.raw_total_combined_tax_component = raw_total_combined_tax_component
+        self.raw_total_surcharge_tax_sub_component = (
+            raw_total_surcharge_tax_sub_component
+        )
 
     @classmethod
     def from_api_data(cls, data):
@@ -76,12 +99,41 @@ class TicketOrder(JSONMixin, object):
         if raw_total_surcharge is not None:
             kwargs.update(total_surcharge=raw_total_surcharge)
 
+        raw_combined_tax_component = data.get('sale_combined_tax_component')
+        if raw_combined_tax_component is not None:
+            kwargs.update(raw_combined_tax_component=raw_combined_tax_component)
+
+        raw_surcharge_tax_sub_component = data.get(
+            'sale_surcharge_tax_sub_component'
+        )
+        if raw_surcharge_tax_sub_component is not None:
+            kwargs.update(
+                raw_surcharge_tax_sub_component=raw_surcharge_tax_sub_component
+            )
+
+        total_sale_combined = data.get('total_sale_combined')
+        if total_sale_combined is not None:
+            kwargs.update(total_sale_combined=total_sale_combined)
+
+        raw_total_combined_tax_component = data.get(
+            'total_sale_combined_tax_component'
+        )
+        if raw_total_combined_tax_component is not None:
+            kwargs.update(
+                raw_total_combined_tax_component=raw_total_combined_tax_component
+            )
+
+        raw_total_surcharge_tax_sub_component = data.get(
+            'total_sale_surcharge_tax_sub_component'
+        )
+        if raw_total_surcharge_tax_sub_component is not None:
+            kwargs.update(
+                raw_total_surcharge_tax_sub_component=raw_total_surcharge_tax_sub_component
+            )
+
         seats_data = data.get('seats')
         if seats_data:
-            seats = [
-                Seat.from_api_data(seat)
-                for seat in seats_data
-            ]
+            seats = [Seat.from_api_data(seat) for seat in seats_data]
             kwargs.update(seats=seats)
 
         return cls(**kwargs)
@@ -182,19 +234,38 @@ class Order(JSONMixin, object):
         user_commission (:class: `Commission <pyticketswitch.commission.Commission>`):
             predicted commission for the partner.
         external_management_url (str): redirect URL on confirmation page
+        total_sale_combined_tax_component (float): total combined tax component of the order.
+        total_sale_surcharge_tax_sub_component (float): total surcharge tax sub component of the order.
 
     """
 
-    def __init__(self, item, event=None, cancellation_status=None,
-                 cancellation_comment=None, performance=None,
-                 price_band_code=None, price_band_description=None,
-                 ticket_type_code=None, ticket_type_description=None,
-                 ticket_orders=None, number_of_seats=None,
-                 total_seatprice=None, total_surcharge=None,
-                 seat_request_status=None, requested_seat_ids=None,
-                 backend_purchase_reference=None, backend_cancellation_reference=None,
-                 send_method=None, gross_commission=None, user_commission=None,
-                 external_management_url=None):
+    def __init__(
+        self,
+        item,
+        event=None,
+        cancellation_status=None,
+        cancellation_comment=None,
+        performance=None,
+        price_band_code=None,
+        price_band_description=None,
+        ticket_type_code=None,
+        ticket_type_description=None,
+        ticket_orders=None,
+        number_of_seats=None,
+        total_seatprice=None,
+        total_surcharge=None,
+        seat_request_status=None,
+        requested_seat_ids=None,
+        backend_purchase_reference=None,
+        backend_cancellation_reference=None,
+        send_method=None,
+        gross_commission=None,
+        user_commission=None,
+        external_management_url=None,
+        total_sale_combined=None,
+        total_sale_combined_tax_component=None,
+        total_sale_surcharge_tax_sub_component=None,
+    ):
         self.item = item
         self.event = event
         self.cancellation_status = cancellation_status
@@ -216,6 +287,13 @@ class Order(JSONMixin, object):
         self.gross_commission = gross_commission
         self.user_commission = user_commission
         self.external_management_url = external_management_url
+        self.total_sale_combined = total_sale_combined
+        self.total_sale_combined_tax_component = (
+            total_sale_combined_tax_component
+        )
+        self.total_sale_surcharge_tax_sub_component = (
+            total_sale_surcharge_tax_sub_component
+        )
 
     @classmethod
     def from_api_data(cls, data):
@@ -240,11 +318,15 @@ class Order(JSONMixin, object):
             'ticket_type_description': data.get('ticket_type_desc'),
             'seat_request_status': data.get('seat_request_status'),
             'requested_seat_ids': data.get('requested_seat_ids'),
-            'backend_purchase_reference': data.get('backend_purchase_reference'),
-            'backend_cancellation_reference': data.get('backend_cancellation_reference'),
+            'backend_purchase_reference': data.get(
+                'backend_purchase_reference'
+            ),
+            'backend_cancellation_reference': data.get(
+                'backend_cancellation_reference'
+            ),
             'cancellation_status': data.get('cancellation_status'),
             'cancellation_comment': data.get('cancellation_comment'),
-            'external_management_url': data.get('external_management_url')
+            'external_management_url': data.get('external_management_url'),
         }
 
         raw_event = data.get('event')
@@ -292,6 +374,26 @@ class Order(JSONMixin, object):
             user_commission = Commission.from_api_data(raw_user_commission)
             kwargs.update(user_commission=user_commission)
 
+        total_sale_combined = data.get('total_sale_combined')
+        if total_sale_combined is not None:
+            kwargs.update(total_sale_combined=total_sale_combined)
+
+        raw_total_combined_tax_component = data.get(
+            'total_sale_combined_tax_component'
+        )
+        if raw_total_combined_tax_component is not None:
+            kwargs.update(
+                total_sale_combined_tax_component=raw_total_combined_tax_component
+            )
+
+        raw_total_surcharge_tax_sub_component = data.get(
+            'total_sale_surcharge_tax_sub_component'
+        )
+        if raw_total_surcharge_tax_sub_component is not None:
+            kwargs.update(
+                total_sale_surcharge_tax_sub_component=raw_total_surcharge_tax_sub_component
+            )
+
         return cls(**kwargs)
 
     def get_seats(self):
@@ -329,7 +431,8 @@ class Order(JSONMixin, object):
         """
         text_set = {
             seat.seat_text: seat.seat_text
-            for seat in self.get_seats() if seat.seat_text
+            for seat in self.get_seats()
+            if seat.seat_text
         }
         return ', '.join(seat_text for seat_text in text_set.values())
 

@@ -26,13 +26,29 @@ class Bundle(JSONMixin, object):
             availabile when requested with the optional ``source_info`` flag.
         purchase_result (:class:`PurchaseResult <pyticketswitch.purchase_result.
             PurchaseResult>`): the result of the purchase attempt for the bundle
+        send_cost_tax_component (float): tax of send cost.
+        total_combined_tax_component (float): total tax.
+        total_surcharge_tax_sub_component (float): total surcharge tax.
 
     """
 
-    def __init__(self, source_code, orders=None, description=None,
-                 total_seatprice=None, total_surcharge=None,
-                 total_send_cost=None, total=None, currency_code=None,
-                 debitor=None, terms_and_conditions=None, purchase_result=None):
+    def __init__(
+        self,
+        source_code,
+        orders=None,
+        description=None,
+        total_seatprice=None,
+        total_surcharge=None,
+        total_send_cost=None,
+        total=None,
+        currency_code=None,
+        debitor=None,
+        terms_and_conditions=None,
+        purchase_result=None,
+        send_cost_tax_component=None,
+        total_combined_tax_component=None,
+        total_surcharge_tax_sub_component=None,
+    ):
         self.source_code = source_code
         self.orders = orders
         self.description = description
@@ -44,6 +60,11 @@ class Bundle(JSONMixin, object):
         self.debitor = debitor
         self.terms_and_conditions = terms_and_conditions
         self.purchase_result = purchase_result
+        self.send_cost_tax_component = send_cost_tax_component
+        self.total_combined_tax_component = total_combined_tax_component
+        self.total_surcharge_tax_sub_component = (
+            total_surcharge_tax_sub_component
+        )
 
     @classmethod
     def from_api_data(cls, data):
@@ -100,6 +121,30 @@ class Bundle(JSONMixin, object):
         if raw_purchase_result:
             purchase_result = PurchaseResult.from_api_data(raw_purchase_result)
             kwargs.update(purchase_result=purchase_result)
+
+        total = data.get('bundle_total_cost')
+        if total is not None:
+            kwargs.update(total=total)
+
+        send_cost_tax_component = data.get('bundle_send_cost_tax_component')
+        if send_cost_tax_component is not None:
+            kwargs.update(send_cost_tax_component=send_cost_tax_component)
+
+        total_combined_tax_component = data.get(
+            'bundle_total_combined_tax_component'
+        )
+        if total_combined_tax_component is not None:
+            kwargs.update(
+                total_combined_tax_component=total_combined_tax_component
+            )
+
+        total_surcharge_tax_sub_component = data.get(
+            'bundle_total_surcharge_tax_sub_component'
+        )
+        if total_surcharge_tax_sub_component is not None:
+            kwargs.update(
+                total_surcharge_tax_sub_component=total_surcharge_tax_sub_component
+            )
 
         return cls(**kwargs)
 
