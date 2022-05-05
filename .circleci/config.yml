@@ -1,11 +1,5 @@
 version: 2.1
 jobs:
-  test2:
-    docker:
-      - image: docker:stable
-    steps:
-      - run: apk add --no-cache bash curl git openssh-client
-      - checkout
   test:
     docker:
       - image: cimg/python:3.9
@@ -45,6 +39,5 @@ workflows:
   version: 2
   test:
     jobs:
-      - test2
       - test
 
