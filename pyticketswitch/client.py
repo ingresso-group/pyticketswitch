@@ -237,9 +237,17 @@ class Client(object):
         session = self.get_session()
 
         if method == POST:
-            response = session.post(url, auth=auth, data=params, headers=raw_headers, timeout=timeout)
+            response = session.post(url,
+                                    auth=auth,
+                                    data=params,
+                                    headers=raw_headers,
+                                    timeout=timeout)
         else:
-            response = session.get(url, auth=auth, params=params, headers=raw_headers, timeout=timeout)
+            response = session.get(url,
+                                   auth=auth,
+                                   params=params,
+                                   headers=raw_headers,
+                                   timeout=timeout)
 
         logger.debug(six.u(response.content))
 
@@ -1068,7 +1076,8 @@ class Client(object):
 
         if send_codes and not isinstance(send_codes, dict):
             raise exceptions.InvalidParametersError(
-                'send_codes should be a dictionary in the format of `{source_code: send_code}`'
+                'send_codes should be a dictionary'
+                'in the format of `{source_code: send_code}`'
             )
 
         if send_codes:

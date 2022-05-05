@@ -69,7 +69,8 @@ class AvailabilityMeta(CurrencyMeta):
 
         inst.valid_quantities = data.get('valid_quantities')
         inst.max_bundle_size = data.get('max_bundle_size')
-        inst.contiguous_seat_selection_only = data.get('contiguous_seat_selection_only', True)
+        inst.contiguous_seat_selection_only = data.get(
+            'contiguous_seat_selection_only', True)
         inst.backend_is_broken = data.get('backend_is_broken')
         inst.backend_is_down = data.get('backend_is_down')
         inst.backend_throttle_failed = data.get('backend_throttle_failed')
@@ -168,7 +169,8 @@ class AvailabilityDetails(JSONMixin, object):
                     kwargs['full_seatprice'] = raw_details.get('full_seatprice', 0.0)
                     kwargs['surcharge'] = raw_details.get('surcharge', 0.0)
                     kwargs['full_surcharge'] = raw_details.get('full_surcharge', 0.0)
-                    kwargs['percentage_saving'] = raw_details.get('percentage_saving', 0.0)
+                    kwargs['percentage_saving'] = raw_details.get(
+                        'percentage_saving', 0.0)
                     kwargs['absolute_saving'] = raw_details.get('absolute_saving', 0.0)
                     kwargs['currency'] = raw_details.get('avail_currency_code')
 
@@ -220,7 +222,8 @@ class AvailabilityDetails(JSONMixin, object):
                         avail_details.weekday_list = weekday_list
                     details.append(avail_details)
 
-        return sorted(details, key=lambda x: (x.ticket_type_description, x.combined_price()))
+        return sorted(details,
+                      key=lambda x: (x.ticket_type_description, x.combined_price()))
 
     def is_available(self, year, month=None, day=None):
         """Check availablity on a given year/month/day.

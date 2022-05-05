@@ -125,8 +125,10 @@ class Seat(JSONMixin, object):
             'seat_text': data.get('seat_text'),
             'separator': data.get('separator', ''),
             'barcode': data.get('barcode'),
-            'seat_apple_wallet_urls': AppleWallet(data.get('seat_apple_wallet_urls')) if data.get('seat_apple_wallet_urls') else None,
-            'seat_google_pay_urls': GoogleWallet(data.get('seat_google_pay_urls')) if data.get('seat_google_pay_urls') else None,
+            'seat_apple_wallet_urls': (AppleWallet(data.get('seat_apple_wallet_urls'))
+                                       if data.get('seat_apple_wallet_urls') else None),
+            'seat_google_pay_urls': (GoogleWallet(data.get('seat_google_pay_urls'))
+                                     if data.get('seat_google_pay_urls') else None),
         }
 
         return cls(**kwargs)

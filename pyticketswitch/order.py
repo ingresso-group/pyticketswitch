@@ -127,9 +127,8 @@ class TicketOrder(JSONMixin, object):
             'total_sale_surcharge_tax_sub_component'
         )
         if raw_total_surcharge_tax_sub_component is not None:
-            kwargs.update(
-                raw_total_surcharge_tax_sub_component=raw_total_surcharge_tax_sub_component
-            )
+            kwargs['raw_total_surcharge_tax_sub_component'] = \
+                raw_total_surcharge_tax_sub_component
 
         seats_data = data.get('seats')
         if seats_data:
@@ -390,9 +389,8 @@ class Order(JSONMixin, object):
             'total_sale_surcharge_tax_sub_component'
         )
         if raw_total_surcharge_tax_sub_component is not None:
-            kwargs.update(
-                total_sale_surcharge_tax_sub_component=raw_total_surcharge_tax_sub_component
-            )
+            kwargs['total_sale_surcharge_tax_sub_component'] =\
+                raw_total_surcharge_tax_sub_component
 
         return cls(**kwargs)
 
