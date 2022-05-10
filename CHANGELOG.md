@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- Added reserve_failure_comment to Order class
 
 ## [2.9.1] - 2022-04-04
 ### Fixed
