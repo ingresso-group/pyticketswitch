@@ -36,7 +36,17 @@ jobs:
           command: venv/bin/behave
       - run:
           name: coverage
-          command: coverage run -m pytest
+          command: venv/bin/coverage run -m pytest
+      - store_test_results:
+          path: reports/
+      - store_artifacts:
+          path: reports/
+      - run:
+          name: Report Python code coverage
+          command: |
+            . venv/bin/activate
+            coverage combine
+            codecov -t ca9be7f8-5c8c-4cd7-962d-b189e2d0a436
 
 workflows:
   version: 2
