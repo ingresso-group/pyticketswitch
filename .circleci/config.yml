@@ -33,14 +33,18 @@ jobs:
           command: venv/bin/py.test
       - run:
           name: behave
-          command: venv/bin/behave
+          command: venv/bin/coverage run -m behave --no-capture --no-color --format progress2 --junit --tags=-skip
       - run:
           name: coverage
           command: venv/bin/coverage run -m pytest
-      - store_test_results:
-          path: reports/
-      - store_artifacts:
-          path: reports/
+            #      - store_test_results:
+            #          path: reports/
+            #      - store_artifacts:
+            #          path: reports/
+      - run:
+          name: Print coverage
+          command: |
+            coverage report
       - run:
           name: Report Python code coverage
           command: |
