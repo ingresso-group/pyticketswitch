@@ -1,0 +1,68 @@
+<testsuite name="search-events.search for events" tests="6" errors="0" failures="0" skipped="0" time="2.312527" timestamp="2022-05-11T14:39:08.690204" hostname="JGRIMER-MBP.lan"><testcase classname="search-events.search for events" name="keyword search" status="passed" time="0.072022"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: keyword search
+    Given an API client with valid credentials ... passed in 0.001s
+    When a search for "nutcracker, sadlers" keywords is performed ... passed in 0.071s
+    Then a single event should be returned ... passed in 0.000s
+    And that event should have the ID of "6IF" ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="search-events.search for events" name="date range search" status="passed" time="1.99318"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: date range search
+    Given an API client with valid credentials ... passed in 0.000s
+    When a search for events with performances "30"-"37" days from now is performed ... passed in 0.064s
+    Then the events all have a performance between "30" and "37" days from now ... passed in 1.929s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="search-events.search for events" name="country search" status="passed" time="0.068161"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: country search
+    Given an API client with valid credentials ... passed in 0.000s
+    When a search for events in country with code "jp" is performed ... passed in 0.060s
+    Then all events are in country with code "jp" ... passed in 0.008s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="search-events.search for events" name="city search" status="passed" time="0.0786"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: city search
+    Given an API client with valid credentials ... passed in 0.000s
+    When a search for events in city with code "paris-fr" is performed ... passed in 0.069s
+    Then all events are in city with code "paris-fr" ... passed in 0.009s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="search-events.search for events" name="geo search" status="passed" time="0.07636"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: geo search
+    Given an API client with valid credentials ... passed in 0.000s
+    When a search for events within "100"km of "35.5000" lat and "139.300" long is performed ... passed in 0.068s
+    Then the events are all within "100"km of "35.5000" lat and "139.300" long ... passed in 0.008s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="search-events.search for events" name="paginated search" status="passed" time="0.024205"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: paginated search
+    Given an API client with valid credentials ... passed in 0.000s
+    When a search is performed for page 2 with a page length of 3 is performed ... passed in 0.013s
+    Then the 7, 8 and 9th events are returned ... passed in 0.011s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

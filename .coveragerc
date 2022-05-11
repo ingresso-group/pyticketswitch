@@ -1,5 +1,5 @@
 [report]
 exclude_lines = def __repr__
 [run]
-include = *
+include = .
 omit = tests*, venv/*

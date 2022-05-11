@@ -1,0 +1,23 @@
+<testsuite name="get-events.get specific events" tests="2" errors="0" failures="0" skipped="0" time="0.171351" timestamp="2022-05-11T14:38:58.576215" hostname="JGRIMER-MBP.lan"><testcase classname="get-events.get specific events" name="single event" status="passed" time="0.081289"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: single event
+    Given an API client with valid credentials ... passed in 0.000s
+    When we attempt to fetch events with the ID's "6IF" ... passed in 0.081s
+    Then those events should have the ID's "6IF" ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="get-events.get specific events" name="multiple events" status="passed" time="0.090062"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: multiple events
+    Given an API client with valid credentials ... passed in 0.000s
+    When we attempt to fetch events with the ID's "6IF, 6KS, GVA" ... passed in 0.089s
+    Then those events should have the ID's "6IF, 6KS, GVA" ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

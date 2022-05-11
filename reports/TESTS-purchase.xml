@@ -1,0 +1,116 @@
+<testsuite name="purchase.purchase tickets" tests="7" errors="0" failures="0" skipped="0" time="2.430497" timestamp="2022-05-11T14:39:02.590314" hostname="JGRIMER-MBP.lan"><testcase classname="purchase.purchase tickets" name="credit debitor" status="passed" time="0.328559"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: credit debitor
+    Given my account is set up to allow a user to buy on credit ... passed in 0.000s
+    And an event with availability ... passed in 0.157s
+    And I have reserved tickets for my customer for this event ... passed in 0.085s
+    And my user has provided valid customer information ... passed in 0.000s
+    When I purchase the tickets ... passed in 0.085s
+    Then the purchase is succesful ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="purchase.purchase tickets" name="invalid customer details" status="passed" time="0.317634"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: invalid customer details
+    Given my account is set up to allow a user to buy on credit ... passed in 0.001s
+    And an event with availability ... passed in 0.152s
+    And I have reserved tickets for my customer for this event ... passed in 0.085s
+    And my user has provided invalid customer information ... passed in 0.000s
+    When I purchase the tickets ... passed in 0.079s
+    Then I get an error indicating that the customer details are incorrect ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="purchase.purchase tickets" name="card debitor" status="passed" time="0.319693"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: card debitor
+    Given my account is set up to use a card debitor ... passed in 0.000s
+    And an event with availability ... passed in 0.158s
+    And I have reserved tickets for my customer for this event ... passed in 0.081s
+    And my user has provided valid customer information ... passed in 0.000s
+    And my user has provided valid credit card details ... passed in 0.000s
+    When I purchase the tickets ... passed in 0.079s
+    Then the purchase is succesful ... passed in 0.000s
+    And I get a ticketswitch booking reference ... passed in 0.000s
+    And I get a booking reference from the backend system ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="purchase.purchase tickets" name="invalid card details" status="passed" time="0.333557"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: invalid card details
+    Given my account is set up to use a card debitor ... passed in 0.000s
+    And an event with availability ... passed in 0.153s
+    And I have reserved tickets for my customer for this event ... passed in 0.093s
+    And my user has provided valid customer information ... passed in 0.000s
+    And my user has provided invalid credit card details ... passed in 0.000s
+    When I purchase the tickets ... passed in 0.086s
+    Then I get an error indicating that the card details are incorrect ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="purchase.purchase tickets" name="redirect debitor part one" status="passed" time="0.336852"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @dirty
+  Scenario: redirect debitor part one
+    Given my account is set up to use a redirect debitor ... passed in 0.000s
+    And an event with availability ... passed in 0.157s
+    And I have reserved tickets for my customer for this event ... passed in 0.092s
+    And my user has provided valid customer information ... passed in 0.000s
+    And I provide a URL and token to return to ... passed in 0.000s
+    When I purchase the tickets ... passed in 0.087s
+    Then I get a callout ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="purchase.purchase tickets" name="redirect debitor part two" status="passed" time="0.383686"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @dirty
+  Scenario: redirect debitor part two
+    Given my account is set up to use a redirect debitor ... passed in 0.000s
+    And an event with availability ... passed in 0.132s
+    And I have reserved tickets for my customer for this event ... passed in 0.099s
+    And my user has provided valid customer information ... passed in 0.000s
+    And I provide a URL and token to return to ... passed in 0.000s
+    And I have returned from a successful external payment ... passed in 0.074s
+    When I ask for the next redirect ... passed in 0.077s
+    Then the purchase is succesful ... passed in 0.000s
+    And I get a ticketswitch booking reference ... passed in 0.000s
+    And I get a booking reference from the backend system ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="purchase.purchase tickets" name="redirect fails" status="passed" time="0.410516"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @dirty
+  Scenario: redirect fails
+    Given my account is set up to use a redirect debitor ... passed in 0.000s
+    And an event with availability ... passed in 0.159s
+    And I have reserved tickets for my customer for this event ... passed in 0.092s
+    And my user has provided valid customer information ... passed in 0.000s
+    And I provide a URL and token to return to ... passed in 0.000s
+    And I have returned from a failed external payment ... passed in 0.074s
+    When I ask for the next redirect ... passed in 0.084s
+    Then the purchase fails ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

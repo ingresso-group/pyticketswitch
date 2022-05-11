@@ -1,0 +1,36 @@
+<testsuite name="list-performances.list performances" tests="3" errors="0" failures="0" skipped="0" time="0.232759" timestamp="2022-05-11T14:39:00.080086" hostname="JGRIMER-MBP.lan"><testcase classname="list-performances.list performances" name="event with a set of chronological performances" status="passed" time="0.084144"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: event with a set of chronological performances
+    Given an API client with valid credentials ... passed in 0.001s
+    When I fetch performances for the event "6IF" ... passed in 0.083s
+    Then I get a list of performances ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="list-performances.list performances" name="event with named performances" status="passed" time="0.078408"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: event with named performances
+    Given an API client with valid credentials ... passed in 0.000s
+    When I fetch performances for the event "DP9" ... passed in 0.078s
+    Then I get a list of performances ... passed in 0.000s
+    And I get an indication that the performances have names ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="list-performances.list performances" name="event with an auto selected performance" status="passed" time="0.070207"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: event with an auto selected performance
+    Given an API client with valid credentials ... passed in 0.000s
+    When I fetch performances for the event "6KS" ... passed in 0.069s
+    Then I get one performance ... passed in 0.000s
+    And I get an indication that the performance is auto selected ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

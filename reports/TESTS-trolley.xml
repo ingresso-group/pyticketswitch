@@ -1,0 +1,87 @@
+<testsuite name="trolley.add tickets to the trolley" tests="6" errors="0" failures="0" skipped="0" time="1.925887" timestamp="2022-05-11T14:39:11.287903" hostname="JGRIMER-MBP.lan"><testcase classname="trolley.add tickets to the trolley" name="create a trolley" status="passed" time="0.242493"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: create a trolley
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "6IF" ... passed in 0.162s
+    When I add the tickets to the trolley ... passed in 0.080s
+    Then I get a trolley token ... passed in 0.000s
+    And my trolley contains tickets for "6IF" ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="trolley.add tickets to the trolley" name="create a trolley with discounts" status="passed" time="0.295716"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: create a trolley with discounts
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "6IF" ... passed in 0.149s
+    And my customer has requested some discounts ... passed in 0.068s
+    When I add the tickets to the trolley ... passed in 0.078s
+    Then I get a trolley token ... passed in 0.000s
+    And my trolley contains tickets for "6IF" ... passed in 0.000s
+    And my trolley has some discounts ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="trolley.add tickets to the trolley" name="create a trolley with seats" status="passed" time="0.205992"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: create a trolley with seats
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "7AB" ... passed in 0.136s
+    And my customer is requesting specific seats ... passed in 0.000s
+    When I add the tickets to the trolley ... passed in 0.069s
+    Then I get a trolley token ... passed in 0.000s
+    And my trolley contains the requested seats ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="trolley.add tickets to the trolley" name="create a trolley with unavailble seats" status="passed" time="0.209631"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: create a trolley with unavailble seats
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "7AB" ... passed in 0.140s
+    And my customer is requesting unavailable specific seats ... passed in 0.000s
+    When I add the tickets to the trolley ... passed in 0.068s
+    Then I get a trolley token ... passed in 0.000s
+    And my trolley contains the requested seats ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="trolley.add tickets to the trolley" name="add item to an existing trolley" status="passed" time="0.468643"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: add item to an existing trolley
+    Given an API client with valid credentials ... passed in 0.000s
+    And I have an existing trolley with items from "7AB" in it ... passed in 0.232s
+    And my customer wants tickets to "6IE" ... passed in 0.166s
+    When I add the tickets to the trolley ... passed in 0.070s
+    Then I get a trolley token ... passed in 0.000s
+    And my trolley contains tickets for "7AB" ... passed in 0.000s
+    And my trolley contains tickets for "6IE" ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="trolley.add tickets to the trolley" name="remove item from an existing trolley" status="passed" time="0.503412"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: remove item from an existing trolley
+    Given an API client with valid credentials ... passed in 0.000s
+    And I have an existing trolley with items from "7AB" in it ... passed in 0.233s
+    And I have an existing trolley with items from "6IE" in it ... passed in 0.202s
+    When I remove some tickets for "6IE" from the trolley ... passed in 0.067s
+    Then I get a trolley token ... passed in 0.000s
+    And my trolley contains tickets for "7AB" ... passed in 0.000s
+    And my trolley does not contain tickets for "6IE" ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

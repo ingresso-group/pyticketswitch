@@ -1,0 +1,12 @@
+<testsuite name="get-purchase.Get a reservation" tests="1" errors="0" failures="0" skipped="0" time="0.411038" timestamp="2022-05-11T14:38:59.330516" hostname="JGRIMER-MBP.lan"><testcase classname="get-purchase.Get a reservation" name="Get a previously made purchase" status="passed" time="0.411038"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: Get a previously made purchase
+    Given I have already purchased tickets ... passed in 0.334s
+    When I get the purchase ... passed in 0.076s
+    Then the purchase response is the same as the original ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>
