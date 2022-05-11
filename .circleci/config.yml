@@ -29,14 +29,11 @@ jobs:
           name: flake8
           command: venv/bin/flake8 pyticketswitch
       - run:
-          name: pylint
+          name: pytest
           command: venv/bin/py.test
       - run:
           name: behave
           command: venv/bin/behave
-      - run:
-          name: pytest
-          command: python -m pytest
       - run:
           name: coverage
           command: python -m coverage run -m pytest
