@@ -33,7 +33,7 @@ pip install pyticketswitch
 Contribute
 ----------
 
-- Issue Tracker: https://github.com/ingresso-group/pyticketswitch/issues
+- Issue Tracker: https://github.com/ingresso-group/pyticketswitch/issues (But Jira is now a thing)
 - Source Code: https://github.com/ingresso-group/pyticketswitch
 
 ### How to contribute ###
