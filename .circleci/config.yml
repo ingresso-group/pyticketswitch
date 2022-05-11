@@ -44,7 +44,7 @@ jobs:
       - run:
           name: Print coverage
           command: |
-            coverage report
+            venv/bin/coverage report
       - run:
           name: Report Python code coverage
           command: |
