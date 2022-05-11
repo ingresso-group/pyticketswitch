@@ -29,18 +29,11 @@ jobs:
           name: flake8
           command: venv/bin/flake8 pyticketswitch
       - run:
-          name: pytest
-          command: venv/bin/py.test
-      - run:
-          name: behave
+          name: behave coverage
           command: venv/bin/coverage run -m behave --no-capture --no-color --format progress2 --junit --tags=-skip
       - run:
-          name: coverage
-          command: venv/bin/coverage run -m pytest
-            #      - store_test_results:
-            #          path: reports/
-            #      - store_artifacts:
-            #          path: reports/
+          name: pytest plus coverage
+          command: venv/bin/pytest tests/* --cov
       - run:
           name: Print coverage
           command: |
