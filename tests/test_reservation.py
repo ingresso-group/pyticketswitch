@@ -39,7 +39,10 @@ class TestReservation:
                 'trolley_order_count': 1
             },
             'minutes_left_on_reserve': 15,
-            "unreserved_orders": [{'item_number': 2}],
+            "unreserved_orders": [{
+                'item_number': 2,
+                'reserve_failure_comment': 'failure reason',
+            }],
         }
 
         reservation = Reservation.from_api_data(data)
@@ -59,6 +62,7 @@ class TestReservation:
 
         assert len(reservation.unreserved_orders) == 1
         assert reservation.minutes_left == 15
+        assert reservation.unreserved_orders[0].reserve_failure_comment == 'failure reason'
 
     def test_from_api_data_with_unavailable_orders(self):
         data = {

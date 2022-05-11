@@ -237,6 +237,8 @@ class Order(JSONMixin, object):
             total combined tax component of the order.
         total_sale_surcharge_tax_sub_component (float):
             total surcharge tax sub component of the order.
+        reserve_failure_comment (str):
+            A comment relating to why reserving this order failed.
 
     """
 
@@ -266,6 +268,7 @@ class Order(JSONMixin, object):
         total_sale_combined=None,
         total_sale_combined_tax_component=None,
         total_sale_surcharge_tax_sub_component=None,
+        reserve_failure_comment=None,
     ):
         self.item = item
         self.event = event
@@ -295,6 +298,7 @@ class Order(JSONMixin, object):
         self.total_sale_surcharge_tax_sub_component = (
             total_sale_surcharge_tax_sub_component
         )
+        self.reserve_failure_comment = reserve_failure_comment
 
     @classmethod
     def from_api_data(cls, data):
@@ -328,6 +332,7 @@ class Order(JSONMixin, object):
             'cancellation_status': data.get('cancellation_status'),
             'cancellation_comment': data.get('cancellation_comment'),
             'external_management_url': data.get('external_management_url'),
+            'reserve_failure_comment': data.get('reserve_failure_comment'),
         }
 
         raw_event = data.get('event')
