@@ -20,12 +20,6 @@ test:
 	py.test
 	behave
 
-testcov:
-	coverage run -m behave
-	coverage run -m pytest
-	coverage combine
-	coverage report
-
 docs:
 	cd docs && make html
 	@echo "Build successful! View the docs homepage at docs/_build/html/index.html."
