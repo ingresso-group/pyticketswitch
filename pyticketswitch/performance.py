@@ -36,7 +36,7 @@ class Performance(JSONMixin, object):
         name (str): the name of the performance.
         running_time (int): the number of minutes the performance is expected
             to run for.
-        availability_details (:class: `AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`):
+        availability_details (:class:`AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`):
             summerised availability data for the performance. This data is
             cached from previous availability calls and may not be accurate.
 
