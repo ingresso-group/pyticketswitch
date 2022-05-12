@@ -2,3 +2,4 @@
 exclude_lines = def __repr__
 [run]
 omit = *features*
+parallel = True

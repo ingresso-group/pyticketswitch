@@ -4,7 +4,6 @@ jobs:
     docker:
       - image: cimg/python:3.9
     steps:
-      #      - run: apk add --no-cache bash curl git openssh-client
       - checkout
       - run:
           name: Generate python version cache key
@@ -42,7 +41,7 @@ jobs:
           name: Report Python code coverage
           command: |
             . venv/bin/activate
-            #            coverage combine
+            coverage combine
             python -m codecov -t ca9be7f8-5c8c-4cd7-962d-b189e2d0a436
 
 workflows:
