@@ -642,8 +642,7 @@ class Client(object):
                 for more info.
 
         Returns:
-            :class:`Event <pyticketswitch.event.Event>`,
-                :class:`EventMeta <pyticketswitch.event.EventMeta>`:
+            :class:`Event <pyticketswitch.event.Event>`, :class:`EventMeta <pyticketswitch.event.EventMeta>`:
             the target event and meta information about the event.
 
             will return :obj:`None` if the event does not exist.
@@ -822,8 +821,7 @@ class Client(object):
                 for more info.
 
         Returns:
-            :class:`Performance <pyticketswitch.event.Event>`,
-                :class:`PerformanceMeta <pyticketswitch.performance.PerformanceMeta>`:
+            :class:`Performance <pyticketswitch.event.Event>`, :class:`PerformanceMeta <pyticketswitch.performance.PerformanceMeta>`:
             the target Performance and meta information about the performance.
 
             will return :obj:`None` if the performance does not exist.
@@ -1138,8 +1136,7 @@ class Client(object):
                 parameters.
 
         Returns:
-            :class:`Trolley <pyticketswitch.trolley.Trolley>`,
-                :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            :class:`Trolley <pyticketswitch.trolley.Trolley>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
             the contents of the trolley and meta data associated with the
             trolley.
 
@@ -1360,8 +1357,7 @@ class Client(object):
                 parameters.
 
         Returns:
-            :class:`Reservation <pyticketswitch.reservation.Reservation>`,
-                :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            :class:`Reservation <pyticketswitch.reservation.Reservation>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
             Information about the reservation and meta data asscociated with
             the reservation.
 
@@ -1435,8 +1431,7 @@ class Client(object):
                 parameters. These will be ignored.
 
         Returns:
-            :class:`Reservation <pyticketswitch.reservation.Reservation>`,
-                :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            :class:`Reservation <pyticketswitch.reservation.Reservation>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
             Information about the reservation and meta data asscociated with
             the reservation.
 
@@ -1481,8 +1476,7 @@ class Client(object):
             **kwargs: arbitary keyword parameters to pass directly to the API.
 
         Returns:
-            :class:`Status <pyticketswitch.status.Status>`,
-                :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
+            :class:`Status <pyticketswitch.status.Status>`, :class:`CurrencyMeta <pyticketswitch.currency.CurrencyMeta>`:
             the current status of the transaction and acompanying meta
             information.
 

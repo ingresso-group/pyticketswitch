@@ -55,8 +55,7 @@ class Event(JSONMixin, object):
         no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             pricining summary from cached availability. Only present when
             requested.
-        cost_range_details
-            (:class:`CostRangeDetails <pyticketswitch.cost_range.CostRangeDetails>`):
+        cost_range_details (:class:`CostRangeDetails <pyticketswitch.cost_range.CostRangeDetails>`):
             summary pricing information broken down by availability. This is
             cached data. Only present when requested.
         content (dict): dictionary of

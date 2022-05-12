@@ -402,8 +402,7 @@ class Order(JSONMixin, object):
         return cls(**kwargs)
 
     def get_seats(self):
-        """Get all seats from all :class:
-            `TicketOrder <pyticketswitch.order.TicketOrder>` children.
+        """Get all seats from all :class:`TicketOrder <pyticketswitch.order.TicketOrder>` children.
 
         Returns:
             list: list of `Seats <pyticketswitch.seat.Seat>`.
@@ -420,8 +419,7 @@ class Order(JSONMixin, object):
         ]
 
     def get_seat_ids(self):
-        """Get all seat ids from all :class:
-            `TicketOrders <pyticketswitch.order.TickerOrder>`
+        """Get all seat ids from all :class:`TicketOrders <pyticketswitch.order.TickerOrder>`
 
         Returns:
             list: list of seat ids.

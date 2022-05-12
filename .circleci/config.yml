@@ -34,10 +34,6 @@ jobs:
           name: pytest plus coverage
           command: venv/bin/pytest tests/* --cov
       - run:
-          name: Print coverage
-          command: |
-            venv/bin/coverage report
-      - run:
           name: Report Python code coverage
           command: |
             . venv/bin/activate

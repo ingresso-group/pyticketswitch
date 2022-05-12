@@ -165,8 +165,7 @@ class CurrencyMeta(JSONMixin, object):
         )
 
     def get_currency(self, code=None):
-        """Get the :class:
-            `Currency <pyticketswitch.currency.Currency>` object for the given code.
+        """Get the :class:`Currency <pyticketswitch.currency.Currency>` object for the given code.
 
         Args:
             code (str, optional): ISO 4217 currency code.
@@ -176,8 +175,7 @@ class CurrencyMeta(JSONMixin, object):
             for the given code.
 
             If no code is specified, return the default currency as specified
-            by :attr:`CurrencyMeta.default_currency_code
-            <pyticketswitch.currency.CurrencyMeta.default_currency_code>`.
+            by :attr:`CurrencyMeta.default_currency_code <pyticketswitch.currency.CurrencyMeta.default_currency_code>`.
 
             If no default currency is specified return :obj:`None`.
 
@@ -191,8 +189,7 @@ class CurrencyMeta(JSONMixin, object):
         return self.currencies.get(code)
 
     def get_desired_currency(self):
-        """Get the :class:`Currency <pyticketswitch.currency.Currency>`
-            object for the desired currency.
+        """Get the :class:`Currency <pyticketswitch.currency.Currency>` object for the desired currency.
 
         Returns:
             :class:`Currency <pyticketswitch.currency.Currency>`: The currency
