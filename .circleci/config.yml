@@ -41,6 +41,7 @@ jobs:
           name: Report Python code coverage
           command: |
             . venv/bin/activate
+            ls -lrta
             coverage combine
             python -m codecov -t ca9be7f8-5c8c-4cd7-962d-b189e2d0a436
 
