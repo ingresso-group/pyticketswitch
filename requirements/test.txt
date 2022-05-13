@@ -1,7 +1,6 @@
 -r common.txt
 
 pytest>=3.6
-pytest-cov
 tox
 vcrpy
 mock
