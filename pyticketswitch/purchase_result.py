@@ -14,6 +14,8 @@ class PurchaseResult(JSONMixin, object):
             non uniform as they can come from a varitiy of sources.
         failure_reason (string): description of the failure reason, if there
             is one. Not for display to customers.
+        internal_error_comment (str): Extra details that come with the error.
+            Not for frontend use, but may aid issue resolution
         is_partial (bool): indicates if the success is only partial for multi-
             bundle transactions where one may succeed and the other fail.
         is_semi_credit (bool): Marks the purchase as provisionally completed but
@@ -23,7 +25,7 @@ class PurchaseResult(JSONMixin, object):
 
     def __init__(self, success=False, failed_3d_secure=False, failed_avs=False,
                  failed_cv_two=False, error=None, failure_reason=None,
-                 is_partial=False, is_semi_credit=False):
+                 is_partial=False, is_semi_credit=False, internal_error_comment=None):
 
         self.success = success
         self.failed_3d_secure = failed_3d_secure
@@ -31,6 +33,7 @@ class PurchaseResult(JSONMixin, object):
         self.failed_cv_two = failed_cv_two
         self.error = error
         self.failure_reason = failure_reason
+        self.internal_error_comment = internal_error_comment
         self.is_partial = is_partial
         self.is_semi_credit = is_semi_credit
 

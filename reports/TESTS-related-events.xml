@@ -1,0 +1,28 @@
+<testsuite name="related-events.related_events" tests="2" errors="0" failures="0" skipped="0" time="0.420094" timestamp="2022-05-13T10:38:50.982727" hostname="JGRIMER-MBP.local"><testcase classname="related-events.related_events" name="addon events with existing trolley" status="passed" time="0.231125"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: addon events with existing trolley
+    Given an API client with valid credentials ... passed in 0.000s
+    And I have an existing trolley with items from "7AB" in it ... passed in 0.132s
+    When I fetch addon events for my trolley ... passed in 0.098s
+    Then I get a list of addon events ... passed in 0.000s
+    And the addon event list contains "7AC" ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="related-events.related_events" name="upsell events without a trolley" status="passed" time="0.188969"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: upsell events without a trolley
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "7AB" ... passed in 0.075s
+    When I fetch upsell events for the tickets ... passed in 0.113s
+    Then I get a list of upsell events ... passed in 0.000s
+    And the upsell event list does not contain "7AB" ... passed in 0.000s
+    And the upsell event list contains "7AA" ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>

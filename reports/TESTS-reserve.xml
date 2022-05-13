@@ -1,0 +1,93 @@
+<testsuite name="reserve.reserve tickets" tests="6" errors="0" failures="0" skipped="0" time="1.065516" timestamp="2022-05-13T10:38:53.043614" hostname="JGRIMER-MBP.local"><testcase classname="reserve.reserve tickets" name="reserve a best available event" status="passed" time="0.14525"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @dirty
+  Scenario: reserve a best available event
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "6IF" ... passed in 0.095s
+    When I reserve the tickets ... passed in 0.050s
+    Then my reservation is successful ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="reserve.reserve tickets" name="reserve a best available event with discounts" status="passed" time="0.193755"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @dirty
+  Scenario: reserve a best available event with discounts
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "6IF" ... passed in 0.100s
+    And my customer has requested some discounts ... passed in 0.046s
+    When I reserve the tickets ... passed in 0.047s
+    Then my reservation is successful ... passed in 0.000s
+    And my trolley has some discounts ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="reserve.reserve tickets" name="reserve a best available event with non default send method" status="passed" time="0.233836"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @dirty
+  Scenario: reserve a best available event with non default send method
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "6IF" ... passed in 0.106s
+    And my customer wants the tickets posted to them ... passed in 0.040s
+    When I reserve the tickets ... passed in 0.045s
+    Then my reservation is successful ... passed in 0.000s
+    And my send method is the one I requested ... passed in 0.042s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="reserve.reserve tickets" name="seated event with seats" status="passed" time="0.164126"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @dirty
+  Scenario: seated event with seats
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "7AB" ... passed in 0.117s
+    And my customer is requesting specific seats ... passed in 0.000s
+    When I reserve the tickets ... passed in 0.046s
+    Then my reservation is successful ... passed in 0.000s
+    And I get the requested seats ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="reserve.reserve tickets" name="seated event with unavailable seats" status="passed" time="0.125282"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @dirty
+  Scenario: seated event with unavailable seats
+    Given an API client with valid credentials ... passed in 0.000s
+    And my customer wants tickets to "7AB" ... passed in 0.080s
+    And my customer is requesting unavailable specific seats ... passed in 0.000s
+    When I reserve the tickets ... passed in 0.045s
+    Then my reservation is successful ... passed in 0.000s
+    And I get different seats than requested ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase><testcase classname="reserve.reserve tickets" name="reserve a previously described trolley" status="passed" time="0.203267"><system-out>
+<![CDATA[
+@scenario.begin
+
+  @dirty
+  Scenario: reserve a previously described trolley
+    Given an API client with valid credentials ... passed in 0.000s
+    And I have an existing trolley with items from "6IF" in it ... passed in 0.158s
+    When I reserve the tickets ... passed in 0.045s
+    Then my reservation is successful ... passed in 0.000s
+
+@scenario.end
+--------------------------------------------------------------------------------
+]]>
+</system-out></testcase></testsuite>
