@@ -29,15 +29,23 @@ jobs:
           command: venv/bin/flake8 pyticketswitch
       - run:
           name: behave coverage
-          command: venv/bin/coverage run -m behave --no-capture --no-color --format progress2 --junit --tags=-skip
+          command: |
+            . venv/bin/activate
+            coverage run -m behave --no-capture --no-color --format progress2 --junit --tags=-skip
+            mv .coverage coverage.b
       - run:
           name: pytest plus coverage
-          command: venv/bin/coverage run -m pytest tests/*
+          command: |
+            . venv/bin/activate
+            pytest --cov tests/*
+            mv .coverage .coverage.p
       - run:
           name: Report Python code coverage
           command: |
             . venv/bin/activate
+            mv coverage.b .coverage.b
             coverage combine
+            coverage report
             python -m codecov -t ca9be7f8-5c8c-4cd7-962d-b189e2d0a436
 
 workflows:
