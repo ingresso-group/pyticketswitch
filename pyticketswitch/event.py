@@ -79,8 +79,7 @@ class Event(JSONMixin, object):
             objects. Only present when requested.
         critic_review_percent (float): summary of critic review star rating.
             rated from 1 (lowest) to 5 (highest).
-        availability_details (:class:
-            `AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`):
+        availability_details (:class:`AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`):
             summary of availability details from cached data. Only present when
             requested.
         component_events (list): list of :class:`Events <pyticketswitch.event.Event>`
