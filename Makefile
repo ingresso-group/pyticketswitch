@@ -11,11 +11,16 @@ clean:
 	rm -rf ./venv fixtures/cassettes *.egg-info .tox .cache .coverage
 	find . -name "*.pyc" -exec rm -rf {} \;
 
+flake:
+	flake8 pyticketswitch
+
 test:
 	flake8 pyticketswitch
 	pylint pyticketswitch
-	py.test
-	behave
+	coverage run -m pytest tests
+	coverage run -m behave --no-capture --no-color --format progress2 --junit --tags=-skip
+	coverage combine
+	coverage report
 
 docs:
 	cd docs && make html

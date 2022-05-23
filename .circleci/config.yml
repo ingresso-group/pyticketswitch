@@ -1,0 +1,53 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - run:
+          name: Generate python version cache key
+          command: python3 --version > PY_VERSION
+      - restore_cache:
+          key:  v3-{{ checksum "PY_VERSION" }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements/test.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Install pip packages
+          command: |
+            python3 -m venv venv
+            venv/bin/pip install --upgrade -r requirements/test.txt
+      - save_cache:
+          key:  v3-{{ checksum "PY_VERSION" }}-{{ checksum "requirements.txt" }}-{{ checksum "requirements/test.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: pip freeze
+          command: venv/bin/pip freeze
+      - run:
+          name: flake8
+          command: venv/bin/flake8 pyticketswitch
+      - run:
+          name: behave coverage
+          command: |
+            . venv/bin/activate
+            coverage run -m behave --no-capture --no-color --format progress2 --junit --tags=-skip
+      - run:
+          name: pytest plus coverage
+          command: |
+            . venv/bin/activate
+            coverage run -m pytest
+      - run:
+          name: Report Python code coverage
+          command: |
+            . venv/bin/activate
+            coverage combine
+            coverage report
+            python -m codecov -t ca9be7f8-5c8c-4cd7-962d-b189e2d0a436
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
+

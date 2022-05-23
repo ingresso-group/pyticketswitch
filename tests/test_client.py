@@ -2211,7 +2211,7 @@ class TestClient:
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)
 
-        cancellation_result, meta = client.cancel_purchase('abc123')
+        cancellation_result, meta = client.cancel_purchase('abc123', cancel_items_list=[1,2,3])
 
         assert cancellation_result.is_fully_cancelled()
         assert cancellation_result.cancelled_item_numbers == [1]
