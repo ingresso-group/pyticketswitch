@@ -237,9 +237,17 @@ class Client(object):
         session = self.get_session()
 
         if method == POST:
-            response = session.post(url, auth=auth, data=params, headers=raw_headers, timeout=timeout)
+            response = session.post(url,
+                                    auth=auth,
+                                    data=params,
+                                    headers=raw_headers,
+                                    timeout=timeout)
         else:
-            response = session.get(url, auth=auth, params=params, headers=raw_headers, timeout=timeout)
+            response = session.get(url,
+                                   auth=auth,
+                                   params=params,
+                                   headers=raw_headers,
+                                   timeout=timeout)
 
         logger.debug(six.u(response.content))
 
@@ -484,7 +492,8 @@ class Client(object):
             page (int): the page of a paginated response.
             page_length (int): how many performances are
                 returned per page.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -567,7 +576,9 @@ class Client(object):
             event_ids (list): list of event IDs
             with_addons (bool): include add-on events
             with_upsells (bool): include upsell events
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs:
+                see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -626,7 +637,8 @@ class Client(object):
 
         Args:
             event_id (str): ID of the event to retrieve
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -646,7 +658,8 @@ class Client(object):
 
         Args:
             event_id (str): ID of the event to retrieve
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -694,7 +707,8 @@ class Client(object):
             page (int): the page of a paginated response.
             page_length (int): how many performances are
                 returned per page.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -747,7 +761,8 @@ class Client(object):
 
         Args:
             performance_ids (list): list of performance IDs to fetch.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -801,7 +816,8 @@ class Client(object):
 
         Args:
             performance_id (str): ID of the performance to retrieve
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -834,7 +850,8 @@ class Client(object):
                 available. Defaults to :obj:`False`.
             user_commission (bool): request user commission for each
                 price band/discount. Defaults to :obj:`False`
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         .. note:: setting **discounts** or the **user_commission** arguments to
@@ -899,7 +916,8 @@ class Client(object):
 
         Args:
             performance_id (string): identifier of the target performance.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -945,7 +963,8 @@ class Client(object):
             price_band_code (string): code for the target price band.
             user_commission (bool): if True then return the user_commission,
                 otherwise do not return the user_commission. Defaults to False.
-            **kwargs: see :meth:`add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
+            **kwargs: see :meth:
+                `add_optional_kwargs <pyticketswitch.client.Client.add_optional_kwargs>`
                 for more info.
 
         Returns:
@@ -1068,7 +1087,8 @@ class Client(object):
 
         if send_codes and not isinstance(send_codes, dict):
             raise exceptions.InvalidParametersError(
-                'send_codes should be a dictionary in the format of `{source_code: send_code}`'
+                'send_codes should be a dictionary'
+                'in the format of `{source_code: send_code}`'
             )
 
         if send_codes:
@@ -1422,7 +1442,8 @@ class Client(object):
                 to ``True`` and the requested addition to a trolley was
                 unavailable.
 
-        .. _`/f13/reserve_page_archive.v1`: http://docs.ingresso.co.uk/#reserve_page_archive
+        .. _`/f13/reserve_page_archive.v1`:
+            http://docs.ingresso.co.uk/#reserve_page_archive
 
         """
         params = {"transaction_uuid": transaction_uuid}
@@ -1498,7 +1519,8 @@ class Client(object):
             payment_method: the customer's payment details. Can be
                 :class:`CardDetails <pyticketswitch.payment_methods.CardDetails>`
                 or
-                :class:`RedirectionDetails <pyticketswitch.payment_methods.RedirectionDetails>`.
+                :class:
+                `RedirectionDetails <pyticketswitch.payment_methods.RedirectionDetails>`.
             send_confirmation_email (bool): on a successful purchase, when this
                 parameter is :obj:`True`, then we will send the customer a
                 confirmation email. If you would prefer to send your own
@@ -1581,7 +1603,8 @@ class Client(object):
 
             See :ref:`Handling callouts <handling_callouts>` for more information.
 
-        .. _`/f13/purchase_page_archive.v1`: http://docs.ingresso.co.uk/#purchase_page_archive
+        .. _`/f13/purchase_page_archive.v1`:
+            http://docs.ingresso.co.uk/#purchase_page_archive
 
         """
         params = {"transaction_uuid": transaction_uuid}

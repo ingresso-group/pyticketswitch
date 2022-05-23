@@ -18,7 +18,8 @@ class CancellationResult(JSONMixin):
 
         raw_must_also_cancel = data.get("must_also_cancel")
         if raw_must_also_cancel:
-            must_also_cancel = [Order.from_api_data(order) for order in raw_must_also_cancel]
+            must_also_cancel = [Order.from_api_data(order)
+                                for order in raw_must_also_cancel]
             kwargs.update(must_also_cancel=must_also_cancel)
 
         return cls(**kwargs)

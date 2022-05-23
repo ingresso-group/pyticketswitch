@@ -118,6 +118,7 @@ class TestCardDetails:
             expiry_month=5,
             expiry_year=45,
             return_url='https://acmetickets.com/checkout/',
+            remote_site='acmetickets.com',
             return_token='abc123',
         )
 
@@ -127,6 +128,7 @@ class TestCardDetails:
             'card_number': '4111 1111 1111 1111',
             'expiry_date': '0545',
             'return_url': 'https://acmetickets.com/checkout/',
+            'remote_site': 'acmetickets.com',
             'return_token': 'abc123',
         }
 

@@ -1160,6 +1160,7 @@ it will be overwritten by per request tracking id
 
 For example to set custom tracking id each time the `list_events`
 method is called append `tracking_id` parameter as a kwarg.
+
     >>> from pyticketswitch import Client
     >>> client = Client('example-user', 'some-password')
     >>> client.list_events(tracking_id='123')
