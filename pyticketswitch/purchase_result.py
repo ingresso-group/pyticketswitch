@@ -60,6 +60,7 @@ class PurchaseResult(JSONMixin, object):
             'failed_cv_two': data.get('failed_cv_two'),
             'error': data.get('purchase_error'),
             'failure_reason': data.get('failure_reason'),
+            'internal_error_comment': data.get('internal_error_comment'),
             'is_partial': data.get('is_partial'),
             'is_semi_credit': data.get('is_semi_credit'),
         }
