@@ -359,11 +359,17 @@ class TestClient:
             'req_media_triplet_three': True,
             'req_media_triplet_four': True,
             'req_media_triplet_five': True,
+            'req_media_triplet_one_wide': True,
+            'req_media_triplet_two_wide': True,
+            'req_media_triplet_three_wide': True,
+            'req_media_triplet_four_wide': True,
+            'req_media_triplet_five_wide': True,
             'req_media_seating_plan': True,
             'req_media_square': True,
             'req_media_landscape': True,
             'req_media_marquee': True,
             'req_video_iframe': True,
+            'req_media_supplier': True,
         }
 
     def test_add_optional_kwargs_cost_range(self, client):
