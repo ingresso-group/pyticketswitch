@@ -40,8 +40,8 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         disallowed_seat_nos=None,
         tax_component=None,
         semantic_type=None,
-        minimum_eligible_age=None
-        maximum_eligible_age=None
+        minimum_eligible_age=None,
+        maximum_eligible_age=None,
         *args,
         **kwargs
     ):
