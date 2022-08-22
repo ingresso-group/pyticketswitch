@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.12.0] - 2022-08-22
+### Added
+- Add semantic type to discounts
+
 ## [2.11.1] - 2022-07-15
 ### Added
 - Added new media types

@@ -21,6 +21,9 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             predicted commission for the partner.
         disallowed_seat_nos (list): a list of seat numbers, that this discount
             code cannot be specified for.
+        semantic_type: a mapping of the code to a meaning e.g. standard (adult) or child
+        minimum_eligible_age: the youngest one can be to qualify for this ticket
+        maximum_eligible_age: the oldest one can be to qualify for this ticket
     """
 
     def __init__(
@@ -36,6 +39,9 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         user_commission=None,
         disallowed_seat_nos=None,
         tax_component=None,
+        semantic_type=None,
+        minimum_eligible_age=None,
+        maximum_eligible_age=None,
         *args,
         **kwargs
     ):
@@ -51,6 +57,9 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         self.user_commission = user_commission
         self.disallowed_seat_nos = disallowed_seat_nos
         self.tax_component = tax_component
+        self.semantic_type = semantic_type
+        self.minimum_eligible_age = semantic_type
+        self.maximum_eligible_age = semantic_type
 
     @classmethod
     def from_api_data(cls, data):
@@ -89,6 +98,9 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             'absolute_saving': data.get('absolute_saving'),
             'gross_commission': gross_commission,
             'user_commission': user_commission,
+            'semantic_type': data.get('discount_semantic_type'),
+            'minimum_eligible_age': data.get('discount_minimum_eligible_age'),
+            'maximum_eligible_age': data.get('discount_maximum_eligible_age'),
         }
 
         tax_component = data.get('sale_combined_tax_component')
