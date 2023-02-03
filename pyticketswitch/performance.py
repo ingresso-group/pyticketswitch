@@ -49,7 +49,7 @@ class Performance(JSONMixin, object):
 
     def __init__(self, id_, event_id, date_time=None,
                  date_description=None, time_description=None, has_pool_seats=False,
-                 is_limited=False, cached_max_seats=None, cached_max_seats_is_real=None, cost_range=None,
+                 is_limited=False, cached_max_seats=None, cost_range=None,
                  no_singles_cost_range=None, is_ghost=False, name=None,
                  running_time=None, availability_details=None):
 
@@ -61,7 +61,6 @@ class Performance(JSONMixin, object):
         self.has_pool_seats = has_pool_seats
         self.is_limited = is_limited
         self.cached_max_seats = cached_max_seats
-        self.cached_max_seats_is_real = cached_max_seats_is_real
         self.cost_range = cost_range
         self.no_singles_cost_range = no_singles_cost_range
         self.is_ghost = is_ghost
