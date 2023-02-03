@@ -29,8 +29,8 @@ class Performance(JSONMixin, object):
             and the attribute was not always present. If you are using it then you should stop,
             and switch to cost range data instead if you still want cached availability data.
             For the time being the value will be one million instead of being absent entirely if the data is not available.
-        cached_max_seats_is_real (str): A ‘yes’ / ‘no’ string indicating whether the data in
-            the previous variable is actually real or not. Can be used whilst migrating away from using it.
+        cached_max_seats_is_real (bool): A boolean indicating whether the data in the previous variable
+            is actually real or not. Can be used whilst migrating away from using it.
         cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             pricing summary, may also include offers.
         no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
