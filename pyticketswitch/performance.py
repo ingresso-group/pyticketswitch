@@ -24,8 +24,13 @@ class Performance(JSONMixin, object):
             performance.
         has_pool_seats (bool): the performance has pool seats available.
         is_limited (bool): the performance has limited availability.
-        cached_max_seats (int): the maximum number of seats available to book
-            in a single order. This value is cached and may not be accurate.
+        cached_max_seats (int): This should not be used. Earlier versions of the documentation
+            implied that it held a meaningful value for the availability, but this is not true,
+            and the attribute was not always present. If you are using it then you should stop,
+            and switch to cost range data instead if you still want cached availability data.
+            For the time being the value will be one million instead of being absent entirely if the data is not available.
+        cached_max_seats_is_real (str): A ‘yes’ / ‘no’ string indicating whether the data in
+            the previous variable is actually real or not. Can be used whilst migrating away from using it.
         cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             pricing summary, may also include offers.
         no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
@@ -44,7 +49,7 @@ class Performance(JSONMixin, object):
 
     def __init__(self, id_, event_id, date_time=None,
                  date_description=None, time_description=None, has_pool_seats=False,
-                 is_limited=False, cached_max_seats=None, cost_range=None,
+                 is_limited=False, cached_max_seats=None, cached_max_seats_is_real=None, cost_range=None,
                  no_singles_cost_range=None, is_ghost=False, name=None,
                  running_time=None, availability_details=None):
 
@@ -56,6 +61,7 @@ class Performance(JSONMixin, object):
         self.has_pool_seats = has_pool_seats
         self.is_limited = is_limited
         self.cached_max_seats = cached_max_seats
+        self.cached_max_seats_is_real = cached_max_seats_is_real
         self.cost_range = cost_range
         self.no_singles_cost_range = no_singles_cost_range
         self.is_ghost = is_ghost
