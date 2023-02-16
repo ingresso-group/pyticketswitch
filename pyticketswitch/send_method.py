@@ -16,6 +16,7 @@ class SendMethod(JSONMixin, object):
             voucher from
         final_comment (str): comment about dispatching tickets
         send_cost_tax_component (int): tax of the send cost
+        trans_fee_component (float): transaction fee added by repricing rule.
     """
 
     def __init__(
@@ -29,6 +30,7 @@ class SendMethod(JSONMixin, object):
         self_print_voucher_url=None,
         final_comment=None,
         send_cost_tax_component=None,
+        trans_fee_component=None,
     ):
         self.code = code
         self.cost = cost
@@ -39,6 +41,7 @@ class SendMethod(JSONMixin, object):
         self.self_print_voucher_url = self_print_voucher_url
         self.final_comment = final_comment
         self.send_cost_tax_component = send_cost_tax_component
+        self.trans_fee_component = trans_fee_component
 
     @classmethod
     def from_api_data(cls, data):
@@ -65,6 +68,9 @@ class SendMethod(JSONMixin, object):
 
         cost = data.get('send_cost', 0.0)
         kwargs.update(cost=cost)
+
+        trans_fee_component = data.get('trans_fee_component', 0.0)
+        kwargs.update(trans_fee_component=trans_fee_component)
 
         permitted_countries_raw = data.get('permitted_countries', {})
 
