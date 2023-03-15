@@ -16,6 +16,6 @@ Feature: list performances
 
     Scenario: event with an auto selected performance
         Given an API client with valid credentials
-        When I fetch performances for the event "6KS"
+        When I fetch performances for the event "6KF"
         Then I get one performance
         And I get an indication that the performance is auto selected
