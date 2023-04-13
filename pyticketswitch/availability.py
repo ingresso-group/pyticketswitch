@@ -103,6 +103,10 @@ class AvailabilityDetails(JSONMixin, object):
             selection.
         cached_number_available (int): the maximum number of consecutive
             tickets available.
+        discount_code (str): the identifier for the discount.
+        discount_desc (str): a human readable description for the discount.
+        discount_semantic_type (str): a mapping of the code to a meaning
+            e.g. standard (adult) or child
 
     """
 
@@ -113,7 +117,8 @@ class AvailabilityDetails(JSONMixin, object):
                  percentage_saving=None, absolute_saving=None,
                  last_date=None, calendar_masks=None,
                  weekday_mask=None, valid_quantities=None,
-                 cached_number_available=None):
+                 cached_number_available=None, discount_code=None,
+                 discount_desc=None, discount_semantic_type=None):
 
         self.ticket_type = ticket_type
         self.ticket_type_description = ticket_type_description
@@ -132,6 +137,9 @@ class AvailabilityDetails(JSONMixin, object):
         self._weekday_mask = weekday_mask
         self.valid_quantities = valid_quantities
         self.cached_number_available = cached_number_available
+        self.discount_code = discount_code
+        self.discount_desc = discount_desc
+        self.discount_semantic_type = discount_semantic_type
 
     @classmethod
     def from_api_data(cls, data):
@@ -173,6 +181,10 @@ class AvailabilityDetails(JSONMixin, object):
                         'percentage_saving', 0.0)
                     kwargs['absolute_saving'] = raw_details.get('absolute_saving', 0.0)
                     kwargs['currency'] = raw_details.get('avail_currency_code')
+                    kwargs['discount_code'] = raw_details.get('discount_code')
+                    kwargs['discount_desc'] = raw_details.get('discount_desc')
+                    kwargs['discount_semantic_type'] = raw_details.get(
+                        'discount_semantic_type')
 
                     available_dates = raw_details.get('available_dates', {})
                     if 'first_yyyymmdd' in available_dates:
