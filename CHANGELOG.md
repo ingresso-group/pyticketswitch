@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+
+## [2.13.0] - 2023-04-18
+
 ### Added
 
 - new fields (discount_code, discount_desc and discount_semantic_type) can be returned with the availability details
