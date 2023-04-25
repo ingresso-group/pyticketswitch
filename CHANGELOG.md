@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- new field `suffixed_price_band_code` can be returned with the availability details
 
 ## [2.13.0] - 2023-04-18
 
