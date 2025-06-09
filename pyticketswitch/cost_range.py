@@ -1,3 +1,4 @@
+from pyticketswitch.misc import DiscountSemanticType
 from pyticketswitch.offer import Offer
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch import utils
@@ -35,10 +36,10 @@ class CostRange(JSONMixin, object):
         min_combined_combined_tax_component (float): min combined tax.
         min_combined_surcharge_tax_sub_component (float): min combined
             surcharge tax.
-        discount_semantic_type (string): The type of customer, e.g. adult, child
+        discount_semantic_type (:class:`pyticketswitch.misc.DiscountSemanticType):
+            The type of customer, e.g. adult, child
         alternate_discounts (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             When included, the child cost ranges for alternate discounts
-
     """
 
     def __init__(
@@ -170,7 +171,7 @@ class CostRange(JSONMixin, object):
         )
         if discount_semantic_type is not None:
             kwargs.update(
-                discount_semantic_type=discount_semantic_type
+                discount_semantic_type=DiscountSemanticType[discount_semantic_type.upper()]
             )
 
         alternate_discounts = data.get('alternate_discounts')
