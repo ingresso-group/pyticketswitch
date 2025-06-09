@@ -288,6 +288,13 @@ class Client(object):
                 response,
             )
 
+        if response.status_code == 401:
+                raise exceptions.AuthenticationError(
+                    contents,
+                    response.status_code,
+                    response,
+                )
+
         if response.status_code != 200:
             raise exceptions.InvalidResponseError(
                 "got status code `{}` from {}".format(
