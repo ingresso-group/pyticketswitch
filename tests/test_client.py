@@ -1627,7 +1627,7 @@ class TestClient:
         assert meta.default_currency_code == 'gbp'
 
     def test_test(self, client, monkeypatch):
-        response = {'user_id': 'foobar'}
+        response = {'user_info':{'user_id': 'foobar'}}
 
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, 'make_request', mock_make_request)

@@ -46,13 +46,14 @@ class User(JSONMixin, object):
             populated with the data from the api.
 
         """
+        user_info = data.get("user_info")
         return cls(
-            data.get('user_id'),
-            name=data.get('real_name'),
-            country=data.get('default_country_code'),
-            sub_user=data.get('sub_user'),
-            is_b2b=data.get('is_b2b'),
-            statement_descriptor=data.get('statement_descriptor'),
-            backend_group=data.get('backend_group'),
-            content_group=data.get('content_group'),
+            user_info.get('user_id'),
+            name=user_info.get('real_name'),
+            country=user_info.get('default_country_code'),
+            sub_user=user_info.get('sub_user'),
+            is_b2b=user_info.get('is_b2b'),
+            statement_descriptor=user_info.get('statement_descriptor'),
+            backend_group=user_info.get('backend_group'),
+            content_group=user_info.get('content_group'),
         )

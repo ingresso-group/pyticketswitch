@@ -1,3 +1,4 @@
+from pyticketswitch.misc import DiscountSemanticType
 from pyticketswitch.offer import Offer
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch import utils
@@ -35,7 +36,10 @@ class CostRange(JSONMixin, object):
         min_combined_combined_tax_component (float): min combined tax.
         min_combined_surcharge_tax_sub_component (float): min combined
             surcharge tax.
-
+        discount_semantic_type (:class:`pyticketswitch.misc.DiscountSemanticType):
+            The type of customer, e.g. adult, child
+        alternate_discounts (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+            When included, the child cost ranges for alternate discounts
     """
 
     def __init__(
@@ -55,6 +59,8 @@ class CostRange(JSONMixin, object):
         max_combined_surcharge_tax_sub=None,
         min_combined_combined_tax_component=None,
         min_combined_surcharge_tax_sub=None,
+        discount_semantic_type=None,
+        alternate_discounts=None,
     ):
 
         self.valid_quantities = valid_quantities
@@ -75,6 +81,8 @@ class CostRange(JSONMixin, object):
             min_combined_combined_tax_component
         )
         self.min_combined_surcharge_tax_sub = min_combined_surcharge_tax_sub
+        self.discount_semantic_type = discount_semantic_type
+        self.alternate_discounts = alternate_discounts
 
     @classmethod
     def from_api_data(cls, data):
@@ -157,6 +165,21 @@ class CostRange(JSONMixin, object):
             kwargs.update(
                 min_combined_surcharge_tax_sub=min_combined_surcharge_tax_sub
             )
+
+        discount_semantic_type = data.get(
+            'discount_semantic_type'
+        )
+        if discount_semantic_type is not None:
+            kwargs.update(
+                discount_semantic_type=DiscountSemanticType[discount_semantic_type.upper()]
+            )
+
+        alternate_discounts = data.get('alternate_discounts')
+        if alternate_discounts:
+            alternate_discounts = [
+                CostRange.from_api_data(a) for a in alternate_discounts
+            ]
+            kwargs.update(alternate_discounts=alternate_discounts)
 
         return cls(**kwargs)
 

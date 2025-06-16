@@ -1,5 +1,4 @@
 from pyticketswitch.trolley import Trolley
-from pyticketswitch.user import User
 from pyticketswitch.utils import isostr_to_datetime
 from pyticketswitch.country import Country
 from pyticketswitch.customer import Customer
@@ -59,7 +58,7 @@ class Status(JSONMixin, object):
     """
     def __init__(self, status=None, reserved_at=None, trolley=None,
                  purchased_at=None, external_sale_page=None,
-                 languages=None, remote_site=None, reserve_user=None,
+                 languages=None, remote_site=None,
                  prefilled_address=None, needs_payment_card=False,
                  needs_email_address=False, needs_agent_reference=False,
                  can_edit_address=False, allowed_countries=None,
@@ -74,7 +73,6 @@ class Status(JSONMixin, object):
         self.external_sale_page = external_sale_page
         self.languages = languages
         self.remote_site = remote_site
-        self.reserve_user = reserve_user
         self.prefilled_address = prefilled_address
         self.needs_payment_card = needs_payment_card
         self.needs_email_address = needs_email_address
@@ -137,11 +135,6 @@ class Status(JSONMixin, object):
         external_sale_page_raw = data.get('external_sale_page_raw')
         if external_sale_page_raw:
             raise NotImplementedError("don't know what this looks like yet")
-
-        reserve_user_data = data.get('reserve_user')
-        if reserve_user_data:
-            reserve_user = User.from_api_data(reserve_user_data)
-            kwargs.update(reserve_user=reserve_user)
 
         languages_raw = data.get('language_list')
         if languages_raw:
