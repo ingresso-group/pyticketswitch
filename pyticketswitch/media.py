@@ -16,8 +16,16 @@ class Media(JSONMixin, object):
 
     """
 
-    def __init__(self, caption=None, caption_html=None, name=None, url=None,
-                 secure=None, width=0, height=0):
+    def __init__(
+        self,
+        caption=None,
+        caption_html=None,
+        name=None,
+        url=None,
+        secure=None,
+        width=0,
+        height=0,
+    ):
 
         self.caption = caption
         self.caption_html = caption_html
@@ -41,20 +49,20 @@ class Media(JSONMixin, object):
             populated with the data from the api.
 
         """
-        url = data.get('secure_complete_url', None)
+        url = data.get("secure_complete_url", None)
         secure = True
         if not url:
-            url = data.get('insecure_complete_url', None)
+            url = data.get("insecure_complete_url", None)
             secure = False
 
         kwargs = {
-            'caption': data.get('caption', None),
-            'caption_html': data.get('caption_html', None),
-            'name': data.get('name', None),
-            'url': url,
-            'secure': secure,
-            'width': data.get('width'),
-            'height': data.get('height'),
+            "caption": data.get("caption", None),
+            "caption_html": data.get("caption_html", None),
+            "name": data.get("name", None),
+            "url": url,
+            "secure": secure,
+            "width": data.get("width"),
+            "height": data.get("height"),
         }
 
         return cls(**kwargs)

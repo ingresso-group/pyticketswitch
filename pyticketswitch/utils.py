@@ -31,19 +31,19 @@ def date_range_str(start_date, end_date):
         raise InvalidParametersError("end_date is not a datetime instance")
 
     if start_date:
-        start_date = start_date.strftime('%Y%m%d')
+        start_date = start_date.strftime("%Y%m%d")
     else:
-        start_date = ''
+        start_date = ""
 
     if end_date:
-        end_date = end_date.strftime('%Y%m%d')
+        end_date = end_date.strftime("%Y%m%d")
     else:
-        end_date = ''
+        end_date = ""
 
     if start_date or end_date:
-        date_range = '{}:{}'.format(start_date, end_date)
+        date_range = "{}:{}".format(start_date, end_date)
     else:
-        date_range = ''
+        date_range = ""
 
     return date_range
 
@@ -63,7 +63,7 @@ def isostr_to_datetime(date_str):
 
     """
     if not date_str:
-        raise ValueError('{} is not a valid datetime string'.format(date_str))
+        raise ValueError("{} is not a valid datetime string".format(date_str))
 
     dt = parser.parse(date_str)
     return dt
@@ -82,9 +82,9 @@ def yyyymmdd_to_date(date_str):
         ValueError: when the date_str is empty or None.
     """
     if not date_str:
-        raise ValueError('{} is not a valid datetime string'.format(date_str))
+        raise ValueError("{} is not a valid datetime string".format(date_str))
 
-    date = datetime.strptime(date_str, '%Y%m%d')
+    date = datetime.strptime(date_str, "%Y%m%d")
     if date:
         return date.date()
 
@@ -92,15 +92,24 @@ def yyyymmdd_to_date(date_str):
 def specific_dates_from_api_data(dates):
 
     MONTHS = {
-        'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4,
-        'may': 5, 'jun': 6, 'jul': 7, 'aug': 8,
-        'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12,
+        "jan": 1,
+        "feb": 2,
+        "mar": 3,
+        "apr": 4,
+        "may": 5,
+        "jun": 6,
+        "jul": 7,
+        "aug": 8,
+        "sep": 9,
+        "oct": 10,
+        "nov": 11,
+        "dec": 12,
     }
 
     return [
-        date(int(year.split('_')[1]), MONTHS.get(month), int(day.split('_')[1]))
+        date(int(year.split("_")[1]), MONTHS.get(month), int(day.split("_")[1]))
         for year, months in dates.items()
-        if year.startswith('year_')
+        if year.startswith("year_")
         for month, days in months.items()
         for day, valid in days.items()
         if valid is True
@@ -118,10 +127,7 @@ def bitmask_to_boolean_list(mask):
 
     """
     of_length = max(1, mask.bit_length())
-    return [
-        bool(mask >> i & 1)
-        for i in range(of_length)
-    ]
+    return [bool(mask >> i & 1) for i in range(of_length)]
 
 
 def bitmask_to_numbered_list(mask):
@@ -137,11 +143,7 @@ def bitmask_to_numbered_list(mask):
     if mask is None:
         return []
 
-    return [
-        i+1
-        for i in range(mask.bit_length() + 1)
-        if bool(mask >> i & 1)
-    ]
+    return [i + 1 for i in range(mask.bit_length() + 1) if bool(mask >> i & 1)]
 
 
 def get_price(data, key):
@@ -190,12 +192,9 @@ def add_prices(*prices):
     """
     if len(prices) < 2:
         raise TypeError(
-            'add_prices expected at least 2 arguments, got {}'.format(len(prices))
+            "add_prices expected at least 2 arguments, got {}".format(len(prices))
         )
-    converted = [
-        Decimal(str(price)) if price is not None else None
-        for price in prices
-    ]
+    converted = [Decimal(str(price)) if price is not None else None for price in prices]
     combined = sum(converted)
     if any(isinstance(price, Decimal) for price in prices):
         return Decimal(combined)
@@ -217,19 +216,13 @@ def filter_none_from_parameters(params):
         :obj:`None` removed.
 
     """
-    return {
-        key: value
-        for key, value in params.items()
-        if value is not None
-    }
+    return {key: value for key, value in params.items() if value is not None}
 
 
 def deprecation_warning(message, stacklevel=2):
-    warnings.simplefilter('always', DeprecationWarning)  # turn off filter
-    warnings.warn(message,
-                  category=DeprecationWarning,
-                  stacklevel=stacklevel)
-    warnings.simplefilter('default', DeprecationWarning)  # reset filter
+    warnings.simplefilter("always", DeprecationWarning)  # turn off filter
+    warnings.warn(message, category=DeprecationWarning, stacklevel=stacklevel)
+    warnings.simplefilter("default", DeprecationWarning)  # reset filter
 
 
 def deprecated(func):
@@ -247,9 +240,7 @@ def deprecated(func):
 
     @functools.wraps(func)
     def wrapped_func(*args, **kwargs):
-        deprecation_warning(
-            "Call to deprecated function {}".format(func.__name__)
-        )
+        deprecation_warning("Call to deprecated function {}".format(func.__name__))
         return func(*args, **kwargs)
 
     # Mark the function as deprecated

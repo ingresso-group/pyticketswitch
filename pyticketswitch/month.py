@@ -20,9 +20,17 @@ class Month(JSONMixin, object):
             offers.
 
     """
-    def __init__(self, month, year, description=None, dates_bitmask=None,
-                 weekday_bitmask=None, cost_range=None,
-                 no_singles_cost_range=None):
+
+    def __init__(
+        self,
+        month,
+        year,
+        description=None,
+        dates_bitmask=None,
+        weekday_bitmask=None,
+        cost_range=None,
+        no_singles_cost_range=None,
+    ):
 
         self.month = month
         self.year = year
@@ -35,9 +43,8 @@ class Month(JSONMixin, object):
     @classmethod
     def from_api_data(cls, data):
 
-        api_cost_range = data.get('cost_range', {})
-        api_no_singles_cost_range = api_cost_range.get(
-            'no_singles_cost_range', {})
+        api_cost_range = data.get("cost_range", {})
+        api_no_singles_cost_range = api_cost_range.get("no_singles_cost_range", {})
         cost_range = None
         no_singles_cost_range = None
 
@@ -45,17 +52,16 @@ class Month(JSONMixin, object):
             cost_range = CostRange.from_api_data(api_cost_range)
 
         if api_no_singles_cost_range:
-            no_singles_cost_range = CostRange.from_api_data(
-                api_no_singles_cost_range)
+            no_singles_cost_range = CostRange.from_api_data(api_no_singles_cost_range)
 
         kwargs = {
-            'cost_range': cost_range,
-            'no_singles_cost_range': no_singles_cost_range,
-            'month': MONTH_NUMBERS.get(data.get('month')),
-            'year': data.get('year'),
-            'description': data.get('month_desc'),
-            'dates_bitmask': data.get('month_dates_bitmask'),
-            'weekday_bitmask': data.get('month_weekdays_bitmask'),
+            "cost_range": cost_range,
+            "no_singles_cost_range": no_singles_cost_range,
+            "month": MONTH_NUMBERS.get(data.get("month")),
+            "year": data.get("year"),
+            "description": data.get("month_desc"),
+            "dates_bitmask": data.get("month_dates_bitmask"),
+            "weekday_bitmask": data.get("month_weekdays_bitmask"),
         }
 
         return cls(**kwargs)

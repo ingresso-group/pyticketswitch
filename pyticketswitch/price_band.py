@@ -107,54 +107,46 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
             populated with the data from the api.
 
         """
-        api_cost_range = data.get('cost_range', {})
-        api_no_singles_cost_range = api_cost_range.get(
-            'no_singles_cost_range', {}
-        )
+        api_cost_range = data.get("cost_range", {})
+        api_no_singles_cost_range = api_cost_range.get("no_singles_cost_range", {})
         cost_range = None
         no_singles_cost_range = None
 
         if api_cost_range:
-            api_cost_range['singles'] = True
+            api_cost_range["singles"] = True
             cost_range = CostRange.from_api_data(api_cost_range)
 
         if api_no_singles_cost_range:
-            api_no_singles_cost_range['singles'] = False
-            no_singles_cost_range = CostRange.from_api_data(
-                api_no_singles_cost_range
-            )
+            api_no_singles_cost_range["singles"] = False
+            no_singles_cost_range = CostRange.from_api_data(api_no_singles_cost_range)
 
         discount = Discount.from_api_data(data)
 
         kwargs = {
-            'code': data.get('price_band_code'),
-            'description': data.get('price_band_desc'),
-            'availability': data.get('number_available'),
-            'cost_range': cost_range,
-            'no_singles_cost_range': no_singles_cost_range,
-            'default_discount': discount,
-            'example_seats_are_real': data.get('example_seats_are_real', True),
-            'allows_leaving_single_seats': data.get(
-                'allows_leaving_single_seats'
-            ),
-            'percentage_saving': data.get('percentage_saving'),
-            'is_offer': data.get('is_offer'),
+            "code": data.get("price_band_code"),
+            "description": data.get("price_band_desc"),
+            "availability": data.get("number_available"),
+            "cost_range": cost_range,
+            "no_singles_cost_range": no_singles_cost_range,
+            "default_discount": discount,
+            "example_seats_are_real": data.get("example_seats_are_real", True),
+            "allows_leaving_single_seats": data.get("allows_leaving_single_seats"),
+            "percentage_saving": data.get("percentage_saving"),
+            "is_offer": data.get("is_offer"),
         }
 
-        example_seats_data = data.get('example_seats')
+        example_seats_data = data.get("example_seats")
         if example_seats_data:
-            example_seats = [
-                Seat.from_api_data(seat) for seat in example_seats_data
-            ]
+            example_seats = [Seat.from_api_data(seat) for seat in example_seats_data]
             kwargs.update(example_seats=example_seats)
 
-        seat_block_data = data.get('free_seat_blocks')
+        seat_block_data = data.get("free_seat_blocks")
 
         if seat_block_data:
-            separators_by_row = seat_block_data.get('separators_by_row')
-            restricted_view_seats = seat_block_data.get('restricted_view_seats')
-            seats_by_text_message = seat_block_data.get('seats_by_text_message')
-            blocks_by_row = seat_block_data.get('blocks_by_row')
+            separators_by_row = seat_block_data.get("separators_by_row")
+            restricted_view_seats = seat_block_data.get("restricted_view_seats")
+            seats_by_text_message = seat_block_data.get("seats_by_text_message")
+            blocks_by_row = seat_block_data.get("blocks_by_row")
 
             seat_blocks = []
             if blocks_by_row:
@@ -172,12 +164,12 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
 
             kwargs.update(seat_blocks=seat_blocks)
 
-        user_commission_data = data.get('predicted_user_commission')
+        user_commission_data = data.get("predicted_user_commission")
         if user_commission_data:
             user_commission = Commission.from_api_data(user_commission_data)
             kwargs.update(user_commission=user_commission)
 
-        discounts_data = data.get('possible_discounts', {}).get('discount')
+        discounts_data = data.get("possible_discounts", {}).get("discount")
         if discounts_data:
             discounts = [
                 Discount.from_api_data(discount_data)
@@ -185,7 +177,7 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
             ]
             kwargs.update(discounts=discounts)
 
-        tax_component = data.get('sale_combined_tax_component')
+        tax_component = data.get("sale_combined_tax_component")
         if tax_component is not None:
             kwargs.update(tax_component=tax_component)
 
@@ -204,14 +196,12 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
             return []
 
         return [
-            seat
-            for seat_block in self.seat_blocks
-            for seat in seat_block.seats or []
+            seat for seat_block in self.seat_blocks for seat in seat_block.seats or []
         ]
 
     def __repr__(self):
         if self.description:
-            return u'<PriceBand {}:{}>'.format(
-                self.code, self.description.encode('ascii', 'ignore')
+            return "<PriceBand {}:{}>".format(
+                self.code, self.description.encode("ascii", "ignore")
             )
-        return u'<PriceBand {}>'.format(self.code)
+        return "<PriceBand {}>".format(self.code)

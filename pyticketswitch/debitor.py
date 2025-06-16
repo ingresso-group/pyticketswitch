@@ -45,8 +45,14 @@ class Debitor(JSONMixin, object):
             for purposes of payment aggregation between bundles
     """
 
-    def __init__(self, typ=None, name=None, description=None,
-                 integration_data=None, aggregation_key=None):
+    def __init__(
+        self,
+        typ=None,
+        name=None,
+        description=None,
+        integration_data=None,
+        aggregation_key=None,
+    ):
         self.type = typ
         self.name = name
         self.description = description
@@ -56,14 +62,14 @@ class Debitor(JSONMixin, object):
     @classmethod
     def from_api_data(cls, data):
         kwargs = {
-            'typ': data.get('debitor_type'),
-            'name': data.get('debitor_name'),
-            'description': data.get('debitor_desc'),
-            'integration_data': data.get('debitor_integration_data', {}),
-            'aggregation_key': data.get('debitor_aggregation_key'),
+            "typ": data.get("debitor_type"),
+            "name": data.get("debitor_name"),
+            "description": data.get("debitor_desc"),
+            "integration_data": data.get("debitor_integration_data", {}),
+            "aggregation_key": data.get("debitor_aggregation_key"),
         }
 
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<Debitor {}:{}>'.format(self.type, self.name)
+        return "<Debitor {}:{}>".format(self.type, self.name)

@@ -19,9 +19,17 @@ class Address(JSONMixin, object):
 
     """
 
-    def __init__(self, lines=None, country_code=None, county=None,
-                 email=None, home_phone=None, post_code=None, town=None,
-                 work_phone=None):
+    def __init__(
+        self,
+        lines=None,
+        country_code=None,
+        county=None,
+        email=None,
+        home_phone=None,
+        post_code=None,
+        town=None,
+        work_phone=None,
+    ):
 
         self.lines = lines
         self.town = town
@@ -47,17 +55,17 @@ class Address(JSONMixin, object):
 
         """
         kwargs = {
-            'country_code': data.get('country_code'),
-            'county': data.get('county'),
-            'email': data.get('email_address'),
-            'home_phone': data.get('home_phone'),
-            'post_code': data.get('postcode'),
-            'town': data.get('town'),
-            'work_phone': data.get('work_phone'),
-            'lines': [
-                data.get('address_line_one'),
-                data.get('address_line_two'),
-            ]
+            "country_code": data.get("country_code"),
+            "county": data.get("county"),
+            "email": data.get("email_address"),
+            "home_phone": data.get("home_phone"),
+            "post_code": data.get("postcode"),
+            "town": data.get("town"),
+            "work_phone": data.get("work_phone"),
+            "lines": [
+                data.get("address_line_one"),
+                data.get("address_line_two"),
+            ],
         }
 
         return cls(**kwargs)
@@ -65,10 +73,10 @@ class Address(JSONMixin, object):
     def as_api_billing_address_parameters(self):
 
         params = {
-            'billing_country_code': self.country_code,
-            'billing_postcode': self.post_code,
-            'billing_town': self.town,
-            'billing_county': self.county,
+            "billing_country_code": self.country_code,
+            "billing_postcode": self.post_code,
+            "billing_town": self.town,
+            "billing_county": self.county,
         }
 
         if self.lines and len(self.lines) == 1:

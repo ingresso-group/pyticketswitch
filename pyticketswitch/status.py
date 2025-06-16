@@ -56,15 +56,29 @@ class Status(JSONMixin, object):
             if the transaction is mid purchase then this will hold information
             about how to reenter the purchase process.
     """
-    def __init__(self, status=None, reserved_at=None, trolley=None,
-                 purchased_at=None, external_sale_page=None,
-                 languages=None, remote_site=None,
-                 prefilled_address=None, needs_payment_card=False,
-                 needs_email_address=False, needs_agent_reference=False,
-                 can_edit_address=False, allowed_countries=None,
-                 minutes_left=None, supports_billing_address=False,
-                 accepted_cards=None, pending_callout=None, customer=None,
-                 purchase_result=None):
+
+    def __init__(
+        self,
+        status=None,
+        reserved_at=None,
+        trolley=None,
+        purchased_at=None,
+        external_sale_page=None,
+        languages=None,
+        remote_site=None,
+        prefilled_address=None,
+        needs_payment_card=False,
+        needs_email_address=False,
+        needs_agent_reference=False,
+        can_edit_address=False,
+        allowed_countries=None,
+        minutes_left=None,
+        supports_billing_address=False,
+        accepted_cards=None,
+        pending_callout=None,
+        customer=None,
+        purchase_result=None,
+    ):
 
         self.status = status
         self.reserved_at = reserved_at
@@ -102,45 +116,45 @@ class Status(JSONMixin, object):
         """
         accepted_cards = [
             CardType(code=key, description=value)
-            for key, value in data.get('accepted_payment_cards', {}).items()
+            for key, value in data.get("accepted_payment_cards", {}).items()
         ]
 
         customer = None
-        customer_api_data = data.get('customer')
+        customer_api_data = data.get("customer")
         if customer_api_data:
             customer = Customer.from_api_data(customer_api_data)
 
         kwargs = {
-            'status': data.get('transaction_status'),
-            'trolley': Trolley.from_api_data(data),
-            'remote_site': data.get('remote_site'),
-            'can_edit_address': data.get('can_edit_address'),
-            'needs_agent_reference': data.get('needs_agent_reference'),
-            'needs_email_address': data.get('needs_email_address'),
-            'needs_payment_card': data.get('needs_payment_card'),
-            'minutes_left': data.get('minutes_left_on_reserve'),
-            'supports_billing_address': data.get('supports_billing_address'),
-            'accepted_cards': accepted_cards,
-            'customer': customer,
+            "status": data.get("transaction_status"),
+            "trolley": Trolley.from_api_data(data),
+            "remote_site": data.get("remote_site"),
+            "can_edit_address": data.get("can_edit_address"),
+            "needs_agent_reference": data.get("needs_agent_reference"),
+            "needs_email_address": data.get("needs_email_address"),
+            "needs_payment_card": data.get("needs_payment_card"),
+            "minutes_left": data.get("minutes_left_on_reserve"),
+            "supports_billing_address": data.get("supports_billing_address"),
+            "accepted_cards": accepted_cards,
+            "customer": customer,
         }
 
-        reserved_raw = data.get('reserve_iso8601_date_and_time')
+        reserved_raw = data.get("reserve_iso8601_date_and_time")
         if reserved_raw:
             kwargs.update(reserved_at=isostr_to_datetime(reserved_raw))
 
-        purchased_raw = data.get('purchase_iso8601_date_and_time')
+        purchased_raw = data.get("purchase_iso8601_date_and_time")
         if purchased_raw:
             kwargs.update(purchased_at=isostr_to_datetime(purchased_raw))
 
-        external_sale_page_raw = data.get('external_sale_page_raw')
+        external_sale_page_raw = data.get("external_sale_page_raw")
         if external_sale_page_raw:
             raise NotImplementedError("don't know what this looks like yet")
 
-        languages_raw = data.get('language_list')
+        languages_raw = data.get("language_list")
         if languages_raw:
             kwargs.update(languages=languages_raw)
 
-        allowed_countries = data.get('allowed_countries')
+        allowed_countries = data.get("allowed_countries")
         if allowed_countries is not None:
             countries = [
                 Country(key, description=description)
@@ -149,11 +163,11 @@ class Status(JSONMixin, object):
             countries.sort(key=lambda x: x.code)
             kwargs.update(allowed_countries=countries)
 
-        address = data.get('prefilled_address')
+        address = data.get("prefilled_address")
         if address:
             kwargs.update(prefilled_address=Address.from_api_data(address))
 
-        pending_callout = data.get('pending_callout')
+        pending_callout = data.get("pending_callout")
         if pending_callout:
             kwargs.update(pending_callout=Callout.from_api_data(pending_callout))
 

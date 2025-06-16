@@ -15,4 +15,4 @@ class CardType(JSONMixin, object):
         self.description = description
 
     def __repr__(self):
-        return u'<CardType {}: {}>'.format(self.code, self.description)
+        return "<CardType {}: {}>".format(self.code, self.description)

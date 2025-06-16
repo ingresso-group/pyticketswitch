@@ -28,6 +28,9 @@ jobs:
           name: flake8
           command: venv/bin/flake8 pyticketswitch
       - run:
+          name: black
+          command: venv/bin/black pyticketswitch
+      - run:
           name: behave coverage
           command: |
             . venv/bin/activate

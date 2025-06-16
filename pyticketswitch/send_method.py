@@ -58,39 +58,38 @@ class SendMethod(JSONMixin, object):
 
         """
         kwargs = {
-            'code': data.get('send_code'),
-            'description': data.get('send_desc'),
-            'typ': data.get('send_type'),
-            'can_generate_self_print': data.get('can_generate_self_print'),
-            'self_print_voucher_url': data.get('self_print_voucher_url'),
-            'final_comment': data.get('send_final_comment'),
+            "code": data.get("send_code"),
+            "description": data.get("send_desc"),
+            "typ": data.get("send_type"),
+            "can_generate_self_print": data.get("can_generate_self_print"),
+            "self_print_voucher_url": data.get("self_print_voucher_url"),
+            "final_comment": data.get("send_final_comment"),
         }
 
-        cost = data.get('send_cost', 0.0)
+        cost = data.get("send_cost", 0.0)
         kwargs.update(cost=cost)
 
-        trans_fee_component = data.get('trans_fee_component', 0.0)
+        trans_fee_component = data.get("trans_fee_component", 0.0)
         kwargs.update(trans_fee_component=trans_fee_component)
 
-        permitted_countries_raw = data.get('permitted_countries', {})
+        permitted_countries_raw = data.get("permitted_countries", {})
 
         if permitted_countries_raw:
-            permitted_countries_raw = permitted_countries_raw.get('country', [])
+            permitted_countries_raw = permitted_countries_raw.get("country", [])
 
             permitted_countries = [
-                Country.from_api_data(country)
-                for country in permitted_countries_raw
+                Country.from_api_data(country) for country in permitted_countries_raw
             ]
 
             kwargs.update(permitted_countries=permitted_countries)
 
-        send_cost_tax_component = data.get('send_cost_tax_component')
+        send_cost_tax_component = data.get("send_cost_tax_component")
         if send_cost_tax_component is not None:
             kwargs.update(send_cost_tax_component=send_cost_tax_component)
 
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<SendMethod {}:{}>'.format(
-            self.code, self.description.encode('ascii', 'ignore')
+        return "<SendMethod {}:{}>".format(
+            self.code, self.description.encode("ascii", "ignore")
         )

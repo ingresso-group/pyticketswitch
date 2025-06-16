@@ -16,8 +16,14 @@ class SeatBlock(JSONMixin, object):
         self.seats = seats
 
     @classmethod
-    def from_api_data(cls, block, row_id=None, separator='',
-                      restricted_view_seats=None, seats_by_text_message=None):
+    def from_api_data(
+        cls,
+        block,
+        row_id=None,
+        separator="",
+        restricted_view_seats=None,
+        seats_by_text_message=None,
+    ):
         """Creates a new SeatBlock object from API data from ticketswitch.
 
         Args:
@@ -49,7 +55,7 @@ class SeatBlock(JSONMixin, object):
             column = split_id[1]
 
             restricted = False
-            restricted_text = ''
+            restricted_text = ""
 
             if seat_id in restricted_view_seats:
                 restricted = True
@@ -58,13 +64,16 @@ class SeatBlock(JSONMixin, object):
                 if seat_id in list_of_seats:
                     restricted_text = seat_text
             seat = Seat(
-                id_=seat_id, row=row_id, column=column,
-                separator=separator, is_restricted=restricted,
-                seat_text=restricted_text
+                id_=seat_id,
+                row=row_id,
+                column=column,
+                separator=separator,
+                is_restricted=restricted,
+                seat_text=restricted_text,
             )
             seats.append(seat)
 
-        kwargs = {'seats': seats, 'length': len(seats)}
+        kwargs = {"seats": seats, "length": len(seats)}
         return cls(**kwargs)
 
 
@@ -88,9 +97,19 @@ class Seat(JSONMixin, object):
 
     """
 
-    def __init__(self, id_=None, column=None, row=None, is_restricted=False,
-                 seat_text_code=None, seat_text=None, separator=None,
-                 barcode=None, seat_google_pay_urls=None, seat_apple_wallet_urls=None):
+    def __init__(
+        self,
+        id_=None,
+        column=None,
+        row=None,
+        is_restricted=False,
+        seat_text_code=None,
+        seat_text=None,
+        separator=None,
+        barcode=None,
+        seat_google_pay_urls=None,
+        seat_apple_wallet_urls=None,
+    ):
         self.id = id_
         self.column = column
         self.row = row
@@ -117,24 +136,30 @@ class Seat(JSONMixin, object):
 
         """
         kwargs = {
-            'id_': data.get('full_id'),
-            'column': data.get('col_id'),
-            'row': data.get('row_id'),
-            'is_restricted': data.get('is_restricted_view', False),
-            'seat_text_code': data.get('seat_text_code'),
-            'seat_text': data.get('seat_text'),
-            'separator': data.get('separator', ''),
-            'barcode': data.get('barcode'),
-            'seat_apple_wallet_urls': (AppleWallet(data.get('seat_apple_wallet_urls'))
-                                       if data.get('seat_apple_wallet_urls') else None),
-            'seat_google_pay_urls': (GoogleWallet(data.get('seat_google_pay_urls'))
-                                     if data.get('seat_google_pay_urls') else None),
+            "id_": data.get("full_id"),
+            "column": data.get("col_id"),
+            "row": data.get("row_id"),
+            "is_restricted": data.get("is_restricted_view", False),
+            "seat_text_code": data.get("seat_text_code"),
+            "seat_text": data.get("seat_text"),
+            "separator": data.get("separator", ""),
+            "barcode": data.get("barcode"),
+            "seat_apple_wallet_urls": (
+                AppleWallet(data.get("seat_apple_wallet_urls"))
+                if data.get("seat_apple_wallet_urls")
+                else None
+            ),
+            "seat_google_pay_urls": (
+                GoogleWallet(data.get("seat_google_pay_urls"))
+                if data.get("seat_google_pay_urls")
+                else None
+            ),
         }
 
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<Seat {}>'.format(self.id)
+        return "<Seat {}>".format(self.id)
 
 
 class GoogleWallet(JSONMixin, object):
@@ -146,11 +171,11 @@ class GoogleWallet(JSONMixin, object):
     """
 
     def __init__(self, urls={}):
-        self.gpay_jwt_url = urls.get('gpay_jwt_url')
-        self.gpay_save_url = urls.get('gpay_save_url')
+        self.gpay_jwt_url = urls.get("gpay_jwt_url")
+        self.gpay_save_url = urls.get("gpay_save_url")
 
     def __repr__(self):
-        return '<GoogleWallet>'
+        return "<GoogleWallet>"
 
 
 class AppleWallet(JSONMixin, object):
@@ -161,7 +186,7 @@ class AppleWallet(JSONMixin, object):
     """
 
     def __init__(self, urls={}):
-        self.apple_wallet_gen_url = urls.get('apple_wallet_gen_url')
+        self.apple_wallet_gen_url = urls.get("apple_wallet_gen_url")
 
     def __repr__(self):
-        return '<AppleWallet>'
+        return "<AppleWallet>"

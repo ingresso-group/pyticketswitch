@@ -23,9 +23,18 @@ class PurchaseResult(JSONMixin, object):
 
     """
 
-    def __init__(self, success=False, failed_3d_secure=False, failed_avs=False,
-                 failed_cv_two=False, error=None, failure_reason=None,
-                 is_partial=False, is_semi_credit=False, internal_error_comment=None):
+    def __init__(
+        self,
+        success=False,
+        failed_3d_secure=False,
+        failed_avs=False,
+        failed_cv_two=False,
+        error=None,
+        failure_reason=None,
+        is_partial=False,
+        is_semi_credit=False,
+        internal_error_comment=None,
+    ):
 
         self.success = success
         self.failed_3d_secure = failed_3d_secure
@@ -54,15 +63,15 @@ class PurchaseResult(JSONMixin, object):
         """
 
         kwargs = {
-            'success': data.get('success'),
-            'failed_3d_secure': data.get('failed_3d_secure'),
-            'failed_avs': data.get('failed_avs'),
-            'failed_cv_two': data.get('failed_cv_two'),
-            'error': data.get('purchase_error'),
-            'failure_reason': data.get('failure_reason'),
-            'internal_error_comment': data.get('internal_error_comment'),
-            'is_partial': data.get('is_partial'),
-            'is_semi_credit': data.get('is_semi_credit'),
+            "success": data.get("success"),
+            "failed_3d_secure": data.get("failed_3d_secure"),
+            "failed_avs": data.get("failed_avs"),
+            "failed_cv_two": data.get("failed_cv_two"),
+            "error": data.get("purchase_error"),
+            "failure_reason": data.get("failure_reason"),
+            "internal_error_comment": data.get("internal_error_comment"),
+            "is_partial": data.get("is_partial"),
+            "is_semi_credit": data.get("is_semi_credit"),
         }
 
         return cls(**kwargs)

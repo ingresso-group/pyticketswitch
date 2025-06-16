@@ -22,8 +22,8 @@ from pyticketswitch.user import User
 
 logger = logging.getLogger(__name__)
 
-POST = 'post'
-GET = 'get'
+POST = "post"
+GET = "get"
 DEFAULT_ROOT_URL = "https://api.ticketswitch.com"
 
 
@@ -55,8 +55,17 @@ class Client(object):
 
     """
 
-    def __init__(self, user, password, url=DEFAULT_ROOT_URL, sub_user=None,
-                 language=None, tracking_id=None, use_decimal=False, **kwargs):
+    def __init__(
+        self,
+        user,
+        password,
+        url=DEFAULT_ROOT_URL,
+        sub_user=None,
+        language=None,
+        tracking_id=None,
+        use_decimal=False,
+        **kwargs
+    ):
         self.user = user
         self.password = password
         self.url = url
@@ -111,10 +120,10 @@ class Client(object):
         """
         extra_params = {}
         # Call the deprecated method if it has been overridden
-        if not hasattr(self.get_auth_params, 'is_deprecated'):
+        if not hasattr(self.get_auth_params, "is_deprecated"):
             utils.deprecation_warning(
                 "Function get_auth_params() is deprecated and should not be used",
-                stacklevel=3
+                stacklevel=3,
             )
             extra_params.update(self.get_auth_params())
         elif self.sub_user:
@@ -153,12 +162,10 @@ class Client(object):
 
         """
         if self.language:
-            headers.update({'Accept-Language': self.language})
+            headers.update({"Accept-Language": self.language})
 
         # Modify user agent to report Pyticketswitch version
-        headers.update({
-            'User-Agent': self.get_user_agent()
-        })
+        headers.update({"User-Agent": self.get_user_agent()})
 
         return headers
 
@@ -198,7 +205,7 @@ class Client(object):
         Args:
             session (:class:`requests.Session`): the http session to clean up.
         """
-        logger.debug('requests session cleaning up')
+        logger.debug("requests session cleaning up")
         session.close()
 
     def make_request(self, endpoint, params, method=GET, headers={}, timeout=None):
@@ -225,10 +232,10 @@ class Client(object):
 
         url = self.get_url(endpoint)
         params.update(self.get_extra_params())
-        if not params.get('tsw_session_track_id'):
+        if not params.get("tsw_session_track_id"):
             params.update(self.get_tracking_params())
 
-        logger.debug(u'url: %s; endpoint: %s; params: %s', self.url, endpoint, params)
+        logger.debug("url: %s; endpoint: %s; params: %s", self.url, endpoint, params)
 
         raw_headers = self.get_headers(headers)
 
@@ -237,17 +244,13 @@ class Client(object):
         session = self.get_session()
 
         if method == POST:
-            response = session.post(url,
-                                    auth=auth,
-                                    data=params,
-                                    headers=raw_headers,
-                                    timeout=timeout)
+            response = session.post(
+                url, auth=auth, data=params, headers=raw_headers, timeout=timeout
+            )
         else:
-            response = session.get(url,
-                                   auth=auth,
-                                   params=params,
-                                   headers=raw_headers,
-                                   timeout=timeout)
+            response = session.get(
+                url, auth=auth, params=params, headers=raw_headers, timeout=timeout
+            )
 
         logger.debug(six.u(response.content))
 
@@ -259,32 +262,34 @@ class Client(object):
             contents = response.json(parse_float=parse_float)
         except ValueError:
             raise exceptions.InvalidResponseError(
-                ("Unable to parse json data from {} response with status "
-                 "code `{}`").format(
+                (
+                    "Unable to parse json data from {} response with status "
+                    "code `{}`"
+                ).format(
                     endpoint,
                     response.status_code,
                 )
             )
 
-        if 'error_code' in contents:
+        if "error_code" in contents:
 
-            if contents['error_code'] == 3:
+            if contents["error_code"] == 3:
                 raise exceptions.AuthenticationError(
-                    contents['error_desc'],
-                    contents['error_code'],
+                    contents["error_desc"],
+                    contents["error_code"],
                     response,
                 )
 
             if response.status_code == 410:
                 raise exceptions.CallbackGoneError(
-                    contents['error_desc'],
-                    contents['error_code'],
+                    contents["error_desc"],
+                    contents["error_code"],
                     response,
                 )
 
             raise exceptions.APIError(
-                contents['error_desc'],
-                contents['error_code'],
+                contents["error_desc"],
+                contents["error_code"],
                 response,
             )
 
@@ -322,21 +327,31 @@ class Client(object):
         .. _`/f13/test.v1`: http://docs.ingresso.co.uk/#test
 
         """
-        response = self.make_request('test.v1', {})
+        response = self.make_request("test.v1", {})
 
         user = User.from_api_data(response)
 
         return user
 
-    def add_optional_kwargs(self, params, availability=False,
-                            availability_with_performances=False,
-                            extra_info=False, reviews=False, media=False,
-                            cost_range=False, best_value_offer=False,
-                            max_saving_offer=False, min_cost_offer=False,
-                            top_price_offer=False, no_singles_data=False,
-                            cost_range_details=False, source_info=False,
-                            tracking_id=None,
-                            **kwargs):
+    def add_optional_kwargs(
+        self,
+        params,
+        availability=False,
+        availability_with_performances=False,
+        extra_info=False,
+        reviews=False,
+        media=False,
+        cost_range=False,
+        best_value_offer=False,
+        max_saving_offer=False,
+        min_cost_offer=False,
+        top_price_offer=False,
+        no_singles_data=False,
+        cost_range_details=False,
+        source_info=False,
+        tracking_id=None,
+        **kwargs
+    ):
         """Adds additional arguments to the requests.
 
         All client methods will take several optional arguments that will
@@ -398,47 +413,44 @@ class Client(object):
             params.update(req_reviews=True)
 
         if media:
-            params.update({
-                'req_media_triplet_one': True,
-                'req_media_triplet_two': True,
-                'req_media_triplet_three': True,
-                'req_media_triplet_four': True,
-                'req_media_triplet_five': True,
-                'req_media_triplet_one_wide': True,
-                'req_media_triplet_two_wide': True,
-                'req_media_triplet_three_wide': True,
-                'req_media_triplet_four_wide': True,
-                'req_media_triplet_five_wide': True,
-                'req_media_seating_plan': True,
-                'req_media_square': True,
-                'req_media_landscape': True,
-                'req_media_marquee': True,
-                'req_video_iframe': True,
-                'req_media_supplier': True,
-            })
+            params.update(
+                {
+                    "req_media_triplet_one": True,
+                    "req_media_triplet_two": True,
+                    "req_media_triplet_three": True,
+                    "req_media_triplet_four": True,
+                    "req_media_triplet_five": True,
+                    "req_media_triplet_one_wide": True,
+                    "req_media_triplet_two_wide": True,
+                    "req_media_triplet_three_wide": True,
+                    "req_media_triplet_four_wide": True,
+                    "req_media_triplet_five_wide": True,
+                    "req_media_seating_plan": True,
+                    "req_media_square": True,
+                    "req_media_landscape": True,
+                    "req_media_marquee": True,
+                    "req_video_iframe": True,
+                    "req_media_supplier": True,
+                }
+            )
 
         if cost_range:
             params.update(req_cost_range=True)
 
         if best_value_offer:
-            params.update(req_cost_range_best_value_offer=True,
-                          req_cost_range=True)
+            params.update(req_cost_range_best_value_offer=True, req_cost_range=True)
 
         if max_saving_offer:
-            params.update(req_cost_range_max_saving_offer=True,
-                          req_cost_range=True)
+            params.update(req_cost_range_max_saving_offer=True, req_cost_range=True)
 
         if min_cost_offer:
-            params.update(req_cost_range_min_cost_offer=True,
-                          req_cost_range=True)
+            params.update(req_cost_range_min_cost_offer=True, req_cost_range=True)
 
         if top_price_offer:
-            params.update(req_cost_range_top_price_offer=True,
-                          req_cost_range=True)
+            params.update(req_cost_range_top_price_offer=True, req_cost_range=True)
 
         if no_singles_data:
-            params.update(req_cost_range_no_singles_data=True,
-                          req_cost_range=True)
+            params.update(req_cost_range_no_singles_data=True, req_cost_range=True)
 
         if cost_range_details:
             params.update(req_cost_range_details=True)
@@ -447,22 +459,31 @@ class Client(object):
             params.update(req_avail_details=True)
 
         if availability_with_performances:
-            params.update(req_avail_details=True,
-                          req_avail_details_with_perfs=True)
+            params.update(req_avail_details=True, req_avail_details_with_perfs=True)
 
         if tracking_id:
-            params.update(self.get_tracking_params(
-                custom_tracking_id=tracking_id))
+            params.update(self.get_tracking_params(custom_tracking_id=tracking_id))
 
         if source_info:
             params.update(req_src_info=True)
         params.update(kwargs)
 
-    def list_events(self, keywords=None, start_date=None, end_date=None,
-                    country_code=None, city_code=None, latitude=None,
-                    longitude=None, radius=None, include_dead=False,
-                    sort_order=None, page=0, page_length=0, **kwargs):
-
+    def list_events(
+        self,
+        keywords=None,
+        start_date=None,
+        end_date=None,
+        country_code=None,
+        city_code=None,
+        latitude=None,
+        longitude=None,
+        radius=None,
+        include_dead=False,
+        sort_order=None,
+        page=0,
+        page_length=0,
+        **kwargs
+    ):
         """List events with the given parameters
 
         Wraps `/f13/events.v1`_
@@ -527,7 +548,7 @@ class Client(object):
         params = {}
 
         if keywords:
-            params.update(keywords=','.join(keywords))
+            params.update(keywords=",".join(keywords))
 
         if start_date or end_date:
             params.update(date_range=utils.date_range_str(start_date, end_date))
@@ -539,14 +560,16 @@ class Client(object):
             params.update(city_code=city_code)
 
         if all([latitude, longitude, radius]):
-            params.update(circle='{lat}:{lon}:{rad}'.format(
-                lat=latitude,
-                lon=longitude,
-                rad=radius,
-            ))
+            params.update(
+                circle="{lat}:{lon}:{rad}".format(
+                    lat=latitude,
+                    lon=longitude,
+                    rad=radius,
+                )
+            )
         elif any([latitude, longitude, radius]):
             raise exceptions.InvalidGeoParameters(
-                'Geo data must include latitude, longitude, and radius',
+                "Geo data must include latitude, longitude, and radius",
             )
 
         if include_dead:
@@ -562,25 +585,19 @@ class Client(object):
 
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('events.v1', params)
+        response = self.make_request("events.v1", params)
 
-        if 'results' not in response:
-            raise exceptions.InvalidResponseError(
-                "got no results key in json response"
-            )
+        if "results" not in response:
+            raise exceptions.InvalidResponseError("got no results key in json response")
 
-        result = response.get('results', {})
-        raw_events = result.get('event', [])
-        events = [
-            Event.from_api_data(data)
-            for data in raw_events
-        ]
+        result = response.get("results", {})
+        raw_events = result.get("event", [])
+        events = [Event.from_api_data(data) for data in raw_events]
 
         meta = EventMeta.from_api_data(response)
         return events, meta
 
-    def get_events(self, event_ids,
-                   with_addons=False, with_upsells=False, **kwargs):
+    def get_events(self, event_ids, with_addons=False, with_upsells=False, **kwargs):
         """Get events with the given id's
 
         Wraps `/f13/events_by_id.v1`_
@@ -608,7 +625,7 @@ class Client(object):
         params = {}
 
         if event_ids:
-            params.update(event_id_list=','.join(event_ids))
+            params.update(event_id_list=",".join(event_ids))
 
         self.add_optional_kwargs(params, **kwargs)
 
@@ -618,18 +635,18 @@ class Client(object):
         if with_upsells:
             params.update(add_upsells=with_upsells)
 
-        response = self.make_request('events_by_id.v1', params)
+        response = self.make_request("events_by_id.v1", params)
 
-        if 'events_by_id' not in response:
+        if "events_by_id" not in response:
             raise exceptions.InvalidResponseError(
                 "got no events_by_id key in json response"
             )
 
-        events_by_id = response.get('events_by_id', {})
+        events_by_id = response.get("events_by_id", {})
         events = {
             event_id: Event.from_events_by_id_api_data(raw_event)
             for event_id, raw_event in events_by_id.items()
-            if raw_event.get('event')
+            if raw_event.get("event")
         }
 
         meta = EventMeta.from_api_data(response)
@@ -684,29 +701,25 @@ class Client(object):
         .. _`/f13/months.v1`: http://docs.ingresso.co.uk/#months
 
         """
-        params = {'event_id': event_id}
+        params = {"event_id": event_id}
 
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('months.v1', params)
+        response = self.make_request("months.v1", params)
 
-        if 'results' not in response:
-            raise exceptions.InvalidResponseError(
-                "got no results key in json response"
-            )
+        if "results" not in response:
+            raise exceptions.InvalidResponseError("got no results key in json response")
 
-        result = response.get('results', {})
-        raw_months = result.get('month', [])
+        result = response.get("results", {})
+        raw_months = result.get("month", [])
 
-        months = [
-            Month.from_api_data(data)
-            for data in raw_months
-        ]
+        months = [Month.from_api_data(data) for data in raw_months]
 
         return months
 
-    def list_performances(self, event_id, start_date=None, end_date=None,
-                          page_length=0, page=0, **kwargs):
+    def list_performances(
+        self, event_id, start_date=None, end_date=None, page_length=0, page=0, **kwargs
+    ):
         """List performances for a specified event
 
         Wraps `/f13/performances.v1`_
@@ -735,7 +748,7 @@ class Client(object):
 
         .. _`/f13/performances.v1`: http://docs.ingresso.co.uk/#performances-list
         """
-        params = {'event_id': event_id}
+        params = {"event_id": event_id}
 
         if page > 0:
             params.update(page_no=page)
@@ -748,20 +761,15 @@ class Client(object):
 
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('performances.v1', params)
+        response = self.make_request("performances.v1", params)
 
-        if 'results' not in response:
-            raise exceptions.InvalidResponseError(
-                "got no results key in json response"
-            )
+        if "results" not in response:
+            raise exceptions.InvalidResponseError("got no results key in json response")
 
-        result = response.get('results', {})
+        result = response.get("results", {})
 
-        raw_performances = result.get('performance', [])
-        performances = [
-            Performance.from_api_data(data)
-            for data in raw_performances
-        ]
+        raw_performances = result.get("performance", [])
+        performances = [Performance.from_api_data(data) for data in raw_performances]
 
         meta = PerformanceMeta.from_api_data(response)
 
@@ -792,19 +800,19 @@ class Client(object):
         """
 
         params = {
-            'perf_id_list': ','.join(performance_ids),
+            "perf_id_list": ",".join(performance_ids),
         }
 
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('performances_by_id.v1', params)
+        response = self.make_request("performances_by_id.v1", params)
 
-        if 'performances_by_id' not in response:
+        if "performances_by_id" not in response:
             raise exceptions.InvalidResponseError(
                 "got no performances_by_id key in json response"
             )
 
-        raw_performances = response.get('performances_by_id', {})
+        raw_performances = response.get("performances_by_id", {})
         performances = {
             performance_id: Performance.from_api_data(data)
             for performance_id, data in raw_performances.items()
@@ -843,9 +851,16 @@ class Client(object):
         performances, meta = self.get_performances([performance_id], **kwargs)
         return performances.get(performance_id), meta
 
-    def get_availability(self, performance_id, number_of_seats=None,
-                         discounts=False, example_seats=False,
-                         seat_blocks=False, user_commission=False, **kwargs):
+    def get_availability(
+        self,
+        performance_id,
+        number_of_seats=None,
+        discounts=False,
+        example_seats=False,
+        seat_blocks=False,
+        user_commission=False,
+        **kwargs
+    ):
         """Fetch available tickets and prices for a given performance
 
         Wraps `/f13/availability.v1`_
@@ -885,7 +900,7 @@ class Client(object):
 
         .. _`/f13/availability.v1`: http://docs.ingresso.co.uk/#availability
         """
-        params = {'perf_id': performance_id}
+        params = {"perf_id": performance_id}
 
         if number_of_seats:
             params.update(no_of_seats=number_of_seats)
@@ -904,20 +919,20 @@ class Client(object):
 
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('availability.v1', params)
+        response = self.make_request("availability.v1", params)
 
-        if 'availability' not in response:
+        if "availability" not in response:
             raise exceptions.InvalidResponseError(
                 "got no availability key in json response"
             )
 
         meta = AvailabilityMeta.from_api_data(response)
 
-        raw_availability = response.get('availability', {})
+        raw_availability = response.get("availability", {})
 
         availability = [
             TicketType.from_api_data(data)
-            for data in raw_availability.get('ticket_type', [])
+            for data in raw_availability.get("ticket_type", [])
         ]
 
         return availability, meta
@@ -943,29 +958,35 @@ class Client(object):
 
         .. _`/f13/send_methods.v1`: http://docs.ingresso.co.uk/#send-methods
         """
-        params = {'perf_id': performance_id}
+        params = {"perf_id": performance_id}
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('send_methods.v1', params)
+        response = self.make_request("send_methods.v1", params)
 
-        if 'send_methods' not in response:
+        if "send_methods" not in response:
             raise exceptions.InvalidResponseError(
                 "got no send_methods key in json response"
             )
 
-        raw_send_methods = response.get('send_methods', {})
+        raw_send_methods = response.get("send_methods", {})
 
         send_methods = [
             SendMethod.from_api_data(data)
-            for data in raw_send_methods.get('send_method', [])
+            for data in raw_send_methods.get("send_method", [])
         ]
 
         meta = CurrencyMeta.from_api_data(response)
 
         return send_methods, meta
 
-    def get_discounts(self, performance_id, ticket_type_code, price_band_code,
-                      user_commission=False, **kwargs):
+    def get_discounts(
+        self,
+        performance_id,
+        ticket_type_code,
+        price_band_code,
+        user_commission=False,
+        **kwargs
+    ):
         """Fetch available discounts for a ticket_type/price band combination
 
         Wraps `/f13/discounts.v1`_
@@ -991,35 +1012,43 @@ class Client(object):
         .. _`/f13/discounts.v1`: http://docs.ingresso.co.uk/#discounts
         """
         params = {
-            'perf_id': performance_id,
-            'ticket_type_code': ticket_type_code,
-            'price_band_code': price_band_code,
-            'req_predicted_commission': user_commission,
+            "perf_id": performance_id,
+            "ticket_type_code": ticket_type_code,
+            "price_band_code": price_band_code,
+            "req_predicted_commission": user_commission,
         }
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('discounts.v1', params)
+        response = self.make_request("discounts.v1", params)
 
-        if 'discounts' not in response:
+        if "discounts" not in response:
             raise exceptions.InvalidResponseError(
                 "got no discounts key in json response"
             )
 
-        raw_discounts = response.get('discounts', {})
+        raw_discounts = response.get("discounts", {})
 
         discounts = [
-            Discount.from_api_data(data)
-            for data in raw_discounts.get('discount', [])
+            Discount.from_api_data(data) for data in raw_discounts.get("discount", [])
         ]
 
         meta = CurrencyMeta.from_api_data(response)
 
         return discounts, meta
 
-    def _trolley_params(self, token=None, number_of_seats=None, discounts=None,
-                        seats=None, send_codes=None, ticket_type_code=None,
-                        performance_id=None, price_band_code=None,
-                        item_numbers_to_remove=None, **kwargs):
+    def _trolley_params(
+        self,
+        token=None,
+        number_of_seats=None,
+        discounts=None,
+        seats=None,
+        send_codes=None,
+        ticket_type_code=None,
+        performance_id=None,
+        price_band_code=None,
+        item_numbers_to_remove=None,
+        **kwargs
+    ):
         """Handle arguments common to the
         :meth:`Client.get_trolley <pyticketswitch.client.Client.get_trolley>`
         and the
@@ -1077,49 +1106,55 @@ class Client(object):
 
         if item_numbers_to_remove and not token:
             raise exceptions.InvalidParametersError(
-                'got item_numbers_to_remove but no token specified'
+                "got item_numbers_to_remove but no token specified"
             )
         if item_numbers_to_remove:
             params.update(
-                remove_items_list=','.join(
+                remove_items_list=",".join(
                     [str(item) for item in item_numbers_to_remove]
                 )
             )
 
         if seats:
-            params.update({
-                'seat{}'.format(i): seat
-                for i, seat in enumerate(seats)
-            })
+            params.update({"seat{}".format(i): seat for i, seat in enumerate(seats)})
 
         if discounts:
-            params.update({
-                'disc{}'.format(i): discount
-                for i, discount in enumerate(discounts)
-            })
+            params.update(
+                {"disc{}".format(i): discount for i, discount in enumerate(discounts)}
+            )
 
         if send_codes and not isinstance(send_codes, dict):
             raise exceptions.InvalidParametersError(
-                'send_codes should be a dictionary'
-                'in the format of `{source_code: send_code}`'
+                "send_codes should be a dictionary"
+                "in the format of `{source_code: send_code}`"
             )
 
         if send_codes:
-            params.update({
-                '{}_send_code'.format(source_code): send_code
-                for source_code, send_code in send_codes.items()
-            })
+            params.update(
+                {
+                    "{}_send_code".format(source_code): send_code
+                    for source_code, send_code in send_codes.items()
+                }
+            )
 
         self.add_optional_kwargs(params, **kwargs)
 
         return params
 
-    def get_trolley(self, token=None, number_of_seats=None, discounts=None,
-                    seats=None, send_codes=None, ticket_type_code=None,
-                    performance_id=None, price_band_code=None,
-                    item_numbers_to_remove=None,
-                    raise_on_unavailable_order=False, **kwargs):
-
+    def get_trolley(
+        self,
+        token=None,
+        number_of_seats=None,
+        discounts=None,
+        seats=None,
+        send_codes=None,
+        ticket_type_code=None,
+        performance_id=None,
+        price_band_code=None,
+        item_numbers_to_remove=None,
+        raise_on_unavailable_order=False,
+        **kwargs
+    ):
         """Retrieve the contents of a trolley from the API.
 
         Wraps `/f13/trolley.v1`_
@@ -1165,13 +1200,19 @@ class Client(object):
         """
 
         params = self._trolley_params(
-            token=token, number_of_seats=number_of_seats, discounts=discounts,
-            seats=seats, send_codes=send_codes,
-            ticket_type_code=ticket_type_code, performance_id=performance_id,
+            token=token,
+            number_of_seats=number_of_seats,
+            discounts=discounts,
+            seats=seats,
+            send_codes=send_codes,
+            ticket_type_code=ticket_type_code,
+            performance_id=performance_id,
             price_band_code=price_band_code,
-            item_numbers_to_remove=item_numbers_to_remove, **kwargs)
+            item_numbers_to_remove=item_numbers_to_remove,
+            **kwargs
+        )
 
-        response = self.make_request('trolley.v1', params)
+        response = self.make_request("trolley.v1", params)
 
         trolley = Trolley.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
@@ -1179,15 +1220,24 @@ class Client(object):
         if raise_on_unavailable_order:
             if trolley and trolley.input_contained_unavailable_order:
                 raise exceptions.OrderUnavailableError(
-                    "inputs contained unavailable order")
+                    "inputs contained unavailable order"
+                )
 
         return trolley, meta
 
-    def get_upsells(self, token=None, number_of_seats=None, discounts=None,
-                    seats=None, send_codes=None, ticket_type_code=None,
-                    performance_id=None, price_band_code=None,
-                    item_numbers_to_remove=None, **kwargs):
-
+    def get_upsells(
+        self,
+        token=None,
+        number_of_seats=None,
+        discounts=None,
+        seats=None,
+        send_codes=None,
+        ticket_type_code=None,
+        performance_id=None,
+        price_band_code=None,
+        item_numbers_to_remove=None,
+        **kwargs
+    ):
         """Retrieve a list of upsell events related to a trolley from the API.
 
         Upsell events are related to a main event but can be purchased
@@ -1231,36 +1281,45 @@ class Client(object):
         """
 
         params = self._trolley_params(
-            token=token, number_of_seats=number_of_seats, discounts=discounts,
-            seats=seats, send_codes=send_codes,
-            ticket_type_code=ticket_type_code, performance_id=performance_id,
+            token=token,
+            number_of_seats=number_of_seats,
+            discounts=discounts,
+            seats=seats,
+            send_codes=send_codes,
+            ticket_type_code=ticket_type_code,
+            performance_id=performance_id,
             price_band_code=price_band_code,
-            item_numbers_to_remove=item_numbers_to_remove, **kwargs)
+            item_numbers_to_remove=item_numbers_to_remove,
+            **kwargs
+        )
 
-        response = self.make_request('upsells.v1', params)
+        response = self.make_request("upsells.v1", params)
 
-        if 'results' not in response:
-            raise exceptions.InvalidResponseError(
-                "got no results key in JSON response"
-            )
+        if "results" not in response:
+            raise exceptions.InvalidResponseError("got no results key in JSON response")
 
-        results = response.get('results', {})
+        results = response.get("results", {})
 
-        raw_upsell_events = results.get('event', [])
-        upsell_events = [
-            Event.from_api_data(data)
-            for data in raw_upsell_events
-        ]
+        raw_upsell_events = results.get("event", [])
+        upsell_events = [Event.from_api_data(data) for data in raw_upsell_events]
 
         upsell_meta = EventMeta.from_api_data(response)
 
         return (upsell_events, upsell_meta)
 
-    def get_addons(self, token=None, number_of_seats=None, discounts=None,
-                   seats=None, send_codes=None, ticket_type_code=None,
-                   performance_id=None, price_band_code=None,
-                   item_numbers_to_remove=None, **kwargs):
-
+    def get_addons(
+        self,
+        token=None,
+        number_of_seats=None,
+        discounts=None,
+        seats=None,
+        send_codes=None,
+        ticket_type_code=None,
+        performance_id=None,
+        price_band_code=None,
+        item_numbers_to_remove=None,
+        **kwargs
+    ):
         """Retrieve a list of add-on events from the API.
 
         Wraps `/f13/add_ons.v1`_
@@ -1298,37 +1357,46 @@ class Client(object):
         """
 
         params = self._trolley_params(
-            token=token, number_of_seats=number_of_seats, discounts=discounts,
-            seats=seats, send_codes=send_codes,
-            ticket_type_code=ticket_type_code, performance_id=performance_id,
+            token=token,
+            number_of_seats=number_of_seats,
+            discounts=discounts,
+            seats=seats,
+            send_codes=send_codes,
+            ticket_type_code=ticket_type_code,
+            performance_id=performance_id,
             price_band_code=price_band_code,
-            item_numbers_to_remove=item_numbers_to_remove, **kwargs)
+            item_numbers_to_remove=item_numbers_to_remove,
+            **kwargs
+        )
 
-        response = self.make_request('add_ons.v1', params)
+        response = self.make_request("add_ons.v1", params)
 
-        if 'results' not in response:
-            raise exceptions.InvalidResponseError(
-                "got no results key in json response"
-            )
+        if "results" not in response:
+            raise exceptions.InvalidResponseError("got no results key in json response")
 
-        add_on_results = response.get('results', {})
+        add_on_results = response.get("results", {})
 
-        raw_add_on_events = add_on_results.get('event', [])
-        add_on_events = [
-            Event.from_api_data(data)
-            for data in raw_add_on_events
-        ]
+        raw_add_on_events = add_on_results.get("event", [])
+        add_on_events = [Event.from_api_data(data) for data in raw_add_on_events]
 
         add_on_meta = EventMeta.from_api_data(response)
 
         return (add_on_events, add_on_meta)
 
-    def make_reservation(self, token=None, number_of_seats=None, discounts=None,
-                         seats=None, send_codes=None, ticket_type_code=None,
-                         performance_id=None, price_band_code=None,
-                         item_numbers_to_remove=None,
-                         raise_on_unavailable_order=False, **kwargs):
-
+    def make_reservation(
+        self,
+        token=None,
+        number_of_seats=None,
+        discounts=None,
+        seats=None,
+        send_codes=None,
+        ticket_type_code=None,
+        performance_id=None,
+        price_band_code=None,
+        item_numbers_to_remove=None,
+        raise_on_unavailable_order=False,
+        **kwargs
+    ):
         """Attempt to reserve all the items in the given trolley
 
         Wraps `/f13/reserve.v1`_
@@ -1386,16 +1454,21 @@ class Client(object):
         """
 
         params = self._trolley_params(
-            token=token, number_of_seats=number_of_seats, discounts=discounts,
-            seats=seats, send_codes=send_codes,
-            ticket_type_code=ticket_type_code, performance_id=performance_id,
+            token=token,
+            number_of_seats=number_of_seats,
+            discounts=discounts,
+            seats=seats,
+            send_codes=send_codes,
+            ticket_type_code=ticket_type_code,
+            performance_id=performance_id,
             price_band_code=price_band_code,
-            item_numbers_to_remove=item_numbers_to_remove, **kwargs)
+            item_numbers_to_remove=item_numbers_to_remove,
+            **kwargs
+        )
 
-        response = self.make_request('reserve.v1', params, method=POST)
+        response = self.make_request("reserve.v1", params, method=POST)
 
-        return self.process_reservation_response(response,
-                                                 raise_on_unavailable_order)
+        return self.process_reservation_response(response, raise_on_unavailable_order)
 
     def release_reservation(self, transaction_uuid, **kwargs):
         """Release an existing reservation.
@@ -1415,14 +1488,15 @@ class Client(object):
 
         """
 
-        params = {'transaction_uuid': transaction_uuid}
+        params = {"transaction_uuid": transaction_uuid}
         kwargs.update(params)
-        response = self.make_request('release.v1', kwargs, method=POST)
+        response = self.make_request("release.v1", kwargs, method=POST)
 
-        return response.get('released_ok', False)
+        return response.get("released_ok", False)
 
-    def get_reservation(self, transaction_uuid,
-                        raise_on_unavailable_order=False, **kwargs):
+    def get_reservation(
+        self, transaction_uuid, raise_on_unavailable_order=False, **kwargs
+    ):
         """
         This method retrieves a previously made reservation response, verbatim.
         It is faster than the `get_status` method as it is not getting the
@@ -1460,14 +1534,18 @@ class Client(object):
 
         """
         params = {"transaction_uuid": transaction_uuid}
-        response = self.make_request('reserve_page_archive.v1', params,
-                                     method=GET)
+        response = self.make_request("reserve_page_archive.v1", params, method=GET)
 
-        return self.process_reservation_response(response,
-                                                 raise_on_unavailable_order)
+        return self.process_reservation_response(response, raise_on_unavailable_order)
 
-    def get_status(self, transaction_uuid=None, transaction_id=None,
-                   customer=False, external_sale_page=False, **kwargs):
+    def get_status(
+        self,
+        transaction_uuid=None,
+        transaction_id=None,
+        customer=False,
+        external_sale_page=False,
+        **kwargs
+    ):
         """Get the status of reservation, purchase or transaction.
 
         .. note:: The **transaction_id** field is for backwards compatability
@@ -1508,18 +1586,25 @@ class Client(object):
 
         if transaction_id:
             params.update(transaction_id=transaction_id)
-            response = self.make_request('trans_id_status.v1', params)
+            response = self.make_request("trans_id_status.v1", params)
         else:
             params.update(transaction_uuid=transaction_uuid)
-            response = self.make_request('status.v1', params)
+            response = self.make_request("status.v1", params)
 
         status = Status.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
 
         return status, meta
 
-    def make_purchase(self, transaction_uuid, customer, payment_method=None,
-                      send_confirmation_email=True, agent_reference=None, **kwargs):
+    def make_purchase(
+        self,
+        transaction_uuid,
+        customer,
+        payment_method=None,
+        send_confirmation_email=True,
+        agent_reference=None,
+        **kwargs
+    ):
         """Purchase tickets for an existing reservation.
 
         Wraps `/f13/purchase.v1`_
@@ -1562,7 +1647,7 @@ class Client(object):
 
         """
 
-        params = {'transaction_uuid': transaction_uuid}
+        params = {"transaction_uuid": transaction_uuid}
 
         if send_confirmation_email:
             params.update(send_confirmation_email=True)
@@ -1580,7 +1665,7 @@ class Client(object):
 
         params.update(kwargs)
 
-        response = self.make_request('purchase.v1', params, method=POST)
+        response = self.make_request("purchase.v1", params, method=POST)
 
         return self.process_purchase_response(response)
 
@@ -1621,8 +1706,7 @@ class Client(object):
 
         """
         params = {"transaction_uuid": transaction_uuid}
-        response = self.make_request('purchase_page_archive.v1', params,
-                                     method=GET)
+        response = self.make_request("purchase_page_archive.v1", params, method=GET)
 
         return self.process_purchase_response(response)
 
@@ -1663,7 +1747,7 @@ class Client(object):
 
         response = self.make_request(endpoint, params, method=POST)
 
-        callout_data = response.get('callout')
+        callout_data = response.get("callout")
 
         if callout_data:
             status = None
@@ -1676,8 +1760,7 @@ class Client(object):
 
         return status, callout, meta
 
-    def process_reservation_response(self, response,
-                                     raise_on_unavailable_order):
+    def process_reservation_response(self, response, raise_on_unavailable_order):
         reservation = Reservation.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
 
@@ -1686,12 +1769,13 @@ class Client(object):
                 raise exceptions.OrderUnavailableError(
                     "inputs contained unavailable order",
                     reservation=reservation,
-                    meta=meta)
+                    meta=meta,
+                )
 
         return reservation, meta
 
     def process_purchase_response(self, response):
-        callout_data = response.get('callout')
+        callout_data = response.get("callout")
 
         if callout_data:
             status = None
@@ -1733,7 +1817,7 @@ class Client(object):
 
         self.add_optional_kwargs(params, **kwargs)
 
-        response = self.make_request('cancel.v1', params, method=POST)
+        response = self.make_request("cancel.v1", params, method=POST)
 
         result = CancellationResult.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)

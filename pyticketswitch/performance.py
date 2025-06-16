@@ -47,11 +47,24 @@ class Performance(JSONMixin, object):
 
     """
 
-    def __init__(self, id_, event_id, date_time=None,
-                 date_description=None, time_description=None, has_pool_seats=False,
-                 is_limited=False, cached_max_seats=None, cached_max_seats_is_real=None, cost_range=None,
-                 no_singles_cost_range=None, is_ghost=False, name=None,
-                 running_time=None, availability_details=None):
+    def __init__(
+        self,
+        id_,
+        event_id,
+        date_time=None,
+        date_description=None,
+        time_description=None,
+        has_pool_seats=False,
+        is_limited=False,
+        cached_max_seats=None,
+        cached_max_seats_is_real=None,
+        cost_range=None,
+        no_singles_cost_range=None,
+        is_ghost=False,
+        name=None,
+        running_time=None,
+        availability_details=None,
+    ):
 
         self.id = id_
         self.event_id = event_id
@@ -83,56 +96,56 @@ class Performance(JSONMixin, object):
             populated with the data from the api.
 
         """
-        id_ = data.get('perf_id')
-        event_id = data.get('event_id')
+        id_ = data.get("perf_id")
+        event_id = data.get("event_id")
 
-        date_time = data.get('iso8601_date_and_time')
+        date_time = data.get("iso8601_date_and_time")
         if date_time:
             date_time = utils.isostr_to_datetime(date_time)
 
-        date_desc = data.get('date_desc')
-        time_desc = data.get('time_desc')
+        date_desc = data.get("date_desc")
+        time_desc = data.get("time_desc")
 
-        api_cost_range = data.get('cost_range', {})
-        api_no_singles_cost_range = api_cost_range.get('no_singles_cost_range', {})
+        api_cost_range = data.get("cost_range", {})
+        api_no_singles_cost_range = api_cost_range.get("no_singles_cost_range", {})
         cost_range = None
         no_singles_cost_range = None
 
         if api_cost_range:
-            api_cost_range['singles'] = True
+            api_cost_range["singles"] = True
             cost_range = CostRange.from_api_data(api_cost_range)
 
         if api_no_singles_cost_range:
-            api_no_singles_cost_range['singles'] = False
-            no_singles_cost_range = CostRange.from_api_data(
-                api_no_singles_cost_range)
+            api_no_singles_cost_range["singles"] = False
+            no_singles_cost_range = CostRange.from_api_data(api_no_singles_cost_range)
 
         availability_details = AvailabilityDetails.from_api_data(
-            data.get('avail_details', {}))
+            data.get("avail_details", {})
+        )
 
         kwargs = {
-            'id_': id_,
-            'event_id': event_id,
-            'date_time': date_time,
-            'date_description': date_desc,
-            'time_description': time_desc,
-            'running_time': data.get('running_time'),
-            'name': data.get('perf_name'),
-            'has_pool_seats': data.get('has_pool_seats', False),
-            'is_limited': data.get('is_limited', False),
-            'is_ghost': data.get('is_ghost', False),
-            'cached_max_seats': data.get('cached_max_seats'),
-            'cost_range': cost_range,
-            'no_singles_cost_range': no_singles_cost_range,
-            'availability_details': availability_details,
+            "id_": id_,
+            "event_id": event_id,
+            "date_time": date_time,
+            "date_description": date_desc,
+            "time_description": time_desc,
+            "running_time": data.get("running_time"),
+            "name": data.get("perf_name"),
+            "has_pool_seats": data.get("has_pool_seats", False),
+            "is_limited": data.get("is_limited", False),
+            "is_ghost": data.get("is_ghost", False),
+            "cached_max_seats": data.get("cached_max_seats"),
+            "cost_range": cost_range,
+            "no_singles_cost_range": no_singles_cost_range,
+            "availability_details": availability_details,
         }
 
         return cls(**kwargs)
 
     def __repr__(self):
         if self.date_time:
-            return u'<Performance {}: {}>'.format(self.id, self.date_time.isoformat())
-        return u'<Performance {}>'.format(self.id)
+            return "<Performance {}: {}>".format(self.id, self.date_time.isoformat())
+        return "<Performance {}>".format(self.id)
 
 
 class PerformanceMeta(PaginationMixin, CurrencyMeta, object):
@@ -170,7 +183,7 @@ class PerformanceMeta(PaginationMixin, CurrencyMeta, object):
 
         """
         inst = super(PerformanceMeta, cls).from_api_data(data)
-        inst.auto_select = data.get('autoselect_this_performance', False)
-        inst.has_names = data.get('results', {}).get('has_perf_names', False)
+        inst.auto_select = data.get("autoselect_this_performance", False)
+        inst.has_names = data.get("results", {}).get("has_perf_names", False)
 
         return inst

@@ -29,10 +29,19 @@ class Trolley(JSONMixin, object):
             to create or modify this trolley object included at least one order
             that was not available.
     """
-    def __init__(self, token=None, transaction_uuid=None, transaction_id=None,
-                 bundles=None, discarded_orders=None, minutes_left=None,
-                 order_count=None, purchase_result=None,
-                 input_contained_unavailable_order=False):
+
+    def __init__(
+        self,
+        token=None,
+        transaction_uuid=None,
+        transaction_id=None,
+        bundles=None,
+        discarded_orders=None,
+        minutes_left=None,
+        order_count=None,
+        purchase_result=None,
+        input_contained_unavailable_order=False,
+    ):
         self.token = token
         self.transaction_uuid = transaction_uuid
         self.transaction_id = transaction_id
@@ -57,47 +66,43 @@ class Trolley(JSONMixin, object):
             populated with the data from the api.
 
         """
-        raw_contents = data.get('trolley_contents', {})
+        raw_contents = data.get("trolley_contents", {})
 
         if not raw_contents:
-            raw_contents = data.get('reserved_trolley', {})
+            raw_contents = data.get("reserved_trolley", {})
 
         if not raw_contents:
-            raw_contents = data.get('trolley_token_contents', {})
+            raw_contents = data.get("trolley_token_contents", {})
 
-        raw_bundles = raw_contents.get('bundle', [])
+        raw_bundles = raw_contents.get("bundle", [])
 
-        bundles = [
-            Bundle.from_api_data(bundle)
-            for bundle in raw_bundles
-        ]
+        bundles = [Bundle.from_api_data(bundle) for bundle in raw_bundles]
 
-        raw_discarded_orders = data.get('discarded_orders', [])
+        raw_discarded_orders = data.get("discarded_orders", [])
 
         discarded_orders = [
-            Order.from_api_data(order)
-            for order in raw_discarded_orders
+            Order.from_api_data(order) for order in raw_discarded_orders
         ]
 
         kwargs = {
-            'token': data.get('trolley_token'),
-            'bundles': bundles,
-            'discarded_orders': discarded_orders,
-            'transaction_uuid': raw_contents.get('transaction_uuid'),
-            'transaction_id': raw_contents.get('transaction_id'),
-            'order_count': data.get('trolley_order_count'),
-            'input_contained_unavailable_order': data.get(
-                'input_contained_unavailable_order', False),
+            "token": data.get("trolley_token"),
+            "bundles": bundles,
+            "discarded_orders": discarded_orders,
+            "transaction_uuid": raw_contents.get("transaction_uuid"),
+            "transaction_id": raw_contents.get("transaction_id"),
+            "order_count": data.get("trolley_order_count"),
+            "input_contained_unavailable_order": data.get(
+                "input_contained_unavailable_order", False
+            ),
         }
 
-        minutes = data.get('minutes_left_on_reserve')
+        minutes = data.get("minutes_left_on_reserve")
         if minutes is not None:
             kwargs.update(minutes_left=float(minutes))
 
-        purchase_result = raw_contents.get('purchase_result')
+        purchase_result = raw_contents.get("purchase_result")
         if purchase_result:
-            kwargs.update(
-                purchase_result=PurchaseResult.from_api_data(purchase_result))
+            kwargs.update(purchase_result=PurchaseResult.from_api_data(purchase_result))
 
         return cls(**kwargs)
 
@@ -180,18 +185,15 @@ class Trolley(JSONMixin, object):
             return []
 
         return [
-            order
-            for bundle in self.bundles
-            if bundle.orders
-            for order in bundle.orders
+            order for bundle in self.bundles if bundle.orders for order in bundle.orders
         ]
 
     def __repr__(self):
         if self.transaction_id:
-            return u'<Trolley id:{}>'.format(self.transaction_id)
+            return "<Trolley id:{}>".format(self.transaction_id)
         if self.transaction_uuid:
-            return u'<Trolley uuid:{}>'.format(self.transaction_uuid)
+            return "<Trolley uuid:{}>".format(self.transaction_uuid)
         if self.token:
-            return u'<Trolley token:{}>'.format(self.token)
+            return "<Trolley token:{}>".format(self.token)
 
         return super(Trolley, self).__repr__()
