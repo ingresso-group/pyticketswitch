@@ -15,7 +15,8 @@ class PaymentMethod(object):
             dict: dictionary of keyword parameters to pass to the API call.
         """
         raise NotImplementedError(
-            'as_api_parameters not implemented on ' + self.__class__)
+            "as_api_parameters not implemented on " + self.__class__
+        )
 
 
 class CardDetails(object):
@@ -56,11 +57,22 @@ class CardDetails(object):
             the return_url.
     """
 
-    def __init__(self, card_number, expiry_month=None,
-                 expiry_year=None, start_month=None, start_year=None,
-                 ccv2=None, issue_number=None, billing_address=None,
-                 return_url=None, return_token=None, user_agent=None,
-                 accept=None, remote_site=None):
+    def __init__(
+        self,
+        card_number,
+        expiry_month=None,
+        expiry_year=None,
+        start_month=None,
+        start_year=None,
+        ccv2=None,
+        issue_number=None,
+        billing_address=None,
+        return_url=None,
+        return_token=None,
+        user_agent=None,
+        accept=None,
+        remote_site=None,
+    ):
 
         self.card_number = card_number
         self.expiry_month = expiry_month
@@ -84,7 +96,7 @@ class CardDetails(object):
 
         """
         params = {
-            'card_number': self.card_number,
+            "card_number": self.card_number,
         }
 
         missing_expiry_year = not self.expiry_year
@@ -92,13 +104,14 @@ class CardDetails(object):
 
         if missing_expiry_year or missing_expiry_month:
             raise InvalidParametersError(
-                'both expiry_year and expiry_month must be specified')
+                "both expiry_year and expiry_month must be specified"
+            )
 
         params.update(
-            expiry_date='{:0>2}{:0>2}'.format(
+            expiry_date="{:0>2}{:0>2}".format(
                 self.expiry_month,
                 # handle 4 digit years
-                str(self.expiry_year)[-2:]
+                str(self.expiry_year)[-2:],
             )
         )
 
@@ -109,13 +122,13 @@ class CardDetails(object):
 
         if specifying_start_date and (missing_start_year or missing_start_month):
             raise InvalidParametersError(
-                'both start_year and start_month must be specified or neither specified')
+                "both start_year and start_month must be specified or neither specified"
+            )
 
         if specifying_start_date:
             params.update(
-                start_date='{:0>2}{:0>2}'.format(
-                    self.start_month,
-                    str(self.start_year)[-2:]
+                start_date="{:0>2}{:0>2}".format(
+                    self.start_month, str(self.start_year)[-2:]
                 )
             )
 
@@ -126,9 +139,7 @@ class CardDetails(object):
             params.update(issue_number=self.issue_number)
 
         if self.billing_address:
-            params.update(
-                **self.billing_address.as_api_billing_address_parameters()
-            )
+            params.update(**self.billing_address.as_api_billing_address_parameters())
 
         if self.return_url:
             params.update(return_url=self.return_url)
@@ -182,11 +193,11 @@ class RedirectionDetails(object):
 
         """
         return {
-            'return_token': self.token,
-            'return_url': self.url,
-            'client_http_user_agent': self.user_agent,
-            'client_http_accept': self.accept,
-            'remote_site': self.remote_site,
+            "return_token": self.token,
+            "return_url": self.url,
+            "client_http_user_agent": self.user_agent,
+            "client_http_accept": self.accept,
+            "remote_site": self.remote_site,
         }
 
 
@@ -218,7 +229,7 @@ class StripeDetails(object):
         """
 
         return {
-            '{}_callback/stripeToken'.format(source): token
+            "{}_callback/stripeToken".format(source): token
             for source, token in self.tokens.items()
         }
 
@@ -250,10 +261,12 @@ class CiderDetails(object):
 
         data = {}
         for system in self.system_codes:
-            data.update({
-                "{0}_callback/{1}".format(system, variable): self.data[variable]
-                for variable in self.data.keys()
-            })
+            data.update(
+                {
+                    "{0}_callback/{1}".format(system, variable): self.data[variable]
+                    for variable in self.data.keys()
+                }
+            )
         return data
 
 

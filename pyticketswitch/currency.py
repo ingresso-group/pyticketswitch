@@ -18,8 +18,15 @@ class Currency(JSONMixin, object):
 
     """
 
-    def __init__(self, code, factor=None, places=None, number=None,
-                 pre_symbol=None, post_symbol=None):
+    def __init__(
+        self,
+        code,
+        factor=None,
+        places=None,
+        number=None,
+        pre_symbol=None,
+        post_symbol=None,
+    ):
 
         self.factor = factor
         self.places = places
@@ -71,14 +78,14 @@ class Currency(JSONMixin, object):
         """
 
         kwargs = {
-            'factor': data.get('currency_factor'),
-            'places': data.get('currency_places'),
-            'number': data.get('currency_number'),
-            'pre_symbol': data.get('currency_pre_symbol'),
-            'post_symbol': data.get('currency_post_symbol'),
+            "factor": data.get("currency_factor"),
+            "places": data.get("currency_places"),
+            "number": data.get("currency_number"),
+            "pre_symbol": data.get("currency_pre_symbol"),
+            "post_symbol": data.get("currency_post_symbol"),
         }
 
-        return cls(data.get('currency_code'), **kwargs)
+        return cls(data.get("currency_code"), **kwargs)
 
     def price_as_string(self, price):
         """Generates a human readble string for a price.
@@ -101,15 +108,15 @@ class Currency(JSONMixin, object):
 
         """
         price = price if price else 0
-        format_string = six.text_type('{pre}{price:.' + str(self.places) + 'f}{post}')
+        format_string = six.text_type("{pre}{price:." + str(self.places) + "f}{post}")
         return format_string.format(
-            pre=self.pre_symbol or '',
+            pre=self.pre_symbol or "",
             price=price,
-            post=self.post_symbol or '',
+            post=self.post_symbol or "",
         )
 
     def __repr__(self):
-        return u'<Currency {}>'.format(self.code)
+        return "<Currency {}>".format(self.code)
 
 
 class CurrencyMeta(JSONMixin, object):
@@ -127,8 +134,9 @@ class CurrencyMeta(JSONMixin, object):
 
     """
 
-    def __init__(self, currencies, default_currency_code=None,
-                 desired_currency_code=None):
+    def __init__(
+        self, currencies, default_currency_code=None, desired_currency_code=None
+    ):
         self.currencies = currencies
         self.default_currency_code = default_currency_code
         self.desired_currency_code = desired_currency_code
@@ -146,17 +154,16 @@ class CurrencyMeta(JSONMixin, object):
                 currency meta data.
 
         """
-        currency_data = data.get('currency_details')
+        currency_data = data.get("currency_details")
         if not currency_data:
             return cls(currencies={})
 
         currencies = {
-            code: Currency.from_api_data(value)
-            for code, value in currency_data.items()
+            code: Currency.from_api_data(value) for code, value in currency_data.items()
         }
 
-        default_currency_code = data.get('currency_code')
-        desired_currency_code = data.get('desired_currency_code')
+        default_currency_code = data.get("currency_code")
+        desired_currency_code = data.get("desired_currency_code")
 
         return cls(
             currencies=currencies,

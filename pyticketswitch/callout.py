@@ -15,8 +15,7 @@ class Integration(JSONMixin, object):
 
     """
 
-    def __init__(self, typ, amount=None, base_amount=None, currency=None,
-                 data=None):
+    def __init__(self, typ, amount=None, base_amount=None, currency=None, data=None):
         self.type = typ
         self.amount = amount
         self.base_amount = base_amount
@@ -39,11 +38,11 @@ class Integration(JSONMixin, object):
         """
 
         kwargs = {
-            'typ': data.get('debitor_type'),
-            'amount': data.get('debit_amount'),
-            'base_amount': data.get('debit_base_amount'),
-            'currency': data.get('debit_currency'),
-            'data': data.get('debitor_specific_data'),
+            "typ": data.get("debitor_type"),
+            "amount": data.get("debit_amount"),
+            "base_amount": data.get("debit_base_amount"),
+            "currency": data.get("debit_currency"),
+            "data": data.get("debitor_specific_data"),
         }
 
         return cls(**kwargs)
@@ -76,9 +75,19 @@ class Callout(JSONMixin, object):
             callback call.
     """
 
-    def __init__(self, code=None, description=None, total=None, typ=None,
-                 destination=None, parameters=None, integration_data=None,
-                 debitor=None, currency_code=None, return_token=None):
+    def __init__(
+        self,
+        code=None,
+        description=None,
+        total=None,
+        typ=None,
+        destination=None,
+        parameters=None,
+        integration_data=None,
+        debitor=None,
+        currency_code=None,
+        return_token=None,
+    ):
 
         self.code = code
         self.description = description
@@ -107,33 +116,32 @@ class Callout(JSONMixin, object):
         """
 
         kwargs = {
-            'code': data.get('bundle_source_code'),
-            'description': data.get('bundle_source_desc'),
-            'total': data.get('bundle_total_cost'),
-            'destination': data.get('callout_destination_url'),
-            'typ': data.get('callout_type'),
-            'currency_code': data.get('currency_code'),
-            'return_token': data.get('return_token'),
+            "code": data.get("bundle_source_code"),
+            "description": data.get("bundle_source_desc"),
+            "total": data.get("bundle_total_cost"),
+            "destination": data.get("callout_destination_url"),
+            "typ": data.get("callout_type"),
+            "currency_code": data.get("currency_code"),
+            "return_token": data.get("return_token"),
         }
 
-        integration_data = data.get('callout_integration_data')
+        integration_data = data.get("callout_integration_data")
 
         if integration_data:
             kwargs.update(integration_data=integration_data)
 
-        raw_debitor = data.get('debitor')
+        raw_debitor = data.get("debitor")
         if raw_debitor:
             debitor = Debitor.from_api_data(raw_debitor)
             kwargs.update(debitor=debitor)
 
-        raw_parameters = data.get('callout_parameters')
-        parameter_order = data.get('callout_parameters_order')
+        raw_parameters = data.get("callout_parameters")
+        parameter_order = data.get("callout_parameters_order")
 
         if raw_parameters:
             if parameter_order:
                 ordered_parameters = (
-                    [key, raw_parameters[key]]
-                    for key in parameter_order
+                    [key, raw_parameters[key]] for key in parameter_order
                 )
                 parameters = OrderedDict(ordered_parameters)
             else:
@@ -144,4 +152,4 @@ class Callout(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<Callout {}:{}>'.format(self.code, self.return_token)
+        return "<Callout {}:{}>".format(self.code, self.return_token)

@@ -30,12 +30,13 @@ class Country(JSONMixin, object):
         """
 
         kwargs = {
-            'code': data.get('country_code'),
-            'description': data.get('country_desc'),
+            "code": data.get("country_code"),
+            "description": data.get("country_desc"),
         }
 
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<Country {}:{}>'.format(
-            self.code, self.description.encode('ascii', 'ignore'))
+        return "<Country {}:{}>".format(
+            self.code, self.description.encode("ascii", "ignore")
+        )

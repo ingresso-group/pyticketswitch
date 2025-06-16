@@ -32,9 +32,9 @@ class Field(JSONMixin, object):
         """
 
         kwargs = {
-            'name': data.get('custom_field_name'),
-            'label': data.get('custom_field_label'),
-            'data': data.get('custom_field_data'),
+            "name": data.get("custom_field_name"),
+            "label": data.get("custom_field_label"),
+            "data": data.get("custom_field_data"),
         }
 
         return cls(**kwargs)

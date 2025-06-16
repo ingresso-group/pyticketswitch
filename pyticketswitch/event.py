@@ -107,25 +107,62 @@ class Event(JSONMixin, object):
             attraction. This is for internal use only.
     """
 
-    def __init__(self, id_, status=None, event_type=None, source=None,
-                 source_code=None, venue=None, description=None, postcode=None,
-                 classes=None, filters=None, upsell_list=None, city=None,
-                 city_code=None, country=None, country_code=None,
-                 latitude=None, longitude=None, needs_departure_date=False,
-                 needs_duration=False, addon_events=None, upsell_events=None,
-                 needs_performance=False, has_performances=False,
-                 is_seated=False, show_performance_time=False,
-                 min_running_time=None, max_running_time=None, cost_range=None,
-                 no_singles_cost_range=None, cost_range_details=None,
-                 content=None, event_info_html=None, event_info=None,
-                 venue_addr_html=None, venue_addr=None, venue_info=None,
-                 venue_info_html=None, media=None, reviews=None,
-                 critic_review_percent=None, availability_details=None,
-                 component_events=None, valid_quantities=None, fields=None,
-                 raw=None, is_add_on=False, area_code=None,
-                 venue_code=None, venue_is_enforced=None,
-                 lingo_code=None, is_auto_quantity_add_on=False,
-                 is_date_matched_add_on=False, is_time_matched_add_on=False):
+    def __init__(
+        self,
+        id_,
+        status=None,
+        event_type=None,
+        source=None,
+        source_code=None,
+        venue=None,
+        description=None,
+        postcode=None,
+        classes=None,
+        filters=None,
+        upsell_list=None,
+        city=None,
+        city_code=None,
+        country=None,
+        country_code=None,
+        latitude=None,
+        longitude=None,
+        needs_departure_date=False,
+        needs_duration=False,
+        addon_events=None,
+        upsell_events=None,
+        needs_performance=False,
+        has_performances=False,
+        is_seated=False,
+        show_performance_time=False,
+        min_running_time=None,
+        max_running_time=None,
+        cost_range=None,
+        no_singles_cost_range=None,
+        cost_range_details=None,
+        content=None,
+        event_info_html=None,
+        event_info=None,
+        venue_addr_html=None,
+        venue_addr=None,
+        venue_info=None,
+        venue_info_html=None,
+        media=None,
+        reviews=None,
+        critic_review_percent=None,
+        availability_details=None,
+        component_events=None,
+        valid_quantities=None,
+        fields=None,
+        raw=None,
+        is_add_on=False,
+        area_code=None,
+        venue_code=None,
+        venue_is_enforced=None,
+        lingo_code=None,
+        is_auto_quantity_add_on=False,
+        is_date_matched_add_on=False,
+        is_time_matched_add_on=False,
+    ):
 
         self.id = id_
         self.status = status
@@ -209,152 +246,140 @@ class Event(JSONMixin, object):
 
         """
 
-        id_ = data.get('event_id')
+        id_ = data.get("event_id")
 
         if not id_:
             raise IntegrityError("event_id not found in event data", data=data)
 
-        geo_data = data.get('geo_data', {})
+        geo_data = data.get("geo_data", {})
 
         # the raw field 'has_no_perfs' is a negative flag, so I'm inverting it
-        has_performances = not data.get('has_no_perfs', False)
+        has_performances = not data.get("has_no_perfs", False)
 
-        api_cost_range = data.get('cost_range', {})
-        api_no_singles_cost_range = api_cost_range.get('no_singles_cost_range', {})
+        api_cost_range = data.get("cost_range", {})
+        api_no_singles_cost_range = api_cost_range.get("no_singles_cost_range", {})
         cost_range = None
         no_singles_cost_range = None
 
         if api_cost_range:
-            api_cost_range['singles'] = True
+            api_cost_range["singles"] = True
             cost_range = CostRange.from_api_data(api_cost_range)
 
         if api_no_singles_cost_range:
-            api_no_singles_cost_range['singles'] = False
-            no_singles_cost_range = CostRange.from_api_data(
-                api_no_singles_cost_range)
+            api_no_singles_cost_range["singles"] = False
+            no_singles_cost_range = CostRange.from_api_data(api_no_singles_cost_range)
 
-        api_cost_range_details = data.get('cost_range_details', {})
-        ticket_type_list = api_cost_range_details.get('ticket_type', [])
+        api_cost_range_details = data.get("cost_range_details", {})
+        ticket_type_list = api_cost_range_details.get("ticket_type", [])
         cost_range_details = [
-            TicketType.from_api_data(ticket_type)
-            for ticket_type in ticket_type_list
+            TicketType.from_api_data(ticket_type) for ticket_type in ticket_type_list
         ]
 
-        api_content = data.get('structured_info', {})
+        api_content = data.get("structured_info", {})
         content = {
-            key: Content.from_api_data(value)
-            for key, value in api_content.items()
+            key: Content.from_api_data(value) for key, value in api_content.items()
         }
 
         fields = {
-            field.get('custom_field_name'): Field.from_api_data(field)
-            for field in data.get('custom_fields', {})
+            field.get("custom_field_name"): Field.from_api_data(field)
+            for field in data.get("custom_fields", {})
         }
 
         media = {}
-        api_media = data.get('media', {})
-        for asset in api_media.get('media_asset', []):
+        api_media = data.get("media", {})
+        for asset in api_media.get("media_asset", []):
             new_media = Media.from_api_data(asset)
             media[new_media.name] = new_media
 
-        api_video = data.get('video_iframe')
+        api_video = data.get("video_iframe")
         if api_video:
             kwargs = {
-                'secure_complete_url': api_video.get('video_iframe_url_when_secure'),
-                'insecure_complete_url': api_video.get('video_iframe_url_when_insecure'),
-                'caption': api_video.get('video_iframe_caption'),
-                'caption_html': api_video.get('video_iframe_caption_html'),
-                'width': api_video.get('video_iframe_width'),
-                'height': api_video.get('video_iframe_height'),
-                'name': 'video',
+                "secure_complete_url": api_video.get("video_iframe_url_when_secure"),
+                "insecure_complete_url": api_video.get(
+                    "video_iframe_url_when_insecure"
+                ),
+                "caption": api_video.get("video_iframe_caption"),
+                "caption_html": api_video.get("video_iframe_caption_html"),
+                "width": api_video.get("video_iframe_width"),
+                "height": api_video.get("video_iframe_height"),
+                "name": "video",
             }
             new_video = Media.from_api_data(kwargs)
-            media['video'] = new_video
+            media["video"] = new_video
 
-        api_reviews = data.get('reviews', {})
+        api_reviews = data.get("reviews", {})
         reviews = [
             Review.from_api_data(api_review)
-            for api_review in api_reviews.get('review', [])
+            for api_review in api_reviews.get("review", [])
         ]
 
         availability_details = AvailabilityDetails.from_api_data(
-            data.get('avail_details', {}))
-        api_component_events = data.get('meta_event_component_events', {})
+            data.get("avail_details", {})
+        )
+        api_component_events = data.get("meta_event_component_events", {})
         component_events = [
             Event.from_api_data(meta_event)
-            for meta_event in api_component_events.get('event', [])
+            for meta_event in api_component_events.get("event", [])
         ]
 
         lingo_code = None
-        raw_lingo_data = data.get('lingo_data')
+        raw_lingo_data = data.get("lingo_data")
         if raw_lingo_data:
-            lingo_code = raw_lingo_data.get('lingo_code')
+            lingo_code = raw_lingo_data.get("lingo_code")
 
         kwargs = {
-            'id_': id_,
-            'description': data.get('event_desc', None),
-            'status': data.get('event_status'),
-            'event_type': data.get('event_type'),
-            'source_code': data.get('source_code'),
-            'source': data.get('source_desc'),
-            'venue': data.get('venue_desc'),
-
-            'classes': data.get('classes'),
-            #TODO: don't actually know what filters look like yet...
-            'filters': data.get('custom_filter', []),
-            'fields': fields,
-
-            'postcode': data.get('postcode'),
-            'city': data.get('city_desc'),
-            'city_code': data.get('city_code'),
-            'country': data.get('country_desc'),
-            'country_code': data.get('country_code'),
-
-            'latitude': geo_data.get('latitude'),
-            'longitude': geo_data.get('longitude'),
-
-            'max_running_time': data.get('max_running_time'),
-            'min_running_time': data.get('min_running_time'),
-
-            'has_performances': has_performances,
-            'show_performance_time': data.get('show_perf_time', False),
-            'is_seated': data.get('is_seated', False),
-            'needs_departure_date': data.get('need_departure_date', False),
-            'needs_duration': data.get('need_duration', False),
-            'needs_performance': data.get('need_performance', False),
-
-            'upsell_list': data.get('event_upsell_list', {}).get('event_id', []),
-
-            'cost_range': cost_range,
-            'no_singles_cost_range': no_singles_cost_range,
-            'cost_range_details': cost_range_details,
-
+            "id_": id_,
+            "description": data.get("event_desc", None),
+            "status": data.get("event_status"),
+            "event_type": data.get("event_type"),
+            "source_code": data.get("source_code"),
+            "source": data.get("source_desc"),
+            "venue": data.get("venue_desc"),
+            "classes": data.get("classes"),
+            # TODO: don't actually know what filters look like yet...
+            "filters": data.get("custom_filter", []),
+            "fields": fields,
+            "postcode": data.get("postcode"),
+            "city": data.get("city_desc"),
+            "city_code": data.get("city_code"),
+            "country": data.get("country_desc"),
+            "country_code": data.get("country_code"),
+            "latitude": geo_data.get("latitude"),
+            "longitude": geo_data.get("longitude"),
+            "max_running_time": data.get("max_running_time"),
+            "min_running_time": data.get("min_running_time"),
+            "has_performances": has_performances,
+            "show_performance_time": data.get("show_perf_time", False),
+            "is_seated": data.get("is_seated", False),
+            "needs_departure_date": data.get("need_departure_date", False),
+            "needs_duration": data.get("need_duration", False),
+            "needs_performance": data.get("need_performance", False),
+            "upsell_list": data.get("event_upsell_list", {}).get("event_id", []),
+            "cost_range": cost_range,
+            "no_singles_cost_range": no_singles_cost_range,
+            "cost_range_details": cost_range_details,
             # extra info
-            'event_info_html': data.get('event_info_html'),
-            'event_info': data.get('event_info'),
-            'venue_addr_html': data.get('venue_addr_html'),
-            'venue_addr': data.get('venue_addr'),
-            'venue_info': data.get('venue_info'),
-            'venue_info_html': data.get('venue_info_html'),
-            'content': content,
-
-            'media': media,
-            'reviews': reviews,
-            'critic_review_percent': data.get('critic_review_percent'),
-
-            'availability_details': availability_details,
-            'component_events': component_events,
-            'valid_quantities': data.get('valid_quantities'),
-            'raw': data,
-
-            'is_add_on': data.get('is_add_on', False),
-            'is_auto_quantity_add_on': data.get('is_auto_quantity_add_on', False),
-            'is_date_matched_add_on': data.get('is_date_matched_add_on', False),
-            'is_time_matched_add_on': data.get('is_time_matched_add_on', False),
-
-            'venue_code': data.get('venue_code'),
-            'area_code': data.get('area_code'),
-            'lingo_code': lingo_code,
+            "event_info_html": data.get("event_info_html"),
+            "event_info": data.get("event_info"),
+            "venue_addr_html": data.get("venue_addr_html"),
+            "venue_addr": data.get("venue_addr"),
+            "venue_info": data.get("venue_info"),
+            "venue_info_html": data.get("venue_info_html"),
+            "content": content,
+            "media": media,
+            "reviews": reviews,
+            "critic_review_percent": data.get("critic_review_percent"),
+            "availability_details": availability_details,
+            "component_events": component_events,
+            "valid_quantities": data.get("valid_quantities"),
+            "raw": data,
+            "is_add_on": data.get("is_add_on", False),
+            "is_auto_quantity_add_on": data.get("is_auto_quantity_add_on", False),
+            "is_date_matched_add_on": data.get("is_date_matched_add_on", False),
+            "is_time_matched_add_on": data.get("is_time_matched_add_on", False),
+            "venue_code": data.get("venue_code"),
+            "area_code": data.get("area_code"),
+            "lingo_code": lingo_code,
         }
 
         return kwargs
@@ -392,33 +417,32 @@ class Event(JSONMixin, object):
 
         """
 
-        kwargs = cls.class_dict_from_api_data(data.get('event'))
+        kwargs = cls.class_dict_from_api_data(data.get("event"))
 
-        if data.get('add_ons'):
-            addons=[
-                Event.from_api_data(raw_addon)
-                for raw_addon in data.get('add_ons')
+        if data.get("add_ons"):
+            addons = [
+                Event.from_api_data(raw_addon) for raw_addon in data.get("add_ons")
             ]
             kwargs.update(addon_events=addons)
 
-        if data.get('upsells'):
-            upsells=[
-                Event.from_api_data(raw_upsell)
-                for raw_upsell in data.get('upsells')
+        if data.get("upsells"):
+            upsells = [
+                Event.from_api_data(raw_upsell) for raw_upsell in data.get("upsells")
             ]
             kwargs.update(upsell_events=upsells)
 
-        if data.get('venue_is_enforced') is not None:
-            kwargs.update(venue_is_enforced=data.get('venue_is_enforced'))
+        if data.get("venue_is_enforced") is not None:
+            kwargs.update(venue_is_enforced=data.get("venue_is_enforced"))
 
-        if data.get('valid_quantities') is not None:
-            kwargs.update(valid_quantities=data.get('valid_quantities'))
+        if data.get("valid_quantities") is not None:
+            kwargs.update(valid_quantities=data.get("valid_quantities"))
 
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<Event {}:{}>'.format(
-            self.id, self.description.encode('ascii', 'ignore'))
+        return "<Event {}:{}>".format(
+            self.id, self.description.encode("ascii", "ignore")
+        )
 
 
 class EventMeta(PaginationMixin, CurrencyMeta):
@@ -440,4 +464,5 @@ class EventMeta(PaginationMixin, CurrencyMeta):
             the current page.
         total_results (int): the total number of results.
     """
+
     pass

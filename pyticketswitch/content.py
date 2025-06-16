@@ -33,9 +33,9 @@ class Content(JSONMixin, object):
         """
 
         kwargs = {
-            'name': data.get('name'),
-            'value': data.get('value'),
-            'value_html': data.get('value_html'),
+            "name": data.get("name"),
+            "value": data.get("value"),
+            "value_html": data.get("value_html"),
         }
 
         return cls(**kwargs)

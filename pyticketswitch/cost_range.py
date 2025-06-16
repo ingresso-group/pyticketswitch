@@ -73,13 +73,9 @@ class CostRange(JSONMixin, object):
         self.max_saving_offer = max_saving_offer
         self.min_cost_offer = min_cost_offer
         self.top_price_offer = top_price_offer
-        self.max_combined_combined_tax_component = (
-            max_combined_combined_tax_component
-        )
+        self.max_combined_combined_tax_component = max_combined_combined_tax_component
         self.max_combined_surcharge_tax_sub = max_combined_surcharge_tax_sub
-        self.min_combined_combined_tax_component = (
-            min_combined_combined_tax_component
-        )
+        self.min_combined_combined_tax_component = min_combined_combined_tax_component
         self.min_combined_surcharge_tax_sub = min_combined_surcharge_tax_sub
         self.discount_semantic_type = discount_semantic_type
         self.alternate_discounts = alternate_discounts
@@ -99,82 +95,74 @@ class CostRange(JSONMixin, object):
 
         """
 
-        min_seatprice = utils.get_price(data, 'min_seatprice')
-        min_surcharge = utils.get_price(data, 'min_surcharge')
-        max_seatprice = utils.get_price(data, 'max_seatprice')
-        max_surcharge = utils.get_price(data, 'max_surcharge')
+        min_seatprice = utils.get_price(data, "min_seatprice")
+        min_surcharge = utils.get_price(data, "min_surcharge")
+        max_seatprice = utils.get_price(data, "max_seatprice")
+        max_surcharge = utils.get_price(data, "max_surcharge")
 
         kwargs = {
-            'valid_quantities': data.get('valid_quantities'),
-            'min_surcharge': min_surcharge,
-            'min_seatprice': min_seatprice,
-            'max_surcharge': max_surcharge,
-            'max_seatprice': max_seatprice,
-            'allows_singles': data.get('singles', True),
-            'currency': data.get('range_currency_code'),
+            "valid_quantities": data.get("valid_quantities"),
+            "min_surcharge": min_surcharge,
+            "min_seatprice": min_seatprice,
+            "max_surcharge": max_surcharge,
+            "max_seatprice": max_seatprice,
+            "allows_singles": data.get("singles", True),
+            "currency": data.get("range_currency_code"),
         }
 
-        best_value_offer = data.get('best_value_offer')
+        best_value_offer = data.get("best_value_offer")
         if best_value_offer:
             best_value_offer = Offer.from_api_data(best_value_offer)
             kwargs.update(best_value_offer=best_value_offer)
 
-        max_saving_offer = data.get('max_saving_offer')
+        max_saving_offer = data.get("max_saving_offer")
         if max_saving_offer:
             max_saving_offer = Offer.from_api_data(max_saving_offer)
             kwargs.update(max_saving_offer=max_saving_offer)
 
-        min_cost_offer = data.get('min_cost_offer')
+        min_cost_offer = data.get("min_cost_offer")
         if min_cost_offer:
             min_cost_offer = Offer.from_api_data(min_cost_offer)
             kwargs.update(min_cost_offer=min_cost_offer)
 
-        top_price_offer = data.get('top_price_offer')
+        top_price_offer = data.get("top_price_offer")
         if top_price_offer:
             top_price_offer = Offer.from_api_data(top_price_offer)
             kwargs.update(top_price_offer=top_price_offer)
 
-        max_combined_tax_component = data.get(
-            'max_combined_combined_tax_component'
-        )
+        max_combined_tax_component = data.get("max_combined_combined_tax_component")
         if max_combined_tax_component is not None:
             kwargs.update(
                 max_combined_combined_tax_component=max_combined_tax_component
             )
 
         max_combined_surcharge_tax_sub = data.get(
-            'max_combined_surcharge_tax_sub_component'
+            "max_combined_surcharge_tax_sub_component"
         )
         if max_combined_surcharge_tax_sub is not None:
-            kwargs.update(
-                max_combined_surcharge_tax_sub=max_combined_surcharge_tax_sub
-            )
+            kwargs.update(max_combined_surcharge_tax_sub=max_combined_surcharge_tax_sub)
 
-        min_combined_tax_component = data.get(
-            'min_combined_combined_tax_component'
-        )
+        min_combined_tax_component = data.get("min_combined_combined_tax_component")
         if min_combined_tax_component is not None:
             kwargs.update(
                 min_combined_combined_tax_component=min_combined_tax_component
             )
 
         min_combined_surcharge_tax_sub = data.get(
-            'min_combined_surcharge_tax_sub_component'
+            "min_combined_surcharge_tax_sub_component"
         )
         if min_combined_surcharge_tax_sub is not None:
-            kwargs.update(
-                min_combined_surcharge_tax_sub=min_combined_surcharge_tax_sub
-            )
+            kwargs.update(min_combined_surcharge_tax_sub=min_combined_surcharge_tax_sub)
 
-        discount_semantic_type = data.get(
-            'discount_semantic_type'
-        )
+        discount_semantic_type = data.get("discount_semantic_type")
         if discount_semantic_type is not None:
             kwargs.update(
-                discount_semantic_type=DiscountSemanticType[discount_semantic_type.upper()]
+                discount_semantic_type=DiscountSemanticType[
+                    discount_semantic_type.upper()
+                ]
             )
 
-        alternate_discounts = data.get('alternate_discounts')
+        alternate_discounts = data.get("alternate_discounts")
         if alternate_discounts:
             alternate_discounts = [
                 CostRange.from_api_data(a) for a in alternate_discounts
@@ -250,31 +238,29 @@ class CostRangeDetails(JSONMixin, object):
     @classmethod
     def from_api_data(cls, data):
         details = []
-        for ticket_type in data.get('ticket_type', []):
+        for ticket_type in data.get("ticket_type", []):
             kwargs = {
-                'ticket_type_code': ticket_type.get('ticket_type_code'),
-                'ticket_type_description': ticket_type.get('ticket_type_desc'),
+                "ticket_type_code": ticket_type.get("ticket_type_code"),
+                "ticket_type_description": ticket_type.get("ticket_type_desc"),
             }
-            for price_band in ticket_type.get('price_band', []):
+            for price_band in ticket_type.get("price_band", []):
                 kwargs.update(
-                    price_band_code=price_band.get('price_band_code'),
-                    price_band_description=price_band.get('price_band_desc'),
+                    price_band_code=price_band.get("price_band_code"),
+                    price_band_description=price_band.get("price_band_desc"),
                 )
 
-                cost_range = price_band.get('cost_range')
+                cost_range = price_band.get("cost_range")
 
                 if not cost_range:
                     continue
 
                 kwargs.update(cost_range=CostRange.from_api_data(cost_range))
 
-                no_singles = cost_range.get('no_singles_cost_range')
+                no_singles = cost_range.get("no_singles_cost_range")
 
                 if no_singles:
                     kwargs.update(
-                        cost_range_no_singles=CostRange.from_api_data(
-                            no_singles
-                        )
+                        cost_range_no_singles=CostRange.from_api_data(no_singles)
                     )
 
                 details.append(cls(**kwargs))

@@ -31,9 +31,9 @@ class Commission(JSONMixin, object):
         """
 
         kwargs = {
-            'including_vat': data.get('amount_including_vat'),
-            'excluding_vat': data.get('amount_excluding_vat'),
-            'currency_code': data.get('commission_currency_code'),
+            "including_vat": data.get("amount_including_vat"),
+            "excluding_vat": data.get("amount_excluding_vat"),
+            "currency_code": data.get("commission_currency_code"),
         }
 
         return cls(**kwargs)

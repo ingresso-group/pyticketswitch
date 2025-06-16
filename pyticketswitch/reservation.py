@@ -46,8 +46,13 @@ class Reservation(Status):
 
     """
 
-    def __init__(self, unreserved_orders=None,
-                 input_contained_unavailable_order=False, *args, **kwargs):
+    def __init__(
+        self,
+        unreserved_orders=None,
+        input_contained_unavailable_order=False,
+        *args,
+        **kwargs
+    ):
 
         super(Reservation, self).__init__(*args, **kwargs)
         self.unreserved_orders = unreserved_orders
@@ -71,20 +76,20 @@ class Reservation(Status):
         inst = super(Reservation, cls).from_api_data(data)
 
         unreserved_orders = []
-        raw_unreserved_orders = data.get('unreserved_orders')
+        raw_unreserved_orders = data.get("unreserved_orders")
         if raw_unreserved_orders:
             unreserved_orders = [
-                Order.from_api_data(order)
-                for order in raw_unreserved_orders
+                Order.from_api_data(order) for order in raw_unreserved_orders
             ]
 
         inst.unreserved_orders = unreserved_orders
         inst.input_contained_unavailable_order = data.get(
-            'input_contained_unavailable_order', False)
+            "input_contained_unavailable_order", False
+        )
 
         return inst
 
     def __repr__(self):
         if self.trolley and self.trolley.transaction_uuid:
-            return u'<Reservation {}>'.format(self.trolley.transaction_uuid)
+            return "<Reservation {}>".format(self.trolley.transaction_uuid)
         return super(Reservation, self).__repr__()
