@@ -18,6 +18,8 @@ class Performance(JSONMixin, object):
         event_id (str): identifier for the event.
         date_time (:obj:`datetime.datetime`): the localised date and time for
             the performance.
+        offsale_date_time (:obj:`datetime.datetime`): the localised date and time for
+            the performance going offsale.
         date_description (str): a human readable description of the date of the
             performance.
         time_description (str): a human readable description of the time of the
