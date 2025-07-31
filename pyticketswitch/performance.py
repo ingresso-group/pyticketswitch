@@ -58,7 +58,7 @@ class Performance(JSONMixin, object):
         self.id = id_
         self.event_id = event_id
         self.date_time = date_time
-        self.offsale_date_time = date_time
+        self.offsale_date_time = offsale_date_time
         self.date_description = date_description
         self.time_description = time_description
         self.has_pool_seats = has_pool_seats
