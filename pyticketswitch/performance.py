@@ -47,7 +47,7 @@ class Performance(JSONMixin, object):
 
     """
 
-    def __init__(self, id_, event_id, date_time=None,
+    def __init__(self, id_, event_id, date_time=None, offsale_date_time=None,
                  date_description=None, time_description=None, has_pool_seats=False,
                  is_limited=False, cached_max_seats=None, cached_max_seats_is_real=None, cost_range=None,
                  no_singles_cost_range=None, is_ghost=False, name=None,
@@ -56,6 +56,7 @@ class Performance(JSONMixin, object):
         self.id = id_
         self.event_id = event_id
         self.date_time = date_time
+        self.offsale_date_time = date_time
         self.date_description = date_description
         self.time_description = time_description
         self.has_pool_seats = has_pool_seats
@@ -90,6 +91,10 @@ class Performance(JSONMixin, object):
         if date_time:
             date_time = utils.isostr_to_datetime(date_time)
 
+        offsale_date_time = data.get('offsale_iso8601_date_and_time')
+        if offsale_date_time:
+            offsale_date_time = utils.isostr_to_datetime(offsale_date_time)
+
         date_desc = data.get('date_desc')
         time_desc = data.get('time_desc')
 
@@ -114,6 +119,7 @@ class Performance(JSONMixin, object):
             'id_': id_,
             'event_id': event_id,
             'date_time': date_time,
+            'offsale_date_time': offsale_date_time,
             'date_description': date_desc,
             'time_description': time_desc,
             'running_time': data.get('running_time'),
