@@ -75,35 +75,35 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             populated with the data from the api.
 
         """
-        gross_commission = data.get('predicted_gross_commission')
+        gross_commission = data.get("predicted_gross_commission")
         if gross_commission:
             gross_commission = Commission.from_api_data(gross_commission)
 
-        user_commission = data.get('predicted_user_commission')
+        user_commission = data.get("predicted_user_commission")
         if user_commission:
             user_commission = Commission.from_api_data(user_commission)
 
         kwargs = {
-            'code': data.get('discount_code'),
-            'description': data.get('discount_desc'),
-            'disallowed_seat_nos': data.get('discount_disallowed_seat_nos'),
-            'price_band_code': data.get('price_band_code'),
-            'is_offer': data.get('is_offer', False),
-            'seatprice': data.get('sale_seatprice'),
-            'surcharge': data.get('sale_surcharge'),
-            'non_offer_seatprice': data.get('non_offer_sale_seatprice'),
-            'non_offer_surcharge': data.get('non_offer_sale_surcharge'),
-            'availability': data.get('number_available'),
-            'percentage_saving': data.get('percentage_saving'),
-            'absolute_saving': data.get('absolute_saving'),
-            'gross_commission': gross_commission,
-            'user_commission': user_commission,
-            'semantic_type': data.get('discount_semantic_type'),
-            'minimum_eligible_age': data.get('discount_minimum_eligible_age'),
-            'maximum_eligible_age': data.get('discount_maximum_eligible_age'),
+            "code": data.get("discount_code"),
+            "description": data.get("discount_desc"),
+            "disallowed_seat_nos": data.get("discount_disallowed_seat_nos"),
+            "price_band_code": data.get("price_band_code"),
+            "is_offer": data.get("is_offer", False),
+            "seatprice": data.get("sale_seatprice"),
+            "surcharge": data.get("sale_surcharge"),
+            "non_offer_seatprice": data.get("non_offer_sale_seatprice"),
+            "non_offer_surcharge": data.get("non_offer_sale_surcharge"),
+            "availability": data.get("number_available"),
+            "percentage_saving": data.get("percentage_saving"),
+            "absolute_saving": data.get("absolute_saving"),
+            "gross_commission": gross_commission,
+            "user_commission": user_commission,
+            "semantic_type": data.get("discount_semantic_type"),
+            "minimum_eligible_age": data.get("discount_minimum_eligible_age"),
+            "maximum_eligible_age": data.get("discount_maximum_eligible_age"),
         }
 
-        tax_component = data.get('sale_combined_tax_component')
+        tax_component = data.get("sale_combined_tax_component")
         if tax_component is not None:
             kwargs.update(tax_component=tax_component)
 
@@ -112,6 +112,6 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return u'<Discount {}:{}>'.format(
-            self.code, self.description.encode('ascii', 'ignore')
+        return "<Discount {}:{}>".format(
+            self.code, self.description.encode("ascii", "ignore")
         )

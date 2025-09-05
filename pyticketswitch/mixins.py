@@ -20,7 +20,7 @@ class JSONMixin(object):
             if isinstance(obj, decimal.Decimal):
                 return float(obj)
 
-            if hasattr(obj, '__jsondict__'):
+            if hasattr(obj, "__jsondict__"):
                 return obj.__jsondict__(hide_none=hide_none, hide_empty=hide_empty)
 
             if isinstance(obj, list):
@@ -34,13 +34,11 @@ class JSONMixin(object):
         return {
             key: sanitise(obj)
             for key, obj in self.__dict__.items()
-
             # when hiding None's and the object is None, skip the object
             if not (hide_none and obj is None)
-
             # when hiding empty iterators and the object is an iterator and
             # it's empty, skip the object.
-            if not (hide_empty and hasattr(obj, '__iter__') and not obj)
+            if not (hide_empty and hasattr(obj, "__iter__") and not obj)
         }
 
     def as_dict_for_json(self, hide_none=True, hide_empty=True):
@@ -87,8 +85,7 @@ class JSONMixin(object):
         """
 
         return json.dumps(
-            self.as_dict_for_json(hide_none=hide_none, hide_empty=hide_empty),
-            **kwargs
+            self.as_dict_for_json(hide_none=hide_none, hide_empty=hide_empty), **kwargs
         )
 
 
@@ -105,8 +102,16 @@ class PaginationMixin(object):
 
     """
 
-    def __init__(self, page_length=None, page_number=None, pages_remaining=None,
-                 total_results=None, results_remaining=None, *args, **kwargs):
+    def __init__(
+        self,
+        page_length=None,
+        page_number=None,
+        pages_remaining=None,
+        total_results=None,
+        results_remaining=None,
+        *args,
+        **kwargs
+    ):
         self.page_length = page_length
         self.page_number = page_number
         self.pages_remaining = pages_remaining
@@ -119,16 +124,16 @@ class PaginationMixin(object):
         inst = super(PaginationMixin, cls).from_api_data(data)
 
         if not result_key:
-            result_key = 'results'
+            result_key = "results"
 
         results = data.get(result_key, {})
-        paging_data = results.get('paging_status', {})
+        paging_data = results.get("paging_status", {})
 
-        inst.page_length = paging_data.get('page_length')
-        inst.page_number = paging_data.get('page_number')
-        inst.pages_remaining = paging_data.get('pages_remaining')
-        inst.results_remaining = paging_data.get('results_remaining')
-        inst.total_results = paging_data.get('total_unpaged_results')
+        inst.page_length = paging_data.get("page_length")
+        inst.page_number = paging_data.get("page_number")
+        inst.pages_remaining = paging_data.get("pages_remaining")
+        inst.results_remaining = paging_data.get("results_remaining")
+        inst.total_results = paging_data.get("total_unpaged_results")
 
         return inst
 
@@ -162,8 +167,15 @@ class SeatPricingMixin(object):
             seat/ticket when not on offer.
     """
 
-    def __init__(self, seatprice=None, surcharge=None, non_offer_seatprice=None,
-                 non_offer_surcharge=None, *args, **kwargs):
+    def __init__(
+        self,
+        seatprice=None,
+        surcharge=None,
+        non_offer_seatprice=None,
+        non_offer_surcharge=None,
+        *args,
+        **kwargs
+    ):
         super(SeatPricingMixin, self).__init__(*args, **kwargs)
         self.seatprice = seatprice
         self.surcharge = surcharge
@@ -173,10 +185,10 @@ class SeatPricingMixin(object):
     @staticmethod
     def kwargs_from_api_data(data):
         kwargs = {
-            'seatprice': data.get('sale_seatprice'),
-            'surcharge': data.get('sale_surcharge'),
-            'non_offer_seatprice': data.get('non_offer_sale_seatprice'),
-            'non_offer_surcharge': data.get('non_offer_sale_surcharge'),
+            "seatprice": data.get("sale_seatprice"),
+            "surcharge": data.get("sale_surcharge"),
+            "non_offer_seatprice": data.get("non_offer_sale_seatprice"),
+            "non_offer_surcharge": data.get("non_offer_sale_surcharge"),
         }
         return kwargs
 
@@ -201,8 +213,8 @@ class SeatPricingMixin(object):
                 no booking fees
 
         """
-        assert self.seatprice is not None, 'seatprice data missing'
-        assert self.surcharge is not None, 'surcharge data missing'
+        assert self.seatprice is not None, "seatprice data missing"
+        assert self.surcharge is not None, "surcharge data missing"
 
         return utils.add_prices(self.seatprice, self.surcharge)
 
@@ -227,6 +239,6 @@ class SeatPricingMixin(object):
                 no booking fees
 
         """
-        assert self.non_offer_seatprice is not None, 'non_offer_seatprice data missing'
-        assert self.non_offer_surcharge is not None, 'non_offer_surcharge data missing'
+        assert self.non_offer_seatprice is not None, "non_offer_seatprice data missing"
+        assert self.non_offer_surcharge is not None, "non_offer_surcharge data missing"
         return utils.add_prices(self.non_offer_seatprice, self.non_offer_surcharge)

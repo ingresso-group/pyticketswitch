@@ -36,10 +36,21 @@ class AvailabilityMeta(CurrencyMeta):
             seats in the seat_block.
 
     """
-    def __init__(self, contiguous_seat_selection_only=True, currency=None,
-                 valid_quantities=None, max_bundle_size=None, backend_is_down=False,
-                 backend_is_broken=False, backend_throttle_failed=False,
-                 source_code=None, must_select_whole_seat_block=False, *args, **kwargs):
+
+    def __init__(
+        self,
+        contiguous_seat_selection_only=True,
+        currency=None,
+        valid_quantities=None,
+        max_bundle_size=None,
+        backend_is_down=False,
+        backend_is_broken=False,
+        backend_throttle_failed=False,
+        source_code=None,
+        must_select_whole_seat_block=False,
+        *args,
+        **kwargs
+    ):
         self.contiguous_seat_selection_only = contiguous_seat_selection_only
         self.currency = currency
         self.max_bundle_size = max_bundle_size
@@ -67,15 +78,16 @@ class AvailabilityMeta(CurrencyMeta):
         """
         inst = super(AvailabilityMeta, cls).from_api_data(data)
 
-        inst.valid_quantities = data.get('valid_quantities')
-        inst.max_bundle_size = data.get('max_bundle_size')
+        inst.valid_quantities = data.get("valid_quantities")
+        inst.max_bundle_size = data.get("max_bundle_size")
         inst.contiguous_seat_selection_only = data.get(
-            'contiguous_seat_selection_only', True)
-        inst.backend_is_broken = data.get('backend_is_broken')
-        inst.backend_is_down = data.get('backend_is_down')
-        inst.backend_throttle_failed = data.get('backend_throttle_failed')
-        inst.source_code = data.get('source_code')
-        inst.must_select_whole_seat_block = data.get('must_select_whole_seat_block')
+            "contiguous_seat_selection_only", True
+        )
+        inst.backend_is_broken = data.get("backend_is_broken")
+        inst.backend_is_down = data.get("backend_is_down")
+        inst.backend_throttle_failed = data.get("backend_throttle_failed")
+        inst.source_code = data.get("source_code")
+        inst.must_select_whole_seat_block = data.get("must_select_whole_seat_block")
 
         return inst
 
@@ -110,16 +122,30 @@ class AvailabilityDetails(JSONMixin, object):
 
     """
 
-    def __init__(self, ticket_type=None, price_band=None,
-                 ticket_type_description=None, price_band_description=None,
-                 seatprice=None, surcharge=None, full_seatprice=None,
-                 full_surcharge=None, currency=None, first_date=None,
-                 percentage_saving=None, absolute_saving=None,
-                 last_date=None, calendar_masks=None,
-                 weekday_mask=None, valid_quantities=None,
-                 cached_number_available=None, discount_code=None,
-                 discount_desc=None, discount_semantic_type=None,
-                 suffixed_price_band_code=None):
+    def __init__(
+        self,
+        ticket_type=None,
+        price_band=None,
+        ticket_type_description=None,
+        price_band_description=None,
+        seatprice=None,
+        surcharge=None,
+        full_seatprice=None,
+        full_surcharge=None,
+        currency=None,
+        first_date=None,
+        percentage_saving=None,
+        absolute_saving=None,
+        last_date=None,
+        calendar_masks=None,
+        weekday_mask=None,
+        valid_quantities=None,
+        cached_number_available=None,
+        discount_code=None,
+        discount_desc=None,
+        discount_semantic_type=None,
+        suffixed_price_band_code=None,
+    ):
 
         self.ticket_type = ticket_type
         self.ticket_type_description = ticket_type_description
@@ -159,75 +185,79 @@ class AvailabilityDetails(JSONMixin, object):
         """
         details = []
 
-        for ticket_type in data.get('ticket_type', []):
+        for ticket_type in data.get("ticket_type", []):
             kwargs = {
-                'ticket_type': ticket_type.get('ticket_type_code'),
-                'ticket_type_description': ticket_type.get('ticket_type_desc'),
+                "ticket_type": ticket_type.get("ticket_type_code"),
+                "ticket_type_description": ticket_type.get("ticket_type_desc"),
             }
 
-            for price_band in ticket_type.get('price_band', []):
+            for price_band in ticket_type.get("price_band", []):
                 kwargs.update(
-                    price_band=price_band.get('price_band_code'),
-                    price_band_description=price_band.get('price_band_desc'),
+                    price_band=price_band.get("price_band_code"),
+                    price_band_description=price_band.get("price_band_desc"),
                 )
 
-                raw_details_list = price_band.get('avail_detail', [{}])
+                raw_details_list = price_band.get("avail_detail", [{}])
 
                 for raw_details in raw_details_list:
 
-                    kwargs['seatprice'] = raw_details.get('seatprice', 0.0)
-                    kwargs['full_seatprice'] = raw_details.get('full_seatprice', 0.0)
-                    kwargs['surcharge'] = raw_details.get('surcharge', 0.0)
-                    kwargs['full_surcharge'] = raw_details.get('full_surcharge', 0.0)
-                    kwargs['percentage_saving'] = raw_details.get(
-                        'percentage_saving', 0.0)
-                    kwargs['absolute_saving'] = raw_details.get('absolute_saving', 0.0)
-                    kwargs['currency'] = raw_details.get('avail_currency_code')
-                    kwargs['discount_code'] = raw_details.get('discount_code')
-                    kwargs['discount_desc'] = raw_details.get('discount_desc')
-                    kwargs['discount_semantic_type'] = raw_details.get(
-                        'discount_semantic_type')
-                    kwargs['suffixed_price_band_code'] = raw_details.get(
-                        'suffixed_price_band_code')
+                    kwargs["seatprice"] = raw_details.get("seatprice", 0.0)
+                    kwargs["full_seatprice"] = raw_details.get("full_seatprice", 0.0)
+                    kwargs["surcharge"] = raw_details.get("surcharge", 0.0)
+                    kwargs["full_surcharge"] = raw_details.get("full_surcharge", 0.0)
+                    kwargs["percentage_saving"] = raw_details.get(
+                        "percentage_saving", 0.0
+                    )
+                    kwargs["absolute_saving"] = raw_details.get("absolute_saving", 0.0)
+                    kwargs["currency"] = raw_details.get("avail_currency_code")
+                    kwargs["discount_code"] = raw_details.get("discount_code")
+                    kwargs["discount_desc"] = raw_details.get("discount_desc")
+                    kwargs["discount_semantic_type"] = raw_details.get(
+                        "discount_semantic_type"
+                    )
+                    kwargs["suffixed_price_band_code"] = raw_details.get(
+                        "suffixed_price_band_code"
+                    )
 
-                    available_dates = raw_details.get('available_dates', {})
-                    if 'first_yyyymmdd' in available_dates:
+                    available_dates = raw_details.get("available_dates", {})
+                    if "first_yyyymmdd" in available_dates:
                         try:
                             first = datetime.datetime.strptime(
-                                available_dates['first_yyyymmdd'],
-                                '%Y%m%d'
+                                available_dates["first_yyyymmdd"], "%Y%m%d"
                             )
-                            kwargs['first_date'] = first.date()
+                            kwargs["first_date"] = first.date()
                         except ValueError:
                             pass
 
-                    if 'last_yyyymmdd' in available_dates:
+                    if "last_yyyymmdd" in available_dates:
                         try:
                             last = datetime.datetime.strptime(
-                                available_dates['last_yyyymmdd'],
-                                '%Y%m%d'
+                                available_dates["last_yyyymmdd"], "%Y%m%d"
                             )
-                            kwargs['last_date'] = last.date()
+                            kwargs["last_date"] = last.date()
                         except ValueError:
                             pass
 
-                    kwargs['calendar_masks'] = {
+                    kwargs["calendar_masks"] = {
                         int(year[5:]): {
                             MONTH_NUMBERS[month[:3]]: mask
                             for month, mask in month_masks.items()
                         }
                         for year, month_masks in available_dates.items()
-                        if year.startswith('year_')
+                        if year.startswith("year_")
                     }
 
-                    if 'available_weekdays_bitmask' in raw_details:
-                        kwargs['weekday_mask'] = raw_details['available_weekdays_bitmask']
+                    if "available_weekdays_bitmask" in raw_details:
+                        kwargs["weekday_mask"] = raw_details[
+                            "available_weekdays_bitmask"
+                        ]
 
-                    if 'valid_quantities' in raw_details:
-                        kwargs['valid_quantities'] = raw_details['valid_quantities']
+                    if "valid_quantities" in raw_details:
+                        kwargs["valid_quantities"] = raw_details["valid_quantities"]
 
-                    kwargs['cached_number_available'] = (
-                        raw_details.get('cached_number_available'))
+                    kwargs["cached_number_available"] = raw_details.get(
+                        "cached_number_available"
+                    )
 
                     avail_details = AvailabilityDetails(**kwargs)
 
@@ -238,8 +268,9 @@ class AvailabilityDetails(JSONMixin, object):
                         avail_details.weekday_list = weekday_list
                     details.append(avail_details)
 
-        return sorted(details,
-                      key=lambda x: (x.ticket_type_description, x.combined_price()))
+        return sorted(
+            details, key=lambda x: (x.ticket_type_description, x.combined_price())
+        )
 
     def is_available(self, year, month=None, day=None):
         """Check availablity on a given year/month/day.
@@ -258,7 +289,7 @@ class AvailabilityDetails(JSONMixin, object):
 
         """
         if day and not month:
-            raise ValueError('a month must be specified to specify a day')
+            raise ValueError("a month must be specified to specify a day")
 
         if year not in self._calendar_masks:
             return False

@@ -62,9 +62,7 @@ class Bundle(JSONMixin, object):
         self.purchase_result = purchase_result
         self.send_cost_tax_component = send_cost_tax_component
         self.total_combined_tax_component = total_combined_tax_component
-        self.total_surcharge_tax_sub_component = (
-            total_surcharge_tax_sub_component
-        )
+        self.total_surcharge_tax_sub_component = total_surcharge_tax_sub_component
 
     @classmethod
     def from_api_data(cls, data):
@@ -82,13 +80,13 @@ class Bundle(JSONMixin, object):
         """
 
         kwargs = {
-            'source_code': data.get('bundle_source_code'),
-            'description': data.get('bundle_source_desc'),
-            'currency_code': data.get('currency_code'),
-            'terms_and_conditions': data.get('source_t_and_c'),
+            "source_code": data.get("bundle_source_code"),
+            "description": data.get("bundle_source_desc"),
+            "currency_code": data.get("currency_code"),
+            "terms_and_conditions": data.get("source_t_and_c"),
         }
 
-        raw_orders = data.get('order')
+        raw_orders = data.get("order")
         if raw_orders:
             orders = [Order.from_api_data(order) for order in raw_orders]
             kwargs.update(orders=orders)
@@ -96,50 +94,46 @@ class Bundle(JSONMixin, object):
         # Below we are explicital checking for not None because we want to
         # differentiate between situtations where a value is 0 and a value is
         # missing from the response.
-        total_seatprice = data.get('bundle_total_seatprice')
+        total_seatprice = data.get("bundle_total_seatprice")
         if total_seatprice is not None:
             kwargs.update(total_seatprice=total_seatprice)
 
-        total_surcharge = data.get('bundle_total_surcharge')
+        total_surcharge = data.get("bundle_total_surcharge")
         if total_surcharge is not None:
             kwargs.update(total_surcharge=total_surcharge)
 
-        total_send_cost = data.get('bundle_total_send_cost')
+        total_send_cost = data.get("bundle_total_send_cost")
         if total_send_cost is not None:
             kwargs.update(total_send_cost=total_send_cost)
 
-        total = data.get('bundle_total_cost')
+        total = data.get("bundle_total_cost")
         if total is not None:
             kwargs.update(total=total)
 
-        raw_debitor = data.get('debitor')
+        raw_debitor = data.get("debitor")
         if raw_debitor:
             debitor = Debitor.from_api_data(raw_debitor)
             kwargs.update(debitor=debitor)
 
-        raw_purchase_result = data.get('purchase_result')
+        raw_purchase_result = data.get("purchase_result")
         if raw_purchase_result:
             purchase_result = PurchaseResult.from_api_data(raw_purchase_result)
             kwargs.update(purchase_result=purchase_result)
 
-        total = data.get('bundle_total_cost')
+        total = data.get("bundle_total_cost")
         if total is not None:
             kwargs.update(total=total)
 
-        send_cost_tax_component = data.get('bundle_send_cost_tax_component')
+        send_cost_tax_component = data.get("bundle_send_cost_tax_component")
         if send_cost_tax_component is not None:
             kwargs.update(send_cost_tax_component=send_cost_tax_component)
 
-        total_combined_tax_component = data.get(
-            'bundle_total_combined_tax_component'
-        )
+        total_combined_tax_component = data.get("bundle_total_combined_tax_component")
         if total_combined_tax_component is not None:
-            kwargs.update(
-                total_combined_tax_component=total_combined_tax_component
-            )
+            kwargs.update(total_combined_tax_component=total_combined_tax_component)
 
         total_surcharge_tax_sub_component = data.get(
-            'bundle_total_surcharge_tax_sub_component'
+            "bundle_total_surcharge_tax_sub_component"
         )
         if total_surcharge_tax_sub_component is not None:
             kwargs.update(
@@ -156,11 +150,7 @@ class Bundle(JSONMixin, object):
         """
         if not self.orders:
             return []
-        return [
-            order.event
-            for order in self.orders
-            if order.event and order.event.id
-        ]
+        return [order.event for order in self.orders if order.event and order.event.id]
 
     def get_event_ids(self):
         """Get the event ids of the events in the bundle.
@@ -182,4 +172,4 @@ class Bundle(JSONMixin, object):
         return False
 
     def __repr__(self):
-        return u'<Bundle {}>'.format(self.source_code)
+        return "<Bundle {}>".format(self.source_code)

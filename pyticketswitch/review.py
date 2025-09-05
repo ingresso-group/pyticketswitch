@@ -18,8 +18,17 @@ class Review(JSONMixin, object):
 
     """
 
-    def __init__(self, body=None, date_time=None, star_rating=None,
-                 lang=None, title=None, is_user=False, author=None, url=None):
+    def __init__(
+        self,
+        body=None,
+        date_time=None,
+        star_rating=None,
+        lang=None,
+        title=None,
+        is_user=False,
+        author=None,
+        url=None,
+    ):
 
         self.body = body
         self.date_time = date_time
@@ -45,19 +54,17 @@ class Review(JSONMixin, object):
 
         """
 
-        review_date = isostr_to_datetime(
-            data.get('review_iso8601_date_and_time')
-        )
+        review_date = isostr_to_datetime(data.get("review_iso8601_date_and_time"))
 
         kwargs = {
-            'body': data.get('review_body', None),
-            'date_time': review_date,
-            'star_rating': data.get('star_rating', None),
-            'lang': data.get('review_lang', None),
-            'title': data.get('review_title', None),
-            'is_user': data.get('is_user_review', False),
-            'author': data.get('review_author', None),
-            'url': data.get('review_original_url', None),
+            "body": data.get("review_body", None),
+            "date_time": review_date,
+            "star_rating": data.get("star_rating", None),
+            "lang": data.get("review_lang", None),
+            "title": data.get("review_title", None),
+            "is_user": data.get("is_user_review", False),
+            "author": data.get("review_author", None),
+            "url": data.get("review_original_url", None),
         }
 
         return cls(**kwargs)

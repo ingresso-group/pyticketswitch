@@ -11,3 +11,4 @@ requests-mock
 pylint
 coverage
 codecov
+black
