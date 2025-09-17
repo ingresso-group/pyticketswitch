@@ -145,6 +145,7 @@ class AvailabilityDetails(JSONMixin, object):
         discount_desc=None,
         discount_semantic_type=None,
         suffixed_price_band_code=None,
+        combined_tax_component=None,
     ):
 
         self.ticket_type = ticket_type
@@ -168,6 +169,7 @@ class AvailabilityDetails(JSONMixin, object):
         self.discount_desc = discount_desc
         self.discount_semantic_type = discount_semantic_type
         self.suffixed_price_band_code = suffixed_price_band_code
+        self.combined_tax_component = combined_tax_component
 
     @classmethod
     def from_api_data(cls, data):
@@ -205,6 +207,9 @@ class AvailabilityDetails(JSONMixin, object):
                     kwargs["full_seatprice"] = raw_details.get("full_seatprice", 0.0)
                     kwargs["surcharge"] = raw_details.get("surcharge", 0.0)
                     kwargs["full_surcharge"] = raw_details.get("full_surcharge", 0.0)
+                    kwargs["combined_tax_component"] = raw_details.get(
+                        "combined_tax_component", 0.0
+                    )
                     kwargs["percentage_saving"] = raw_details.get(
                         "percentage_saving", 0.0
                     )
