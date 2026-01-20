@@ -19,7 +19,6 @@ from pyticketswitch.ticket_type import TicketType
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.user import User
 
-
 logger = logging.getLogger(__name__)
 
 POST = "post"
