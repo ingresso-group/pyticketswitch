@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 MONTH_NUMBERS = {
     "jan": 1,
     "feb": 2,
