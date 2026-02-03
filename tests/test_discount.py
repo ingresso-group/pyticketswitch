@@ -35,6 +35,7 @@ class TestDiscount:
             'discount_semantic_type': 'senior',
             'discount_minimum_eligible_age': 60,
             'discount_maximum_eligible_age': 80,
+            'valid_quantities': [4,5,7]
         }
 
         discount = Discount.from_api_data(data)
@@ -59,6 +60,7 @@ class TestDiscount:
         assert discount.user_commission.currency_code == user_commission_data['commission_currency_code']
         assert discount.tax_component == 50
         assert discount.semantic_type == 'senior'
+        assert discount.valid_quantities == [4,5,7]
 
     def test_from_api_data_without_commission(self):
         data = {

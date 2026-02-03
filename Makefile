@@ -20,7 +20,7 @@ test:
 	coverage run -m pytest tests
 	coverage run -m behave --no-capture --no-color --format progress2 --junit --tags=-skip
 	coverage combine
-	coverage report
+	coverage report --show-missing
 
 docs:
 	cd docs && make html
