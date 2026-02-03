@@ -24,7 +24,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         semantic_type: a mapping of the code to a meaning e.g. standard (adult) or child
         minimum_eligible_age: the youngest one can be to qualify for this ticket
         maximum_eligible_age: the oldest one can be to qualify for this ticket
-	valid_quantities: list of ints of valid quantities one can buy of this discount
+        valid_quantities: list of ints of valid quantities one can buy of this discount
     """
 
     def __init__(
@@ -43,7 +43,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         semantic_type=None,
         minimum_eligible_age=None,
         maximum_eligible_age=None,
-	valid_quantities=None,
+        valid_quantities=None,
         *args,
         **kwargs
     ):
@@ -62,7 +62,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         self.semantic_type = semantic_type
         self.minimum_eligible_age = minimum_eligible_age
         self.maximum_eligible_age = maximum_eligible_age
-	self.valid_quantities = valid_quantities
+        self.valid_quantities = valid_quantities
 
     @classmethod
     def from_api_data(cls, data):
