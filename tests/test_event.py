@@ -222,7 +222,7 @@ class TestEvent:
     def test_from_api_data(self, data):
 
         event = Event.from_api_data(data)
-        assert event.id is 'ABC1'
+        assert event.id == 'ABC1'
         assert event.status == 'live'
 
         assert event.description is None
