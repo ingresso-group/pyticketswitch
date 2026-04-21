@@ -26,7 +26,7 @@ def test_versions():
 
     # check that the change log has an entry for this version
     with open("CHANGELOG.md", "r") as fh:
-        match = re.search("## \[{}\]".format(pyticketswitch.__version__), fh.read())
+        match = re.search(r"## \[{}\]".format(pyticketswitch.__version__), fh.read())
         assert match, "no entry in CHANGELOG.md for current version {}".format(
             pyticketswitch.__version__
         )
