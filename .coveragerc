@@ -1,5 +1,8 @@
 [report]
 exclude_lines = def __repr__
+omit =
+    */features/*
+    */tests/*
 [run]
 omit = *features*, *tests*
 parallel = True
