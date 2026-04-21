@@ -8,112 +8,120 @@ class TestCurrency:
     def test_from_api_data(self):
 
         data = {
-            'currency_factor': 100,
-            'currency_places': 2,
-            'currency_post_symbol': '\xa4',
-            'currency_pre_symbol': '\xa3',
-            'currency_code': 'gbp',
-            'currency_number': 826,
+            "currency_factor": 100,
+            "currency_places": 2,
+            "currency_post_symbol": "\xa4",
+            "currency_pre_symbol": "\xa3",
+            "currency_code": "gbp",
+            "currency_number": 826,
         }
         currency = Currency.from_api_data(data)
 
         assert currency.factor == 100
         assert currency.places == 2
-        assert currency.post_symbol == '\xa4'
-        assert currency.pre_symbol == '\xa3'
-        assert currency.code == 'gbp'
+        assert currency.post_symbol == "\xa4"
+        assert currency.pre_symbol == "\xa3"
+        assert currency.code == "gbp"
         assert currency.number == 826
 
     def test_eq(self):
         currency_one = Currency(
-            code='usd', factor=321, places=2, number=123, pre_symbol='$',
-            post_symbol='USD'
+            code="usd",
+            factor=321,
+            places=2,
+            number=123,
+            pre_symbol="$",
+            post_symbol="USD",
         )
 
         currency_two = Currency(
-            code='usd', factor=321, places=2, number=123, pre_symbol='$',
-            post_symbol='USD'
+            code="usd",
+            factor=321,
+            places=2,
+            number=123,
+            pre_symbol="$",
+            post_symbol="USD",
         )
 
         assert currency_one == currency_two
 
     def test_neq_code(self):
-        currency_one = Currency('gbp')
-        currency_two = Currency('usd')
+        currency_one = Currency("gbp")
+        currency_two = Currency("usd")
 
         assert currency_one != currency_two
 
     def test_neq_factor(self):
-        currency_one = Currency('gbp', factor=123)
-        currency_two = Currency('gbp', factor=321)
+        currency_one = Currency("gbp", factor=123)
+        currency_two = Currency("gbp", factor=321)
 
         assert currency_one != currency_two
 
     def test_neq_number(self):
-        currency_one = Currency('gbp', number=123)
-        currency_two = Currency('gbp', number=321)
+        currency_one = Currency("gbp", number=123)
+        currency_two = Currency("gbp", number=321)
 
         assert currency_one != currency_two
 
     def test_neq_places(self):
-        currency_one = Currency('gbp', places=3)
-        currency_two = Currency('gbp', places=2)
+        currency_one = Currency("gbp", places=3)
+        currency_two = Currency("gbp", places=2)
 
         assert currency_one != currency_two
 
     def test_neq_pre_symbol(self):
-        currency_one = Currency('gbp', pre_symbol='$')
-        currency_two = Currency('gbp', pre_symbol='@')
+        currency_one = Currency("gbp", pre_symbol="$")
+        currency_two = Currency("gbp", pre_symbol="@")
 
         assert currency_one != currency_two
 
     def test_neq_post_symbol(self):
-        currency_one = Currency('gbp', post_symbol='$')
-        currency_two = Currency('gbp', post_symbol='@')
+        currency_one = Currency("gbp", post_symbol="$")
+        currency_two = Currency("gbp", post_symbol="@")
 
         assert currency_one != currency_two
 
     def test_neq_none(self):
-        currency = Currency('gbp')
+        currency = Currency("gbp")
         assert currency != None  # noqa
 
     def test_price_from_string_with_post_symbol(self):
 
         currency = Currency(
-            'bhd',
+            "bhd",
             places=3,
             pre_symbol=None,
-            post_symbol='BD',
+            post_symbol="BD",
         )
 
         price = currency.price_as_string(13.1)
-        assert price == '13.100BD'
+        assert price == "13.100BD"
 
     def test_price_from_string_with_pre_symbol(self):
 
         currency = Currency(
-            'fjd',
+            "fjd",
             places=2,
-            pre_symbol='$',
+            pre_symbol="$",
             post_symbol=None,
         )
 
         price = currency.price_as_string(13.1)
-        assert price == '$13.10'
+        assert price == "$13.10"
 
     def test_price_from_string_with_ascii_encoded(self):
         currency = Currency(
-            'edw',
+            "edw",
             places=2,
-            pre_symbol=u'\xa3',
+            pre_symbol="\xa3",
             post_symbol=None,
         )
         price = currency.price_as_string(13.1)
-        assert price == six.text_type(u'\xa313.10')
+        assert price == six.text_type("\xa313.10")
 
     def test_repr(self):
-        currency = Currency('fjd')
-        assert repr(currency) == '<Currency fjd>'
+        currency = Currency("fjd")
+        assert repr(currency) == "<Currency fjd>"
 
 
 class TestCurrencyMeta:
@@ -121,38 +129,36 @@ class TestCurrencyMeta:
     def test_from_api_data(self):
 
         data = {
-            'currency_details': {
-                'usd': {
+            "currency_details": {
+                "usd": {
                     "currency_code": "usd",
                 },
-                'gbp': {
+                "gbp": {
                     "currency_code": "gbp",
-                }
+                },
             },
-            'currency_code': "gbp",
-            'desired_currency_code': "usd",
+            "currency_code": "gbp",
+            "desired_currency_code": "usd",
         }
 
         meta = CurrencyMeta.from_api_data(data)
 
         assert isinstance(meta, CurrencyMeta)
 
-        gbp = meta.currencies['gbp']
+        gbp = meta.currencies["gbp"]
         assert isinstance(gbp, Currency)
-        assert gbp.code == 'gbp'
+        assert gbp.code == "gbp"
 
-        usd = meta.currencies['usd']
+        usd = meta.currencies["usd"]
         assert isinstance(usd, Currency)
-        assert usd.code == 'usd'
+        assert usd.code == "usd"
 
-        assert meta.desired_currency_code == 'usd'
-        assert meta.default_currency_code == 'gbp'
+        assert meta.desired_currency_code == "usd"
+        assert meta.default_currency_code == "gbp"
 
     def test_from_api_data_with_no_currency_data(self):
 
-        data = {
-            'foo': 'bar'
-        }
+        data = {"foo": "bar"}
 
         meta = CurrencyMeta.from_api_data(data)
 
@@ -160,9 +166,8 @@ class TestCurrencyMeta:
 
     def test_get_currency(self):
         data = {
-            'currency_details': {
-            },
-            'desired_currency_code': "usd",
+            "currency_details": {},
+            "desired_currency_code": "usd",
         }
 
         meta = CurrencyMeta.from_api_data(data)
@@ -171,9 +176,8 @@ class TestCurrencyMeta:
 
     def test_get_desired_currency_with_no_data(self):
         data = {
-            'currency_details': {
-            },
-            'desired_currency_code': "usd",
+            "currency_details": {},
+            "desired_currency_code": "usd",
         }
 
         meta = CurrencyMeta.from_api_data(data)
@@ -182,18 +186,18 @@ class TestCurrencyMeta:
 
     def test_get_desired_currency(self):
         data = {
-            'currency_details': {
-                'usd': {
+            "currency_details": {
+                "usd": {
                     "currency_code": "usd",
                 },
-                'gbp': {
+                "gbp": {
                     "currency_code": "gbp",
-                }
+                },
             },
-            'currency_code': "gbp",
-            'desired_currency_code': "usd",
+            "currency_code": "gbp",
+            "desired_currency_code": "usd",
         }
 
         meta = CurrencyMeta.from_api_data(data)
         currency = meta.get_desired_currency()
-        assert currency.code == 'usd'
+        assert currency.code == "usd"
