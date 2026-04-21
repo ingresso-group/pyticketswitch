@@ -23,8 +23,8 @@ class TestPurchaseResult:
         assert purchase_result.failed_3d_secure is True
         assert purchase_result.failed_avs is True
         assert purchase_result.failed_cv_two is True
-        assert purchase_result.error == 'too much donk'
-        assert purchase_result.failure_reason == 'unknown'
-        assert purchase_result.internal_error_comment == 'Even more error info'
+        assert purchase_result.error == "too much donk"
+        assert purchase_result.failure_reason == "unknown"
+        assert purchase_result.internal_error_comment == "Even more error info"
         assert purchase_result.is_partial
         assert not purchase_result.is_semi_credit
