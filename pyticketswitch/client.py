@@ -558,7 +558,8 @@ class Client(object):
         if city_code:
             params.update(city_code=city_code)
 
-        if all([latitude, longitude, radius]):
+        geo = [latitude, longitude, radius]
+        if all(v is not None for v in geo):
             params.update(
                 circle="{lat}:{lon}:{rad}".format(
                     lat=latitude,
@@ -566,7 +567,7 @@ class Client(object):
                     rad=radius,
                 )
             )
-        elif any([latitude, longitude, radius]):
+        elif any(v is not None for v in geo):
             raise exceptions.InvalidGeoParameters(
                 "Geo data must include latitude, longitude, and radius",
             )

@@ -568,6 +568,16 @@ class TestClient:
             },
         )
 
+    def test_list_events_geolocation_with_zeros(self, client, mock_make_request):
+        client.list_events(latitude=0.0, longitude=0.0, radius=0.0)
+
+        mock_make_request.assert_called_with(
+            "events.v1",
+            {
+                "circle": "0.0:0.0:0.0",
+            },
+        )
+
     def test_list_events_invalid_geolocation(self, client):
         with pytest.raises(exceptions.InvalidGeoParameters):
             client.list_events(longitude=-0.10601562, radius=10)
