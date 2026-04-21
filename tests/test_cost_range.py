@@ -49,6 +49,11 @@ class TestCostRange:
         assert cost_range.min_combined_combined_tax_component == 35.0
         assert cost_range.min_combined_surcharge_tax_sub == 0.0
 
+    def test_from_api_data_with_alternate_discounts(self):
+        data = {"alternate_discounts": [{"min_seatprice": 5}, {"min_seatprice": 10}]}
+        cost_range = CostRange.from_api_data(data)
+        assert len(cost_range.alternate_discounts) == 2
+
     def test_has_offer_with_no_offers(self):
         cost_range = CostRange()
         assert cost_range.has_offer() is False

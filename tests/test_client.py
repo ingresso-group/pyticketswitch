@@ -1466,6 +1466,11 @@ class TestClient:
         assert event_two.id == "JKL012"
         assert upsell_meta.total_results == 2
 
+    def test_get_upsells_bad_data(self, client, monkeypatch):
+        monkeypatch.setattr(client, "make_request", Mock(return_value={}))
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_upsells(token="foobar")
+
     def test_get_addons(self, client, monkeypatch):
         # fakes
         response = {
@@ -1500,6 +1505,11 @@ class TestClient:
         assert event_two.id == "DEF456"
 
         assert addon_meta.total_results == 10
+
+    def test_get_addons_bad_data(self, client, monkeypatch):
+        monkeypatch.setattr(client, "make_request", Mock(return_value={}))
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.get_addons(token="foobar")
 
     def test_make_reservation(self, client, monkeypatch):
         response = {

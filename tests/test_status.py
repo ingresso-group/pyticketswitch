@@ -1,4 +1,5 @@
 import datetime
+import pytest
 from dateutil.tz import tzoffset
 from pyticketswitch.status import Status
 from pyticketswitch.address import Address
@@ -106,3 +107,7 @@ class TestStatus:
         assert any(x.description == "American Express" for x in status.accepted_cards)
 
         assert status.pending_callout.code == "ext_test0"
+
+    def test_from_api_data_raises_on_external_sale_page_raw(self):
+        with pytest.raises(NotImplementedError):
+            Status.from_api_data({"external_sale_page_raw": "foo"})

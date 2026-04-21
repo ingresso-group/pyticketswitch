@@ -246,3 +246,10 @@ class TestCiderDetails:
             "test_callback/beep": "boop",
             "bip_callback/beep": "boop",
         }
+
+
+class TestPaymentMethod:
+
+    def test_as_api_parameters_raises(self):
+        with pytest.raises(NotImplementedError):
+            PaymentMethod().as_api_parameters()

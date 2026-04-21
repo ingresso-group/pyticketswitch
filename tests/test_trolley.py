@@ -216,3 +216,13 @@ class TestTrolley:
         # results
         orders = trolley.get_orders()
         assert orders == [order_one, order_three, order_two, order_four]
+
+    def test_get_orders_with_no_bundles(self):
+        assert Trolley(bundles=None).get_orders() == []
+
+    def test_get_item_with_no_bundles(self):
+        assert Trolley(bundles=None).get_item(1) is None
+
+    def test_get_item_not_found(self):
+        trolley = Trolley(bundles=[Bundle("t", orders=[Order(1)])])
+        assert trolley.get_item(99) is None
