@@ -27,7 +27,7 @@ class TestCostRange:
             "max_combined_surcharge_tax_sub_component": 0.0,
             "min_combined_combined_tax_component": 35.0,
             "min_combined_surcharge_tax_sub_component": 0.0,
-            "valid_quantities": [1, 2, 3, 4]
+            "valid_quantities": [1, 2, 3, 4],
         }
         cost_range = CostRange.from_api_data(data)
 
@@ -41,13 +41,18 @@ class TestCostRange:
         assert cost_range.max_saving_offer.absolute_saving == 8.0
         assert cost_range.best_value_offer.absolute_saving == 10.0
 
-        assert cost_range.currency == 'usd'
+        assert cost_range.currency == "usd"
         assert cost_range.valid_quantities == [1, 2, 3, 4]
 
         assert cost_range.max_combined_combined_tax_component == 35.0
         assert cost_range.max_combined_surcharge_tax_sub == 0.0
         assert cost_range.min_combined_combined_tax_component == 35.0
         assert cost_range.min_combined_surcharge_tax_sub == 0.0
+
+    def test_from_api_data_with_alternate_discounts(self):
+        data = {"alternate_discounts": [{"min_seatprice": 5}, {"min_seatprice": 10}]}
+        cost_range = CostRange.from_api_data(data)
+        assert len(cost_range.alternate_discounts) == 2
 
     def test_has_offer_with_no_offers(self):
         cost_range = CostRange()
@@ -101,93 +106,93 @@ class TestCostRangeDetails:
     def test_from_api_data_flattens_ticket_types_and_price_bands(self):
 
         data = {
-            'ticket_type': [
+            "ticket_type": [
                 {
-                    'ticket_type_code': 'FOO',
-                    'ticket_type_desc': 'Foo',
-                    'price_band': [
+                    "ticket_type_code": "FOO",
+                    "ticket_type_desc": "Foo",
+                    "price_band": [
                         {
-                            'price_band_code': 'PLB',
-                            'price_band_desc': 'Plebians',
-                            'cost_range': {
-                                'max_surcharge': 29.65,
-                                'max_seatprice': 149.5,
+                            "price_band_code": "PLB",
+                            "price_band_desc": "Plebians",
+                            "cost_range": {
+                                "max_surcharge": 29.65,
+                                "max_seatprice": 149.5,
                             },
                         },
                         {
-                            'price_band_code': 'TRG',
-                            'price_band_desc': 'Troglodites',
-                            'cost_range': {
-                                'max_surcharge': 29.65,
-                                'max_seatprice': 149.5,
+                            "price_band_code": "TRG",
+                            "price_band_desc": "Troglodites",
+                            "cost_range": {
+                                "max_surcharge": 29.65,
+                                "max_seatprice": 149.5,
                             },
-                        }
-                    ]
+                        },
+                    ],
                 },
                 {
-                    'ticket_type_code': 'BAR',
-                    'ticket_type_desc': 'Bar',
-                    'price_band': [
+                    "ticket_type_code": "BAR",
+                    "ticket_type_desc": "Bar",
+                    "price_band": [
                         {
-                            'price_band_code': 'VIP',
-                            'price_band_desc': 'Very Important People',
-                            'cost_range': {
-                                'max_surcharge': 29.65,
-                                'max_seatprice': 149.5,
+                            "price_band_code": "VIP",
+                            "price_band_desc": "Very Important People",
+                            "cost_range": {
+                                "max_surcharge": 29.65,
+                                "max_seatprice": 149.5,
                             },
                         },
                         {
-                            'price_band_code': 'CBH',
-                            'price_band_desc': 'Chinese Billionaire Heiress',
-                            'cost_range': {
-                                'max_surcharge': 29.65,
-                                'max_seatprice': 149.5,
+                            "price_band_code": "CBH",
+                            "price_band_desc": "Chinese Billionaire Heiress",
+                            "cost_range": {
+                                "max_surcharge": 29.65,
+                                "max_seatprice": 149.5,
                             },
-                        }
-                    ]
-                }
+                        },
+                    ],
+                },
             ]
         }
 
         details = CostRangeDetails.from_api_data(data)
         assert len(details) == 4
 
-        assert details[0].ticket_type_code == 'FOO'
-        assert details[0].ticket_type_description == 'Foo'
-        assert details[0].price_band_code == 'PLB'
-        assert details[0].price_band_description == 'Plebians'
+        assert details[0].ticket_type_code == "FOO"
+        assert details[0].ticket_type_description == "Foo"
+        assert details[0].price_band_code == "PLB"
+        assert details[0].price_band_description == "Plebians"
 
-        assert details[1].ticket_type_code == 'FOO'
-        assert details[1].ticket_type_description == 'Foo'
-        assert details[1].price_band_code == 'TRG'
-        assert details[1].price_band_description == 'Troglodites'
+        assert details[1].ticket_type_code == "FOO"
+        assert details[1].ticket_type_description == "Foo"
+        assert details[1].price_band_code == "TRG"
+        assert details[1].price_band_description == "Troglodites"
 
-        assert details[2].ticket_type_code == 'BAR'
-        assert details[2].ticket_type_description == 'Bar'
-        assert details[2].price_band_code == 'VIP'
-        assert details[2].price_band_description == 'Very Important People'
+        assert details[2].ticket_type_code == "BAR"
+        assert details[2].ticket_type_description == "Bar"
+        assert details[2].price_band_code == "VIP"
+        assert details[2].price_band_description == "Very Important People"
 
-        assert details[3].ticket_type_code == 'BAR'
-        assert details[3].ticket_type_description == 'Bar'
-        assert details[3].price_band_code == 'CBH'
-        assert details[3].price_band_description == 'Chinese Billionaire Heiress'
+        assert details[3].ticket_type_code == "BAR"
+        assert details[3].ticket_type_description == "Bar"
+        assert details[3].price_band_code == "CBH"
+        assert details[3].price_band_description == "Chinese Billionaire Heiress"
 
     def test_from_api_data_adds_cost_range(self):
         data = {
-            'ticket_type': [
+            "ticket_type": [
                 {
-                    'ticket_type_code': 'FOO',
-                    'ticket_type_desc': 'Foo',
-                    'price_band': [
+                    "ticket_type_code": "FOO",
+                    "ticket_type_desc": "Foo",
+                    "price_band": [
                         {
-                            'price_band_code': 'PLB',
-                            'price_band_desc': 'Plebians',
-                            'cost_range': {
-                                'max_surcharge': 29.65,
-                                'max_seatprice': 149.5,
+                            "price_band_code": "PLB",
+                            "price_band_desc": "Plebians",
+                            "cost_range": {
+                                "max_surcharge": 29.65,
+                                "max_seatprice": 149.5,
                             },
                         },
-                    ]
+                    ],
                 },
             ]
         }
@@ -198,22 +203,22 @@ class TestCostRangeDetails:
 
     def test_from_api_data_adds_cost_range_no_singles(self):
         data = {
-            'ticket_type': [
+            "ticket_type": [
                 {
-                    'ticket_type_code': 'FOO',
-                    'ticket_type_desc': 'Foo',
-                    'price_band': [
+                    "ticket_type_code": "FOO",
+                    "ticket_type_desc": "Foo",
+                    "price_band": [
                         {
-                            'price_band_code': 'PLB',
-                            'price_band_desc': 'Plebians',
-                            'cost_range': {
-                                'no_singles_cost_range': {
-                                    'max_surcharge': 29.65,
-                                    'max_seatprice': 149.5,
+                            "price_band_code": "PLB",
+                            "price_band_desc": "Plebians",
+                            "cost_range": {
+                                "no_singles_cost_range": {
+                                    "max_surcharge": 29.65,
+                                    "max_seatprice": 149.5,
                                 }
                             },
                         },
-                    ]
+                    ],
                 },
             ]
         }
@@ -224,16 +229,16 @@ class TestCostRangeDetails:
 
     def test_from_api_data_ignores_data_with_no_cost_ranges(self):
         data = {
-            'ticket_type': [
+            "ticket_type": [
                 {
-                    'ticket_type_code': 'FOO',
-                    'ticket_type_desc': 'Foo',
-                    'price_band': [
+                    "ticket_type_code": "FOO",
+                    "ticket_type_desc": "Foo",
+                    "price_band": [
                         {
-                            'price_band_code': 'PLB',
-                            'price_band_desc': 'Plebians',
+                            "price_band_code": "PLB",
+                            "price_band_desc": "Plebians",
                         },
-                    ]
+                    ],
                 },
             ]
         }

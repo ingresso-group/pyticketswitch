@@ -15,45 +15,45 @@ class TestDateRangeStr:
         end_date = date(2017, 1, 1)
 
         date_range_str = utils.date_range_str(start_date, end_date)
-        assert date_range_str == '20160621:20170101'
+        assert date_range_str == "20160621:20170101"
 
     def test_date_range_str_with_datetimes(self):
         start_date = datetime.datetime(2016, 6, 21, 19, 30, 15)
         end_date = datetime.datetime(2017, 1, 1, 13, 45, 30)
 
         date_range_str = utils.date_range_str(start_date, end_date)
-        assert date_range_str == '20160621:20170101'
+        assert date_range_str == "20160621:20170101"
 
     def test_date_range_str_with_no_end_date(self):
         start_date = date(2016, 6, 21)
         end_date = None
 
         date_range_str = utils.date_range_str(start_date, end_date)
-        assert date_range_str == '20160621:'
+        assert date_range_str == "20160621:"
 
     def test_date_range_str_with_no_start_date(self):
         start_date = None
         end_date = date(2017, 1, 1)
 
         date_range_str = utils.date_range_str(start_date, end_date)
-        assert date_range_str == ':20170101'
+        assert date_range_str == ":20170101"
 
     def test_date_range_str_with_no_start_date_or_end_date(self):
         start_date = None
         end_date = None
 
         date_range_str = utils.date_range_str(start_date, end_date)
-        assert date_range_str == ''
+        assert date_range_str == ""
 
     def test_date_range_str_with_invalid_end_date(self):
         start_date = date(2016, 6, 21)
-        end_date = 'FOOBAR!'
+        end_date = "FOOBAR!"
 
         with pytest.raises(exceptions.InvalidParametersError):
             utils.date_range_str(start_date, end_date)
 
     def test_date_range_str_with_invalid_start_date(self):
-        start_date = 'SAUSAGES!'
+        start_date = "SAUSAGES!"
         end_date = date(2017, 1, 1)
         with pytest.raises(exceptions.InvalidParametersError):
             utils.date_range_str(start_date, end_date)
@@ -61,29 +61,29 @@ class TestDateRangeStr:
 
 class TestIsoStrToDatetime:
 
-    BST = tzoffset('BST', 3600)
-    ZULU = tzoffset('ZULU', 0)
+    BST = tzoffset("BST", 3600)
+    ZULU = tzoffset("ZULU", 0)
 
     def test_with_core_iso(self):
-        date_str = '2016-09-16T19:30:00+01:00'
+        date_str = "2016-09-16T19:30:00+01:00"
         dt = utils.isostr_to_datetime(date_str)
 
         assert dt == datetime.datetime(2016, 9, 16, 19, 30, 0, tzinfo=self.BST)
 
     def test_with_core_zulu(self):
-        date_str = '2016-09-16T19:30:00Z'
+        date_str = "2016-09-16T19:30:00Z"
         dt = utils.isostr_to_datetime(date_str)
 
         assert dt == datetime.datetime(2016, 9, 16, 19, 30, 0, tzinfo=self.ZULU)
 
     def test_with_python_iso(self):
-        date_str = '2016-09-16T19:30:00+0100'
+        date_str = "2016-09-16T19:30:00+0100"
         dt = utils.isostr_to_datetime(date_str)
 
         assert dt == datetime.datetime(2016, 9, 16, 19, 30, 0, tzinfo=self.BST)
 
     def test_with_not_datetime(self):
-        date_str = 'When the moon is in the forth corner of the jelly bean'
+        date_str = "When the moon is in the forth corner of the jelly bean"
         with pytest.raises(ValueError):
             utils.isostr_to_datetime(date_str)
 
@@ -93,7 +93,7 @@ class TestIsoStrToDatetime:
             utils.isostr_to_datetime(date_str)
 
     def test_with_empty(self):
-        date_str = ''
+        date_str = ""
         with pytest.raises(ValueError):
             utils.isostr_to_datetime(date_str)
 
@@ -101,7 +101,7 @@ class TestIsoStrToDatetime:
 class TestYYYYToDate:
 
     def test_yyyymmdd_to_date_valid_string(self):
-        date = utils.yyyymmdd_to_date('20160801')
+        date = utils.yyyymmdd_to_date("20160801")
         assert date.year == 2016
         assert date.month == 8
         assert date.day == 1
@@ -111,27 +111,27 @@ class TestYYYYToDate:
             utils.yyyymmdd_to_date(123)
 
         with pytest.raises(ValueError):
-            utils.yyyymmdd_to_date('')
+            utils.yyyymmdd_to_date("")
 
         with pytest.raises(ValueError):
-            utils.yyyymmdd_to_date('wrong_date')
+            utils.yyyymmdd_to_date("wrong_date")
 
 
 class TestSpecificDatesFromAPI:
 
     def test_specific_dates_from_api(self):
         api_data = {
-            'year_2016': {
-                'nov': {
-                    'day_30': False,
-                    'day_18': False,
+            "year_2016": {
+                "nov": {
+                    "day_30": False,
+                    "day_18": False,
                 },
-                'oct': {
-                    'day_4': True,
-                    'day_3': True,
-                    'day_2': False,
-                    'day_1': True,
-                }
+                "oct": {
+                    "day_4": True,
+                    "day_3": True,
+                    "day_2": False,
+                    "day_1": True,
+                },
             }
         }
         results = utils.specific_dates_from_api_data(api_data)
@@ -177,75 +177,75 @@ class TestGetPrice:
     def test_with_keys(self):
 
         data = {
-            'min_price': 12.40,
-            'max_price': 22.00,
+            "min_price": 12.40,
+            "max_price": 22.00,
         }
 
-        min_price = utils.get_price(data, 'min_price')
+        min_price = utils.get_price(data, "min_price")
         assert min_price == 12.40
 
-        max_price = utils.get_price(data, 'max_price')
+        max_price = utils.get_price(data, "max_price")
         assert max_price == 22.00
 
     def test_with_float(self):
 
-        data = {'price': 12.40}
+        data = {"price": 12.40}
 
-        price = utils.get_price(data, 'price')
+        price = utils.get_price(data, "price")
         assert isinstance(price, float)
         assert price == 12.40
 
     def test_with_ints(self):
 
-        data = {'price': 12}
+        data = {"price": 12}
 
-        price = utils.get_price(data, 'price')
+        price = utils.get_price(data, "price")
         assert isinstance(price, float)
         assert price == 12.0
 
     def test_with_str_int(self):
 
-        data = {'price': '12'}
+        data = {"price": "12"}
 
-        price = utils.get_price(data, 'price')
+        price = utils.get_price(data, "price")
         assert isinstance(price, float)
         assert price == 12.0
 
     def test_with_str_float(self):
 
-        data = {'price': '12.40'}
+        data = {"price": "12.40"}
 
-        price = utils.get_price(data, 'price')
+        price = utils.get_price(data, "price")
         assert isinstance(price, float)
         assert price == 12.40
 
     def test_with_None(self):
 
-        data = {'price': None}
+        data = {"price": None}
 
-        price = utils.get_price(data, 'price')
+        price = utils.get_price(data, "price")
         assert price is None
 
     def test_with_missing_key(self):
 
-        data = {'price': 12.40}
+        data = {"price": 12.40}
 
-        max_price = utils.get_price(data, 'max_price')
+        max_price = utils.get_price(data, "max_price")
         assert max_price is None
 
     def test_with_zero(self):
 
-        data = {'price': 0}
+        data = {"price": 0}
 
-        price = utils.get_price(data, 'price')
+        price = utils.get_price(data, "price")
         assert isinstance(price, float)
         assert price == 0.0
 
     def test_with_str_zero(self):
 
-        data = {'price': '0'}
+        data = {"price": "0"}
 
-        price = utils.get_price(data, 'price')
+        price = utils.get_price(data, "price")
         assert isinstance(price, float)
         assert price == 0
 
@@ -257,16 +257,16 @@ class TestAddPrices:
         assert combined == 2.0
 
     def test_adding_two_decimals(self):
-        combined = utils.add_prices(Decimal('1.0'), Decimal('1.0'))
-        assert combined == Decimal('2.0')
+        combined = utils.add_prices(Decimal("1.0"), Decimal("1.0"))
+        assert combined == Decimal("2.0")
 
     def test_adding_two_ints(self):
         combined = utils.add_prices(1, 1)
         assert combined == 2
 
     def test_adding_two_strs(self):
-        combined = utils.add_prices('1.0', '1.0')
-        assert combined == '2.0'
+        combined = utils.add_prices("1.0", "1.0")
+        assert combined == "2.0"
 
     def test_adding_inexact_floats(self):
         combined = utils.add_prices(1.1, 2.2)
@@ -277,12 +277,12 @@ class TestAddPrices:
         assert combined == 3.0
 
     def test_adding_a_decimal_and_a_float(self):
-        combined = utils.add_prices(Decimal('1.0'), 1.0)
-        assert combined == Decimal('2.0')
+        combined = utils.add_prices(Decimal("1.0"), 1.0)
+        assert combined == Decimal("2.0")
 
     def test_adding_a_float_and_a_decimal(self):
-        combined = utils.add_prices(1.0, Decimal('1.0'))
-        assert combined == Decimal('2.0')
+        combined = utils.add_prices(1.0, Decimal("1.0"))
+        assert combined == Decimal("2.0")
 
     def test_adding_a_float_to_none(self):
         with pytest.raises(TypeError):
@@ -290,7 +290,7 @@ class TestAddPrices:
 
     def test_adding_a_decimal_to_none(self):
         with pytest.raises(TypeError):
-            utils.add_prices(Decimal('1.0'), None)
+            utils.add_prices(Decimal("1.0"), None)
 
     def test_zero_arguments(self):
         with pytest.raises(TypeError):
@@ -302,7 +302,7 @@ class TestAddPrices:
 
     def test_invalid_string_price(self):
         with pytest.raises(decimal.InvalidOperation):
-            utils.add_prices('not a price', 5)
+            utils.add_prices("not a price", 5)
 
 
 class TestFilterNoneFromParameters:
@@ -310,12 +310,12 @@ class TestFilterNoneFromParameters:
     def test_with_parameters(self):
 
         params = {
-            'foo': 'bar',
-            'thing': None,
-            'lol': 'beans',
+            "foo": "bar",
+            "thing": None,
+            "lol": "beans",
         }
 
         assert utils.filter_none_from_parameters(params) == {
-            'foo': 'bar',
-            'lol': 'beans',
+            "foo": "bar",
+            "lol": "beans",
         }

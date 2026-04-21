@@ -1,22 +1,32 @@
 import vcr
 from behave import given, when, then
 from hamcrest import (
-    assert_that, greater_than, has_length, equal_to, has_items, is_, has_item,
-    is_not
+    assert_that,
+    greater_than,
+    has_length,
+    equal_to,
+    has_items,
+    is_,
+    has_item,
+    is_not,
 )
 
-vcr_post = vcr.VCR(match_on=('method', 'scheme', 'host', 'port', 'path', 'query', 'body'))
+vcr_post = vcr.VCR(
+    match_on=("method", "scheme", "host", "port", "path", "query", "body")
+)
 
 
 @given('my customer wants tickets to "{event_id}"')
-@vcr.use_cassette('fixtures/cassettes/reserve-availability.yaml', record_mode='new_episodes')
+@vcr.use_cassette(
+    "fixtures/cassettes/reserve-availability.yaml", record_mode="new_episodes"
+)
 def given_customer_wants_tickets(context, event_id):
     assert event_id
     performances, meta = context.client.list_performances(event_id)
 
     assert performances
 
-    if event_id == '7AB':
+    if event_id == "7AB":
         performance = performances[1]
     else:
         performance = performances[14]
@@ -50,14 +60,16 @@ def given_customer_wants_tickets(context, event_id):
 
 
 @given('I have an existing trolley with items from "{event_id}" in it')
-@vcr.use_cassette('fixtures/cassettes/trolley-existing.yaml', record_mode='new_episodes')
+@vcr.use_cassette(
+    "fixtures/cassettes/trolley-existing.yaml", record_mode="new_episodes"
+)
 def given_an_existing_trolley(context, event_id):
     assert event_id
     performances, _ = context.client.list_performances(event_id)
 
     assert performances
 
-    if event_id == '7AB':
+    if event_id == "7AB":
         performance = performances[1]
     else:
         performance = performances[14]
@@ -75,7 +87,7 @@ def given_an_existing_trolley(context, event_id):
     assert price_band
 
     trolley_token = None
-    if hasattr(context, 'trolley_token'):
+    if hasattr(context, "trolley_token"):
         trolley_token = context.trolley_token
 
     trolley, _ = context.client.get_trolley(
@@ -99,8 +111,10 @@ def given_an_existing_trolley(context, event_id):
     context.no_of_tickets = None
 
 
-@given('my customer has requested some discounts')
-@vcr.use_cassette('fixtures/cassettes/reserve-discounts.yaml', record_mode='new_episodes')
+@given("my customer has requested some discounts")
+@vcr.use_cassette(
+    "fixtures/cassettes/reserve-discounts.yaml", record_mode="new_episodes"
+)
 def given_my_customer_has_requested_some_discounts(context):
     discounts, meta = context.client.get_discounts(
         context.performance.id,
@@ -112,8 +126,10 @@ def given_my_customer_has_requested_some_discounts(context):
     context.discounts = [discount.code for discount in discounts[:2]]
 
 
-@given('my customer wants the tickets posted to them')
-@vcr.use_cassette('fixtures/cassettes/reserve-send-methods.yaml', record_mode='new_episodes')
+@given("my customer wants the tickets posted to them")
+@vcr.use_cassette(
+    "fixtures/cassettes/reserve-send-methods.yaml", record_mode="new_episodes"
+)
 def given_my_customer_wants_tickets_posted_to_them(context):
     send_methods, meta = context.client.get_send_methods(
         context.performance.id,
@@ -121,36 +137,38 @@ def given_my_customer_wants_tickets_posted_to_them(context):
 
     assert_that(send_methods, has_length(greater_than(1)))
     send_method = send_methods[1]
-    assert_that(send_method.code, equal_to('POST'))
+    assert_that(send_method.code, equal_to("POST"))
     context.send_method = send_method
-    context.send_codes = {'ext_test0': send_method.code}
+    context.send_codes = {"ext_test0": send_method.code}
 
 
-@given('my customer is requesting specific seats')
+@given("my customer is requesting specific seats")
 def given_my_customer_is_requesting_specific_sets(context):
     seats = context.price_band.get_seats()
     context.seats = [seat.id for seat in seats[:2]]
 
 
-@given('my customer is requesting unavailable specific seats')
+@given("my customer is requesting unavailable specific seats")
 def given_my_customer_is_requesting_unavailable_specific_sets(context):
-    context.seats = ['foo', 'bar']
+    context.seats = ["foo", "bar"]
 
 
-@given('my customer is requesting partially unavailable specific seats')
+@given("my customer is requesting partially unavailable specific seats")
 def given_my_customer_is_requesting_partially_specific_sets(context):
     seats = context.price_band.get_seats()
     real_seat = seats[3].id
-    context.seats = ['foo', real_seat]
+    context.seats = ["foo", real_seat]
     context.real_seats = [real_seat]
 
 
-@when('I reserve the tickets')
-@vcr_post.use_cassette('fixtures/cassettes/reserve-reserve.yaml', record_mode='new_episodes')
+@when("I reserve the tickets")
+@vcr_post.use_cassette(
+    "fixtures/cassettes/reserve-reserve.yaml", record_mode="new_episodes"
+)
 def when_i_reserve_the_tickets(context):
 
     token = None
-    if hasattr(context, 'trolley_token'):
+    if hasattr(context, "trolley_token"):
         token = context.trolley_token
 
     reservation, _ = context.client.make_reservation(
@@ -170,12 +188,12 @@ def when_i_reserve_the_tickets(context):
     context.transaction_uuid = reservation.trolley.transaction_uuid
 
 
-@when('I add the tickets to the trolley')
-@vcr.use_cassette('fixtures/cassettes/trolley-trolley.yaml', record_mode='new_episodes')
+@when("I add the tickets to the trolley")
+@vcr.use_cassette("fixtures/cassettes/trolley-trolley.yaml", record_mode="new_episodes")
 def when_i_add_tickets_to_my_trolley(context):
 
     token = None
-    if hasattr(context, 'trolley_token'):
+    if hasattr(context, "trolley_token"):
         token = context.trolley_token
 
     trolley, _ = context.client.get_trolley(
@@ -194,7 +212,7 @@ def when_i_add_tickets_to_my_trolley(context):
 
 
 @when('I remove some tickets for "{event_id}" from the trolley')
-@vcr.use_cassette('fixtures/cassettes/trolley-trolley.yaml', record_mode='new_episodes')
+@vcr.use_cassette("fixtures/cassettes/trolley-trolley.yaml", record_mode="new_episodes")
 def when_i_remove_some_tickets_from_the_trolley(context, event_id):
 
     assert context.trolley
@@ -216,17 +234,17 @@ def when_i_remove_some_tickets_from_the_trolley(context, event_id):
     context.trolley = trolley
 
 
-@then('my reservation is successful')
+@then("my reservation is successful")
 def then_my_reservation_is_successful(context):
     assert_that(context.reservation.minutes_left, greater_than(0))
 
 
-@then('I get a trolley token')
+@then("I get a trolley token")
 def then_i_get_a_trolley_token(context):
     assert context.trolley.token
 
 
-@then('my trolley has some discounts')
+@then("my trolley has some discounts")
 def then_my_trolley_has_some_discounts(context):
     discounts = [
         ticket_order.code
@@ -250,7 +268,7 @@ def then_my_trolley_does_not_contain_tickets_for_event(context, event_id):
     assert_that(events_ids, is_not(has_item(event_id)))
 
 
-@then('my trolley contains the requested seats')
+@then("my trolley contains the requested seats")
 def then_my_trolley_contains_the_requested_seats(context):
     order = context.trolley.bundles[0].orders[0]
     seat_ids = order.requested_seat_ids
@@ -258,8 +276,8 @@ def then_my_trolley_contains_the_requested_seats(context):
     assert_that(seat_ids, has_items(*context.seats))
 
 
-@then('my send method is the one I requested')
-@vcr.use_cassette('fixtures/cassettes/reserve-status.yaml', record_mode='new_episodes')
+@then("my send method is the one I requested")
+@vcr.use_cassette("fixtures/cassettes/reserve-status.yaml", record_mode="new_episodes")
 def then_my_send_method_is_the_one_i_requested(context):
 
     status, _ = context.client.get_status(context.transaction_uuid)
@@ -270,29 +288,29 @@ def then_my_send_method_is_the_one_i_requested(context):
     assert_that(send_method.code, equal_to(context.send_method.code))
 
 
-@then('I get the requested seats')
+@then("I get the requested seats")
 def then_i_get_the_requested_seats(context):
     order = context.reservation.trolley.bundles[0].orders[0]
     seat_ids = [seat.id for seat in order.get_seats()]
 
-    assert_that(order.seat_request_status, equal_to('got_all'))
+    assert_that(order.seat_request_status, equal_to("got_all"))
     assert_that(seat_ids, has_items(*context.seats))
 
 
-@then('I get different seats than requested')
+@then("I get different seats than requested")
 def then_i_get_different_seats_than_requested(context):
     order = context.reservation.trolley.bundles[0].orders[0]
     seat_ids = [seat.id for seat in order.get_seats()]
 
-    assert_that(order.seat_request_status, is_not(equal_to('got_all')))
+    assert_that(order.seat_request_status, is_not(equal_to("got_all")))
     assert_that(seat_ids, has_length(context.no_of_tickets))
 
 
-@then('I get any available seats I requested but not the others')
+@then("I get any available seats I requested but not the others")
 def then_i_get_any_available_seats_i_requested_but_not_the_others(context):
     order = context.reservation.trolley.bundles[0].orders[0]
     seat_ids = [seat.id for seat in order.get_seats()]
 
-    assert_that(order.seat_request_status, equal_to('got_partial'))
+    assert_that(order.seat_request_status, equal_to("got_partial"))
     assert_that(seat_ids, has_length(context.no_of_tickets))
     assert_that(seat_ids, has_items(*context.real_seats))
