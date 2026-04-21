@@ -11,7 +11,7 @@ def test_versions():
 
     setup = None
     with open("setup.py", "r") as fh:
-        match = re.search(r"\s*version\s*=\s*'([^']+)'", fh.read())
+        match = re.search(r"""\s*version\s*=\s*['"]([^'"]+)['"]""", fh.read())
         if match:
             setup = match.group(1)
             print("setup.py: {}".format(setup))
