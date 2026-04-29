@@ -18,6 +18,7 @@ class TestPerformance:
             "has_pool_seats": True,
             "cached_max_seats": 10,
             "running_time": 200,
+            "perf_has_time": True,
             "cost_range": {
                 "quantity_options": {"valid_quantity_mask": 2046},
                 "max_surcharge": 11.65,
@@ -178,6 +179,17 @@ class TestPerformance:
         assert performance.running_time == 200
 
         assert len(performance.availability_details) == 6
+        assert performance.has_time is True
+
+    def test_has_time_defaults_to_none(self):
+        performance = Performance.from_api_data({"perf_id": "25DR-52O", "event_id": "25DR"})
+        assert performance.has_time is None
+
+    def test_has_time_false(self):
+        performance = Performance.from_api_data(
+            {"perf_id": "25DR-52O", "event_id": "25DR", "perf_has_time": False}
+        )
+        assert performance.has_time is False
 
     def test_repr_with_date(self):
         performance = Performance(
