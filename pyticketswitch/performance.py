@@ -44,7 +44,7 @@ class Performance(JSONMixin, object):
         availability_details (:class:`AvailabilityDetails <pyticketswitch.availability.AvailabilityDetails>`):
             summerised availability data for the performance. This data is
             cached from previous availability calls and may not be accurate.
-
+        has_time (bool): Whether the performance is date only and timeless
     """
 
     def __init__(
@@ -64,6 +64,7 @@ class Performance(JSONMixin, object):
         name=None,
         running_time=None,
         availability_details=None,
+        has_time=None,
     ):
 
         self.id = id_
@@ -81,6 +82,7 @@ class Performance(JSONMixin, object):
         self.name = name
         self.running_time = running_time
         self.availability_details = availability_details
+        self.has_time = has_time
 
     @classmethod
     def from_api_data(cls, data):
@@ -138,6 +140,7 @@ class Performance(JSONMixin, object):
             "cost_range": cost_range,
             "no_singles_cost_range": no_singles_cost_range,
             "availability_details": availability_details,
+            "has_time": data.get("perf_has_time"),
         }
 
         return cls(**kwargs)
