@@ -97,7 +97,7 @@ def when_search_for_country(context, country_code):
 
 
 @when('a search for events in city with code "{city_code}" is performed')
-@vcr.use_cassette("fixtures/cassettes/search-city.yaml", record_mode="new_epidsodes")
+@vcr.use_cassette("fixtures/cassettes/search-city.yaml", record_mode="new_episodes")
 def when_search_for_city(context, city_code):
     assert city_code
     context.events, _ = context.client.list_events(city_code=city_code)
@@ -313,7 +313,7 @@ def all_events_should_be_in_country(context, country_code):
 
 
 @then('all events are in city with code "{city_code}"')
-@vcr.use_cassette("fixtures/cassettes/search-city.yaml", record_mode="new_epidsodes")
+@vcr.use_cassette("fixtures/cassettes/search-city.yaml", record_mode="new_episodes")
 def all_events_should_be_in_city(context, city_code):
     assert len(context.events) > 0
 

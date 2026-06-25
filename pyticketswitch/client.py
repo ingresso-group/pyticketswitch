@@ -207,7 +207,7 @@ class Client(object):
         logger.debug("requests session cleaning up")
         session.close()
 
-    def make_request(self, endpoint, params, method=GET, headers={}, timeout=None):
+    def make_request(self, endpoint, params, method=GET, headers=None, timeout=None):
         """Makes actual requests to the API
 
         Args:
@@ -228,6 +228,9 @@ class Client(object):
                 200
             APIError: When any other explict errors are returned from the API
         """
+
+        if headers is None:
+            headers = {}
 
         url = self.get_url(endpoint)
         params.update(self.get_extra_params())
