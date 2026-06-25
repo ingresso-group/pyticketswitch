@@ -2143,7 +2143,7 @@ class TestClient:
                 params.update(myfoo=self.myfoo)
                 return params
 
-        client = MyClient("batman", "batmanfoo", sub_user="robin", use_decimal=True)
+        client = MyClient("batman", "batmanfoo", sub_user="robin", use_decimal=True, language="en-GB")
         params = {"fruit": "apple"}
 
         # fakes
