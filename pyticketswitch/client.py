@@ -570,7 +570,7 @@ class Client(object):
                     rad=radius,
                 )
             )
-	elif any(v is not None for v in geo):
+        elif any(v is not None for v in geo):
             raise exceptions.InvalidGeoParameters(
                 "Geo data must include latitude, longitude, and radius",
             )
