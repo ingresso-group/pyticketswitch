@@ -25,6 +25,8 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         minimum_eligible_age: the youngest one can be to qualify for this ticket
         maximum_eligible_age: the oldest one can be to qualify for this ticket
         valid_quantities: list of ints of valid quantities one can buy of this discount
+        max_order_no_of_seats: the maximum number of seats that can be ordered
+        max_discount_no_of_seats: the maximum number of seats that can use this discount
     """
 
     def __init__(
@@ -44,6 +46,8 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         minimum_eligible_age=None,
         maximum_eligible_age=None,
         valid_quantities=None,
+        max_order_no_of_seats=None,
+        max_discount_no_of_seats=None,
         *args,
         **kwargs
     ):
@@ -63,6 +67,8 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         self.minimum_eligible_age = minimum_eligible_age
         self.maximum_eligible_age = maximum_eligible_age
         self.valid_quantities = valid_quantities
+        self.max_order_no_of_seats = max_order_no_of_seats
+        self.max_discount_no_of_seats = max_discount_no_of_seats
 
     @classmethod
     def from_api_data(cls, data):
@@ -105,6 +111,8 @@ class Discount(SeatPricingMixin, JSONMixin, object):
             "minimum_eligible_age": data.get("discount_minimum_eligible_age"),
             "maximum_eligible_age": data.get("discount_maximum_eligible_age"),
             "valid_quantities": data.get("valid_quantities"),
+            "max_order_no_of_seats": data.get("max_order_no_of_seats"),
+            "max_discount_no_of_seats": data.get("max_discount_no_of_seats"),
         }
 
         tax_component = data.get("sale_combined_tax_component")
