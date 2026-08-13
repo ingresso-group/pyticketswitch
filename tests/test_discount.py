@@ -36,6 +36,8 @@ class TestDiscount:
             "discount_minimum_eligible_age": 60,
             "discount_maximum_eligible_age": 80,
             "valid_quantities": [4, 5, 7],
+            "max_order_no_of_seats": 6,
+            "max_discount_no_of_seats": 4,
         }
 
         discount = Discount.from_api_data(data)
@@ -79,6 +81,8 @@ class TestDiscount:
         assert discount.tax_component == 50
         assert discount.semantic_type == "senior"
         assert discount.valid_quantities == [4, 5, 7]
+        assert discount.max_order_no_of_seats == 6
+        assert discount.max_discount_no_of_seats == 4
 
     def test_from_api_data_without_commission(self):
         data = {
