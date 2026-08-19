@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Security
+
+- Fixed a PCI-DSS violation where `Client.make_request()` logged the full,
+  unredacted `card_number` and `cv_two` (CVV2) at DEBUG level on every
+  `make_purchase()` call. The card number is now masked to its last 4
+  digits and the CVV2 is fully redacted before logging; the values sent to
+  the API itself are unaffected. The raw API response body log was also
+  changed to redact these same fields defensively. **Consumers must pull
+  this version once released** - the fix only takes effect once your
+  pinned version of `pyticketswitch` is bumped.
+
 ## [2.14.1] - 2025-06-09
 ## [2.14.0] - 2023-04-25
 

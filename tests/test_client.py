@@ -5,7 +5,14 @@ import requests
 from datetime import datetime
 from mock import Mock
 import pyticketswitch
-from pyticketswitch.client import Client, POST, GET
+import pyticketswitch.client as client_module
+from pyticketswitch.client import (
+    Client,
+    POST,
+    GET,
+    redact_sensitive_params,
+    redact_sensitive_data,
+)
 from pyticketswitch import exceptions
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.reservation import Reservation
@@ -341,6 +348,99 @@ class TestClient:
         monkeypatch.setattr(client, "get_session", Mock(return_value=session))
         with pytest.raises(exceptions.InvalidResponseError):
             client.make_request("test.v1", {})
+
+    def test_make_purchase_redacts_card_data_from_debug_log(self, client, monkeypatch):
+        """A live PCI-DSS violation: make_purchase() must never write the
+        real card number or CVV2 to the debug log, even though it still
+        needs to send the real values to the API.
+        """
+        real_card_number = "4111 1111 1111 1111"
+        real_cv_two = "459"
+
+        fake_response = FakeResponse(
+            status_code=200,
+            json={
+                "transaction_status": "purchased",
+                "trolley_contents": {"transaction_uuid": "DEF456"},
+                "currency_details": {"gbp": {"currency_code": "gbp"}},
+            },
+        )
+        fake_post = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.post = fake_post
+        monkeypatch.setattr(client, "get_session", Mock(return_value=session))
+
+        mock_debug = Mock()
+        monkeypatch.setattr(client_module.logger, "debug", mock_debug)
+
+        customer = Customer("fred", "flintstone", ["301 cobblestone way"], "us")
+        card_details = CardDetails(
+            real_card_number,
+            expiry_year=17,
+            expiry_month=3,
+            ccv2=real_cv_two,
+        )
+
+        client.make_purchase("abc123", customer, payment_method=card_details)
+
+        # The actual HTTP call to the API must still carry the real,
+        # unredacted card details - redaction must only affect logging.
+        _, post_kwargs = fake_post.call_args
+        assert post_kwargs["data"]["card_number"] == real_card_number
+        assert post_kwargs["data"]["cv_two"] == real_cv_two
+
+        # Nothing logged at debug level should contain the real card number
+        # or CVV2, in any form.
+        assert mock_debug.call_args_list, "expected at least one debug log call"
+        for call in mock_debug.call_args_list:
+            logged_text = " ".join(str(arg) for arg in call.args) + " ".join(
+                str(value) for value in call.kwargs.values()
+            )
+            assert real_card_number not in logged_text
+            assert real_cv_two not in logged_text
+
+        # The params log call should show the card number masked to its
+        # last 4 characters, and the CVV2 fully redacted.
+        params_log_call = next(
+            call
+            for call in mock_debug.call_args_list
+            if call.args and call.args[0] == "url: %s; endpoint: %s; params: %s"
+        )
+        logged_params = params_log_call.args[3]
+        expected_mask = "*" * (len(real_card_number) - 4) + real_card_number[-4:]
+        assert logged_params["card_number"] == expected_mask
+        assert logged_params["cv_two"] == "[REDACTED]"
+
+    def test_make_request_redacts_sensitive_fields_from_response_log(
+        self, client, monkeypatch
+    ):
+        """Defence in depth: even though the real ticketswitch API never
+        echoes card_number/cv_two back in a response, make sure the
+        response-body debug log would still redact them if it ever did.
+        """
+        fake_response = FakeResponse(
+            status_code=200,
+            json={
+                "card_number": "4111 1111 1111 1111",
+                "cv_two": "123",
+                "nested": {"cv_two": "456"},
+            },
+        )
+        fake_get = Mock(return_value=fake_response)
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, "get_session", Mock(return_value=session))
+
+        mock_debug = Mock()
+        monkeypatch.setattr(client_module.logger, "debug", mock_debug)
+
+        client.make_request("test.v1", {})
+
+        for call in mock_debug.call_args_list:
+            logged_text = " ".join(str(arg) for arg in call.args)
+            assert "4111 1111 1111 1111" not in logged_text
+            assert "123" not in logged_text
+            assert "456" not in logged_text
 
     def test_add_optional_kwargs_extra_info(self, client):
         params = {}
@@ -2296,3 +2396,71 @@ class TestClient:
         assert cancellation_result.is_fully_cancelled()
         assert cancellation_result.cancelled_item_numbers == [1]
         assert "gbp" in meta.currencies
+
+
+class TestRedactSensitiveParams:
+    def test_masks_card_number_keeping_last_four(self):
+        params = {"card_number": "4111111111111111", "other": "value"}
+
+        redacted = redact_sensitive_params(params)
+
+        assert redacted["card_number"] == "*" * 12 + "1111"
+        assert redacted["other"] == "value"
+        # the original dict passed to the real API call must be untouched
+        assert params["card_number"] == "4111111111111111"
+
+    def test_fully_redacts_cv_two_never_partially(self):
+        params = {"cv_two": "123"}
+
+        redacted = redact_sensitive_params(params)
+
+        assert redacted["cv_two"] == "[REDACTED]"
+        assert params["cv_two"] == "123"
+
+    def test_short_card_number_is_fully_masked(self):
+        params = {"card_number": "12"}
+
+        redacted = redact_sensitive_params(params)
+
+        assert redacted["card_number"] == "**"
+
+    def test_leaves_non_sensitive_fields_untouched(self):
+        params = {
+            "transaction_uuid": "abc123",
+            "first_name": "fred",
+            "expiry_date": "0317",
+        }
+
+        redacted = redact_sensitive_params(params)
+
+        assert redacted == params
+
+    def test_non_dict_input_is_passed_through(self):
+        assert redact_sensitive_params(None) is None
+        assert redact_sensitive_params("not-a-dict") == "not-a-dict"
+
+
+class TestRedactSensitiveData:
+    def test_redacts_card_number_nested_in_dict(self):
+        data = {"nested": {"card_number": "4111111111111111"}}
+
+        redacted = redact_sensitive_data(data)
+
+        assert redacted["nested"]["card_number"] == "*" * 12 + "1111"
+        # the original response data must be untouched
+        assert data["nested"]["card_number"] == "4111111111111111"
+
+    def test_redacts_cv_two_within_lists(self):
+        data = {"items": [{"cv_two": "999"}, {"other": "value"}]}
+
+        redacted = redact_sensitive_data(data)
+
+        assert redacted["items"][0]["cv_two"] == "[REDACTED]"
+        assert redacted["items"][1]["other"] == "value"
+
+    def test_leaves_data_with_no_sensitive_fields_untouched(self):
+        data = {"transaction_status": "purchased", "trolley_contents": {"a": 1}}
+
+        redacted = redact_sensitive_data(data)
+
+        assert redacted == data
