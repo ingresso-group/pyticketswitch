@@ -25,6 +25,91 @@ POST = "post"
 GET = "get"
 DEFAULT_ROOT_URL = "https://api.ticketswitch.com"
 
+# Fields that carry PCI-DSS sensitive cardholder/authentication data.
+#
+# ``card_number`` is the full PAN (Primary Account Number) - PCI-DSS allows
+# storage/display of at most the first six and last four digits, so for
+# logging purposes we mask everything but the last 4 characters.
+#
+# ``cv_two`` is the card's CVV2/CV2 security code - PCI-DSS classifies this
+# as "Sensitive Authentication Data" which must *never* be stored, even in
+# encrypted/partial form, once authorisation has taken place. It is fully
+# redacted, never partially shown.
+#
+# See ``pyticketswitch.payment_methods.CardDetails.as_api_parameters`` for
+# where these field names originate - it is the only payment method that
+# carries raw card data (``RedirectionDetails``, ``StripeDetails`` and
+# ``CiderDetails`` only ever carry tokens/URLs, never a raw PAN or CVV2).
+CARD_NUMBER_FIELDS = frozenset({"card_number"})
+CVV_FIELDS = frozenset({"cv_two"})
+REDACTED_VALUE = "[REDACTED]"
+
+
+def _mask_card_number(value):
+    """Mask a card number for safe logging.
+
+    Keeps only the last 4 characters, replacing everything else with ``*``.
+    Never raises on odd input (e.g. ``None`` or non-string values).
+    """
+    if value is None:
+        return value
+
+    value = six.text_type(value)
+
+    if len(value) <= 4:
+        return "*" * len(value)
+
+    return "*" * (len(value) - 4) + value[-4:]
+
+
+def _redact_sensitive_value(key, value):
+    if key in CARD_NUMBER_FIELDS:
+        return _mask_card_number(value)
+    if key in CVV_FIELDS:
+        return REDACTED_VALUE
+    return value
+
+
+def redact_sensitive_params(params):
+    """Return a copy of ``params`` safe for logging.
+
+    PCI-DSS sensitive fields (the card number and CVV2) are masked/redacted.
+    This must only ever be used to build a value for logging - the returned
+    dict is a copy, the original ``params`` (used for the actual API call)
+    is left completely untouched.
+    """
+    if not isinstance(params, dict):
+        return params
+
+    return {
+        key: _redact_sensitive_value(key, value) for key, value in params.items()
+    }
+
+
+def redact_sensitive_data(data):
+    """Recursively return a copy of ``data`` safe for logging.
+
+    Used to sanitise API responses before they are logged. In practice the
+    ticketswitch API never echoes the card number or CVV2 back in a
+    response (only card *types*/booleans such as ``accepted_cards`` or
+    ``failed_cv_two`` are returned) but this walks nested dicts/lists so
+    that logging stays safe even if that were ever to change, or an
+    undocumented field carried it.
+    """
+    if isinstance(data, dict):
+        redacted = {}
+        for key, value in data.items():
+            if key in CARD_NUMBER_FIELDS or key in CVV_FIELDS:
+                redacted[key] = _redact_sensitive_value(key, value)
+            else:
+                redacted[key] = redact_sensitive_data(value)
+        return redacted
+
+    if isinstance(data, list):
+        return [redact_sensitive_data(item) for item in data]
+
+    return data
+
 
 class Client(object):
     """Client wraps the ticketswitch f13 API.
@@ -237,7 +322,12 @@ class Client(object):
         if not params.get("tsw_session_track_id"):
             params.update(self.get_tracking_params())
 
-        logger.debug("url: %s; endpoint: %s; params: %s", self.url, endpoint, params)
+        logger.debug(
+            "url: %s; endpoint: %s; params: %s",
+            self.url,
+            endpoint,
+            redact_sensitive_params(params),
+        )
 
         raw_headers = self.get_headers(headers)
 
@@ -254,8 +344,6 @@ class Client(object):
                 url, auth=auth, params=params, headers=raw_headers, timeout=timeout
             )
 
-        logger.debug(six.u(response.content))
-
         self.cleanup_session(session)
 
         parse_float = decimal.Decimal if self.use_decimal else float
@@ -263,6 +351,10 @@ class Client(object):
         try:
             contents = response.json(parse_float=parse_float)
         except ValueError:
+            # unparseable response - fall back to logging the raw body, as
+            # there's no structured data we can redact from a non-JSON
+            # payload. This is not expected to occur for real API responses.
+            logger.debug(six.u(response.content))
             raise exceptions.InvalidResponseError(
                 (
                     "Unable to parse json data from {} response with status "
@@ -272,6 +364,8 @@ class Client(object):
                     response.status_code,
                 )
             )
+
+        logger.debug("response: %s", redact_sensitive_data(contents))
 
         if "error_code" in contents:
 
