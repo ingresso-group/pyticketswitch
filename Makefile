@@ -54,5 +54,6 @@ docs:  ## Build the HTML docs
 
 publish:  ## Build and upload a release to PyPI
 	$(BIN)/pip install build twine
+	rm -rf build dist *.egg-info
 	$(BIN)/python -m build
 	$(BIN)/twine upload dist/*
