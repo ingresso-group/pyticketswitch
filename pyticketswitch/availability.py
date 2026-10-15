@@ -292,12 +292,16 @@ class AvailabilityDetails(JSONMixin):
 
         Raises:
             ValueError: when a day is specified but not the month.
+            AssertionError: when the calendar masks data is missing.
 
         """
         if day and not month:
             raise ValueError("a month must be specified to specify a day")
 
-        if not self._calendar_masks or year not in self._calendar_masks:
+        if self._calendar_masks is None:
+            raise AssertionError("calendar_masks data missing")
+
+        if year not in self._calendar_masks:
             return False
 
         year_data = self._calendar_masks[year]
@@ -331,12 +335,14 @@ class AvailabilityDetails(JSONMixin):
             bool: :obj:`True` when available on the given day of the week,
             otherwise :obj:`False`.
 
+        Raises:
+            AssertionError: when the weekday mask data is missing.
+
         """
+        if self._weekday_mask is None:
+            raise AssertionError("weekday_mask data missing")
 
         adjusted_day = day + 1 if day < 6 else 0
-
-        if self._weekday_mask is None:
-            return False
 
         return bool(self._weekday_mask >> adjusted_day & 1)
 

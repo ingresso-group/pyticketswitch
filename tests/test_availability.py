@@ -490,15 +490,22 @@ class TestAvailabilityDetails:
         # 6 is sunday
         assert details.on_weekday(6) is True
 
-    def test_is_available_without_calendar_masks(self):
+    def test_is_available_without_calendar_masks_raises(self):
         details = AvailabilityDetails(calendar_masks=None)
+
+        with pytest.raises(AssertionError, match="calendar_masks data missing"):
+            details.is_available(2016, 11, 18)
+
+    def test_is_available_with_empty_calendar_masks(self):
+        details = AvailabilityDetails(calendar_masks={})
 
         assert details.is_available(2016, 11, 18) is False
 
-    def test_on_weekday_without_weekday_mask(self):
+    def test_on_weekday_without_weekday_mask_raises(self):
         details = AvailabilityDetails(weekday_mask=None)
 
-        assert details.on_weekday(0) is False
+        with pytest.raises(AssertionError, match="weekday_mask data missing"):
+            details.on_weekday(0)
 
     def test_weekday_list_defaults_to_none(self):
         assert AvailabilityDetails().weekday_list is None

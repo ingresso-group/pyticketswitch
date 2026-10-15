@@ -24,8 +24,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   `RUF` rules.
 - Fixed all pyright findings by handling missing (`None`) data explicitly
   instead of crashing with an incidental `AttributeError`/`TypeError`:
-  - `AvailabilityDetails.is_available()`, `AvailabilityDetails.on_weekday()`,
-    `Month.on_weekday()` return `False` when the underlying mask is missing.
+  - `AvailabilityDetails.is_available()` / `on_weekday()` and
+    `Month.on_weekday()` raise an `AssertionError` ("... data missing") when
+    the underlying calendar or weekday mask is missing, instead of an
+    incidental `TypeError`.
   - `CancellationResult.is_fully_cancelled()` returns `False` without a trolley.
   - `__repr__` of `Country`, `Discount`, `Event`, `SendMethod` and `TicketType`
     no longer fails when `description` is `None`.

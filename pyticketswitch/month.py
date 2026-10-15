@@ -106,11 +106,14 @@ class Month(JSONMixin):
             bool: :obj:`True` there is availability on the given day. Otherwise
             :obj:`False`.
 
-        """
-        adjusted_day = day + 1 if day < 6 else 0
-        if self._weekday_bitmask is None:
-            return False
+        Raises:
+            AssertionError: when the weekday bitmask data is missing.
 
+        """
+        if self._weekday_bitmask is None:
+            raise AssertionError("weekday_bitmask data missing")
+
+        adjusted_day = day + 1 if day < 6 else 0
         return bool(self._weekday_bitmask >> adjusted_day & 1)
 
     def start_date(self):
