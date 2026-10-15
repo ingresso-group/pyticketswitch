@@ -6,7 +6,6 @@ behave
 pyhamcrest
 requests-mock
 coverage
-codecov
 ruff
 pyright
 types-python-dateutil
