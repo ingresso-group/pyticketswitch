@@ -1,4 +1,3 @@
-import six
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -108,7 +107,7 @@ class Currency(JSONMixin, object):
 
         """
         price = price if price else 0
-        format_string = six.text_type("{pre}{price:." + str(self.places) + "f}{post}")
+        format_string = "{pre}{price:." + str(self.places) + "f}{post}"
         return format_string.format(
             pre=self.pre_symbol or "",
             price=price,

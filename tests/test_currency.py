@@ -1,4 +1,3 @@
-import six
 
 from pyticketswitch.currency import Currency, CurrencyMeta
 
@@ -117,7 +116,7 @@ class TestCurrency:
             post_symbol=None,
         )
         price = currency.price_as_string(13.1)
-        assert price == six.text_type("\xa313.10")
+        assert price == "\xa313.10"
 
     def test_repr(self):
         currency = Currency("fjd")

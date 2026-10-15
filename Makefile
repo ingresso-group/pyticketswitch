@@ -27,8 +27,7 @@ docs:
 	@echo "Build successful! View the docs homepage at docs/_build/html/index.html."
 
 publish:
-	pip install twine wheel
-	python setup.py sdist
-	python setup.py bdist_wheel --universal
+	pip install build twine
+	python -m build
 	twine upload dist/*
 	rm -fr build dist .egg pyticketswitch.egg-info

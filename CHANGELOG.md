@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [3.0.0] - 2026-10-15
+
+### Changed
+
+- **Breaking:** dropped Python 2 support; Python 3.10+ is now required. The
+  `six` dependency has been removed.
+- Packaging metadata now lives in `pyproject.toml` (`setup.py` is gone) and
+  the package version is read from `pyticketswitch.__version__`, the single
+  source of truth.
+- CI now tests against a Python 3.10 / 3.12 / 3.14 matrix.
 
 ### Security
 

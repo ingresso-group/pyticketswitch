@@ -1,33 +1,23 @@
+import re
+
 import docs.conf
 import pyticketswitch
-import re
 
 
 def test_versions():
-    # check all the version numbers are consistent.
-    print("pyticketswitch/init.py: {}".format(pyticketswitch.__version__))
-    print("docs/conf.py (version): {}".format(docs.conf.version))
-    print("docs/conf.py (release): {}".format(docs.conf.release))
+    # the package version is the single source of truth (pyproject.toml reads
+    # it dynamically), so just check the docs follow it.
+    print(f"pyticketswitch/__init__.py: {pyticketswitch.__version__}")
+    print(f"docs/conf.py (version): {docs.conf.version}")
+    print(f"docs/conf.py (release): {docs.conf.release}")
 
-    setup = None
-    with open("setup.py", "r") as fh:
-        match = re.search(r"""\s*version\s*=\s*['"]([^'"]+)['"]""", fh.read())
-        if match:
-            setup = match.group(1)
-            print("setup.py: {}".format(setup))
-        else:
-            print("setup.py: MISSING!")
-
-    all_match = all(
-        version == pyticketswitch.__version__
-        for version in [docs.conf.version, docs.conf.release, setup]
-    )
-    assert all_match, "Version numbers do not match pyticketswitch.__version__"
+    assert docs.conf.version == pyticketswitch.__version__
+    assert docs.conf.release == pyticketswitch.__version__
 
     # check that the change log has an entry for this version
-    with open("CHANGELOG.md", "r") as fh:
-        match = re.search(r"## \[{}\]".format(pyticketswitch.__version__), fh.read())
-        assert match, "no entry in CHANGELOG.md for current version {}".format(
-            pyticketswitch.__version__
+    with open("CHANGELOG.md") as fh:
+        match = re.search(rf"## \[{pyticketswitch.__version__}\]", fh.read())
+        assert match, (
+            f"no entry in CHANGELOG.md for current version {pyticketswitch.__version__}"
         )
-        print("CHANGELOG.md: {}".format(pyticketswitch.__version__))
+        print(f"CHANGELOG.md: {pyticketswitch.__version__}")

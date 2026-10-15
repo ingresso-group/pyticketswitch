@@ -32,7 +32,7 @@ on it.
 * If we don't have the data we will return None not empty lists or dictionaries
 * No logic in __init__'s.
 * Well tested and documented.
-* Python 3 primary target with python 2 support
+* Python 3.10+ only
 
 Legacy API
 ==========
