@@ -275,7 +275,7 @@ class Client:
         params: dict[str, Any],
         method: str = GET,
         headers: dict[str, Any] | None = None,
-        timeout: int | None = None,
+        timeout: float | tuple[float, float | None] | None = None,
     ) -> dict[str, Any]:
         """Makes actual requests to the API
 
@@ -285,7 +285,9 @@ class Client:
             method (str): HTTP method to make the request with
                 valid values are ``post`` and ``get``. Defaults to ``get``.
             headers (dict): headers to include with the request
-            timeout (int): timeout to include with the request. Defaults to ``None``.
+            timeout (float | tuple): timeout to include with the request, in
+                seconds. Either a single value or a ``(connect, read)`` tuple.
+                Defaults to ``None``.
 
         Returns:
             dict: The body of the response after deserialising from JSON
