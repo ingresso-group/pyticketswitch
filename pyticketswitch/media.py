@@ -27,8 +27,8 @@ class Media(JSONMixin):
         name: str | None = None,
         url: str | None = None,
         secure: bool | None = None,
-        width: int = 0,
-        height: int = 0,
+        width: int | None = 0,
+        height: int | None = 0,
     ) -> None:
 
         self.caption = caption

@@ -45,7 +45,8 @@ class CostRange(JSONMixin):
             surcharge tax.
         discount_semantic_type (:class:`pyticketswitch.misc.DiscountSemanticType):
             The type of customer, e.g. adult, child
-        alternate_discounts (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
+        alternate_discounts (list): list of
+            :class:`CostRange <pyticketswitch.cost_range.CostRange>` objects.
             When included, the child cost ranges for alternate discounts
     """
 
@@ -67,7 +68,7 @@ class CostRange(JSONMixin):
         min_combined_combined_tax_component: Number | None = None,
         min_combined_surcharge_tax_sub: Number | None = None,
         discount_semantic_type: DiscountSemanticType | None = None,
-        alternate_discounts: CostRange | None = None,
+        alternate_discounts: list[CostRange] | None = None,
     ) -> None:
 
         self.valid_quantities = valid_quantities

@@ -49,7 +49,7 @@ class PriceBand(SeatPricingMixin, JSONMixin):
         gross_commission (:class:`Commission <pyticketswitch.commission.Commission>`):
             the gross commission payable. This is not generally available.
         availability (int): the number of tickets/seats available in this price band.
-        percentage_saving (int): the total percentage saving of the combined seatprice
+        percentage_saving (float): the total percentage saving of the combined seatprice
             and surcharge
         is_offer (bool): whether or not the priceband has an offer
 
@@ -73,7 +73,7 @@ class PriceBand(SeatPricingMixin, JSONMixin):
         surcharge: Number | None = None,
         non_offer_seatprice: Number | None = None,
         non_offer_surcharge: Number | None = None,
-        percentage_saving: int = 0,
+        percentage_saving: Number | None = 0,
         absolute_saving: Number = 0,
         is_offer: bool | None = None,
         tax_component: Number | None = None,

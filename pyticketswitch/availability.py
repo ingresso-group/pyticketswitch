@@ -114,9 +114,9 @@ class AvailabilityDetails(JSONMixin):
         full_seatprice (float): the non-offer price of an individual seat.
         full_surcharge (float): the non-offer additional charges per seat.
         currency (str): the currency of the prices.
-        first_date (datetime.datetime): the first date and time this
+        first_date (datetime.date): the first date this
             combination of ticket type and price band is available from.
-        last_date (datetime.datetime): the latest date and time this
+        last_date (datetime.date): the latest date this
             combination of ticket type and price band is available from.
         valid_quantities (list): list of valid number of tickets available for
             selection.
@@ -140,10 +140,10 @@ class AvailabilityDetails(JSONMixin):
         full_seatprice: Number | None = None,
         full_surcharge: Number | None = None,
         currency: str | None = None,
-        first_date: datetime.datetime | None = None,
+        first_date: datetime.date | None = None,
         percentage_saving: Number | None = None,
         absolute_saving: Number | None = None,
-        last_date: datetime.datetime | None = None,
+        last_date: datetime.date | None = None,
         calendar_masks: dict[int, dict[int, int]] | None = None,
         weekday_mask: int | None = None,
         valid_quantities: list[int] | None = None,

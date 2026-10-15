@@ -30,7 +30,7 @@ class User(JSONMixin):
         name: str | None = None,
         country: str | None = None,
         sub_user: str | None = None,
-        is_b2b: bool = False,
+        is_b2b: bool | None = False,
         statement_descriptor: str | None = None,
         backend_group: str | None = None,
         content_group: str | None = None,

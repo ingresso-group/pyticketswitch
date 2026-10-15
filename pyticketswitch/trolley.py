@@ -9,7 +9,6 @@ from pyticketswitch.purchase_result import PurchaseResult
 
 if TYPE_CHECKING:
     from pyticketswitch._typing import Number
-    from pyticketswitch.callout import Callout
     from pyticketswitch.event import Event
 
 
@@ -32,7 +31,7 @@ class Trolley(JSONMixin):
         minutes_left (float): the number of minutes left before a reservation
             expires.
         order_count (int): the number of orders in the trolley.
-        purchase_result (:class:`PurchaseResult <pyticketswitch.callout.Callout>`):
+        purchase_result (:class:`PurchaseResult <pyticketswitch.purchase_result.PurchaseResult>`):
             the result of the purchase attempt when available.
         input_contained_unavailable_order (bool): indicates that the call used
             to create or modify this trolley object included at least one order
@@ -48,7 +47,7 @@ class Trolley(JSONMixin):
         discarded_orders: list[Order] | None = None,
         minutes_left: Number | None = None,
         order_count: int | None = None,
-        purchase_result: Callout | None = None,
+        purchase_result: PurchaseResult | None = None,
         input_contained_unavailable_order: bool = False,
     ) -> None:
         self.token = token

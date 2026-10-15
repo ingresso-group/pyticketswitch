@@ -42,8 +42,8 @@ class CardDetails(PaymentMethod):
         start_month (int): the month the card expires in. Defaults to
             :obj:`None`.
         start_year (int): the year the card expires in. :obj:`None`.
-        ccv2 (str): credit card security code. Defaults to :obj:`None`.
-        issue_number (str): issue number of the card. Defaults to :obj:`None`.
+        ccv2 (str | int): credit card security code. Defaults to :obj:`None`.
+        issue_number (str | int): issue number of the card. Defaults to :obj:`None`.
         billing_address (:class:`Address <pyticketswitch.address.Address>`):
             used when the customer wishes to use an alternate billing address.
             when not specified the customer address will be used.
@@ -69,8 +69,8 @@ class CardDetails(PaymentMethod):
         expiry_year: int | None = None,
         start_month: int | None = None,
         start_year: int | None = None,
-        ccv2: str | None = None,
-        issue_number: str | None = None,
+        ccv2: str | int | None = None,
+        issue_number: str | int | None = None,
         billing_address: Address | None = None,
         return_url: str | None = None,
         return_token: str | None = None,

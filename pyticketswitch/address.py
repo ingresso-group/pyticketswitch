@@ -58,6 +58,12 @@ class Address(JSONMixin):
             populated with the data from the api.
 
         """
+        lines = [
+            line
+            for line in (data.get("address_line_one"), data.get("address_line_two"))
+            if line is not None
+        ]
+
         kwargs = {
             "country_code": data.get("country_code"),
             "county": data.get("county"),
@@ -66,10 +72,7 @@ class Address(JSONMixin):
             "post_code": data.get("postcode"),
             "town": data.get("town"),
             "work_phone": data.get("work_phone"),
-            "lines": [
-                data.get("address_line_one"),
-                data.get("address_line_two"),
-            ],
+            "lines": lines,
         }
 
         return cls(**kwargs)
