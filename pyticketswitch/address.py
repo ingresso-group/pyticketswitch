@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class Address(JSONMixin, object):
+class Address(JSONMixin):
     """A postal address.
 
     TODO: this is very similar the Customer object. consider combining them,

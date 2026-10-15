@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class Currency(JSONMixin, object):
+class Currency(JSONMixin):
     """Information about the currency prices are described in.
 
     This information can be used to create human readable prices.
@@ -56,10 +56,7 @@ class Currency(JSONMixin, object):
         if not self.pre_symbol == other.pre_symbol:
             return False
 
-        if not self.post_symbol == other.post_symbol:
-            return False
-
-        return True
+        return self.post_symbol == other.post_symbol
 
     def __ne__(self, other):
         return not self == other
@@ -106,19 +103,16 @@ class Currency(JSONMixin, object):
             u'$12.34'
 
         """
-        price = price if price else 0
-        format_string = "{pre}{price:." + str(self.places) + "f}{post}"
-        return format_string.format(
-            pre=self.pre_symbol or "",
-            price=price,
-            post=self.post_symbol or "",
-        )
+        price = price or 0
+        pre = self.pre_symbol or ""
+        post = self.post_symbol or ""
+        return f"{pre}{price:.{self.places}f}{post}"
 
     def __repr__(self):
-        return "<Currency {}>".format(self.code)
+        return f"<Currency {self.code}>"
 
 
-class CurrencyMeta(JSONMixin, object):
+class CurrencyMeta(JSONMixin):
     """Currency information for another object.
 
     Attributes:

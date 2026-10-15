@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class PurchaseResult(JSONMixin, object):
+class PurchaseResult(JSONMixin):
     """Describes the results of a purchase attempt
 
     Attributes:

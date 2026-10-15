@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class Offer(JSONMixin, object):
+class Offer(JSONMixin):
     """Describes a reduction in price.
 
     Attributes:

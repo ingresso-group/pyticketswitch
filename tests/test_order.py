@@ -1,10 +1,13 @@
 from decimal import Decimal
 
+import pytest
+
 from pyticketswitch.commission import Commission
 from pyticketswitch.event import Event
 from pyticketswitch.order import Order, TicketOrder
 from pyticketswitch.performance import Performance
 from pyticketswitch.seat import Seat
+from pyticketswitch.send_method import SendMethod
 
 
 class TestTicketOrder:
@@ -504,3 +507,46 @@ class TestOrder:
         assert order.gross_commission.including_vat == 22.5
         assert order.gross_commission.excluding_vat == 18.75
         assert order.gross_commission.currency_code == "gbp"
+
+
+class TestOrderMissingData:
+    def test_total_including_send_cost(self):
+        order = Order(
+            item=1,
+            total_seatprice=10,
+            total_surcharge=2,
+            send_method=SendMethod("POST", cost=1),
+        )
+
+        assert order.total_including_send_cost() == 13
+
+    @pytest.mark.parametrize(
+        ("kwargs", "message"),
+        [
+            (
+                {"total_surcharge": 2, "send_method": SendMethod("POST", cost=1)},
+                "total_seatprice data missing",
+            ),
+            (
+                {"total_seatprice": 10, "send_method": SendMethod("POST", cost=1)},
+                "total_surcharge data missing",
+            ),
+            (
+                {"total_seatprice": 10, "total_surcharge": 2},
+                "send_method data missing",
+            ),
+            (
+                {
+                    "total_seatprice": 10,
+                    "total_surcharge": 2,
+                    "send_method": SendMethod("POST", cost=None),
+                },
+                "send_method cost data missing",
+            ),
+        ],
+    )
+    def test_total_including_send_cost_with_missing_data_raises(self, kwargs, message):
+        order = Order(item=1, **kwargs)
+
+        with pytest.raises(AssertionError, match=message):
+            order.total_including_send_cost()

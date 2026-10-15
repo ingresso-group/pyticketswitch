@@ -2,7 +2,7 @@ from pyticketswitch import utils
 from pyticketswitch.mixins import JSONMixin
 
 
-class Customer(JSONMixin, object):
+class Customer(JSONMixin):
     """Describes a cutomer to ticketswitch.
 
     Attributes:
@@ -233,5 +233,4 @@ class Customer(JSONMixin, object):
                 address_line_two=self.address_lines[1],
             )
 
-        params = utils.filter_none_from_parameters(params)
-        return params
+        return utils.filter_none_from_parameters(params)

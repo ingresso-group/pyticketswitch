@@ -5,7 +5,7 @@ from pyticketswitch.currency import CurrencyMeta
 from pyticketswitch.mixins import JSONMixin, PaginationMixin
 
 
-class Performance(JSONMixin, object):
+class Performance(JSONMixin):
     """Describes and occurance of an :class:`Event <pyticketswitch.event.Event>`.
 
     The performance will have either a **date_time** or a **name**.
@@ -147,11 +147,11 @@ class Performance(JSONMixin, object):
 
     def __repr__(self):
         if self.date_time:
-            return "<Performance {}: {}>".format(self.id, self.date_time.isoformat())
-        return "<Performance {}>".format(self.id)
+            return f"<Performance {self.id}: {self.date_time.isoformat()}>"
+        return f"<Performance {self.id}>"
 
 
-class PerformanceMeta(PaginationMixin, CurrencyMeta, object):
+class PerformanceMeta(PaginationMixin, CurrencyMeta):
     """
     PerformanceMeta contains meta information about a list of
     :class:`Performances <pyticketswitch.performance.Performance>`.
@@ -169,7 +169,7 @@ class PerformanceMeta(PaginationMixin, CurrencyMeta, object):
     def __init__(self, auto_select=False, has_names=False, *args, **kwargs):
         self.auto_select = auto_select
         self.has_names = has_names
-        super(PerformanceMeta, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_api_data(cls, data):
@@ -185,7 +185,7 @@ class PerformanceMeta(PaginationMixin, CurrencyMeta, object):
             object populated with the data from the api.
 
         """
-        inst = super(PerformanceMeta, cls).from_api_data(data)
+        inst = super().from_api_data(data)
         inst.auto_select = data.get("autoselect_this_performance", False)
         inst.has_names = data.get("results", {}).get("has_perf_names", False)
 

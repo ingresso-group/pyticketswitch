@@ -4,6 +4,9 @@ jobs:
     parameters:
       python-version:
         type: string
+      upload-coverage:
+        type: boolean
+        default: false
     docker:
       - image: cimg/python:<< parameters.python-version >>
     steps:
@@ -39,15 +42,37 @@ jobs:
           name: pytest plus coverage
           command: |
             . venv/bin/activate
-            coverage run -m pytest
+            coverage run -m pytest --junitxml=junit.xml -o junit_family=legacy
+      - when:
+          condition: << parameters.upload-coverage >>
+          steps:
+            - run:
+                name: Install Codecov CLI
+                when: always
+                command: |
+                  curl -fsSO https://cli.codecov.io/latest/linux/codecov
+                  chmod +x codecov
+            - run:
+                name: Upload test results to Codecov
+                when: always
+                # CODECOV_TOKEN must be set as a CircleCI environment variable
+                command: |
+                  ./codecov do-upload --report-type test_results --fail-on-error -t "$CODECOV_TOKEN" -f junit.xml
       - run:
           name: Report Python code coverage
           command: |
             . venv/bin/activate
             coverage combine
             coverage report
-            # CODECOV_TOKEN must be set as a CircleCI environment variable
-            python -m codecov -t "$CODECOV_TOKEN"
+            coverage xml
+      - when:
+          condition: << parameters.upload-coverage >>
+          steps:
+            - run:
+                name: Upload coverage to Codecov
+                # CODECOV_TOKEN must be set as a CircleCI environment variable
+                command: |
+                  ./codecov upload-process --fail-on-error -t "$CODECOV_TOKEN" -f coverage.xml
 
 workflows:
   version: 2
@@ -56,5 +81,10 @@ workflows:
       - test:
           matrix:
             parameters:
-              python-version: ["3.10", "3.12", "3.14"]
+              python-version: ["3.10", "3.12"]
+      # coverage is uploaded from a single job to avoid duplicate uploads
+      - test:
+          name: test-3.14
+          python-version: "3.14"
+          upload-coverage: true
 

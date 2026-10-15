@@ -56,3 +56,13 @@ class TestSeat:
             seat.seat_google_pay_urls.gpay_save_url
             == "https://google-wallet-api-dev.ticketswitch.io/transactions/saveToGooglePay"
         )
+
+
+class TestSeatBlockWithoutTextMessages:
+    def test_from_api_data_without_seats_by_text_message(self):
+        block = SeatBlock.from_api_data(
+            ["A1", "A2"], row_id="A", restricted_view_seats=[]
+        )
+
+        assert block.length == 2
+        assert all(seat.seat_text == "" for seat in block.seats)

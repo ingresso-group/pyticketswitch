@@ -31,22 +31,11 @@ def date_range_str(start_date, end_date):
     if end_date and not isinstance(end_date, date):
         raise InvalidParametersError("end_date is not a datetime instance")
 
-    if start_date:
-        start_date = start_date.strftime("%Y%m%d")
-    else:
-        start_date = ""
+    start_date = start_date.strftime("%Y%m%d") if start_date else ""
 
-    if end_date:
-        end_date = end_date.strftime("%Y%m%d")
-    else:
-        end_date = ""
+    end_date = end_date.strftime("%Y%m%d") if end_date else ""
 
-    if start_date or end_date:
-        date_range = "{}:{}".format(start_date, end_date)
-    else:
-        date_range = ""
-
-    return date_range
+    return f"{start_date}:{end_date}" if start_date or end_date else ""
 
 
 def isostr_to_datetime(date_str):
@@ -64,10 +53,9 @@ def isostr_to_datetime(date_str):
 
     """
     if not date_str:
-        raise ValueError("{} is not a valid datetime string".format(date_str))
+        raise ValueError(f"{date_str} is not a valid datetime string")
 
-    dt = parser.parse(date_str)
-    return dt
+    return parser.parse(date_str)
 
 
 def yyyymmdd_to_date(date_str):
@@ -83,7 +71,7 @@ def yyyymmdd_to_date(date_str):
         ValueError: when the date_str is empty or None.
     """
     if not date_str:
-        raise ValueError("{} is not a valid datetime string".format(date_str))
+        raise ValueError(f"{date_str} is not a valid datetime string")
 
     date = datetime.strptime(date_str, "%Y%m%d")
     if date:
@@ -108,7 +96,7 @@ def specific_dates_from_api_data(dates):
     }
 
     return [
-        date(int(year.split("_")[1]), MONTHS.get(month), int(day.split("_")[1]))
+        date(int(year.split("_")[1]), MONTHS[month], int(day.split("_")[1]))
         for year, months in dates.items()
         if year.startswith("year_")
         for month, days in months.items()
@@ -192,10 +180,10 @@ def add_prices(*prices):
             of an argument cannot be parsed as a decimal
     """
     if len(prices) < 2:
-        raise TypeError(
-            "add_prices expected at least 2 arguments, got {}".format(len(prices))
-        )
-    converted = [Decimal(str(price)) if price is not None else None for price in prices]
+        raise TypeError(f"add_prices expected at least 2 arguments, got {len(prices)}")
+    if any(price is None for price in prices):
+        raise TypeError("add_prices does not accept None prices")
+    converted = [Decimal(str(price)) for price in prices]
     combined = sum(converted)
     if any(isinstance(price, Decimal) for price in prices):
         return Decimal(combined)
@@ -241,9 +229,9 @@ def deprecated(func):
 
     @functools.wraps(func)
     def wrapped_func(*args, **kwargs):
-        deprecation_warning("Call to deprecated function {}".format(func.__name__))
+        deprecation_warning(f"Call to deprecated function {func.__name__}")
         return func(*args, **kwargs)
 
     # Mark the function as deprecated
-    wrapped_func.is_deprecated = True
+    setattr(wrapped_func, "is_deprecated", True)  # noqa: B010
     return wrapped_func

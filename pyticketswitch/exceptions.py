@@ -4,7 +4,7 @@ class PyticketswitchError(Exception):
 
 class APIError(PyticketswitchError):
     def __init__(self, msg, code=None, response=None, *args, **kwargs):
-        super(APIError, self).__init__(msg, *args, **kwargs)
+        super().__init__(msg, *args, **kwargs)
         self.msg = msg
         self.code = code
         self.response = response
@@ -28,7 +28,7 @@ class InvalidGeoParameters(PyticketswitchError):
 
 class IntegrityError(PyticketswitchError):
     def __init__(self, message, data, *args):
-        super(IntegrityError, self).__init__(message, *args)
+        super().__init__(message, *args)
         self.data = data
 
 
@@ -54,6 +54,6 @@ class CallbackGoneError(APIError):
 
 class OrderUnavailableError(PyticketswitchError):
     def __init__(self, msg, reservation=None, meta=None, *args, **kwargs):
-        super(OrderUnavailableError, self).__init__(msg, *args, **kwargs)
+        super().__init__(msg, *args, **kwargs)
         self.reservation = reservation
         self.meta = meta

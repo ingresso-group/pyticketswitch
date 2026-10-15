@@ -6,7 +6,7 @@ from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.utils import bitmask_to_numbered_list
 
 
-class Month(JSONMixin, object):
+class Month(JSONMixin):
     """Availability summary data for a given month
 
     Attributes:
@@ -106,7 +106,13 @@ class Month(JSONMixin, object):
             bool: :obj:`True` there is availability on the given day. Otherwise
             :obj:`False`.
 
+        Raises:
+            AssertionError: when the weekday bitmask data is missing.
+
         """
+        if self._weekday_bitmask is None:
+            raise AssertionError("weekday_bitmask data missing")
+
         adjusted_day = day + 1 if day < 6 else 0
         return bool(self._weekday_bitmask >> adjusted_day & 1)
 
@@ -115,13 +121,11 @@ class Month(JSONMixin, object):
         if not num_list:
             return
         first_day = num_list[0]
-        howdy = datetime.date(year=self.year, month=self.month, day=first_day)
-        return howdy
+        return datetime.date(year=self.year, month=self.month, day=first_day)
 
     def end_date(self):
         num_list = bitmask_to_numbered_list(self._dates_bitmask)
         if not num_list:
             return
         last_day = num_list[-1]
-        howdy = datetime.date(year=self.year, month=self.month, day=last_day)
-        return howdy
+        return datetime.date(year=self.year, month=self.month, day=last_day)

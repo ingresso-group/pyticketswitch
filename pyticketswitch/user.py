@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class User(JSONMixin, object):
+class User(JSONMixin):
     """Describes a user of the API
 
     Attributes:

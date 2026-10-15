@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class SeatBlock(JSONMixin, object):
+class SeatBlock(JSONMixin):
     """Describes a set of contiguous seats.
 
     Attributes:
@@ -59,7 +59,7 @@ class SeatBlock(JSONMixin, object):
             if seat_id in restricted_view_seats:
                 restricted = True
 
-            for seat_text, list_of_seats in seats_by_text_message.items():
+            for seat_text, list_of_seats in (seats_by_text_message or {}).items():
                 if seat_id in list_of_seats:
                     restricted_text = seat_text
             seat = Seat(
@@ -76,7 +76,7 @@ class SeatBlock(JSONMixin, object):
         return cls(**kwargs)
 
 
-class Seat(JSONMixin, object):
+class Seat(JSONMixin):
     """Describes a seat in a venue.
 
     Attributes:
@@ -158,10 +158,10 @@ class Seat(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return "<Seat {}>".format(self.id)
+        return f"<Seat {self.id}>"
 
 
-class GoogleWallet(JSONMixin, object):
+class GoogleWallet(JSONMixin):
     """Describes the urls for a google wallet.
 
     Attributes:
@@ -169,7 +169,9 @@ class GoogleWallet(JSONMixin, object):
         gpay_save_url (str): url that prompts adds a pass to a user's google wallet
     """
 
-    def __init__(self, urls={}):
+    def __init__(self, urls=None):
+        if urls is None:
+            urls = {}
         self.gpay_jwt_url = urls.get("gpay_jwt_url")
         self.gpay_save_url = urls.get("gpay_save_url")
 
@@ -177,14 +179,16 @@ class GoogleWallet(JSONMixin, object):
         return "<GoogleWallet>"
 
 
-class AppleWallet(JSONMixin, object):
+class AppleWallet(JSONMixin):
     """Describes the urls for an apple wallet.
 
     Attributes:
         apple_wallet_gen_url (str): url that prompts adds a pass to a user's apple wallet
     """
 
-    def __init__(self, urls={}):
+    def __init__(self, urls=None):
+        if urls is None:
+            urls = {}
         self.apple_wallet_gen_url = urls.get("apple_wallet_gen_url")
 
     def __repr__(self):

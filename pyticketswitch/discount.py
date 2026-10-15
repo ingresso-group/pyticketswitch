@@ -2,7 +2,7 @@ from pyticketswitch.commission import Commission
 from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
 
 
-class Discount(SeatPricingMixin, JSONMixin, object):
+class Discount(SeatPricingMixin, JSONMixin):
     """Represents a set of prices for a price band.
 
     Attributes:
@@ -51,7 +51,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         *args,
         **kwargs,
     ):
-        super(Discount, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.code = code
         self.description = description
         self.price_band_code = price_band_code
@@ -124,6 +124,4 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return "<Discount {}:{}>".format(
-            self.code, self.description.encode("ascii", "ignore")
-        )
+        return f"<Discount {self.code}:{self.description!r}>"

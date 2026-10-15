@@ -3,7 +3,7 @@ from abc import ABC
 from pyticketswitch.exceptions import InvalidParametersError
 
 
-class PaymentMethod(ABC):
+class PaymentMethod(ABC):  # noqa: B024
     """Abstract base class for payment methods"""
 
     def as_api_parameters(self):
@@ -18,7 +18,7 @@ class PaymentMethod(ABC):
         )
 
 
-class CardDetails(object):
+class CardDetails:
     """Credit card details
 
     This should never be returned by the API and is only used for supplying
@@ -107,10 +107,10 @@ class CardDetails(object):
             )
 
         params.update(
-            expiry_date="{:0>2}{:0>2}".format(
-                self.expiry_month,
+            expiry_date=(
+                f"{self.expiry_month:0>2}"
                 # handle 4 digit years
-                str(self.expiry_year)[-2:],
+                f"{str(self.expiry_year)[-2:]:0>2}"
             )
         )
 
@@ -126,9 +126,7 @@ class CardDetails(object):
 
         if specifying_start_date:
             params.update(
-                start_date="{:0>2}{:0>2}".format(
-                    self.start_month, str(self.start_year)[-2:]
-                )
+                start_date=f"{self.start_month:0>2}{str(self.start_year)[-2:]:0>2}"
             )
 
         if self.ccv2:
@@ -158,7 +156,7 @@ class CardDetails(object):
         return params
 
 
-class RedirectionDetails(object):
+class RedirectionDetails:
     """Information that specifies where a customer will be returned to after
     being redirected to an external payment provider.
 
@@ -200,7 +198,7 @@ class RedirectionDetails(object):
         }
 
 
-class StripeDetails(object):
+class StripeDetails:
     """For use with self generated stripe tokens
 
     Can be used to provide stripe tokens directly to the API at purchase time
@@ -228,12 +226,12 @@ class StripeDetails(object):
         """
 
         return {
-            "{}_callback/stripeToken".format(source): token
+            f"{source}_callback/stripeToken": token
             for source, token in self.tokens.items()
         }
 
 
-class CiderDetails(object):
+class CiderDetails:
     """For use with multiple payment tokens and details
 
     Can be used to provide payment tokens and details directly to the API at
@@ -262,8 +260,8 @@ class CiderDetails(object):
         for system in self.system_codes:
             data.update(
                 {
-                    "{0}_callback/{1}".format(system, variable): self.data[variable]
-                    for variable in self.data.keys()
+                    f"{system}_callback/{variable}": self.data[variable]
+                    for variable in self.data
                 }
             )
         return data

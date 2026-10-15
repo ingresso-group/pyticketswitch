@@ -2,7 +2,7 @@ from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.utils import isostr_to_datetime
 
 
-class Review(JSONMixin, object):
+class Review(JSONMixin):
     """User or Critic evaluation of an event.
 
     Attributes:

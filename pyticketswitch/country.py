@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class Country(JSONMixin, object):
+class Country(JSONMixin):
     """Represents a country
 
     Attributes:
@@ -37,6 +37,4 @@ class Country(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return "<Country {}:{}>".format(
-            self.code, self.description.encode("ascii", "ignore")
-        )
+        return f"<Country {self.code}:{self.description!r}>"

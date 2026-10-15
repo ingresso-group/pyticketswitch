@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class Debitor(JSONMixin, object):
+class Debitor(JSONMixin):
     """Information about a 3rd party that will take payment from your customer.
 
     This information is primarily used for bypassing callouts an integrating
@@ -72,4 +72,4 @@ class Debitor(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return "<Debitor {}:{}>".format(self.type, self.name)
+        return f"<Debitor {self.type}:{self.name}>"

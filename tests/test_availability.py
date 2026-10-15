@@ -31,13 +31,12 @@ def avail_details():
         },
         "weekday_mask": 63,
     }
-    details = AvailabilityDetails(**kwargs)
-    return details
+    return AvailabilityDetails(**kwargs)
 
 
 @pytest.fixture
 def data_meta():
-    data = {
+    return {
         "availability": {
             "ticket_type": [
                 {
@@ -111,8 +110,6 @@ def data_meta():
         "source_code": "BackendCode",
         "valid_quantities": [1, 4, 6, 7],
     }
-
-    return data
 
 
 class TestAvailabilityMeta:
@@ -489,3 +486,45 @@ class TestAvailabilityDetails:
         assert details.on_weekday(5) is False
         # 6 is sunday
         assert details.on_weekday(6) is True
+
+    def test_is_available_without_calendar_masks_raises(self):
+        details = AvailabilityDetails(calendar_masks=None)
+
+        with pytest.raises(AssertionError, match="calendar_masks data missing"):
+            details.is_available(2016, 11, 18)
+
+    def test_is_available_with_empty_calendar_masks(self):
+        details = AvailabilityDetails(calendar_masks={})
+
+        assert details.is_available(2016, 11, 18) is False
+
+    def test_on_weekday_without_weekday_mask_raises(self):
+        details = AvailabilityDetails(weekday_mask=None)
+
+        with pytest.raises(AssertionError, match="weekday_mask data missing"):
+            details.on_weekday(0)
+
+    def test_weekday_list_defaults_to_none(self):
+        assert AvailabilityDetails().weekday_list is None
+
+    def test_combined_price(self):
+        details = AvailabilityDetails(seatprice=10, surcharge=2)
+
+        assert details.combined_price() == 12
+
+    def test_combined_price_with_missing_data_raises(self):
+        with pytest.raises(AssertionError, match="seatprice data missing"):
+            AvailabilityDetails(surcharge=2).combined_price()
+        with pytest.raises(AssertionError, match="surcharge data missing"):
+            AvailabilityDetails(seatprice=10).combined_price()
+
+    def test_combined_full_price(self):
+        details = AvailabilityDetails(full_seatprice=10, full_surcharge=2)
+
+        assert details.combined_full_price() == 12
+
+    def test_combined_full_price_with_missing_data_raises(self):
+        with pytest.raises(AssertionError, match="full_seatprice data missing"):
+            AvailabilityDetails(full_surcharge=2).combined_full_price()
+        with pytest.raises(AssertionError, match="full_surcharge data missing"):
+            AvailabilityDetails(full_seatprice=10).combined_full_price()

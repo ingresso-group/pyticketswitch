@@ -19,6 +19,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   `setup.cfg`, `tox.ini`, `.pylintrc`, `.pyup.yml` and `.coveragerc` are gone.
 - Reworked the Makefile (`make help` lists the targets).
 - Added a pre-commit config (ruff) and Dependabot for pip dependencies.
+- Modernised the code for Python 3 (f-strings, `super()`, no `object` base
+  classes, `unittest.mock`) and enabled the ruff `UP`, `B`, `C4`, `SIM` and
+  `RUF` rules.
+- Fixed all pyright findings by handling missing (`None`) data explicitly
+  instead of crashing with an incidental `AttributeError`/`TypeError`:
+  - `AvailabilityDetails.is_available()` / `on_weekday()` and
+    `Month.on_weekday()` raise an `AssertionError` ("... data missing") when
+    the underlying calendar or weekday mask is missing, instead of an
+    incidental `TypeError`.
+  - `CancellationResult.is_fully_cancelled()` returns `False` without a trolley.
+  - `__repr__` of `Country`, `Discount`, `Event`, `SendMethod` and `TicketType`
+    no longer fails when `description` is `None`.
+  - `AvailabilityDetails.weekday_list` is now always defined (`None` by default).
+  - Price calculations (`AvailabilityDetails.combined_price()` /
+    `combined_full_price()`, `CostRange.get_min_combined_price()` /
+    `get_max_combined_price()`, `Order.total_including_send_cost()`) raise an
+    `AssertionError` ("... data missing") on missing data, consistent with the
+    existing `combined_price()` methods; `utils.add_prices()` raises a
+    `TypeError` with an explicit message for `None`.
+  - `utils.specific_dates_from_api_data()` raises `KeyError` for an unknown
+    month name (previously `TypeError`).
+- `__repr__` of `Country`, `Discount`, `Event`, `PriceBand`, `SendMethod` and
+  `TicketType` now shows the description with `repr()` (e.g.
+  `<Country uk:'United Kingdom'>`) instead of the Python 2 style `b'...'` bytes
+  literal.
+- Raised the minimum dependency versions to `requests>=2.31` and
+  `python-dateutil>=2.8.2`.
+- `pyticketswitch.Client` is now an explicit re-export.
+- Coverage is now uploaded with the current Codecov CLI and test results from a single CI job (the deprecated `codecov` PyPI uploader and package are gone).
 - CI now tests against a Python 3.10 / 3.12 / 3.14 matrix.
 
 ### Security

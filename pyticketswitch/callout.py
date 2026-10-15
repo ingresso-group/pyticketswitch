@@ -4,7 +4,7 @@ from pyticketswitch.debitor import Debitor
 from pyticketswitch.mixins import JSONMixin
 
 
-class Integration(JSONMixin, object):
+class Integration(JSONMixin):
     """Information to use when integrating payment methods into clients.
 
     Attributes:
@@ -49,7 +49,7 @@ class Integration(JSONMixin, object):
         return cls(**kwargs)
 
 
-class Callout(JSONMixin, object):
+class Callout(JSONMixin):
     """Information about a redirection required by a 3rd party the payment provider.
 
     Attributes:
@@ -153,4 +153,4 @@ class Callout(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return "<Callout {}:{}>".format(self.code, self.return_token)
+        return f"<Callout {self.code}:{self.return_token}>"

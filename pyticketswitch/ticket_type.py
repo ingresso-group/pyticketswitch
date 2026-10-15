@@ -2,7 +2,7 @@ from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.price_band import PriceBand
 
 
-class TicketType(JSONMixin, object):
+class TicketType(JSONMixin):
     """Describes a collection of tickets.
 
     Generally this represents a part of house in a venue, but may have other
@@ -65,6 +65,4 @@ class TicketType(JSONMixin, object):
         ]
 
     def __repr__(self):
-        return "<TicketType {}: {}>".format(
-            self.code, self.description.encode("ascii", "ignore")
-        )
+        return f"<TicketType {self.code}: {self.description!r}>"
