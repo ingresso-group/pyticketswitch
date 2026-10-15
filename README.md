@@ -48,26 +48,22 @@ Contribute
 
 ### Running tests ###
 
-Tests can be run with [tox](https://pypi.python.org/pypi/tox):
+Set up a virtualenv and run everything with make:
 
 ```
-pip install tox
-tox
+make init
+make test
 ```
 
 Or manually:
 
 ```
 pip install -r requirements/test.txt
-flake8 pyticketswitch
-py.test
+ruff check pyticketswitch tests
+ruff format --check pyticketswitch tests
+pyright
+pytest
 behave
-```
-
-Or via make
-
-```
-make test
 ```
 
 [Behave](http://pythonhosted.org/behave/) tests require 

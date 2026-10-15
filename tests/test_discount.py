@@ -1,9 +1,8 @@
-from pyticketswitch.discount import Discount
 from pyticketswitch.commission import Commission
+from pyticketswitch.discount import Discount
 
 
 class TestDiscount:
-
     def test_from_api_data(self):
         gross_commission_data = {
             "amount_including_vat": 2.8,

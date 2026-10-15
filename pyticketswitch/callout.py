@@ -1,6 +1,7 @@
 from collections import OrderedDict
-from pyticketswitch.mixins import JSONMixin
+
 from pyticketswitch.debitor import Debitor
+from pyticketswitch.mixins import JSONMixin
 
 
 class Integration(JSONMixin, object):

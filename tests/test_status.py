@@ -1,13 +1,14 @@
 import datetime
+
 import pytest
 from dateutil.tz import tzoffset
-from pyticketswitch.status import Status
+
 from pyticketswitch.address import Address
+from pyticketswitch.status import Status
 from pyticketswitch.trolley import Trolley
 
 
 class TestStatus:
-
     ZULU = tzoffset("ZULU", 0)
 
     def test_from_api_data(self):

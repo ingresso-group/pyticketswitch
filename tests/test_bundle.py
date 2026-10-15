@@ -1,8 +1,9 @@
 from decimal import Decimal
+
 from pyticketswitch.bundle import Bundle
+from pyticketswitch.debitor import Debitor
 from pyticketswitch.event import Event
 from pyticketswitch.order import Order
-from pyticketswitch.debitor import Debitor
 from pyticketswitch.purchase_result import PurchaseResult
 
 

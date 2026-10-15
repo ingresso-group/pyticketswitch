@@ -3,7 +3,6 @@ from pyticketswitch.offer import Offer
 
 
 class TestCostRange:
-
     def test_from_api_data(self):
         data = {
             "best_value_offer": {
@@ -102,7 +101,6 @@ class TestCostRange:
 
 
 class TestCostRangeDetails:
-
     def test_from_api_data_flattens_ticket_types_and_price_bands(self):
 
         data = {

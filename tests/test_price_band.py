@@ -1,10 +1,9 @@
-from pyticketswitch.price_band import PriceBand
 from pyticketswitch.discount import Discount
-from pyticketswitch.seat import SeatBlock, Seat
+from pyticketswitch.price_band import PriceBand
+from pyticketswitch.seat import Seat, SeatBlock
 
 
 class TestPriceBand:
-
     def test_from_api_data(self):
 
         data = {

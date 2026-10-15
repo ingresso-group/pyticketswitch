@@ -1,27 +1,29 @@
 import decimal
-import pytest
 import json
 import logging
-import requests
 from datetime import datetime
+
+import pytest
+import requests
 from mock import Mock
+
 import pyticketswitch
 import pyticketswitch.client as client_module
-from pyticketswitch.client import (
-    Client,
-    POST,
-    GET,
-    redact_sensitive_params,
-    redact_sensitive_data,
-)
 from pyticketswitch import exceptions
-from pyticketswitch.trolley import Trolley
-from pyticketswitch.reservation import Reservation
-from pyticketswitch.user import User
+from pyticketswitch.callout import Callout
+from pyticketswitch.client import (
+    GET,
+    POST,
+    Client,
+    redact_sensitive_data,
+    redact_sensitive_params,
+)
 from pyticketswitch.customer import Customer
 from pyticketswitch.payment_methods import CardDetails, RedirectionDetails
+from pyticketswitch.reservation import Reservation
 from pyticketswitch.status import Status
-from pyticketswitch.callout import Callout
+from pyticketswitch.trolley import Trolley
+from pyticketswitch.user import User
 
 
 @pytest.fixture
@@ -82,7 +84,6 @@ def mock_make_request_for_trolley(client, monkeypatch):
 
 
 class FakeResponse(object):
-
     def __init__(self, status_code=200, json=None):
         self.status_code = status_code
         self._json = json
@@ -96,13 +97,11 @@ class FakeResponse(object):
 
 
 class FakeResponseRaisesValueError(FakeResponse):
-
     def json(self, **kwargs):
         raise ValueError("ERROR")
 
 
 class TestClient:
-
     @pytest.mark.integration
     def test_get_url(self, client):
         url = client.get_url("events.v1")
@@ -2284,7 +2283,9 @@ class TestClient:
                 params.update(myfoo=self.myfoo)
                 return params
 
-        client = MyClient("batman", "batmanfoo", sub_user="robin", use_decimal=True, language="en-GB")
+        client = MyClient(
+            "batman", "batmanfoo", sub_user="robin", use_decimal=True, language="en-GB"
+        )
         params = {"fruit": "apple"}
 
         # fakes
@@ -2342,7 +2343,7 @@ class TestClient:
 
         # results
         assert "amount" in result
-        assert type(result["amount"]) == decimal.Decimal
+        assert type(result["amount"]) is decimal.Decimal
         assert result["amount"] == decimal.Decimal("1.0")
 
     def test_make_request_using_float_parsing(self, monkeypatch):
@@ -2365,7 +2366,7 @@ class TestClient:
 
         # results
         assert "amount" in result
-        assert type(result["amount"]) == float
+        assert type(result["amount"]) is float
         assert result["amount"] == 1.0
 
     def test_make_purchase_with_agent_reference(self, client, monkeypatch):

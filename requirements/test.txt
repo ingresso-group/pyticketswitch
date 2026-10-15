@@ -1,14 +1,14 @@
 -r common.txt
 
-pytest>=3.6
-tox
+pytest>=8
 vcrpy
 mock
 behave
 pyhamcrest
-flake8
 requests-mock
-pylint
 coverage
 codecov
-black
+ruff
+pyright
+types-python-dateutil
+types-requests

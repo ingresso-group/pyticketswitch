@@ -1,6 +1,8 @@
-import pytest
 import datetime
-from pyticketswitch.availability import AvailabilityMeta, AvailabilityDetails
+
+import pytest
+
+from pyticketswitch.availability import AvailabilityDetails, AvailabilityMeta
 from pyticketswitch.currency import Currency
 
 
@@ -114,7 +116,6 @@ def data_meta():
 
 
 class TestAvailabilityMeta:
-
     def test_from_api_data(self, data_meta):
         meta = AvailabilityMeta.from_api_data(data_meta)
 
@@ -144,7 +145,6 @@ class TestAvailabilityMeta:
 
 
 class TestAvailabilityDetails:
-
     def test_from_api_data_flattens_ticket_types_and_price_bands(self):
         data = {
             "ticket_type": [

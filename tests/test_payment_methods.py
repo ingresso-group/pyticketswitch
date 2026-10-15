@@ -1,17 +1,17 @@
 import pytest
-from pyticketswitch.exceptions import InvalidParametersError
+
 from pyticketswitch.address import Address
+from pyticketswitch.exceptions import InvalidParametersError
 from pyticketswitch.payment_methods import (
-    PaymentMethod,
     CardDetails,
+    CiderDetails,
+    PaymentMethod,
     RedirectionDetails,
     StripeDetails,
-    CiderDetails,
 )
 
 
 class TestCardDetails:
-
     def test_is_payment_method(self):
         card_details = CardDetails("411111111111111")
         assert isinstance(card_details, PaymentMethod)
@@ -187,7 +187,6 @@ class TestCardDetails:
 
 
 class TestRedirectionDetails:
-
     def test_is_payment_method(self):
         redirect_details = RedirectionDetails(
             "abc123",
@@ -219,7 +218,6 @@ class TestRedirectionDetails:
 
 
 class TestStripeDetails:
-
     def test_is_payment_method(self):
         stripe_details = StripeDetails({"foo": "abc123", "bar": "def456"})
         assert isinstance(stripe_details, PaymentMethod)
@@ -234,7 +232,6 @@ class TestStripeDetails:
 
 
 class TestCiderDetails:
-
     def test_is_payment_method(self):
         cider_details = CiderDetails({"beep": "bop"}, ["test"])
         assert isinstance(cider_details, PaymentMethod)
@@ -249,7 +246,6 @@ class TestCiderDetails:
 
 
 class TestPaymentMethod:
-
     def test_as_api_parameters_raises(self):
         with pytest.raises(NotImplementedError):
             PaymentMethod().as_api_parameters()

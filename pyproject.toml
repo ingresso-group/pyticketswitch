@@ -36,3 +36,52 @@ packages = ["pyticketswitch"]
 
 [tool.setuptools.dynamic]
 version = { attr = "pyticketswitch.__version__" }
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+extend-exclude = ["docs", "features"]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "C90",  # mccabe complexity
+]
+ignore = [
+    "E501",  # line length is handled by the formatter
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.pyright]
+include = ["pyticketswitch"]
+pythonVersion = "3.10"
+venvPath = "."
+venv = "venv"
+typeCheckingMode = "basic"
+# The codebase is untyped and relies on ``None`` defaults that pyright can't
+# narrow. Report these as warnings until they are handled explicitly.
+reportOptionalMemberAccess = "warning"
+reportOptionalOperand = "warning"
+reportOptionalSubscript = "warning"
+reportArgumentType = "warning"
+reportCallIssue = "warning"
+reportAttributeAccessIssue = "warning"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["logs"]
+markers = [
+    "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
+]
+
+[tool.coverage.run]
+omit = ["*features*", "*tests*"]
+parallel = true
+
+[tool.coverage.report]
+exclude_lines = ["def __repr__"]

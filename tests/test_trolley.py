@@ -1,11 +1,10 @@
-from pyticketswitch.trolley import Trolley
 from pyticketswitch.bundle import Bundle
 from pyticketswitch.event import Event
 from pyticketswitch.order import Order
+from pyticketswitch.trolley import Trolley
 
 
 class TestTrolley:
-
     def test_from_api_data_with_trolley_data(self):
         data = {
             "discarded_orders": [

@@ -2,7 +2,6 @@ from pyticketswitch.seat import Seat, SeatBlock
 
 
 class TestSeatBlock:
-
     def test_from_api_data(self):
 
         data = ["D1.12"]
@@ -17,7 +16,6 @@ class TestSeatBlock:
 
 
 class TestSeat:
-
     def test_from_api_data(self):
 
         data = {

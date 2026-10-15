@@ -1,9 +1,9 @@
 from decimal import Decimal
+
 from pyticketswitch.send_method import SendMethod
 
 
 class TestSendMethod:
-
     def test_from_api_data(self):
         data = {
             "send_code": "POST",

@@ -2,7 +2,6 @@ from pyticketswitch.user import User
 
 
 class TestUser:
-
     def test_from_api_data(self):
 
         data = {

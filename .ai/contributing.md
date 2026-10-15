@@ -5,16 +5,13 @@
 **First time setup**:
 
 1. **Python**: make init (from [Makefile](../Makefile)) which does:
-   - Create virtualenv: virtualenv venv -p python3
+   - Create virtualenv: python3 -m venv venv
    - Update package manager: pip install pip --upgrade
    - Install test requirements: pip install -r requirements/test.txt
    - Install docs requirements: pip install -r requirements/docs.txt
    - Install package in editable mode: pip install -e .
 
-**Alternative setup with tox**:
-
-1. **Tox**: pip install tox
-2. **Run**: tox (runs tests across Python versions)
+**Shortcut**: `make init` does all of the above.
 
 ## Local Run
 
@@ -37,16 +34,17 @@
 
 **Testing**:
 
-1. **Style checks**: flake8 pyticketswitch
-2. **Unit tests**: py.test
-3. **Integration tests**: behave
+1. **Lint and format**: `make lint` and `make format-check` (ruff)
+2. **Type check**: `make typecheck` (pyright)
+3. **Unit tests**: `make unit` (pytest)
+4. **Integration tests**: `make behave`
 
 All tests should pass before merging and can be run using make test command.
 
 ## Versioning
 
 - [Semantic Versioning](https://semver.org/)
-- Version defined in [setup.py](../setup.py) and [pyticketswitch/__init__.py](../pyticketswitch/__init__.py)
+- Version defined in [pyproject.toml](../pyproject.toml) and [pyticketswitch/__init__.py](../pyticketswitch/__init__.py)
 - Changelog maintained in [CHANGELOG.md](../CHANGELOG.md)
 
 ## Documentation

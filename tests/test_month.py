@@ -1,9 +1,9 @@
 import datetime
+
 from pyticketswitch.month import Month
 
 
 class TestMonth:
-
     def test_from_api_data(self):
         data = {
             "month": "nov",

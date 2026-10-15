@@ -27,7 +27,6 @@ class InvalidGeoParameters(PyticketswitchError):
 
 
 class IntegrityError(PyticketswitchError):
-
     def __init__(self, message, data, *args):
         super(IntegrityError, self).__init__(message, *args)
         self.data = data
@@ -54,7 +53,6 @@ class CallbackGoneError(APIError):
 
 
 class OrderUnavailableError(PyticketswitchError):
-
     def __init__(self, msg, reservation=None, meta=None, *args, **kwargs):
         super(OrderUnavailableError, self).__init__(msg, *args, **kwargs)
         self.reservation = reservation

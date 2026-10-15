@@ -2,7 +2,6 @@ from pyticketswitch.field import Field
 
 
 class TestField:
-
     def test_from_api_data(self):
 
         data = {

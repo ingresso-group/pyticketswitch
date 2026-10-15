@@ -1,10 +1,10 @@
+from pyticketswitch import utils
+from pyticketswitch.commission import Commission
 from pyticketswitch.event import Event
+from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.performance import Performance
 from pyticketswitch.seat import Seat
 from pyticketswitch.send_method import SendMethod
-from pyticketswitch.mixins import JSONMixin
-from pyticketswitch.commission import Commission
-from pyticketswitch import utils
 
 
 class TicketOrder(JSONMixin, object):

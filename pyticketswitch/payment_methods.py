@@ -1,4 +1,5 @@
 from abc import ABC
+
 from pyticketswitch.exceptions import InvalidParametersError
 
 

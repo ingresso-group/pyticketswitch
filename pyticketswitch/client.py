@@ -1,6 +1,8 @@
 import decimal
-import requests
 import logging
+
+import requests
+
 import pyticketswitch
 from pyticketswitch import exceptions, utils
 from pyticketswitch.availability import AvailabilityMeta
@@ -111,7 +113,7 @@ class Client(object):
         language=None,
         tracking_id=None,
         use_decimal=False,
-        **kwargs
+        **kwargs,
     ):
         self.user = user
         self.password = password
@@ -325,8 +327,7 @@ class Client(object):
             )
             raise exceptions.InvalidResponseError(
                 (
-                    "Unable to parse json data from {} response with status "
-                    "code `{}`"
+                    "Unable to parse json data from {} response with status code `{}`"
                 ).format(
                     endpoint,
                     response.status_code,
@@ -337,7 +338,6 @@ class Client(object):
             logger.debug("response: %s", redact_sensitive_data(contents))
 
         if "error_code" in contents:
-
             if contents["error_code"] == 3:
                 raise exceptions.AuthenticationError(
                     contents["error_desc"],
@@ -415,7 +415,7 @@ class Client(object):
         cost_range_details=False,
         source_info=False,
         tracking_id=None,
-        **kwargs
+        **kwargs,
     ):
         """Adds additional arguments to the requests.
 
@@ -547,7 +547,7 @@ class Client(object):
         sort_order=None,
         page=0,
         page_length=0,
-        **kwargs
+        **kwargs,
     ):
         """List events with the given parameters
 
@@ -925,7 +925,7 @@ class Client(object):
         example_seats=False,
         seat_blocks=False,
         user_commission=False,
-        **kwargs
+        **kwargs,
     ):
         """Fetch available tickets and prices for a given performance
 
@@ -1051,7 +1051,7 @@ class Client(object):
         ticket_type_code,
         price_band_code,
         user_commission=False,
-        **kwargs
+        **kwargs,
     ):
         """Fetch available discounts for a ticket_type/price band combination
 
@@ -1113,7 +1113,7 @@ class Client(object):
         performance_id=None,
         price_band_code=None,
         item_numbers_to_remove=None,
-        **kwargs
+        **kwargs,
     ):
         """Handle arguments common to the
         :meth:`Client.get_trolley <pyticketswitch.client.Client.get_trolley>`
@@ -1219,7 +1219,7 @@ class Client(object):
         price_band_code=None,
         item_numbers_to_remove=None,
         raise_on_unavailable_order=False,
-        **kwargs
+        **kwargs,
     ):
         """Retrieve the contents of a trolley from the API.
 
@@ -1275,7 +1275,7 @@ class Client(object):
             performance_id=performance_id,
             price_band_code=price_band_code,
             item_numbers_to_remove=item_numbers_to_remove,
-            **kwargs
+            **kwargs,
         )
 
         response = self.make_request("trolley.v1", params)
@@ -1302,7 +1302,7 @@ class Client(object):
         performance_id=None,
         price_band_code=None,
         item_numbers_to_remove=None,
-        **kwargs
+        **kwargs,
     ):
         """Retrieve a list of upsell events related to a trolley from the API.
 
@@ -1356,7 +1356,7 @@ class Client(object):
             performance_id=performance_id,
             price_band_code=price_band_code,
             item_numbers_to_remove=item_numbers_to_remove,
-            **kwargs
+            **kwargs,
         )
 
         response = self.make_request("upsells.v1", params)
@@ -1384,7 +1384,7 @@ class Client(object):
         performance_id=None,
         price_band_code=None,
         item_numbers_to_remove=None,
-        **kwargs
+        **kwargs,
     ):
         """Retrieve a list of add-on events from the API.
 
@@ -1432,7 +1432,7 @@ class Client(object):
             performance_id=performance_id,
             price_band_code=price_band_code,
             item_numbers_to_remove=item_numbers_to_remove,
-            **kwargs
+            **kwargs,
         )
 
         response = self.make_request("add_ons.v1", params)
@@ -1461,7 +1461,7 @@ class Client(object):
         price_band_code=None,
         item_numbers_to_remove=None,
         raise_on_unavailable_order=False,
-        **kwargs
+        **kwargs,
     ):
         """Attempt to reserve all the items in the given trolley
 
@@ -1529,7 +1529,7 @@ class Client(object):
             performance_id=performance_id,
             price_band_code=price_band_code,
             item_numbers_to_remove=item_numbers_to_remove,
-            **kwargs
+            **kwargs,
         )
 
         response = self.make_request("reserve.v1", params, method=POST)
@@ -1610,7 +1610,7 @@ class Client(object):
         transaction_id=None,
         customer=False,
         external_sale_page=False,
-        **kwargs
+        **kwargs,
     ):
         """Get the status of reservation, purchase or transaction.
 
@@ -1669,7 +1669,7 @@ class Client(object):
         payment_method=None,
         send_confirmation_email=True,
         agent_reference=None,
-        **kwargs
+        **kwargs,
     ):
         """Purchase tickets for an existing reservation.
 

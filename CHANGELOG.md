@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Packaging metadata now lives in `pyproject.toml` (`setup.py` is gone) and
   the package version is read from `pyticketswitch.__version__`, the single
   source of truth.
+- Replaced flake8, black, pylint, isort and tox with ruff (lint and format)
+  and added pyright. Tool configuration now lives in `pyproject.toml`;
+  `setup.cfg`, `tox.ini`, `.pylintrc`, `.pyup.yml` and `.coveragerc` are gone.
+- Reworked the Makefile (`make help` lists the targets).
+- Added a pre-commit config (ruff) and Dependabot for pip dependencies.
 - CI now tests against a Python 3.10 / 3.12 / 3.14 matrix.
 
 ### Security

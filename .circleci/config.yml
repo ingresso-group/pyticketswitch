@@ -28,11 +28,8 @@ jobs:
           name: pip freeze
           command: venv/bin/pip freeze
       - run:
-          name: flake8
-          command: venv/bin/flake8 pyticketswitch
-      - run:
-          name: black
-          command: venv/bin/black pyticketswitch
+          name: Static checks (ruff + pyright)
+          command: make check
       - run:
           name: behave coverage
           command: |

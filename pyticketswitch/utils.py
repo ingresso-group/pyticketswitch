@@ -1,9 +1,10 @@
 import functools
 import warnings
-
 from datetime import date, datetime
-from dateutil import parser
 from decimal import Decimal
+
+from dateutil import parser
+
 from pyticketswitch.exceptions import InvalidParametersError
 
 

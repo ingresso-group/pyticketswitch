@@ -2,7 +2,6 @@ from pyticketswitch.debitor import Debitor
 
 
 class TestDebitor:
-
     def test_from_api_data(self):
 
         data = {
