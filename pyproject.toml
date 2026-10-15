@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyticketswitch"
+dynamic = ["version"]
+description = "A Python interface for the Ingresso F13 API"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Ingresso", email = "systems@ingresso.co.uk" }]
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.0.0",
+    "python-dateutil>2.5.3",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+]
+
+[project.urls]
+Homepage = "https://github.com/ingresso-group/pyticketswitch/"
+
+[tool.setuptools]
+packages = ["pyticketswitch"]
+
+[tool.setuptools.dynamic]
+version = { attr = "pyticketswitch.__version__" }

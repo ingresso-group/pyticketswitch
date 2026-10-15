@@ -1,10 +1,8 @@
-import six
-from abc import ABCMeta
+from abc import ABC
 from pyticketswitch.exceptions import InvalidParametersError
 
 
-@six.add_metaclass(ABCMeta)
-class PaymentMethod(object):
+class PaymentMethod(ABC):
     """Abstract base class for payment methods"""
 
     def as_api_parameters(self):

@@ -39,7 +39,7 @@ Or, download the tarball::
 Once you have a copy of the source, you can embed it in your own Python
 package, or install it into your site-packages easily::
 
-    $ python setup.py install
+    $ pip install .
 
 
 Legacy Versions
