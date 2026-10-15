@@ -1,4 +1,11 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch.mixins import JSONMixin
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class Commission(JSONMixin):
@@ -10,13 +17,18 @@ class Commission(JSONMixin):
        currency_code (str): the currency code the commission is priced in.
     """
 
-    def __init__(self, including_vat, excluding_vat, currency_code):
+    def __init__(
+        self,
+        including_vat: Number | None,
+        excluding_vat: Number | None,
+        currency_code: str | None,
+    ) -> None:
         self.including_vat = including_vat
         self.excluding_vat = excluding_vat
         self.currency_code = currency_code
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Commission:
         """Creates a new Commission object from API data from ticketswitch.
 
         Args:

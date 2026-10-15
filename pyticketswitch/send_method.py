@@ -1,5 +1,12 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch.country import Country
 from pyticketswitch.mixins import JSONMixin
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class SendMethod(JSONMixin):
@@ -21,17 +28,17 @@ class SendMethod(JSONMixin):
 
     def __init__(
         self,
-        code,
-        cost=None,
-        description=None,
-        typ=None,
-        permitted_countries=None,
-        can_generate_self_print=False,
-        self_print_voucher_url=None,
-        final_comment=None,
-        send_cost_tax_component=None,
-        trans_fee_component=None,
-    ):
+        code: str | None,
+        cost: Number | None = None,
+        description: str | None = None,
+        typ: str | None = None,
+        permitted_countries: list[str] | None = None,
+        can_generate_self_print: bool | None = False,
+        self_print_voucher_url: str | None = None,
+        final_comment: str | None = None,
+        send_cost_tax_component: int | None = None,
+        trans_fee_component: Number | None = None,
+    ) -> None:
         self.code = code
         self.cost = cost
         self.description = description
@@ -44,7 +51,7 @@ class SendMethod(JSONMixin):
         self.trans_fee_component = trans_fee_component
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> SendMethod:
         """Creates a new SendMethod object from API data from ticketswitch.
 
         Args:
@@ -89,5 +96,5 @@ class SendMethod(JSONMixin):
 
         return cls(**kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<SendMethod {self.code}:{self.description!r}>"

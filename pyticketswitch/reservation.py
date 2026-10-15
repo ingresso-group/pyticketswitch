@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.order import Order
 from pyticketswitch.status import Status
 
@@ -48,18 +52,18 @@ class Reservation(Status):
 
     def __init__(
         self,
-        unreserved_orders=None,
-        input_contained_unavailable_order=False,
-        *args,
-        **kwargs,
-    ):
+        unreserved_orders: list[Order] | None = None,
+        input_contained_unavailable_order: bool = False,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
 
         super().__init__(*args, **kwargs)
         self.unreserved_orders = unreserved_orders
         self.input_contained_unavailable_order = input_contained_unavailable_order
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Reservation:
         """Creates a new **Reservation** object from ticketswitch API data.
 
         Args:
@@ -89,7 +93,7 @@ class Reservation(Status):
 
         return inst
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self.trolley and self.trolley.transaction_uuid:
             return f"<Reservation {self.trolley.transaction_uuid}>"
         return super().__repr__()

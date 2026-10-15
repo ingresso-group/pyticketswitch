@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -11,14 +15,19 @@ class Content(JSONMixin):
 
     """
 
-    def __init__(self, name=None, value=None, value_html=None):
+    def __init__(
+        self,
+        name: str | None = None,
+        value: str | None = None,
+        value_html: str | None = None,
+    ) -> None:
 
         self.name = name
         self.value = value
         self.value_html = value_html
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Content:
         """Creates a new Content object from API data from ticketswitch.
 
         Args:

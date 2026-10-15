@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 import datetime
+from typing import TYPE_CHECKING, Any, cast
 
 from pyticketswitch.currency import CurrencyMeta
 from pyticketswitch.misc import MONTH_NUMBERS
 from pyticketswitch.mixins import JSONMixin
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class AvailabilityMeta(CurrencyMeta):
@@ -40,18 +46,18 @@ class AvailabilityMeta(CurrencyMeta):
 
     def __init__(
         self,
-        contiguous_seat_selection_only=True,
-        currency=None,
-        valid_quantities=None,
-        max_bundle_size=None,
-        backend_is_down=False,
-        backend_is_broken=False,
-        backend_throttle_failed=False,
-        source_code=None,
-        must_select_whole_seat_block=False,
-        *args,
-        **kwargs,
-    ):
+        contiguous_seat_selection_only: bool = True,
+        currency: str | None = None,
+        valid_quantities: list[int] | None = None,
+        max_bundle_size: int | None = None,
+        backend_is_down: bool = False,
+        backend_is_broken: bool = False,
+        backend_throttle_failed: bool = False,
+        source_code: str | None = None,
+        must_select_whole_seat_block: bool = False,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         self.contiguous_seat_selection_only = contiguous_seat_selection_only
         self.currency = currency
         self.max_bundle_size = max_bundle_size
@@ -64,7 +70,7 @@ class AvailabilityMeta(CurrencyMeta):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> AvailabilityMeta:
         """Creates a new AvailabilityMeta object from API data from ticketswitch.
 
         Args:
@@ -125,29 +131,29 @@ class AvailabilityDetails(JSONMixin):
 
     def __init__(
         self,
-        ticket_type=None,
-        price_band=None,
-        ticket_type_description=None,
-        price_band_description=None,
-        seatprice=None,
-        surcharge=None,
-        full_seatprice=None,
-        full_surcharge=None,
-        currency=None,
-        first_date=None,
-        percentage_saving=None,
-        absolute_saving=None,
-        last_date=None,
-        calendar_masks=None,
-        weekday_mask=None,
-        valid_quantities=None,
-        cached_number_available=None,
-        discount_code=None,
-        discount_desc=None,
-        discount_semantic_type=None,
-        suffixed_price_band_code=None,
-        combined_tax_component=None,
-    ):
+        ticket_type: str | None = None,
+        price_band: str | None = None,
+        ticket_type_description: str | None = None,
+        price_band_description: str | None = None,
+        seatprice: Number | None = None,
+        surcharge: Number | None = None,
+        full_seatprice: Number | None = None,
+        full_surcharge: Number | None = None,
+        currency: str | None = None,
+        first_date: datetime.datetime | None = None,
+        percentage_saving: Number | None = None,
+        absolute_saving: Number | None = None,
+        last_date: datetime.datetime | None = None,
+        calendar_masks: dict[int, dict[int, int]] | None = None,
+        weekday_mask: int | None = None,
+        valid_quantities: list[int] | None = None,
+        cached_number_available: int | None = None,
+        discount_code: str | None = None,
+        discount_desc: str | None = None,
+        discount_semantic_type: str | None = None,
+        suffixed_price_band_code: str | None = None,
+        combined_tax_component: Number | None = None,
+    ) -> None:
 
         self.ticket_type = ticket_type
         self.ticket_type_description = ticket_type_description
@@ -174,7 +180,7 @@ class AvailabilityDetails(JSONMixin):
         self.combined_tax_component = combined_tax_component
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> list[AvailabilityDetails]:
         """Creates AvailabilityDetails from API data from ticketswitch.
 
         Args:
@@ -278,7 +284,9 @@ class AvailabilityDetails(JSONMixin):
             details, key=lambda x: (x.ticket_type_description, x.combined_price())
         )
 
-    def is_available(self, year, month=None, day=None):
+    def is_available(
+        self, year: int, month: int | None = None, day: int | None = None
+    ) -> bool:
         """Check availablity on a given year/month/day.
 
         Args:
@@ -309,16 +317,19 @@ class AvailabilityDetails(JSONMixin):
         if month and month not in year_data:
             return False
 
-        month_mask = year_data.get(month)
+        if not day or not month:
+            return True
+
+        month_mask = year_data[month]
 
         # the month mask is a 32 bit int where the right most bit is the first
         # day of the month. To find if we have availability on a specfic day,
         # we bit shift the mask by the zero indexed day and AND it by 1. If the
         # result is a 1 then this combo of ticket type and price band is
         # available on that day, otherwise it is not.
-        return not (day and month_mask >> day - 1 & 1 == 0)
+        return bool(month_mask >> day - 1 & 1)
 
-    def on_weekday(self, day):
+    def on_weekday(self, day: int) -> bool:
         """
         Check if this combination of ticket_type and price band is available
         on a given day of the week, where 0 is monday and sunday is 6.
@@ -346,18 +357,19 @@ class AvailabilityDetails(JSONMixin):
 
         return bool(self._weekday_mask >> adjusted_day & 1)
 
-    def combined_price(self):
+    def combined_price(self) -> Number:
         if self.seatprice is None:
             raise AssertionError("seatprice data missing")
         if self.surcharge is None:
             raise AssertionError("surcharge data missing")
 
-        return self.seatprice + self.surcharge
+        # both prices come from the same JSON parse so are the same type
+        return cast("Any", self.seatprice) + self.surcharge
 
-    def combined_full_price(self):
+    def combined_full_price(self) -> Number:
         if self.full_seatprice is None:
             raise AssertionError("full_seatprice data missing")
         if self.full_surcharge is None:
             raise AssertionError("full_surcharge data missing")
 
-        return self.full_seatprice + self.full_surcharge
+        return cast("Any", self.full_seatprice) + self.full_surcharge

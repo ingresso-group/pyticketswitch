@@ -1,7 +1,14 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, cast
+
 from pyticketswitch import utils
 from pyticketswitch.misc import DiscountSemanticType
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.offer import Offer
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class CostRange(JSONMixin):
@@ -44,24 +51,24 @@ class CostRange(JSONMixin):
 
     def __init__(
         self,
-        valid_quantities=None,
-        max_surcharge=None,
-        max_seatprice=None,
-        min_surcharge=None,
-        min_seatprice=None,
-        allows_singles=True,
-        currency=None,
-        best_value_offer=None,
-        max_saving_offer=None,
-        min_cost_offer=None,
-        top_price_offer=None,
-        max_combined_combined_tax_component=None,
-        max_combined_surcharge_tax_sub=None,
-        min_combined_combined_tax_component=None,
-        min_combined_surcharge_tax_sub=None,
-        discount_semantic_type=None,
-        alternate_discounts=None,
-    ):
+        valid_quantities: list[int] | None = None,
+        max_surcharge: Number | None = None,
+        max_seatprice: Number | None = None,
+        min_surcharge: Number | None = None,
+        min_seatprice: Number | None = None,
+        allows_singles: bool = True,
+        currency: str | None = None,
+        best_value_offer: Offer | None = None,
+        max_saving_offer: Offer | None = None,
+        min_cost_offer: Offer | None = None,
+        top_price_offer: Offer | None = None,
+        max_combined_combined_tax_component: Number | None = None,
+        max_combined_surcharge_tax_sub: Number | None = None,
+        min_combined_combined_tax_component: Number | None = None,
+        min_combined_surcharge_tax_sub: Number | None = None,
+        discount_semantic_type: DiscountSemanticType | None = None,
+        alternate_discounts: CostRange | None = None,
+    ) -> None:
 
         self.valid_quantities = valid_quantities
         self.max_seatprice = max_seatprice
@@ -81,7 +88,7 @@ class CostRange(JSONMixin):
         self.alternate_discounts = alternate_discounts
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> CostRange:
         """Creates a new CostRange object from API data from ticketswitch.
 
         Args:
@@ -171,7 +178,7 @@ class CostRange(JSONMixin):
 
         return cls(**kwargs)
 
-    def has_offer(self):
+    def has_offer(self) -> bool:
         return any(
             [
                 self.best_value_offer,
@@ -181,23 +188,24 @@ class CostRange(JSONMixin):
             ]
         )
 
-    def get_min_combined_price(self):
+    def get_min_combined_price(self) -> Number:
         if self.min_seatprice is None:
             raise AssertionError("min_seatprice data missing")
         if self.min_surcharge is None:
             raise AssertionError("min_surcharge data missing")
 
-        return self.min_surcharge + self.min_seatprice
+        # both prices come from the same JSON parse so are the same type
+        return cast("Any", self.min_surcharge) + self.min_seatprice
 
-    def get_max_combined_price(self):
+    def get_max_combined_price(self) -> Number:
         if self.max_seatprice is None:
             raise AssertionError("max_seatprice data missing")
         if self.max_surcharge is None:
             raise AssertionError("max_surcharge data missing")
 
-        return self.max_surcharge + self.max_seatprice
+        return cast("Any", self.max_surcharge) + self.max_seatprice
 
-    def has_tax(self):
+    def has_tax(self) -> bool:
         return any(
             [
                 self.max_combined_combined_tax_component,
@@ -229,14 +237,14 @@ class CostRangeDetails(JSONMixin):
 
     def __init__(
         self,
-        ticket_type_code,
-        price_band_code,
-        cost_range,
-        ticket_type_description=None,
-        price_band_description=None,
-        cost_range_no_singles=None,
-        **kwargs,
-    ):
+        ticket_type_code: str,
+        price_band_code: str,
+        cost_range: CostRange,
+        ticket_type_description: str | None = None,
+        price_band_description: str | None = None,
+        cost_range_no_singles: CostRange | None = None,
+        **kwargs: Any,
+    ) -> None:
 
         self.ticket_type_code = ticket_type_code
         self.price_band_code = price_band_code
@@ -246,7 +254,7 @@ class CostRangeDetails(JSONMixin):
         self.price_band_description = price_band_description
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> list[CostRangeDetails]:
         details = []
         for ticket_type in data.get("ticket_type", []):
             kwargs = {

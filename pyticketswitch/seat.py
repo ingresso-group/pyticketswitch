@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -11,19 +15,19 @@ class SeatBlock(JSONMixin):
 
     """
 
-    def __init__(self, length, seats=None):
+    def __init__(self, length: int, seats: list[Seat] | None = None) -> None:
         self.length = length
         self.seats = seats
 
     @classmethod
     def from_api_data(
         cls,
-        block,
-        row_id=None,
-        separator="",
-        restricted_view_seats=None,
-        seats_by_text_message=None,
-    ):
+        block: list[str],
+        row_id: str | None = None,
+        separator: str = "",
+        restricted_view_seats: list[str] | None = None,
+        seats_by_text_message: dict[str, list[str]] | None = None,
+    ) -> SeatBlock:
         """Creates a new SeatBlock object from API data from ticketswitch.
 
         Args:
@@ -56,7 +60,7 @@ class SeatBlock(JSONMixin):
             restricted = False
             restricted_text = ""
 
-            if seat_id in restricted_view_seats:
+            if seat_id in (restricted_view_seats or []):
                 restricted = True
 
             for seat_text, list_of_seats in (seats_by_text_message or {}).items():
@@ -98,17 +102,17 @@ class Seat(JSONMixin):
 
     def __init__(
         self,
-        id_=None,
-        column=None,
-        row=None,
-        is_restricted=False,
-        seat_text_code=None,
-        seat_text=None,
-        separator=None,
-        barcode=None,
-        seat_google_pay_urls=None,
-        seat_apple_wallet_urls=None,
-    ):
+        id_: str | None = None,
+        column: str | None = None,
+        row: str | None = None,
+        is_restricted: bool = False,
+        seat_text_code: str | None = None,
+        seat_text: str | None = None,
+        separator: str | None = None,
+        barcode: str | None = None,
+        seat_google_pay_urls: GoogleWallet | None = None,
+        seat_apple_wallet_urls: AppleWallet | None = None,
+    ) -> None:
         self.id = id_
         self.column = column
         self.row = row
@@ -121,7 +125,7 @@ class Seat(JSONMixin):
         self.seat_google_pay_urls = seat_google_pay_urls
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Seat:
         """Creates a new Seat object from API data from ticketswitch.
 
         Args:
@@ -157,7 +161,7 @@ class Seat(JSONMixin):
 
         return cls(**kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Seat {self.id}>"
 
 
@@ -169,13 +173,13 @@ class GoogleWallet(JSONMixin):
         gpay_save_url (str): url that prompts adds a pass to a user's google wallet
     """
 
-    def __init__(self, urls=None):
+    def __init__(self, urls: dict[str, str] | None = None) -> None:
         if urls is None:
             urls = {}
         self.gpay_jwt_url = urls.get("gpay_jwt_url")
         self.gpay_save_url = urls.get("gpay_save_url")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<GoogleWallet>"
 
 
@@ -186,10 +190,10 @@ class AppleWallet(JSONMixin):
         apple_wallet_gen_url (str): url that prompts adds a pass to a user's apple wallet
     """
 
-    def __init__(self, urls=None):
+    def __init__(self, urls: dict[str, str] | None = None) -> None:
         if urls is None:
             urls = {}
         self.apple_wallet_gen_url = urls.get("apple_wallet_gen_url")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<AppleWallet>"

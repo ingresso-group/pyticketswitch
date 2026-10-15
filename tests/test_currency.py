@@ -207,3 +207,13 @@ class TestCurrencyMeta:
 
         with pytest.raises(TypeError, match="unhashable"):
             hash(currency)
+
+
+class TestCurrencyEquality:
+    def test_not_equal_to_other_types(self):
+        currency = Currency("gbp", number=826, factor=100, places=2)
+
+        assert currency != "gbp"
+        assert currency != 826
+        assert currency is not None
+        assert (currency == object()) is False

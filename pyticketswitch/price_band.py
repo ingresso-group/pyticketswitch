@@ -1,8 +1,15 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch.commission import Commission
 from pyticketswitch.cost_range import CostRange
 from pyticketswitch.discount import Discount
 from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
 from pyticketswitch.seat import Seat, SeatBlock
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class PriceBand(SeatPricingMixin, JSONMixin):
@@ -50,27 +57,27 @@ class PriceBand(SeatPricingMixin, JSONMixin):
 
     def __init__(
         self,
-        code,
-        default_discount,
-        description=None,
-        cost_range=None,
-        no_singles_cost_range=None,
-        example_seats=None,
-        example_seats_are_real=True,
-        seat_blocks=None,
-        user_commission=None,
-        discounts=None,
-        allows_leaving_single_seats=None,
-        availability=None,
-        seatprice=None,
-        surcharge=None,
-        non_offer_seatprice=None,
-        non_offer_surcharge=None,
-        percentage_saving=0,
-        absolute_saving=0,
-        is_offer=None,
-        tax_component=None,
-    ):
+        code: str,
+        default_discount: Discount,
+        description: str | None = None,
+        cost_range: CostRange | None = None,
+        no_singles_cost_range: CostRange | None = None,
+        example_seats: list[Seat] | None = None,
+        example_seats_are_real: bool = True,
+        seat_blocks: list[SeatBlock] | None = None,
+        user_commission: Commission | None = None,
+        discounts: list[Discount] | None = None,
+        allows_leaving_single_seats: str | None = None,
+        availability: int | None = None,
+        seatprice: Number | None = None,
+        surcharge: Number | None = None,
+        non_offer_seatprice: Number | None = None,
+        non_offer_surcharge: Number | None = None,
+        percentage_saving: int = 0,
+        absolute_saving: Number = 0,
+        is_offer: bool | None = None,
+        tax_component: Number | None = None,
+    ) -> None:
 
         self.code = code
         self.description = description
@@ -94,7 +101,7 @@ class PriceBand(SeatPricingMixin, JSONMixin):
         self.tax_component = tax_component
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> PriceBand:
         """Creates a new **PriceBand** object from API data from ticketswitch.
 
         Args:
@@ -185,7 +192,7 @@ class PriceBand(SeatPricingMixin, JSONMixin):
 
         return cls(**kwargs)
 
-    def get_seats(self):
+    def get_seats(self) -> list[Seat]:
         """Get all seats in child seat blocks
 
         Returns:
@@ -199,7 +206,7 @@ class PriceBand(SeatPricingMixin, JSONMixin):
             seat for seat_block in self.seat_blocks for seat in seat_block.seats or []
         ]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self.description:
             return f"<PriceBand {self.code}:{self.description!r}>"
         return f"<PriceBand {self.code}>"

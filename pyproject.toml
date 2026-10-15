@@ -34,6 +34,9 @@ Homepage = "https://github.com/ingresso-group/pyticketswitch/"
 [tool.setuptools]
 packages = ["pyticketswitch"]
 
+[tool.setuptools.package-data]
+pyticketswitch = ["py.typed"]
+
 [tool.setuptools.dynamic]
 version = { attr = "pyticketswitch.__version__" }
 
@@ -57,11 +60,16 @@ select = [
     "PIE",  # flake8-pie
     "FURB",  # refurb
     "RET504",  # unnecessary assignment before return
+    "ANN",  # flake8-annotations
     "TC006",  # quoted type in cast()
 ]
 ignore = [
     "E501",  # line length is handled by the formatter
+    "ANN401",  # Any is allowed where the API is genuinely dynamic
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ANN"]
 
 [tool.ruff.lint.mccabe]
 max-complexity = 15
@@ -71,7 +79,7 @@ include = ["pyticketswitch"]
 pythonVersion = "3.10"
 venvPath = "."
 venv = "venv"
-typeCheckingMode = "basic"
+typeCheckingMode = "standard"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

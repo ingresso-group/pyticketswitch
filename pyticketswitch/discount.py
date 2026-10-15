@@ -1,5 +1,13 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch.commission import Commission
 from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
+    from pyticketswitch.misc import DiscountSemanticType
 
 
 class Discount(SeatPricingMixin, JSONMixin):
@@ -31,26 +39,26 @@ class Discount(SeatPricingMixin, JSONMixin):
 
     def __init__(
         self,
-        code,
-        description=None,
-        price_band_code=None,
-        availability=None,
-        is_offer=False,
-        percentage_saving=0,
-        absolute_saving=0,
-        gross_commission=None,
-        user_commission=None,
-        disallowed_seat_nos=None,
-        tax_component=None,
-        semantic_type=None,
-        minimum_eligible_age=None,
-        maximum_eligible_age=None,
-        valid_quantities=None,
-        max_order_no_of_seats=None,
-        max_discount_no_of_seats=None,
-        *args,
-        **kwargs,
-    ):
+        code: str,
+        description: str | None = None,
+        price_band_code: str | None = None,
+        availability: int | None = None,
+        is_offer: bool = False,
+        percentage_saving: Number = 0,
+        absolute_saving: Number = 0,
+        gross_commission: Commission | None = None,
+        user_commission: Commission | None = None,
+        disallowed_seat_nos: list[str] | None = None,
+        tax_component: Number | None = None,
+        semantic_type: DiscountSemanticType | None = None,
+        minimum_eligible_age: int | None = None,
+        maximum_eligible_age: int | None = None,
+        valid_quantities: list[int] | None = None,
+        max_order_no_of_seats: int | None = None,
+        max_discount_no_of_seats: int | None = None,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(*args, **kwargs)
         self.code = code
         self.description = description
@@ -71,7 +79,7 @@ class Discount(SeatPricingMixin, JSONMixin):
         self.max_discount_no_of_seats = max_discount_no_of_seats
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Discount:
         """Creates a new Discount object from API data from ticketswitch.
 
         Args:
@@ -123,5 +131,5 @@ class Discount(SeatPricingMixin, JSONMixin):
 
         return cls(**kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Discount {self.code}:{self.description!r}>"

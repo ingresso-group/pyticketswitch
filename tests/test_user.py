@@ -1,3 +1,5 @@
+import pytest
+
 from pyticketswitch.user import User
 
 
@@ -71,3 +73,7 @@ class TestUser:
         assert user.statement_descriptor == "TICKETSWITCH-USER"
         assert user.backend_group == "demo_internal_credit_group"
         assert user.content_group == "demo_content_group"
+
+    def test_from_api_data_without_user_info_raises(self):
+        with pytest.raises(AssertionError, match="user_info data missing"):
+            User.from_api_data({})

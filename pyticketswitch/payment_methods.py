@@ -1,12 +1,18 @@
+from __future__ import annotations
+
 from abc import ABC
+from typing import TYPE_CHECKING, Any
 
 from pyticketswitch.exceptions import InvalidParametersError
+
+if TYPE_CHECKING:
+    from pyticketswitch.address import Address
 
 
 class PaymentMethod(ABC):  # noqa: B024
     """Abstract base class for payment methods"""
 
-    def as_api_parameters(self):
+    def as_api_parameters(self) -> dict[str, Any]:
         """Generate keyword arguments suitable for consumption by the
         ticketswitch API
 
@@ -18,7 +24,7 @@ class PaymentMethod(ABC):  # noqa: B024
         )
 
 
-class CardDetails:
+class CardDetails(PaymentMethod):
     """Credit card details
 
     This should never be returned by the API and is only used for supplying
@@ -58,20 +64,20 @@ class CardDetails:
 
     def __init__(
         self,
-        card_number,
-        expiry_month=None,
-        expiry_year=None,
-        start_month=None,
-        start_year=None,
-        ccv2=None,
-        issue_number=None,
-        billing_address=None,
-        return_url=None,
-        return_token=None,
-        user_agent=None,
-        accept=None,
-        remote_site=None,
-    ):
+        card_number: str,
+        expiry_month: int | None = None,
+        expiry_year: int | None = None,
+        start_month: int | None = None,
+        start_year: int | None = None,
+        ccv2: str | None = None,
+        issue_number: str | None = None,
+        billing_address: Address | None = None,
+        return_url: str | None = None,
+        return_token: str | None = None,
+        user_agent: str | None = None,
+        accept: str | None = None,
+        remote_site: str | None = None,
+    ) -> None:
 
         self.card_number = card_number
         self.expiry_month = expiry_month
@@ -87,14 +93,14 @@ class CardDetails:
         self.accept = accept
         self.remote_site = remote_site
 
-    def as_api_parameters(self):
+    def as_api_parameters(self) -> dict[str, Any]:
         """Generates a dictionary of parameters to be passed back to the API.
 
         Returns:
             dict: a set of parameters describing the card details to the API.
 
         """
-        params = {
+        params: dict[str, Any] = {
             "card_number": self.card_number,
         }
 
@@ -156,7 +162,7 @@ class CardDetails:
         return params
 
 
-class RedirectionDetails:
+class RedirectionDetails(PaymentMethod):
     """Information that specifies where a customer will be returned to after
     being redirected to an external payment provider.
 
@@ -175,14 +181,16 @@ class RedirectionDetails:
 
     """
 
-    def __init__(self, token, url, user_agent, accept, remote_site):
+    def __init__(
+        self, token: str, url: str, user_agent: str, accept: str, remote_site: str
+    ) -> None:
         self.token = token
         self.url = url
         self.user_agent = user_agent
         self.accept = accept
         self.remote_site = remote_site
 
-    def as_api_parameters(self):
+    def as_api_parameters(self) -> dict[str, Any]:
         """Generate API keyword args for these details.
 
         Returns:
@@ -198,7 +206,7 @@ class RedirectionDetails:
         }
 
 
-class StripeDetails:
+class StripeDetails(PaymentMethod):
     """For use with self generated stripe tokens
 
     Can be used to provide stripe tokens directly to the API at purchase time
@@ -214,10 +222,10 @@ class StripeDetails:
             purchase with stripe.
     """
 
-    def __init__(self, tokens):
+    def __init__(self, tokens: dict[str, Any]) -> None:
         self.tokens = tokens
 
-    def as_api_parameters(self):
+    def as_api_parameters(self) -> dict[str, Any]:
         """Generate API keyword args for these details.
 
         Returns:
@@ -231,7 +239,7 @@ class StripeDetails:
         }
 
 
-class CiderDetails:
+class CiderDetails(PaymentMethod):
     """For use with multiple payment tokens and details
 
     Can be used to provide payment tokens and details directly to the API at
@@ -245,11 +253,11 @@ class CiderDetails:
         system_codes (list): a list of systems for which payment is being made
     """
 
-    def __init__(self, data, system_codes):
+    def __init__(self, data: dict[str, Any], system_codes: list[Any]) -> None:
         self.data = data
         self.system_codes = system_codes
 
-    def as_api_parameters(self):
+    def as_api_parameters(self) -> dict[str, Any]:
         """Generate API keyword args for these details.
 
         Returns:

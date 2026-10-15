@@ -1,5 +1,9 @@
+from __future__ import annotations
+
+import datetime
 import decimal
 import logging
+from typing import TYPE_CHECKING, Any, cast
 
 import requests
 
@@ -19,6 +23,16 @@ from pyticketswitch.status import Status
 from pyticketswitch.ticket_type import TicketType
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.user import User
+
+if TYPE_CHECKING:
+    from requests.auth import AuthBase
+
+    from pyticketswitch._typing import Number
+    from pyticketswitch.callout import Callout
+    from pyticketswitch.currency import CurrencyMeta
+    from pyticketswitch.customer import Customer
+    from pyticketswitch.payment_methods import PaymentMethod
+    from pyticketswitch.user import User
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +54,7 @@ DEFAULT_ROOT_URL = "https://api.ticketswitch.com"
 SENSITIVE_FIELDS = frozenset({"card_number", "cv_two"})
 
 
-def redact_sensitive_params(params):
+def redact_sensitive_params(params: Any) -> Any:
     """Return a copy of ``params`` without the PCI-DSS sensitive fields.
 
     This must only ever be used to build a value for logging - the returned
@@ -53,7 +67,7 @@ def redact_sensitive_params(params):
     return {key: value for key, value in params.items() if key not in SENSITIVE_FIELDS}
 
 
-def redact_sensitive_data(data):
+def redact_sensitive_data(data: Any) -> Any:
     """Recursively return a copy of ``data`` without the sensitive fields.
 
     Used to sanitise API responses before they are logged. In practice the
@@ -106,15 +120,15 @@ class Client:
 
     def __init__(
         self,
-        user,
-        password,
-        url=DEFAULT_ROOT_URL,
-        sub_user=None,
-        language=None,
-        tracking_id=None,
-        use_decimal=False,
-        **kwargs,
-    ):
+        user: str,
+        password: str | None,
+        url: str = DEFAULT_ROOT_URL,
+        sub_user: str | None = None,
+        language: str | None = None,
+        tracking_id: str | None = None,
+        use_decimal: bool = False,
+        **kwargs: Any,
+    ) -> None:
         self.user = user
         self.password = password
         self.url = url
@@ -124,7 +138,7 @@ class Client:
         self.use_decimal = use_decimal
         self.kwargs = kwargs
 
-    def get_url(self, end_point):
+    def get_url(self, end_point: str) -> str:
         """Get the url for a given endpoint
 
         Args:
@@ -140,7 +154,7 @@ class Client:
         return f"{self.url}/f13/{end_point}/"
 
     @utils.deprecated
-    def get_auth_params(self):
+    def get_auth_params(self) -> dict[str, Any]:
         """Get the authentication parameters for inclusion in requests.
 
         **This method is deprecated** - please use `get_extra_params` instead.
@@ -154,7 +168,7 @@ class Client:
         """
         return {}
 
-    def get_extra_params(self):
+    def get_extra_params(self) -> dict[str, Any]:
         """Get additional parameters for inclusion in requests.
 
         This method is intended to be overwritten if additional/alternative
@@ -176,7 +190,7 @@ class Client:
 
         return extra_params
 
-    def get_auth(self):
+    def get_auth(self) -> tuple[bytes, bytes] | AuthBase | None:
         """Get the authentication parameter for the raw request
 
         This method is intended to be overwritten if required.
@@ -188,7 +202,7 @@ class Client:
         if self.user and self.password:
             return (self.user.encode("utf-8"), self.password.encode("utf-8"))
 
-    def get_user_agent(self):
+    def get_user_agent(self) -> str:
         """Get the user agent for the raw request
 
         This method is intended to be overwritten by subclasses that want
@@ -199,7 +213,7 @@ class Client:
         """
         return f"pyticketswitch {pyticketswitch.__version__}"
 
-    def get_headers(self, headers):
+    def get_headers(self, headers: dict[str, Any]) -> dict[str, Any]:
         """Generate common headers to send with all requests
 
         Returns:
@@ -214,7 +228,9 @@ class Client:
 
         return headers
 
-    def get_tracking_params(self, custom_tracking_id=None):
+    def get_tracking_params(
+        self, custom_tracking_id: str | None = None
+    ) -> dict[str, Any]:
         """
         Return current request's session tracking id
         or custom tracking id passed
@@ -224,7 +240,7 @@ class Client:
             return {"tsw_session_track_id": tracking_id}
         return {}
 
-    def get_session(self):
+    def get_session(self) -> requests.Session:
         """Get the requests.Session instance to use to make HTTP requests
 
         By default this method will create a new session for each request. This
@@ -241,7 +257,7 @@ class Client:
         """
         return requests.Session()
 
-    def cleanup_session(self, session):
+    def cleanup_session(self, session: requests.Session) -> None:
         """Cleans up sessions so that we don't leave open sockets.
 
         If you want to add support for persistent connections, then you should
@@ -253,7 +269,14 @@ class Client:
         logger.debug("requests session cleaning up")
         session.close()
 
-    def make_request(self, endpoint, params, method=GET, headers=None, timeout=None):
+    def make_request(
+        self,
+        endpoint: str,
+        params: dict[str, Any],
+        method: str = GET,
+        headers: dict[str, Any] | None = None,
+        timeout: int | None = None,
+    ) -> dict[str, Any]:
         """Makes actual requests to the API
 
         Args:
@@ -265,7 +288,7 @@ class Client:
             timeout (int): timeout to include with the request. Defaults to ``None``.
 
         Returns:
-            str: The body of the response after deserialising from JSON
+            dict: The body of the response after deserialising from JSON
 
         Raises:
             AuthenticationError: When authentication details provided are
@@ -299,11 +322,19 @@ class Client:
 
         if method == POST:
             response = session.post(
-                url, auth=auth, data=params, headers=raw_headers, timeout=timeout
+                url,
+                auth=cast("Any", auth),
+                data=params,
+                headers=raw_headers,
+                timeout=timeout,
             )
         else:
             response = session.get(
-                url, auth=auth, params=params, headers=raw_headers, timeout=timeout
+                url,
+                auth=cast("Any", auth),
+                params=params,
+                headers=raw_headers,
+                timeout=timeout,
             )
 
         self.cleanup_session(session)
@@ -364,7 +395,7 @@ class Client:
 
         return contents
 
-    def test(self):
+    def test(self) -> User:
         """Test the connection
 
         Wraps `/f13/test.v1`_
@@ -387,23 +418,23 @@ class Client:
 
     def add_optional_kwargs(
         self,
-        params,
-        availability=False,
-        availability_with_performances=False,
-        extra_info=False,
-        reviews=False,
-        media=False,
-        cost_range=False,
-        best_value_offer=False,
-        max_saving_offer=False,
-        min_cost_offer=False,
-        top_price_offer=False,
-        no_singles_data=False,
-        cost_range_details=False,
-        source_info=False,
-        tracking_id=None,
-        **kwargs,
-    ):
+        params: dict[str, Any],
+        availability: bool = False,
+        availability_with_performances: bool = False,
+        extra_info: bool = False,
+        reviews: bool = False,
+        media: bool = False,
+        cost_range: bool = False,
+        best_value_offer: bool = False,
+        max_saving_offer: bool = False,
+        min_cost_offer: bool = False,
+        top_price_offer: bool = False,
+        no_singles_data: bool = False,
+        cost_range_details: bool = False,
+        source_info: bool = False,
+        tracking_id: str | None = None,
+        **kwargs: Any,
+    ) -> None:
         """Adds additional arguments to the requests.
 
         All client methods will take several optional arguments that will
@@ -522,20 +553,20 @@ class Client:
 
     def list_events(
         self,
-        keywords=None,
-        start_date=None,
-        end_date=None,
-        country_code=None,
-        city_code=None,
-        latitude=None,
-        longitude=None,
-        radius=None,
-        include_dead=False,
-        sort_order=None,
-        page=0,
-        page_length=0,
-        **kwargs,
-    ):
+        keywords: list[str] | None = None,
+        start_date: datetime.datetime | None = None,
+        end_date: datetime.datetime | None = None,
+        country_code: str | None = None,
+        city_code: str | None = None,
+        latitude: Number | None = None,
+        longitude: Number | None = None,
+        radius: Number | None = None,
+        include_dead: bool = False,
+        sort_order: str | None = None,
+        page: int = 0,
+        page_length: int = 0,
+        **kwargs: Any,
+    ) -> tuple[list[Event], EventMeta]:
         """List events with the given parameters
 
         Wraps `/f13/events.v1`_
@@ -597,7 +628,7 @@ class Client:
 
         """
 
-        params = {}
+        params: dict[str, Any] = {}
 
         if keywords:
             params.update(keywords=",".join(keywords))
@@ -644,7 +675,13 @@ class Client:
         meta = EventMeta.from_api_data(response)
         return events, meta
 
-    def get_events(self, event_ids, with_addons=False, with_upsells=False, **kwargs):
+    def get_events(
+        self,
+        event_ids: list[str],
+        with_addons: bool = False,
+        with_upsells: bool = False,
+        **kwargs: Any,
+    ) -> tuple[dict[str, Event], EventMeta]:
         """Get events with the given id's
 
         Wraps `/f13/events_by_id.v1`_
@@ -669,7 +706,7 @@ class Client:
         .. _`/f13/events_by_id.v1`: http://docs.ingresso.co.uk/#events-by-id
 
         """
-        params = {}
+        params: dict[str, Any] = {}
 
         if event_ids:
             params.update(event_id_list=",".join(event_ids))
@@ -699,7 +736,7 @@ class Client:
         meta = EventMeta.from_api_data(response)
         return events, meta
 
-    def get_event(self, event_id, **kwargs):
+    def get_event(self, event_id: str, **kwargs: Any) -> tuple[Event | None, EventMeta]:
         """Get a specific event by id
 
         Helper method to avoid having to do something like this lots of times::
@@ -728,7 +765,7 @@ class Client:
         events, meta = self.get_events([event_id], **kwargs)
         return events.get(event_id), meta
 
-    def get_months(self, event_id, **kwargs):
+    def get_months(self, event_id: str, **kwargs: Any) -> list[Month]:
         """Returns a summary of availability accross months.
 
         Wraps `/f13/months.v1`_
@@ -748,7 +785,7 @@ class Client:
         .. _`/f13/months.v1`: http://docs.ingresso.co.uk/#months
 
         """
-        params = {"event_id": event_id}
+        params: dict[str, Any] = {"event_id": event_id}
 
         self.add_optional_kwargs(params, **kwargs)
 
@@ -763,8 +800,14 @@ class Client:
         return [Month.from_api_data(data) for data in raw_months]
 
     def list_performances(
-        self, event_id, start_date=None, end_date=None, page_length=0, page=0, **kwargs
-    ):
+        self,
+        event_id: str,
+        start_date: datetime.datetime | None = None,
+        end_date: datetime.datetime | None = None,
+        page_length: int = 0,
+        page: int = 0,
+        **kwargs: Any,
+    ) -> tuple[list[Performance], PerformanceMeta]:
         """List performances for a specified event
 
         Wraps `/f13/performances.v1`_
@@ -793,7 +836,7 @@ class Client:
 
         .. _`/f13/performances.v1`: http://docs.ingresso.co.uk/#performances-list
         """
-        params = {"event_id": event_id}
+        params: dict[str, Any] = {"event_id": event_id}
 
         if page > 0:
             params.update(page_no=page)
@@ -820,7 +863,9 @@ class Client:
 
         return performances, meta
 
-    def get_performances(self, performance_ids, **kwargs):
+    def get_performances(
+        self, performance_ids: list[str], **kwargs: Any
+    ) -> tuple[dict[str, Performance], PerformanceMeta]:
         """Get performances with the given ID's
 
         Wraps `/f13/performances_by_id.v1`_
@@ -844,7 +889,7 @@ class Client:
 
         """
 
-        params = {
+        params: dict[str, Any] = {
             "perf_id_list": ",".join(performance_ids),
         }
 
@@ -867,7 +912,9 @@ class Client:
 
         return performances, meta
 
-    def get_performance(self, performance_id, **kwargs):
+    def get_performance(
+        self, performance_id: str, **kwargs: Any
+    ) -> tuple[Performance | None, PerformanceMeta]:
         """Get a specific performance by id
 
         Helper method to avoid having to do something like this lots of times::
@@ -898,14 +945,14 @@ class Client:
 
     def get_availability(
         self,
-        performance_id,
-        number_of_seats=None,
-        discounts=False,
-        example_seats=False,
-        seat_blocks=False,
-        user_commission=False,
-        **kwargs,
-    ):
+        performance_id: str,
+        number_of_seats: int | None = None,
+        discounts: bool = False,
+        example_seats: bool = False,
+        seat_blocks: bool = False,
+        user_commission: bool = False,
+        **kwargs: Any,
+    ) -> tuple[list[TicketType], AvailabilityMeta]:
         """Fetch available tickets and prices for a given performance
 
         Wraps `/f13/availability.v1`_
@@ -945,7 +992,7 @@ class Client:
 
         .. _`/f13/availability.v1`: http://docs.ingresso.co.uk/#availability
         """
-        params = {"perf_id": performance_id}
+        params: dict[str, Any] = {"perf_id": performance_id}
 
         if number_of_seats:
             params.update(no_of_seats=number_of_seats)
@@ -982,7 +1029,9 @@ class Client:
 
         return availability, meta
 
-    def get_send_methods(self, performance_id, **kwargs):
+    def get_send_methods(
+        self, performance_id: str, **kwargs: Any
+    ) -> tuple[list[SendMethod], CurrencyMeta]:
         """Fetch available delivery methods for a given performance
 
         Wraps `/f13/send_methods.v1`_
@@ -1003,7 +1052,7 @@ class Client:
 
         .. _`/f13/send_methods.v1`: http://docs.ingresso.co.uk/#send-methods
         """
-        params = {"perf_id": performance_id}
+        params: dict[str, Any] = {"perf_id": performance_id}
         self.add_optional_kwargs(params, **kwargs)
 
         response = self.make_request("send_methods.v1", params)
@@ -1026,12 +1075,12 @@ class Client:
 
     def get_discounts(
         self,
-        performance_id,
-        ticket_type_code,
-        price_band_code,
-        user_commission=False,
-        **kwargs,
-    ):
+        performance_id: str,
+        ticket_type_code: str,
+        price_band_code: str,
+        user_commission: bool = False,
+        **kwargs: Any,
+    ) -> tuple[list[Discount], CurrencyMeta]:
         """Fetch available discounts for a ticket_type/price band combination
 
         Wraps `/f13/discounts.v1`_
@@ -1056,7 +1105,7 @@ class Client:
 
         .. _`/f13/discounts.v1`: http://docs.ingresso.co.uk/#discounts
         """
-        params = {
+        params: dict[str, Any] = {
             "perf_id": performance_id,
             "ticket_type_code": ticket_type_code,
             "price_band_code": price_band_code,
@@ -1083,17 +1132,17 @@ class Client:
 
     def _trolley_params(
         self,
-        token=None,
-        number_of_seats=None,
-        discounts=None,
-        seats=None,
-        send_codes=None,
-        ticket_type_code=None,
-        performance_id=None,
-        price_band_code=None,
-        item_numbers_to_remove=None,
-        **kwargs,
-    ):
+        token: str | None = None,
+        number_of_seats: int | None = None,
+        discounts: list[str] | None = None,
+        seats: list[str] | None = None,
+        send_codes: dict[str, str] | None = None,
+        ticket_type_code: str | None = None,
+        performance_id: str | None = None,
+        price_band_code: str | None = None,
+        item_numbers_to_remove: list[int] | None = None,
+        **kwargs: Any,
+    ) -> dict[str, Any]:
         """Handle arguments common to the
         :meth:`Client.get_trolley <pyticketswitch.client.Client.get_trolley>`
         and the
@@ -1130,7 +1179,7 @@ class Client:
 
         """
 
-        params = {}
+        params: dict[str, Any] = {}
 
         if token:
             params.update(trolley_token=token)
@@ -1188,18 +1237,18 @@ class Client:
 
     def get_trolley(
         self,
-        token=None,
-        number_of_seats=None,
-        discounts=None,
-        seats=None,
-        send_codes=None,
-        ticket_type_code=None,
-        performance_id=None,
-        price_band_code=None,
-        item_numbers_to_remove=None,
-        raise_on_unavailable_order=False,
-        **kwargs,
-    ):
+        token: str | None = None,
+        number_of_seats: int | None = None,
+        discounts: list[str] | None = None,
+        seats: list[str] | None = None,
+        send_codes: dict[str, str] | None = None,
+        ticket_type_code: str | None = None,
+        performance_id: str | None = None,
+        price_band_code: str | None = None,
+        item_numbers_to_remove: list[int] | None = None,
+        raise_on_unavailable_order: bool = False,
+        **kwargs: Any,
+    ) -> tuple[Trolley, CurrencyMeta]:
         """Retrieve the contents of a trolley from the API.
 
         Wraps `/f13/trolley.v1`_
@@ -1273,17 +1322,17 @@ class Client:
 
     def get_upsells(
         self,
-        token=None,
-        number_of_seats=None,
-        discounts=None,
-        seats=None,
-        send_codes=None,
-        ticket_type_code=None,
-        performance_id=None,
-        price_band_code=None,
-        item_numbers_to_remove=None,
-        **kwargs,
-    ):
+        token: str | None = None,
+        number_of_seats: int | None = None,
+        discounts: list[str] | None = None,
+        seats: list[str] | None = None,
+        send_codes: dict[str, str] | None = None,
+        ticket_type_code: str | None = None,
+        performance_id: str | None = None,
+        price_band_code: str | None = None,
+        item_numbers_to_remove: list[int] | None = None,
+        **kwargs: Any,
+    ) -> tuple[list[Event], EventMeta]:
         """Retrieve a list of upsell events related to a trolley from the API.
 
         Upsell events are related to a main event but can be purchased
@@ -1355,17 +1404,17 @@ class Client:
 
     def get_addons(
         self,
-        token=None,
-        number_of_seats=None,
-        discounts=None,
-        seats=None,
-        send_codes=None,
-        ticket_type_code=None,
-        performance_id=None,
-        price_band_code=None,
-        item_numbers_to_remove=None,
-        **kwargs,
-    ):
+        token: str | None = None,
+        number_of_seats: int | None = None,
+        discounts: list[str] | None = None,
+        seats: list[str] | None = None,
+        send_codes: dict[str, str] | None = None,
+        ticket_type_code: str | None = None,
+        performance_id: str | None = None,
+        price_band_code: str | None = None,
+        item_numbers_to_remove: list[int] | None = None,
+        **kwargs: Any,
+    ) -> tuple[list[Event], EventMeta]:
         """Retrieve a list of add-on events from the API.
 
         Wraps `/f13/add_ons.v1`_
@@ -1431,18 +1480,18 @@ class Client:
 
     def make_reservation(
         self,
-        token=None,
-        number_of_seats=None,
-        discounts=None,
-        seats=None,
-        send_codes=None,
-        ticket_type_code=None,
-        performance_id=None,
-        price_band_code=None,
-        item_numbers_to_remove=None,
-        raise_on_unavailable_order=False,
-        **kwargs,
-    ):
+        token: str | None = None,
+        number_of_seats: int | None = None,
+        discounts: list[str] | None = None,
+        seats: list[str] | None = None,
+        send_codes: dict[str, str] | None = None,
+        ticket_type_code: str | None = None,
+        performance_id: str | None = None,
+        price_band_code: str | None = None,
+        item_numbers_to_remove: list[int] | None = None,
+        raise_on_unavailable_order: bool = False,
+        **kwargs: Any,
+    ) -> tuple[Reservation, CurrencyMeta]:
         """Attempt to reserve all the items in the given trolley
 
         Wraps `/f13/reserve.v1`_
@@ -1516,7 +1565,7 @@ class Client:
 
         return self.process_reservation_response(response, raise_on_unavailable_order)
 
-    def release_reservation(self, transaction_uuid, **kwargs):
+    def release_reservation(self, transaction_uuid: str, **kwargs: Any) -> bool:
         """Release an existing reservation.
 
         Wraps `/f13/release.v1`_
@@ -1534,15 +1583,18 @@ class Client:
 
         """
 
-        params = {"transaction_uuid": transaction_uuid}
+        params: dict[str, Any] = {"transaction_uuid": transaction_uuid}
         kwargs.update(params)
         response = self.make_request("release.v1", kwargs, method=POST)
 
         return response.get("released_ok", False)
 
     def get_reservation(
-        self, transaction_uuid, raise_on_unavailable_order=False, **kwargs
-    ):
+        self,
+        transaction_uuid: str,
+        raise_on_unavailable_order: bool = False,
+        **kwargs: Any,
+    ) -> tuple[Reservation, CurrencyMeta]:
         """
         This method retrieves a previously made reservation response, verbatim.
         It is faster than the `get_status` method as it is not getting the
@@ -1579,19 +1631,19 @@ class Client:
             http://docs.ingresso.co.uk/#reserve_page_archive
 
         """
-        params = {"transaction_uuid": transaction_uuid}
+        params: dict[str, Any] = {"transaction_uuid": transaction_uuid}
         response = self.make_request("reserve_page_archive.v1", params, method=GET)
 
         return self.process_reservation_response(response, raise_on_unavailable_order)
 
     def get_status(
         self,
-        transaction_uuid=None,
-        transaction_id=None,
-        customer=False,
-        external_sale_page=False,
-        **kwargs,
-    ):
+        transaction_uuid: str | None = None,
+        transaction_id: str | None = None,
+        customer: bool = False,
+        external_sale_page: bool = False,
+        **kwargs: Any,
+    ) -> tuple[Status, CurrencyMeta]:
         """Get the status of reservation, purchase or transaction.
 
         .. note:: The **transaction_id** field is for backwards compatability
@@ -1620,7 +1672,7 @@ class Client:
         .. _`/f13/status.v1`: http://docs.ingresso.co.uk/#status
 
         """
-        params = {}
+        params: dict[str, Any] = {}
 
         if customer:
             params.update(add_customer=True)
@@ -1644,13 +1696,13 @@ class Client:
 
     def make_purchase(
         self,
-        transaction_uuid,
-        customer,
-        payment_method=None,
-        send_confirmation_email=True,
-        agent_reference=None,
-        **kwargs,
-    ):
+        transaction_uuid: str,
+        customer: Customer,
+        payment_method: PaymentMethod | None = None,
+        send_confirmation_email: bool = True,
+        agent_reference: str | None = None,
+        **kwargs: Any,
+    ) -> tuple[Status | None, Callout | None, CurrencyMeta]:
         """Purchase tickets for an existing reservation.
 
         Wraps `/f13/purchase.v1`_
@@ -1693,7 +1745,7 @@ class Client:
 
         """
 
-        params = {"transaction_uuid": transaction_uuid}
+        params: dict[str, Any] = {"transaction_uuid": transaction_uuid}
 
         if send_confirmation_email:
             params.update(send_confirmation_email=True)
@@ -1715,7 +1767,9 @@ class Client:
 
         return self.process_purchase_response(response)
 
-    def get_purchase(self, transaction_uuid, **kwargs):
+    def get_purchase(
+        self, transaction_uuid: str, **kwargs: Any
+    ) -> tuple[Status | None, Callout | None, CurrencyMeta]:
         """
         This method retrieves a previously made purchase response, verbatim.
         It is faster than the `get_status` method as it is not getting the
@@ -1751,12 +1805,18 @@ class Client:
             http://docs.ingresso.co.uk/#purchase_page_archive
 
         """
-        params = {"transaction_uuid": transaction_uuid}
+        params: dict[str, Any] = {"transaction_uuid": transaction_uuid}
         response = self.make_request("purchase_page_archive.v1", params, method=GET)
 
         return self.process_purchase_response(response)
 
-    def next_callout(self, this_token, next_token, returned_data, **kwargs):
+    def next_callout(
+        self,
+        this_token: str,
+        next_token: str,
+        returned_data: dict[str, Any],
+        **kwargs: Any,
+    ) -> tuple[Status | None, Callout | None, CurrencyMeta]:
         """Gets the next callout in a callout chain.
 
         Wraps `/f13/callback.v1`_
@@ -1806,7 +1866,9 @@ class Client:
 
         return status, callout, meta
 
-    def process_reservation_response(self, response, raise_on_unavailable_order):
+    def process_reservation_response(
+        self, response: dict[str, Any], raise_on_unavailable_order: bool
+    ) -> tuple[Reservation, CurrencyMeta]:
         reservation = Reservation.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
 
@@ -1823,7 +1885,9 @@ class Client:
 
         return reservation, meta
 
-    def process_purchase_response(self, response):
+    def process_purchase_response(
+        self, response: dict[str, Any]
+    ) -> tuple[Status | None, Callout | None, CurrencyMeta]:
         callout_data = response.get("callout")
 
         if callout_data:
@@ -1837,7 +1901,12 @@ class Client:
 
         return status, callout, meta
 
-    def cancel_purchase(self, transaction_uuid, cancel_items_list=None, **kwargs):
+    def cancel_purchase(
+        self,
+        transaction_uuid: str,
+        cancel_items_list: list[int] | None = None,
+        **kwargs: Any,
+    ) -> tuple[CancellationResult, CurrencyMeta]:
         """Attempt cancellation of item numbers from the transaction, specified in
         `cancel_items_list`. If there is no `cancel_items_list` then attempt
         cancellation of entire transaction.
@@ -1858,7 +1927,7 @@ class Client:
         .. _`/f13/cancel.v1`: http://docs.ingresso.co.uk/#cancel
 
         """
-        params = {
+        params: dict[str, Any] = {
             "transaction_uuid": transaction_uuid,
         }
         if cancel_items_list:

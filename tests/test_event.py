@@ -311,3 +311,9 @@ class TestEvent:
         assert event.upsell_events
         assert event.venue_is_enforced is False
         assert event.valid_quantities == [2, 4, 6, 8]
+
+
+class TestEventFromApiDataMissingEvent:
+    def test_missing_event_key_raises_integrity_error(self):
+        with pytest.raises(exceptions.IntegrityError):
+            Event.from_api_data({})
