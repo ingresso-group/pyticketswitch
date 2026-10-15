@@ -312,3 +312,17 @@ class TestFilterNoneFromParameters:
             "foo": "bar",
             "lol": "beans",
         }
+
+
+class TestSpecificDatesUnknownMonth:
+    def test_unknown_month_raises_key_error(self):
+        api_data = {"year_2016": {"foo": {"day_1": True}}}
+
+        with pytest.raises(KeyError):
+            utils.specific_dates_from_api_data(api_data)
+
+
+class TestAddPricesWithNone:
+    def test_none_price_raises_type_error(self):
+        with pytest.raises(TypeError, match="does not accept None"):
+            utils.add_prices(1, None)

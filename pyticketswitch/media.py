@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class Media(JSONMixin, object):
+class Media(JSONMixin):
     """Describes some event media asset
 
     Attributes:

@@ -7,7 +7,7 @@ from pyticketswitch.order import Order
 from pyticketswitch.purchase_result import PurchaseResult
 
 
-class TestBundle(object):
+class TestBundle:
     def test_from_api_data(self):
         data = {
             "bundle_order_count": 1,

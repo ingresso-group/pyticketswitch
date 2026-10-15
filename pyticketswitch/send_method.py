@@ -2,7 +2,7 @@ from pyticketswitch.country import Country
 from pyticketswitch.mixins import JSONMixin
 
 
-class SendMethod(JSONMixin, object):
+class SendMethod(JSONMixin):
     """Describes a method of sending tickets to a customer.
 
     Attributes:
@@ -90,6 +90,7 @@ class SendMethod(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return "<SendMethod {}:{}>".format(
-            self.code, self.description.encode("ascii", "ignore")
+        return (
+            f"<SendMethod {self.code}:"
+            f"{(self.description or '').encode('ascii', 'ignore')}>"
         )

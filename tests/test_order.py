@@ -1,5 +1,7 @@
 from decimal import Decimal
 
+import pytest
+
 from pyticketswitch.commission import Commission
 from pyticketswitch.event import Event
 from pyticketswitch.order import Order, TicketOrder
@@ -504,3 +506,11 @@ class TestOrder:
         assert order.gross_commission.including_vat == 22.5
         assert order.gross_commission.excluding_vat == 18.75
         assert order.gross_commission.currency_code == "gbp"
+
+
+class TestOrderMissingData:
+    def test_total_including_send_cost_without_send_method_raises(self):
+        order = Order(item=1, send_method=None)
+
+        with pytest.raises(AssertionError, match="send_method data missing"):
+            order.total_including_send_cost()

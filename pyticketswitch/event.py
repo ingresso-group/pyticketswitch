@@ -10,7 +10,7 @@ from pyticketswitch.review import Review
 from pyticketswitch.ticket_type import TicketType
 
 
-class Event(JSONMixin, object):
+class Event(JSONMixin):
     """Describes a product in the ticketswitch system.
 
     Attributes:
@@ -440,9 +440,7 @@ class Event(JSONMixin, object):
         return cls(**kwargs)
 
     def __repr__(self):
-        return "<Event {}:{}>".format(
-            self.id, self.description.encode("ascii", "ignore")
-        )
+        return f"<Event {self.id}:{(self.description or '').encode('ascii', 'ignore')}>"
 
 
 class EventMeta(PaginationMixin, CurrencyMeta):

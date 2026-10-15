@@ -1,11 +1,12 @@
 import datetime
 import decimal
 import json
+from typing import Any, cast
 
 from pyticketswitch import utils
 
 
-class JSONMixin(object):
+class JSONMixin:
     """Adds json encoding functionality to objects."""
 
     def __jsondict__(self, hide_none=True, hide_empty=True):
@@ -89,7 +90,7 @@ class JSONMixin(object):
         )
 
 
-class PaginationMixin(object):
+class PaginationMixin:
     """Adds pagination information to a responses meta data.
 
     Attributes:
@@ -117,11 +118,12 @@ class PaginationMixin(object):
         self.pages_remaining = pages_remaining
         self.results_remaining = results_remaining
         self.total_results = total_results
-        super(PaginationMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_api_data(cls, data, result_key=None, *args, **kwargs):
-        inst = super(PaginationMixin, cls).from_api_data(data)
+        # cooperative mixin: from_api_data is provided by the next class in the MRO
+        inst = cast(Any, super()).from_api_data(data)
 
         if not result_key:
             result_key = "results"
@@ -149,13 +151,10 @@ class PaginationMixin(object):
         if not self.total_results or not self.page_length:
             return False
 
-        if self.total_results < self.page_length:
-            return False
-
-        return True
+        return not self.total_results < self.page_length
 
 
-class SeatPricingMixin(object):
+class SeatPricingMixin:
     """Adds seat pricing to an object
 
     Attributes:
@@ -176,7 +175,7 @@ class SeatPricingMixin(object):
         *args,
         **kwargs,
     ):
-        super(SeatPricingMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.seatprice = seatprice
         self.surcharge = surcharge
         self.non_offer_seatprice = non_offer_seatprice
@@ -213,8 +212,10 @@ class SeatPricingMixin(object):
                 no booking fees
 
         """
-        assert self.seatprice is not None, "seatprice data missing"
-        assert self.surcharge is not None, "surcharge data missing"
+        if self.seatprice is None:
+            raise AssertionError("seatprice data missing")
+        if self.surcharge is None:
+            raise AssertionError("surcharge data missing")
 
         return utils.add_prices(self.seatprice, self.surcharge)
 
@@ -239,6 +240,8 @@ class SeatPricingMixin(object):
                 no booking fees
 
         """
-        assert self.non_offer_seatprice is not None, "non_offer_seatprice data missing"
-        assert self.non_offer_surcharge is not None, "non_offer_surcharge data missing"
+        if self.non_offer_seatprice is None:
+            raise AssertionError("non_offer_seatprice data missing")
+        if self.non_offer_surcharge is None:
+            raise AssertionError("non_offer_surcharge data missing")
         return utils.add_prices(self.non_offer_seatprice, self.non_offer_surcharge)

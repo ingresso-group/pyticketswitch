@@ -61,7 +61,7 @@ class AvailabilityMeta(CurrencyMeta):
         self.backend_throttle_failed = backend_throttle_failed
         self.source_code = source_code
         self.must_select_whole_seat_block = must_select_whole_seat_block
-        super(AvailabilityMeta, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_api_data(cls, data):
@@ -77,7 +77,7 @@ class AvailabilityMeta(CurrencyMeta):
             object populated with the data from the api.
 
         """
-        inst = super(AvailabilityMeta, cls).from_api_data(data)
+        inst = super().from_api_data(data)
 
         inst.valid_quantities = data.get("valid_quantities")
         inst.max_bundle_size = data.get("max_bundle_size")
@@ -93,7 +93,7 @@ class AvailabilityMeta(CurrencyMeta):
         return inst
 
 
-class AvailabilityDetails(JSONMixin, object):
+class AvailabilityDetails(JSONMixin):
     """Details about the available tickets of a performance.
 
     Attributes:
@@ -164,6 +164,7 @@ class AvailabilityDetails(JSONMixin, object):
         self.last_date = last_date
         self._calendar_masks = calendar_masks
         self._weekday_mask = weekday_mask
+        self.weekday_list = None
         self.valid_quantities = valid_quantities
         self.cached_number_available = cached_number_available
         self.discount_code = discount_code
@@ -296,7 +297,7 @@ class AvailabilityDetails(JSONMixin, object):
         if day and not month:
             raise ValueError("a month must be specified to specify a day")
 
-        if year not in self._calendar_masks:
+        if not self._calendar_masks or year not in self._calendar_masks:
             return False
 
         year_data = self._calendar_masks[year]
@@ -311,10 +312,7 @@ class AvailabilityDetails(JSONMixin, object):
         # we bit shift the mask by the zero indexed day and AND it by 1. If the
         # result is a 1 then this combo of ticket type and price band is
         # available on that day, otherwise it is not.
-        if day and (month_mask >> (day - 1) & 1) == 0:
-            return False
-
-        return True
+        return not (day and month_mask >> day - 1 & 1 == 0)
 
     def on_weekday(self, day):
         """
@@ -337,10 +335,23 @@ class AvailabilityDetails(JSONMixin, object):
 
         adjusted_day = day + 1 if day < 6 else 0
 
+        if self._weekday_mask is None:
+            return False
+
         return bool(self._weekday_mask >> adjusted_day & 1)
 
     def combined_price(self):
+        if self.seatprice is None:
+            raise AssertionError("seatprice data missing")
+        if self.surcharge is None:
+            raise AssertionError("surcharge data missing")
+
         return self.seatprice + self.surcharge
 
     def combined_full_price(self):
+        if self.full_seatprice is None:
+            raise AssertionError("full_seatprice data missing")
+        if self.full_surcharge is None:
+            raise AssertionError("full_surcharge data missing")
+
         return self.full_seatprice + self.full_surcharge

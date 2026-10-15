@@ -7,7 +7,7 @@ from pyticketswitch.cancellation import CancellationResult
 
 class TestCancellationResult:
     def test_from_api_data_successful_cancellation(self):
-        with open("test_data/successful_cancellation.json", "r") as file_handle:
+        with open("test_data/successful_cancellation.json") as file_handle:
             data = json.load(file_handle)
         cancellation_result = CancellationResult.from_api_data(data)
 
@@ -17,7 +17,7 @@ class TestCancellationResult:
         assert cancellation_result.must_also_cancel is None
 
     def test_from_api_data_must_also_cancel(self):
-        with open("test_data/must_also_cancel_cancellation.json", "r") as file_handle:
+        with open("test_data/must_also_cancel_cancellation.json") as file_handle:
             data = json.load(file_handle)
         cancellation_result = CancellationResult.from_api_data(data)
 
@@ -36,8 +36,11 @@ class TestCancellationResult:
         ],
     )
     def test_is_fully_cancelled(self, cancellation_data_file, expected_result):
-        with open(cancellation_data_file, "r") as file_handle:
+        with open(cancellation_data_file) as file_handle:
             data = json.load(file_handle)
         cancellation_result = CancellationResult.from_api_data(data)
 
         assert cancellation_result.is_fully_cancelled() == expected_result
+
+    def test_is_fully_cancelled_without_trolley(self):
+        assert CancellationResult().is_fully_cancelled() is False

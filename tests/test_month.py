@@ -98,3 +98,6 @@ class TestMonth:
 
     def test_end_date_with_none(self):
         assert Month(1, 2020, dates_bitmask=None).end_date() is None
+
+    def test_on_weekday_with_none(self):
+        assert Month(1, 2020, weekday_bitmask=None).on_weekday(0) is False

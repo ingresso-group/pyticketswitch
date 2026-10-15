@@ -4,7 +4,7 @@ from pyticketswitch.order import Order
 from pyticketswitch.purchase_result import PurchaseResult
 
 
-class Bundle(JSONMixin, object):
+class Bundle(JSONMixin):
     """A collection of orders into the same backend system
 
     Attributes:
@@ -172,4 +172,4 @@ class Bundle(JSONMixin, object):
         return False
 
     def __repr__(self):
-        return "<Bundle {}>".format(self.source_code)
+        return f"<Bundle {self.source_code}>"

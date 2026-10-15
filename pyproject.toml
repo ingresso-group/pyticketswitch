@@ -44,11 +44,16 @@ extend-exclude = ["docs", "features"]
 
 [tool.ruff.lint]
 select = [
-    "E",  # pycodestyle errors
-    "W",  # pycodestyle warnings
-    "F",  # pyflakes
-    "I",  # isort
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "SIM",  # flake8-simplify
     "C90",  # mccabe complexity
+    "RUF",  # ruff-specific
 ]
 ignore = [
     "E501",  # line length is handled by the formatter
@@ -63,14 +68,6 @@ pythonVersion = "3.10"
 venvPath = "."
 venv = "venv"
 typeCheckingMode = "basic"
-# The codebase is untyped and relies on ``None`` defaults that pyright can't
-# narrow. Report these as warnings until they are handled explicitly.
-reportOptionalMemberAccess = "warning"
-reportOptionalOperand = "warning"
-reportOptionalSubscript = "warning"
-reportArgumentType = "warning"
-reportCallIssue = "warning"
-reportAttributeAccessIssue = "warning"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -76,7 +76,7 @@ def redact_sensitive_data(data):
     return data
 
 
-class Client(object):
+class Client:
     """Client wraps the ticketswitch f13 API.
 
     Client contains auth details and provides helper methods for calling
@@ -137,10 +137,7 @@ class Client(object):
 
         """
 
-        url = "{url}/f13/{end_point}/".format(
-            url=self.url,
-            end_point=end_point,
-        )
+        url = f"{self.url}/f13/{end_point}/"
         return url
 
     @utils.deprecated
@@ -201,7 +198,7 @@ class Client(object):
         Returns:
             :str: the user agent string
         """
-        return "pyticketswitch {}".format(pyticketswitch.__version__)
+        return f"pyticketswitch {pyticketswitch.__version__}"
 
     def get_headers(self, headers):
         """Generate common headers to send with all requests
@@ -326,13 +323,9 @@ class Client(object):
                 response.status_code,
             )
             raise exceptions.InvalidResponseError(
-                (
-                    "Unable to parse json data from {} response with status code `{}`"
-                ).format(
-                    endpoint,
-                    response.status_code,
-                )
-            )
+                f"Unable to parse json data from {endpoint} response with status "
+                f"code `{response.status_code}`"
+            ) from None
 
         if logger.isEnabledFor(logging.DEBUG):
             logger.debug("response: %s", redact_sensitive_data(contents))
@@ -367,10 +360,7 @@ class Client(object):
 
         if response.status_code != 200:
             raise exceptions.InvalidResponseError(
-                "got status code `{}` from {}".format(
-                    response.status_code,
-                    endpoint,
-                )
+                f"got status code `{response.status_code}` from {endpoint}"
             )
 
         return contents
@@ -626,13 +616,7 @@ class Client(object):
 
         geo = [latitude, longitude, radius]
         if all(v is not None for v in geo):
-            params.update(
-                circle="{lat}:{lon}:{rad}".format(
-                    lat=latitude,
-                    lon=longitude,
-                    rad=radius,
-                )
-            )
+            params.update(circle=f"{latitude}:{longitude}:{radius}")
         elif any(v is not None for v in geo):
             raise exceptions.InvalidGeoParameters(
                 "Geo data must include latitude, longitude, and radius",
@@ -1182,11 +1166,11 @@ class Client(object):
             )
 
         if seats:
-            params.update({"seat{}".format(i): seat for i, seat in enumerate(seats)})
+            params.update({f"seat{i}": seat for i, seat in enumerate(seats)})
 
         if discounts:
             params.update(
-                {"disc{}".format(i): discount for i, discount in enumerate(discounts)}
+                {f"disc{i}": discount for i, discount in enumerate(discounts)}
             )
 
         if send_codes and not isinstance(send_codes, dict):
@@ -1198,7 +1182,7 @@ class Client(object):
         if send_codes:
             params.update(
                 {
-                    "{}_send_code".format(source_code): send_code
+                    f"{source_code}_send_code": send_code
                     for source_code, send_code in send_codes.items()
                 }
             )
@@ -1283,11 +1267,12 @@ class Client(object):
         trolley = Trolley.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
 
-        if raise_on_unavailable_order:
-            if trolley and trolley.input_contained_unavailable_order:
-                raise exceptions.OrderUnavailableError(
-                    "inputs contained unavailable order"
-                )
+        if (
+            raise_on_unavailable_order
+            and trolley
+            and trolley.input_contained_unavailable_order
+        ):
+            raise exceptions.OrderUnavailableError("inputs contained unavailable order")
 
         return trolley, meta
 
@@ -1806,7 +1791,7 @@ class Client(object):
 
         """
 
-        endpoint = "callback.v1/this.{}/next.{}".format(this_token, next_token)
+        endpoint = f"callback.v1/this.{this_token}/next.{next_token}"
 
         params = returned_data
         params.update(kwargs)
@@ -1830,13 +1815,16 @@ class Client(object):
         reservation = Reservation.from_api_data(response)
         meta = CurrencyMeta.from_api_data(response)
 
-        if raise_on_unavailable_order:
-            if reservation and reservation.input_contained_unavailable_order:
-                raise exceptions.OrderUnavailableError(
-                    "inputs contained unavailable order",
-                    reservation=reservation,
-                    meta=meta,
-                )
+        if (
+            raise_on_unavailable_order
+            and reservation
+            and reservation.input_contained_unavailable_order
+        ):
+            raise exceptions.OrderUnavailableError(
+                "inputs contained unavailable order",
+                reservation=reservation,
+                meta=meta,
+            )
 
         return reservation, meta
 

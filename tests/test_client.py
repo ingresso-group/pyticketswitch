@@ -2,10 +2,10 @@ import decimal
 import json
 import logging
 from datetime import datetime
+from unittest.mock import Mock
 
 import pytest
 import requests
-from mock import Mock
 
 import pyticketswitch
 import pyticketswitch.client as client_module
@@ -83,7 +83,7 @@ def mock_make_request_for_trolley(client, monkeypatch):
     return mock_make_request
 
 
-class FakeResponse(object):
+class FakeResponse:
     def __init__(self, status_code=200, json=None):
         self.status_code = status_code
         self._json = json
@@ -129,7 +129,7 @@ class TestClient:
             },
             headers={
                 "Accept-Language": "en-GB",
-                "User-Agent": "pyticketswitch {}".format(pyticketswitch.__version__),
+                "User-Agent": f"pyticketswitch {pyticketswitch.__version__}",
             },
             timeout=None,
         )
@@ -156,7 +156,7 @@ class TestClient:
             },
             headers={
                 "Accept-Language": "en-GB",
-                "User-Agent": "pyticketswitch {}".format(pyticketswitch.__version__),
+                "User-Agent": f"pyticketswitch {pyticketswitch.__version__}",
             },
             timeout=15,
         )
@@ -183,7 +183,7 @@ class TestClient:
             },
             headers={
                 "Accept-Language": "en-GB",
-                "User-Agent": "pyticketswitch {}".format(pyticketswitch.__version__),
+                "User-Agent": f"pyticketswitch {pyticketswitch.__version__}",
             },
             timeout=None,
         )
@@ -213,7 +213,7 @@ class TestClient:
             },
             headers={
                 "Accept-Language": "en-GB",
-                "User-Agent": "pyticketswitch {}".format(pyticketswitch.__version__),
+                "User-Agent": f"pyticketswitch {pyticketswitch.__version__}",
             },
             timeout=None,
         )
@@ -236,7 +236,7 @@ class TestClient:
             params={"tsw_session_track_id": "xyz"},
             headers={
                 "Accept-Language": "en-GB",
-                "User-Agent": "pyticketswitch {}".format(pyticketswitch.__version__),
+                "User-Agent": f"pyticketswitch {pyticketswitch.__version__}",
             },
             timeout=None,
         )
@@ -262,7 +262,7 @@ class TestClient:
             params={"tsw_session_track_id": "123"},
             headers={
                 "Accept-Language": "en-GB",
-                "User-Agent": "pyticketswitch {}".format(pyticketswitch.__version__),
+                "User-Agent": f"pyticketswitch {pyticketswitch.__version__}",
             },
             timeout=None,
         )
@@ -274,7 +274,7 @@ class TestClient:
             params={"tsw_session_track_id": "456"},
             headers={
                 "Accept-Language": "en-GB",
-                "User-Agent": "pyticketswitch {}".format(pyticketswitch.__version__),
+                "User-Agent": f"pyticketswitch {pyticketswitch.__version__}",
             },
             timeout=None,
         )
@@ -554,7 +554,7 @@ class TestClient:
         params = {}
         client.add_optional_kwargs(params, top_price_offer=True)
 
-        params == {
+        assert params == {
             "req_cost_range": True,
             "req_cost_range_top_price_offer": True,
         }
@@ -580,7 +580,7 @@ class TestClient:
         params = {}
         client.add_optional_kwargs(params, availability=True)
 
-        params == {
+        assert params == {
             "req_avail_details": True,
         }
 
@@ -588,7 +588,8 @@ class TestClient:
         params = {}
         client.add_optional_kwargs(params, availability_with_performances=True)
 
-        params == {
+        assert params == {
+            "req_avail_details": True,
             "req_avail_details_with_perfs": True,
         }
 
@@ -596,7 +597,7 @@ class TestClient:
         params = {}
         client.add_optional_kwargs(params, source_info=True)
 
-        params == {
+        assert params == {
             "req_src_info": True,
         }
 
@@ -2257,7 +2258,7 @@ class TestClient:
             },
             headers={
                 "Accept-Language": "en-GB",
-                "User-Agent": "pyticketswitch {}".format(pyticketswitch.__version__),
+                "User-Agent": f"pyticketswitch {pyticketswitch.__version__}",
             },
             timeout=None,
         )
@@ -2310,7 +2311,7 @@ class TestClient:
             },
             headers={
                 "Accept-Language": "en-GB",
-                "User-Agent": "pyticketswitch {}".format(pyticketswitch.__version__),
+                "User-Agent": f"pyticketswitch {pyticketswitch.__version__}",
             },
             timeout=None,
         )
@@ -2426,7 +2427,7 @@ class TestClient:
 
     def test_cancel_purchase(self, client, monkeypatch):
         # state
-        with open("test_data/successful_cancellation.json", "r") as file_handle:
+        with open("test_data/successful_cancellation.json") as file_handle:
             response = json.load(file_handle)
         mock_make_request = Mock(return_value=response)
         monkeypatch.setattr(client, "make_request", mock_make_request)

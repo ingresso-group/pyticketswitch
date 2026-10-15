@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class Commission(JSONMixin, object):
+class Commission(JSONMixin):
     """Commission payable to the user on the sale of a specfic order.
 
     Attributes:

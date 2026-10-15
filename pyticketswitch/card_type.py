@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class CardType(JSONMixin, object):
+class CardType(JSONMixin):
     """Type of card that will be accepted during the payment process
 
     Attributes:
@@ -15,4 +15,4 @@ class CardType(JSONMixin, object):
         self.description = description
 
     def __repr__(self):
-        return "<CardType {}: {}>".format(self.code, self.description)
+        return f"<CardType {self.code}: {self.description}>"

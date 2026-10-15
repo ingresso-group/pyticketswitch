@@ -54,7 +54,7 @@ class Reservation(Status):
         **kwargs,
     ):
 
-        super(Reservation, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.unreserved_orders = unreserved_orders
         self.input_contained_unavailable_order = input_contained_unavailable_order
 
@@ -73,7 +73,7 @@ class Reservation(Status):
 
         """
 
-        inst = super(Reservation, cls).from_api_data(data)
+        inst = super().from_api_data(data)
 
         unreserved_orders = []
         raw_unreserved_orders = data.get("unreserved_orders")
@@ -91,5 +91,5 @@ class Reservation(Status):
 
     def __repr__(self):
         if self.trolley and self.trolley.transaction_uuid:
-            return "<Reservation {}>".format(self.trolley.transaction_uuid)
-        return super(Reservation, self).__repr__()
+            return f"<Reservation {self.trolley.transaction_uuid}>"
+        return super().__repr__()

@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class Content(JSONMixin, object):
+class Content(JSONMixin):
     """Plain text and HTML content
 
     Attributes:

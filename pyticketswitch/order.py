@@ -7,7 +7,7 @@ from pyticketswitch.seat import Seat
 from pyticketswitch.send_method import SendMethod
 
 
-class TicketOrder(JSONMixin, object):
+class TicketOrder(JSONMixin):
     """Describes a set of identical priced tickets.
 
     Attributes:
@@ -155,8 +155,10 @@ class TicketOrder(JSONMixin, object):
                 no booking fees
 
         """
-        assert self.seatprice is not None, "seatprice data missing"
-        assert self.surcharge is not None, "surcharge data missing"
+        if self.seatprice is None:
+            raise AssertionError("seatprice data missing")
+        if self.surcharge is None:
+            raise AssertionError("surcharge data missing")
         return utils.add_prices(self.seatprice, self.surcharge)
 
     def total_combined_price(self):
@@ -180,15 +182,17 @@ class TicketOrder(JSONMixin, object):
                 no booking fees
 
         """
-        assert self.total_seatprice is not None, "seatprice data missing"
-        assert self.total_surcharge is not None, "surcharge data missing"
+        if self.total_seatprice is None:
+            raise AssertionError("seatprice data missing")
+        if self.total_surcharge is None:
+            raise AssertionError("surcharge data missing")
         return utils.add_prices(self.total_seatprice, self.total_surcharge)
 
     def __repr__(self):
-        return "<TicketOrder {}>".format(self.code)
+        return f"<TicketOrder {self.code}>"
 
 
-class Order(JSONMixin, object):
+class Order(JSONMixin):
     """Describes tickets for a specific event/performance.
 
     Attributes:
@@ -434,9 +438,14 @@ class Order(JSONMixin, object):
         return ", ".join(seat_text for seat_text in text_set.values())
 
     def total_including_send_cost(self):
+        if self.send_method is None:
+            raise AssertionError("send_method data missing")
+
         return utils.add_prices(
-            self.total_seatprice, self.total_surcharge, self.send_method.cost
+            self.total_seatprice,
+            self.total_surcharge,
+            self.send_method.cost,
         )
 
     def __repr__(self):
-        return "<Order {}>".format(self.item)
+        return f"<Order {self.item}>"

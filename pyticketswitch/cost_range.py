@@ -4,7 +4,7 @@ from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.offer import Offer
 
 
-class CostRange(JSONMixin, object):
+class CostRange(JSONMixin):
     """CostRange gives summarized pricing for events and performances.
 
     This information is returned from cached data collected when making actual
@@ -182,9 +182,19 @@ class CostRange(JSONMixin, object):
         )
 
     def get_min_combined_price(self):
+        if self.min_seatprice is None:
+            raise AssertionError("min_seatprice data missing")
+        if self.min_surcharge is None:
+            raise AssertionError("min_surcharge data missing")
+
         return self.min_surcharge + self.min_seatprice
 
     def get_max_combined_price(self):
+        if self.max_seatprice is None:
+            raise AssertionError("max_seatprice data missing")
+        if self.max_surcharge is None:
+            raise AssertionError("max_surcharge data missing")
+
         return self.max_surcharge + self.max_seatprice
 
     def has_tax(self):
@@ -198,7 +208,7 @@ class CostRange(JSONMixin, object):
         )
 
 
-class CostRangeDetails(JSONMixin, object):
+class CostRangeDetails(JSONMixin):
     """Summarizes pricing by ticket types and price bands for an event/performance
 
     This information is returned from cached data collected when making actual

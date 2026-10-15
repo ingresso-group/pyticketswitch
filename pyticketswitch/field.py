@@ -1,7 +1,7 @@
 from pyticketswitch.mixins import JSONMixin
 
 
-class Field(JSONMixin, object):
+class Field(JSONMixin):
     """Describes a custom field for an event
 
     Attributes:

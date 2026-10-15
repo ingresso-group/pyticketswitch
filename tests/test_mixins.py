@@ -10,7 +10,7 @@ from pyticketswitch.mixins import JSONMixin, PaginationMixin, SeatPricingMixin
 class TestJSONMixin:
     ZULU = tzoffset("ZULU", 0)
 
-    class Foo(JSONMixin, object):
+    class Foo(JSONMixin):
         def __init__(self, bar):
             self.bar = bar
 
@@ -119,7 +119,7 @@ class TestPaginationMixin:
             }
         }
 
-        class FakeBaseMeta(object):
+        class FakeBaseMeta:
             @classmethod
             def from_api_data(cls, data):
                 return cls()
@@ -202,7 +202,7 @@ class TestPaginationMixin:
             }
         }
 
-        class FakeBaseMeta(object):
+        class FakeBaseMeta:
             @classmethod
             def from_api_data(cls, data):
                 return cls()

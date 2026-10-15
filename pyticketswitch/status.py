@@ -8,7 +8,7 @@ from pyticketswitch.trolley import Trolley
 from pyticketswitch.utils import isostr_to_datetime
 
 
-class Status(JSONMixin, object):
+class Status(JSONMixin):
     """Describes the current state of a transaction
 
     Attributes:

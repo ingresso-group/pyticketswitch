@@ -1,3 +1,5 @@
+import pytest
+
 from pyticketswitch.cost_range import CostRange, CostRangeDetails
 from pyticketswitch.offer import Offer
 
@@ -243,3 +245,21 @@ class TestCostRangeDetails:
 
         details = CostRangeDetails.from_api_data(data)
         assert len(details) == 0
+
+
+class TestCostRangeMissingData:
+    def test_combined_prices_with_missing_data_raise(self):
+        cost_range = CostRange()
+
+        with pytest.raises(AssertionError, match="min_seatprice data missing"):
+            cost_range.get_min_combined_price()
+        with pytest.raises(AssertionError, match="max_seatprice data missing"):
+            cost_range.get_max_combined_price()
+
+    def test_combined_prices_with_missing_surcharge_raise(self):
+        cost_range = CostRange(min_seatprice=1, max_seatprice=2)
+
+        with pytest.raises(AssertionError, match="min_surcharge data missing"):
+            cost_range.get_min_combined_price()
+        with pytest.raises(AssertionError, match="max_surcharge data missing"):
+            cost_range.get_max_combined_price()

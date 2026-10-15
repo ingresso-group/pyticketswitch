@@ -4,7 +4,7 @@ from pyticketswitch.order import Order
 from pyticketswitch.purchase_result import PurchaseResult
 
 
-class Trolley(JSONMixin, object):
+class Trolley(JSONMixin):
     """Describes a collection of products that are being purchased.
 
     Attributes:
@@ -190,10 +190,10 @@ class Trolley(JSONMixin, object):
 
     def __repr__(self):
         if self.transaction_id:
-            return "<Trolley id:{}>".format(self.transaction_id)
+            return f"<Trolley id:{self.transaction_id}>"
         if self.transaction_uuid:
-            return "<Trolley uuid:{}>".format(self.transaction_uuid)
+            return f"<Trolley uuid:{self.transaction_uuid}>"
         if self.token:
-            return "<Trolley token:{}>".format(self.token)
+            return f"<Trolley token:{self.token}>"
 
-        return super(Trolley, self).__repr__()
+        return super().__repr__()

@@ -28,7 +28,7 @@ class CancellationResult(JSONMixin):
         return cls(**kwargs)
 
     def is_fully_cancelled(self):
-        if len(self.trolley.bundles) == 0:
+        if self.trolley is None or len(self.trolley.bundles) == 0:
             return False
         for bundle in self.trolley.bundles:
             for order in bundle.orders:

@@ -6,7 +6,7 @@ from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.utils import bitmask_to_numbered_list
 
 
-class Month(JSONMixin, object):
+class Month(JSONMixin):
     """Availability summary data for a given month
 
     Attributes:
@@ -108,6 +108,9 @@ class Month(JSONMixin, object):
 
         """
         adjusted_day = day + 1 if day < 6 else 0
+        if self._weekday_bitmask is None:
+            return False
+
         return bool(self._weekday_bitmask >> adjusted_day & 1)
 
     def start_date(self):

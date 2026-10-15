@@ -5,7 +5,7 @@ from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
 from pyticketswitch.seat import Seat, SeatBlock
 
 
-class PriceBand(SeatPricingMixin, JSONMixin, object):
+class PriceBand(SeatPricingMixin, JSONMixin):
     """Describes a set of tickets with the same ticket type and price.
 
     Attributes:
@@ -201,7 +201,7 @@ class PriceBand(SeatPricingMixin, JSONMixin, object):
 
     def __repr__(self):
         if self.description:
-            return "<PriceBand {}:{}>".format(
-                self.code, self.description.encode("ascii", "ignore")
+            return (
+                f"<PriceBand {self.code}:{self.description.encode('ascii', 'ignore')}>"
             )
-        return "<PriceBand {}>".format(self.code)
+        return f"<PriceBand {self.code}>"
