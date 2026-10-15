@@ -37,7 +37,4 @@ class Country(JSONMixin):
         return cls(**kwargs)
 
     def __repr__(self):
-        return (
-            f"<Country {self.code}:"
-            f"{(self.description or '').encode('ascii', 'ignore')}>"
-        )
+        return f"<Country {self.code}:{self.description!r}>"

@@ -11,4 +11,9 @@ class TestCountry:
         assert country.description == "United Kingdom"
 
     def test_repr_without_description(self):
-        assert repr(Country("uk", description=None)) == "<Country uk:b''>"
+        assert repr(Country("uk", description=None)) == "<Country uk:None>"
+
+    def test_repr_with_description(self):
+        assert repr(Country("uk", description="United Kingdom")) == (
+            "<Country uk:'United Kingdom'>"
+        )

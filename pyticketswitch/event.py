@@ -327,7 +327,7 @@ class Event(JSONMixin):
         if raw_lingo_data:
             lingo_code = raw_lingo_data.get("lingo_code")
 
-        kwargs = {
+        return {
             "id_": id_,
             "description": data.get("event_desc", None),
             "status": data.get("event_status"),
@@ -381,8 +381,6 @@ class Event(JSONMixin):
             "area_code": data.get("area_code"),
             "lingo_code": lingo_code,
         }
-
-        return kwargs
 
     @classmethod
     def from_api_data(cls, data):
@@ -440,7 +438,7 @@ class Event(JSONMixin):
         return cls(**kwargs)
 
     def __repr__(self):
-        return f"<Event {self.id}:{(self.description or '').encode('ascii', 'ignore')}>"
+        return f"<Event {self.id}:{self.description!r}>"
 
 
 class EventMeta(PaginationMixin, CurrencyMeta):
@@ -462,5 +460,3 @@ class EventMeta(PaginationMixin, CurrencyMeta):
             the current page.
         total_results (int): the total number of results.
     """
-
-    pass

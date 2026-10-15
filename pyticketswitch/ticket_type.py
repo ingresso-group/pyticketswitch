@@ -65,7 +65,4 @@ class TicketType(JSONMixin):
         ]
 
     def __repr__(self):
-        return (
-            f"<TicketType {self.code}: "
-            f"{(self.description or '').encode('ascii', 'ignore')}>"
-        )
+        return f"<TicketType {self.code}: {self.description!r}>"

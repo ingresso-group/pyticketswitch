@@ -233,5 +233,4 @@ class Customer(JSONMixin):
                 address_line_two=self.address_lines[1],
             )
 
-        params = utils.filter_none_from_parameters(params)
-        return params
+        return utils.filter_none_from_parameters(params)

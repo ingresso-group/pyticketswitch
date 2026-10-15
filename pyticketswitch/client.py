@@ -137,8 +137,7 @@ class Client:
 
         """
 
-        url = f"{self.url}/f13/{end_point}/"
-        return url
+        return f"{self.url}/f13/{end_point}/"
 
     @utils.deprecated
     def get_auth_params(self):
@@ -384,9 +383,7 @@ class Client:
         """
         response = self.make_request("test.v1", {})
 
-        user = User.from_api_data(response)
-
-        return user
+        return User.from_api_data(response)
 
     def add_optional_kwargs(
         self,
@@ -763,9 +760,7 @@ class Client:
         result = response.get("results", {})
         raw_months = result.get("month", [])
 
-        months = [Month.from_api_data(data) for data in raw_months]
-
-        return months
+        return [Month.from_api_data(data) for data in raw_months]
 
     def list_performances(
         self, event_id, start_date=None, end_date=None, page_length=0, page=0, **kwargs

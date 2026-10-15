@@ -269,7 +269,7 @@ class AvailabilityDetails(JSONMixin):
 
                     if avail_details._weekday_mask:
                         weekday_list = []
-                        for day in range(0, 7):
+                        for day in range(7):
                             weekday_list.append(avail_details.on_weekday(day))
                         avail_details.weekday_list = weekday_list
                     details.append(avail_details)

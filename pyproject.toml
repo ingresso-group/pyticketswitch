@@ -12,8 +12,8 @@ license-files = ["LICENSE"]
 authors = [{ name = "Ingresso", email = "systems@ingresso.co.uk" }]
 requires-python = ">=3.10"
 dependencies = [
-    "requests>=2.0.0",
-    "python-dateutil>2.5.3",
+    "requests>=2.31",
+    "python-dateutil>=2.8.2",
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -54,6 +54,10 @@ select = [
     "SIM",  # flake8-simplify
     "C90",  # mccabe complexity
     "RUF",  # ruff-specific
+    "PIE",  # flake8-pie
+    "FURB",  # refurb
+    "RET504",  # unnecessary assignment before return
+    "TC006",  # quoted type in cast()
 ]
 ignore = [
     "E501",  # line length is handled by the formatter

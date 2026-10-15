@@ -123,7 +123,7 @@ class PaginationMixin:
     @classmethod
     def from_api_data(cls, data, result_key=None, *args, **kwargs):
         # cooperative mixin: from_api_data is provided by the next class in the MRO
-        inst = cast(Any, super()).from_api_data(data)
+        inst = cast("Any", super()).from_api_data(data)
 
         if not result_key:
             result_key = "results"
@@ -183,13 +183,12 @@ class SeatPricingMixin:
 
     @staticmethod
     def kwargs_from_api_data(data):
-        kwargs = {
+        return {
             "seatprice": data.get("sale_seatprice"),
             "surcharge": data.get("sale_surcharge"),
             "non_offer_seatprice": data.get("non_offer_sale_seatprice"),
             "non_offer_surcharge": data.get("non_offer_sale_surcharge"),
         }
-        return kwargs
 
     def combined_price(self):
         """Returns the combined seatprice and surcharge.

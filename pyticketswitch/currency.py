@@ -61,6 +61,18 @@ class Currency(JSONMixin):
     def __ne__(self, other):
         return not self == other
 
+    def __hash__(self):
+        return hash(
+            (
+                self.code,
+                self.number,
+                self.factor,
+                self.places,
+                self.pre_symbol,
+                self.post_symbol,
+            )
+        )
+
     @classmethod
     def from_api_data(cls, data):
         """Convert data from the API into a native object.
@@ -103,7 +115,7 @@ class Currency(JSONMixin):
             u'$12.34'
 
         """
-        price = price if price else 0
+        price = price or 0
         pre = self.pre_symbol or ""
         post = self.post_symbol or ""
         return f"{pre}{price:.{self.places}f}{post}"

@@ -28,8 +28,7 @@ from pyticketswitch.user import User
 
 @pytest.fixture
 def client():
-    client = Client(user="bilbo", password="baggins", use_decimal=True)
-    return client
+    return Client(user="bilbo", password="baggins", use_decimal=True)
 
 
 @pytest.fixture

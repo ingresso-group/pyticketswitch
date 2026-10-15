@@ -121,13 +121,11 @@ class Month(JSONMixin):
         if not num_list:
             return
         first_day = num_list[0]
-        howdy = datetime.date(year=self.year, month=self.month, day=first_day)
-        return howdy
+        return datetime.date(year=self.year, month=self.month, day=first_day)
 
     def end_date(self):
         num_list = bitmask_to_numbered_list(self._dates_bitmask)
         if not num_list:
             return
         last_day = num_list[-1]
-        howdy = datetime.date(year=self.year, month=self.month, day=last_day)
-        return howdy
+        return datetime.date(year=self.year, month=self.month, day=last_day)

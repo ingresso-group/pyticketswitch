@@ -31,13 +31,12 @@ def avail_details():
         },
         "weekday_mask": 63,
     }
-    details = AvailabilityDetails(**kwargs)
-    return details
+    return AvailabilityDetails(**kwargs)
 
 
 @pytest.fixture
 def data_meta():
-    data = {
+    return {
         "availability": {
             "ticket_type": [
                 {
@@ -111,8 +110,6 @@ def data_meta():
         "source_code": "BackendCode",
         "valid_quantities": [1, 4, 6, 7],
     }
-
-    return data
 
 
 class TestAvailabilityMeta:

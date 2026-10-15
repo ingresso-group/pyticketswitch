@@ -90,7 +90,4 @@ class SendMethod(JSONMixin):
         return cls(**kwargs)
 
     def __repr__(self):
-        return (
-            f"<SendMethod {self.code}:"
-            f"{(self.description or '').encode('ascii', 'ignore')}>"
-        )
+        return f"<SendMethod {self.code}:{self.description!r}>"

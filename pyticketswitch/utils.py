@@ -35,9 +35,7 @@ def date_range_str(start_date, end_date):
 
     end_date = end_date.strftime("%Y%m%d") if end_date else ""
 
-    date_range = f"{start_date}:{end_date}" if start_date or end_date else ""
-
-    return date_range
+    return f"{start_date}:{end_date}" if start_date or end_date else ""
 
 
 def isostr_to_datetime(date_str):
@@ -57,8 +55,7 @@ def isostr_to_datetime(date_str):
     if not date_str:
         raise ValueError(f"{date_str} is not a valid datetime string")
 
-    dt = parser.parse(date_str)
-    return dt
+    return parser.parse(date_str)
 
 
 def yyyymmdd_to_date(date_str):

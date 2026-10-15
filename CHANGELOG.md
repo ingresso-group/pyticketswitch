@@ -40,6 +40,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     `TypeError` with an explicit message for `None`.
   - `utils.specific_dates_from_api_data()` raises `KeyError` for an unknown
     month name (previously `TypeError`).
+- `__repr__` of `Country`, `Discount`, `Event`, `PriceBand`, `SendMethod` and
+  `TicketType` now shows the description with `repr()` (e.g.
+  `<Country uk:'United Kingdom'>`) instead of the Python 2 style `b'...'` bytes
+  literal.
+- `Currency` now defines `__hash__` consistently with `__eq__`, so it can be
+  used in sets and as a dict key.
+- Raised the minimum dependency versions to `requests>=2.31` and
+  `python-dateutil>=2.8.2`.
+- `pyticketswitch.Client` is now an explicit re-export.
 - CI now tests against a Python 3.10 / 3.12 / 3.14 matrix.
 
 ### Security

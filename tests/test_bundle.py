@@ -73,7 +73,7 @@ class TestBundle:
             "bundle_source_code": "ext_test0",
             "bundle_source_desc": "External Test Backend 0",
             "bundle_total_cost": Decimal("54.7"),
-            "bundle_total_seatprice": Decimal("51"),
+            "bundle_total_seatprice": Decimal(51),
             "bundle_total_send_cost": Decimal("1.5"),
             "bundle_total_surcharge": Decimal("2.2"),
             "bundle_send_cost_tax_component": Decimal("0.95"),

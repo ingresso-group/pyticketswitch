@@ -124,7 +124,4 @@ class Discount(SeatPricingMixin, JSONMixin):
         return cls(**kwargs)
 
     def __repr__(self):
-        return (
-            f"<Discount {self.code}:"
-            f"{(self.description or '').encode('ascii', 'ignore')}>"
-        )
+        return f"<Discount {self.code}:{self.description!r}>"

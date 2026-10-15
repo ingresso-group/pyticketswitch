@@ -201,7 +201,5 @@ class PriceBand(SeatPricingMixin, JSONMixin):
 
     def __repr__(self):
         if self.description:
-            return (
-                f"<PriceBand {self.code}:{self.description.encode('ascii', 'ignore')}>"
-            )
+            return f"<PriceBand {self.code}:{self.description!r}>"
         return f"<PriceBand {self.code}>"

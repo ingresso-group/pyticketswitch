@@ -197,3 +197,12 @@ class TestCurrencyMeta:
         meta = CurrencyMeta.from_api_data(data)
         currency = meta.get_desired_currency()
         assert currency.code == "usd"
+
+    def test_hash_is_consistent_with_equality(self):
+        first = Currency("gbp", number=826, factor=100, places=2, pre_symbol="£")
+        second = Currency("gbp", number=826, factor=100, places=2, pre_symbol="£")
+        other = Currency("usd", number=840, factor=100, places=2, pre_symbol="$")
+
+        assert first == second
+        assert hash(first) == hash(second)
+        assert len({first, second, other}) == 2
