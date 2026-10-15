@@ -1,7 +1,6 @@
 import decimal
 import requests
 import logging
-import six
 import pyticketswitch
 from pyticketswitch import exceptions, utils
 from pyticketswitch.availability import AvailabilityMeta
@@ -24,6 +23,55 @@ logger = logging.getLogger(__name__)
 POST = "post"
 GET = "get"
 DEFAULT_ROOT_URL = "https://api.ticketswitch.com"
+
+# Fields that carry PCI-DSS sensitive cardholder/authentication data.
+#
+# ``card_number`` is the full PAN (Primary Account Number) and ``cv_two`` is
+# the card's CVV2/CV2 security code - PCI-DSS classifies the latter as
+# "Sensitive Authentication Data" which must *never* be stored. Neither is
+# ever logged, not even partially: they are dropped from anything we log.
+#
+# See ``pyticketswitch.payment_methods.CardDetails.as_api_parameters`` for
+# where these field names originate - it is the only payment method that
+# carries raw card data (``RedirectionDetails``, ``StripeDetails`` and
+# ``CiderDetails`` only ever carry tokens/URLs, never a raw PAN or CVV2).
+SENSITIVE_FIELDS = frozenset({"card_number", "cv_two"})
+
+
+def redact_sensitive_params(params):
+    """Return a copy of ``params`` without the PCI-DSS sensitive fields.
+
+    This must only ever be used to build a value for logging - the returned
+    dict is a copy, the original ``params`` (used for the actual API call)
+    is left completely untouched.
+    """
+    if not isinstance(params, dict):
+        return params
+
+    return {key: value for key, value in params.items() if key not in SENSITIVE_FIELDS}
+
+
+def redact_sensitive_data(data):
+    """Recursively return a copy of ``data`` without the sensitive fields.
+
+    Used to sanitise API responses before they are logged. In practice the
+    ticketswitch API never echoes the card number or CVV2 back in a
+    response (only card *types*/booleans such as ``accepted_cards`` or
+    ``failed_cv_two`` are returned) but this walks nested dicts/lists so
+    that logging stays safe even if that were ever to change, or an
+    undocumented field carried it.
+    """
+    if isinstance(data, dict):
+        return {
+            key: redact_sensitive_data(value)
+            for key, value in data.items()
+            if key not in SENSITIVE_FIELDS
+        }
+
+    if isinstance(data, list):
+        return [redact_sensitive_data(item) for item in data]
+
+    return data
 
 
 class Client(object):
@@ -237,7 +285,13 @@ class Client(object):
         if not params.get("tsw_session_track_id"):
             params.update(self.get_tracking_params())
 
-        logger.debug("url: %s; endpoint: %s; params: %s", self.url, endpoint, params)
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(
+                "url: %s; endpoint: %s; params: %s",
+                self.url,
+                endpoint,
+                redact_sensitive_params(params),
+            )
 
         raw_headers = self.get_headers(headers)
 
@@ -254,8 +308,6 @@ class Client(object):
                 url, auth=auth, params=params, headers=raw_headers, timeout=timeout
             )
 
-        logger.debug(six.u(response.content))
-
         self.cleanup_session(session)
 
         parse_float = decimal.Decimal if self.use_decimal else float
@@ -263,6 +315,14 @@ class Client(object):
         try:
             contents = response.json(parse_float=parse_float)
         except ValueError:
+            # unparseable response - the body can't be reliably redacted (e.g.
+            # a truncated JSON payload may still contain card data), so never
+            # log it; only log safe metadata.
+            logger.debug(
+                "unparseable response: endpoint: %s; status code: %s",
+                endpoint,
+                response.status_code,
+            )
             raise exceptions.InvalidResponseError(
                 (
                     "Unable to parse json data from {} response with status "
@@ -272,6 +332,9 @@ class Client(object):
                     response.status_code,
                 )
             )
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("response: %s", redact_sensitive_data(contents))
 
         if "error_code" in contents:
 
