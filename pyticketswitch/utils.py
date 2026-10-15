@@ -65,7 +65,7 @@ def isostr_to_datetime(date_str: str | None) -> datetime:
     return parser.parse(date_str)
 
 
-def yyyymmdd_to_date(date_str: str) -> date | None:
+def yyyymmdd_to_date(date_str: str) -> date:
     """Convert a YYYYMMDDD formated date to python :py:class:`datetime.date` object.
 
     Args:
@@ -80,9 +80,7 @@ def yyyymmdd_to_date(date_str: str) -> date | None:
     if not date_str:
         raise ValueError(f"{date_str} is not a valid datetime string")
 
-    date = datetime.strptime(date_str, "%Y%m%d")
-    if date:
-        return date.date()
+    return datetime.strptime(date_str, "%Y%m%d").date()
 
 
 def specific_dates_from_api_data(dates: dict[str, Any]) -> list[date]:
@@ -224,9 +222,9 @@ def filter_none_from_parameters(params: dict[str, Any]) -> dict[str, Any]:
 
 
 def deprecation_warning(message: str, stacklevel: int = 2) -> None:
-    warnings.simplefilter("always", DeprecationWarning)  # turn off filter
-    warnings.warn(message, category=DeprecationWarning, stacklevel=stacklevel)
-    warnings.simplefilter("default", DeprecationWarning)  # reset filter
+    with warnings.catch_warnings():
+        warnings.simplefilter("always", DeprecationWarning)
+        warnings.warn(message, category=DeprecationWarning, stacklevel=stacklevel)
 
 
 def deprecated(func: Callable[P, R]) -> Callable[P, R]:
