@@ -1,3 +1,5 @@
+import pytest
+
 from pyticketswitch.currency import Currency, CurrencyMeta
 
 
@@ -198,11 +200,10 @@ class TestCurrencyMeta:
         currency = meta.get_desired_currency()
         assert currency.code == "usd"
 
-    def test_hash_is_consistent_with_equality(self):
-        first = Currency("gbp", number=826, factor=100, places=2, pre_symbol="£")
-        second = Currency("gbp", number=826, factor=100, places=2, pre_symbol="£")
-        other = Currency("usd", number=840, factor=100, places=2, pre_symbol="$")
+    def test_is_unhashable_because_its_fields_are_mutable(self):
+        # equality depends on mutable fields, so hashing would make entries
+        # unreachable if a field changed after insertion into a dict or set.
+        currency = Currency("gbp", number=826, factor=100, places=2)
 
-        assert first == second
-        assert hash(first) == hash(second)
-        assert len({first, second, other}) == 2
+        with pytest.raises(TypeError, match="unhashable"):
+            hash(currency)

@@ -44,8 +44,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   `TicketType` now shows the description with `repr()` (e.g.
   `<Country uk:'United Kingdom'>`) instead of the Python 2 style `b'...'` bytes
   literal.
-- `Currency` now defines `__hash__` consistently with `__eq__`, so it can be
-  used in sets and as a dict key.
 - Raised the minimum dependency versions to `requests>=2.31` and
   `python-dateutil>=2.8.2`.
 - `pyticketswitch.Client` is now an explicit re-export.
