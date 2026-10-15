@@ -2,7 +2,6 @@ from pyticketswitch.review import Review
 
 
 class TestReview:
-
     def test_from_api_data(self):
 
         data = {

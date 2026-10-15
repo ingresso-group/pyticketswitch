@@ -1,9 +1,9 @@
 import datetime
+
 from pyticketswitch.performance import Performance, PerformanceMeta
 
 
 class TestPerformance:
-
     def test_from_api_data(self):
 
         data = {
@@ -182,7 +182,9 @@ class TestPerformance:
         assert performance.has_time is True
 
     def test_has_time_defaults_to_none(self):
-        performance = Performance.from_api_data({"perf_id": "25DR-52O", "event_id": "25DR"})
+        performance = Performance.from_api_data(
+            {"perf_id": "25DR-52O", "event_id": "25DR"}
+        )
         assert performance.has_time is None
 
     def test_has_time_false(self):
@@ -205,7 +207,6 @@ class TestPerformance:
 
 
 class TestPerformanceMeta:
-
     def test_from_api_data(self):
         data = {
             "autoselect_this_performance": True,

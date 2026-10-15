@@ -2,7 +2,6 @@ from pyticketswitch.purchase_result import PurchaseResult
 
 
 class TestPurchaseResult:
-
     def test_from_api_data(self):
 
         data = {

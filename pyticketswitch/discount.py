@@ -1,5 +1,5 @@
-from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
 from pyticketswitch.commission import Commission
+from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
 
 
 class Discount(SeatPricingMixin, JSONMixin, object):
@@ -49,7 +49,7 @@ class Discount(SeatPricingMixin, JSONMixin, object):
         max_order_no_of_seats=None,
         max_discount_no_of_seats=None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         super(Discount, self).__init__(*args, **kwargs)
         self.code = code

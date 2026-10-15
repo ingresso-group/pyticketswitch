@@ -1,11 +1,11 @@
-from pyticketswitch.trolley import Trolley
-from pyticketswitch.utils import isostr_to_datetime
+from pyticketswitch.address import Address
+from pyticketswitch.callout import Callout
+from pyticketswitch.card_type import CardType
 from pyticketswitch.country import Country
 from pyticketswitch.customer import Customer
 from pyticketswitch.mixins import JSONMixin
-from pyticketswitch.address import Address
-from pyticketswitch.card_type import CardType
-from pyticketswitch.callout import Callout
+from pyticketswitch.trolley import Trolley
+from pyticketswitch.utils import isostr_to_datetime
 
 
 class Status(JSONMixin, object):

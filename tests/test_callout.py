@@ -1,9 +1,9 @@
 from collections import OrderedDict
+
 from pyticketswitch.callout import Callout, Integration
 
 
 class TestCallout:
-
     def test_from_api_data(self):
 
         data = {
@@ -85,7 +85,6 @@ class TestCallout:
 
 
 class TestIntegration:
-
     def test_from_api_data(self):
 
         data = {

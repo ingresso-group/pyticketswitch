@@ -1,5 +1,5 @@
-from pyticketswitch.mixins import JSONMixin
 from pyticketswitch import utils
+from pyticketswitch.mixins import JSONMixin
 
 
 class Customer(JSONMixin, object):
@@ -77,7 +77,7 @@ class Customer(JSONMixin, object):
         town_latin=None,
         county_latin=None,
         country_latin=None,
-        **kwargs
+        **kwargs,
     ):
 
         self.first_name = first_name

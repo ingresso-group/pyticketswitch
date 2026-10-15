@@ -1,7 +1,8 @@
 import datetime
-from pyticketswitch.mixins import JSONMixin
+
 from pyticketswitch.currency import CurrencyMeta
 from pyticketswitch.misc import MONTH_NUMBERS
+from pyticketswitch.mixins import JSONMixin
 
 
 class AvailabilityMeta(CurrencyMeta):
@@ -49,7 +50,7 @@ class AvailabilityMeta(CurrencyMeta):
         source_code=None,
         must_select_whole_seat_block=False,
         *args,
-        **kwargs
+        **kwargs,
     ):
         self.contiguous_seat_selection_only = contiguous_seat_selection_only
         self.currency = currency
@@ -202,7 +203,6 @@ class AvailabilityDetails(JSONMixin, object):
                 raw_details_list = price_band.get("avail_detail", [{}])
 
                 for raw_details in raw_details_list:
-
                     kwargs["seatprice"] = raw_details.get("seatprice", 0.0)
                     kwargs["full_seatprice"] = raw_details.get("full_seatprice", 0.0)
                     kwargs["surcharge"] = raw_details.get("surcharge", 0.0)

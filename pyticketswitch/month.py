@@ -1,7 +1,7 @@
 import datetime
 
-from pyticketswitch.misc import MONTH_NUMBERS
 from pyticketswitch.cost_range import CostRange
+from pyticketswitch.misc import MONTH_NUMBERS
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.utils import bitmask_to_numbered_list
 

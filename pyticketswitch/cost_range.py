@@ -1,7 +1,7 @@
-from pyticketswitch.misc import DiscountSemanticType
-from pyticketswitch.offer import Offer
-from pyticketswitch.mixins import JSONMixin
 from pyticketswitch import utils
+from pyticketswitch.misc import DiscountSemanticType
+from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.offer import Offer
 
 
 class CostRange(JSONMixin, object):
@@ -225,7 +225,7 @@ class CostRangeDetails(JSONMixin, object):
         ticket_type_description=None,
         price_band_description=None,
         cost_range_no_singles=None,
-        **kwargs
+        **kwargs,
     ):
 
         self.ticket_type_code = ticket_type_code

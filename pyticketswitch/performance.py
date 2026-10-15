@@ -1,8 +1,8 @@
 from pyticketswitch import utils
-from pyticketswitch.cost_range import CostRange
 from pyticketswitch.availability import AvailabilityDetails
-from pyticketswitch.mixins import JSONMixin, PaginationMixin
+from pyticketswitch.cost_range import CostRange
 from pyticketswitch.currency import CurrencyMeta
+from pyticketswitch.mixins import JSONMixin, PaginationMixin
 
 
 class Performance(JSONMixin, object):

@@ -1,9 +1,9 @@
 from decimal import Decimal
+
 from pyticketswitch.commission import Commission
 
 
 class TestCommission:
-
     def test_from_api_data(self):
 
         data = {

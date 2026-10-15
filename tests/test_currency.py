@@ -1,9 +1,7 @@
-
 from pyticketswitch.currency import Currency, CurrencyMeta
 
 
 class TestCurrency:
-
     def test_from_api_data(self):
 
         data = {
@@ -124,7 +122,6 @@ class TestCurrency:
 
 
 class TestCurrencyMeta:
-
     def test_from_api_data(self):
 
         data = {

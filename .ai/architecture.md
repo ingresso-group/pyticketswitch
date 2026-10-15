@@ -8,7 +8,7 @@ Python SDK/library providing a wrapper for the Ingresso F13 API. Enables event s
 
 ## Stack
 
-- Python 2.7/3.x, requests, python-dateutil, six
+- Python 3.10+, requests, python-dateutil
 - Synchronous HTTP with requests library
 - JSON response parsing with decimal support
 
@@ -22,7 +22,7 @@ Python SDK/library providing a wrapper for the Ingresso F13 API. Enables event s
   - Utilities: [utils.py](../pyticketswitch/utils.py)
   - Core models: [event.py](../pyticketswitch/event.py), [performance.py](../pyticketswitch/performance.py), [reservation.py](../pyticketswitch/reservation.py), [status.py](../pyticketswitch/status.py)
 
-- Package setup: [setup.py](../setup.py)
+- Package setup: [pyproject.toml](../pyproject.toml)
 
 **Dependencies**:
 
@@ -43,7 +43,6 @@ Python SDK/library providing a wrapper for the Ingresso F13 API. Enables event s
 **Configuration**:
 
 - Style: [setup.cfg](../setup.cfg)
-- Tox: [tox.ini](../tox.ini)
 - Behave: [behave.ini](../behave.ini)
 
 ## Build & Deploy

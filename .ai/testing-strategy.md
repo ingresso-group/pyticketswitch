@@ -48,16 +48,17 @@
 ## Commands
 
 ```bash
-make test     # all (flake8 + pylint + pytest + behave + coverage)
-make flake    # flake8 only
-tox           # run tests across Python versions
+make test     # all (ruff + pyright + pytest + behave)
+make check    # static checks only (ruff + pyright)
+make lint     # ruff lint only
 ```
 
 ## CI Integration
 
 CircleCI runs on every push ([.circleci/config.yml](../.circleci/config.yml)):
-1. flake8 - Style checks
-2. black - Code formatting
-3. behave coverage - Integration tests with coverage
-4. pytest coverage - Unit tests with coverage
-5. Coverage report to Codecov
+1. ruff check - Lint
+2. ruff format --check - Formatting
+3. pyright - Type checking
+4. behave coverage - Integration tests with coverage
+5. pytest coverage - Unit tests with coverage
+6. Coverage report to Codecov

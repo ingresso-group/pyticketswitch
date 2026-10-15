@@ -1,15 +1,15 @@
-import pytest
 import datetime
 import decimal
 from datetime import date
-from dateutil.tz import tzoffset
 from decimal import Decimal
-from pyticketswitch import utils
-from pyticketswitch import exceptions
+
+import pytest
+from dateutil.tz import tzoffset
+
+from pyticketswitch import exceptions, utils
 
 
 class TestDateRangeStr:
-
     def test_date_range_str(self):
         start_date = date(2016, 6, 21)
         end_date = date(2017, 1, 1)
@@ -60,7 +60,6 @@ class TestDateRangeStr:
 
 
 class TestIsoStrToDatetime:
-
     BST = tzoffset("BST", 3600)
     ZULU = tzoffset("ZULU", 0)
 
@@ -99,7 +98,6 @@ class TestIsoStrToDatetime:
 
 
 class TestYYYYToDate:
-
     def test_yyyymmdd_to_date_valid_string(self):
         date = utils.yyyymmdd_to_date("20160801")
         assert date.year == 2016
@@ -118,7 +116,6 @@ class TestYYYYToDate:
 
 
 class TestSpecificDatesFromAPI:
-
     def test_specific_dates_from_api(self):
         api_data = {
             "year_2016": {
@@ -136,7 +133,7 @@ class TestSpecificDatesFromAPI:
         }
         results = utils.specific_dates_from_api_data(api_data)
         assert len(results) == 3
-        assert type(results[0]) == datetime.date
+        assert type(results[0]) is datetime.date
 
 
 class TestBitmaskToBooleanList:
@@ -157,7 +154,6 @@ class TestBitmaskToBooleanList:
 
 
 class TestBitmaskToNumberedList:
-
     def test_simple_masks(self):
         # 0 == 0b0 so we only have one bit an it's a 0
         assert utils.bitmask_to_numbered_list(0) == []
@@ -173,7 +169,6 @@ class TestBitmaskToNumberedList:
 
 
 class TestGetPrice:
-
     def test_with_keys(self):
 
         data = {
@@ -251,7 +246,6 @@ class TestGetPrice:
 
 
 class TestAddPrices:
-
     def test_adding_two_floats(self):
         combined = utils.add_prices(1.0, 1.0)
         assert combined == 2.0
@@ -306,7 +300,6 @@ class TestAddPrices:
 
 
 class TestFilterNoneFromParameters:
-
     def test_with_parameters(self):
 
         params = {

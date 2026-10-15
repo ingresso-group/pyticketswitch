@@ -51,7 +51,7 @@ class Reservation(Status):
         unreserved_orders=None,
         input_contained_unavailable_order=False,
         *args,
-        **kwargs
+        **kwargs,
     ):
 
         super(Reservation, self).__init__(*args, **kwargs)

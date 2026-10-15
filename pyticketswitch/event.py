@@ -1,13 +1,13 @@
-from pyticketswitch.exceptions import IntegrityError
-from pyticketswitch.cost_range import CostRange
-from pyticketswitch.ticket_type import TicketType
-from pyticketswitch.content import Content
-from pyticketswitch.media import Media
-from pyticketswitch.review import Review
 from pyticketswitch.availability import AvailabilityDetails
-from pyticketswitch.field import Field
-from pyticketswitch.mixins import JSONMixin, PaginationMixin
+from pyticketswitch.content import Content
+from pyticketswitch.cost_range import CostRange
 from pyticketswitch.currency import CurrencyMeta
+from pyticketswitch.exceptions import IntegrityError
+from pyticketswitch.field import Field
+from pyticketswitch.media import Media
+from pyticketswitch.mixins import JSONMixin, PaginationMixin
+from pyticketswitch.review import Review
+from pyticketswitch.ticket_type import TicketType
 
 
 class Event(JSONMixin, object):

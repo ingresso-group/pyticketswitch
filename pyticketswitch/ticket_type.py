@@ -1,5 +1,5 @@
-from pyticketswitch.price_band import PriceBand
 from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.price_band import PriceBand
 
 
 class TicketType(JSONMixin, object):

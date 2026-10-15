@@ -1,16 +1,16 @@
-import pytest
 import datetime
-from dateutil.tz import tzoffset
 from decimal import Decimal
+
+import pytest
+from dateutil.tz import tzoffset
+
 from pyticketswitch.mixins import JSONMixin, PaginationMixin, SeatPricingMixin
 
 
 class TestJSONMixin:
-
     ZULU = tzoffset("ZULU", 0)
 
     class Foo(JSONMixin, object):
-
         def __init__(self, bar):
             self.bar = bar
 
@@ -105,7 +105,6 @@ class TestJSONMixin:
 
 
 class TestPaginationMixin:
-
     def test_from_api_data(self):
 
         data = {
@@ -121,7 +120,6 @@ class TestPaginationMixin:
         }
 
         class FakeBaseMeta(object):
-
             @classmethod
             def from_api_data(cls, data):
                 return cls()
@@ -205,7 +203,6 @@ class TestPaginationMixin:
         }
 
         class FakeBaseMeta(object):
-
             @classmethod
             def from_api_data(cls, data):
                 return cls()
@@ -223,7 +220,6 @@ class TestPaginationMixin:
 
 
 class TestSeatPricingMixin:
-
     def test_kwargs_from_api_data(self):
 
         data = {

@@ -2,7 +2,6 @@ from pyticketswitch.media import Media
 
 
 class TestMedia:
-
     def test_from_api_data_secure(self):
         data = {
             "caption_html": "<BR>",

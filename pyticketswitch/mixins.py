@@ -110,7 +110,7 @@ class PaginationMixin(object):
         total_results=None,
         results_remaining=None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         self.page_length = page_length
         self.page_number = page_number
@@ -174,7 +174,7 @@ class SeatPricingMixin(object):
         non_offer_seatprice=None,
         non_offer_surcharge=None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         super(SeatPricingMixin, self).__init__(*args, **kwargs)
         self.seatprice = seatprice

@@ -2,7 +2,6 @@ from pyticketswitch.address import Address
 
 
 class TestAddress:
-
     def test_from_api_data(self):
         data = {
             "address_line_one": "Metro Building",

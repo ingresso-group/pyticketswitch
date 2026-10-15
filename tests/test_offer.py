@@ -2,7 +2,6 @@ from pyticketswitch.offer import Offer
 
 
 class TestOffer:
-
     def test_from_api_data(self):
         data = {
             "absolute_saving": 9,

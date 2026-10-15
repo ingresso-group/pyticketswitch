@@ -14,8 +14,8 @@ The codebase is well-organized with clear separation between library code (39 mo
 
 - ✅ Clear organization with separate packages for library code, tests, and documentation
 - ✅ Consistent patterns (classes with from_api_data() factory methods, mixins for shared behavior)
-- ✅ Linting enforced via flake8 ([setup.cfg](../setup.cfg)) - max-complexity=15
-- ✅ Code formatting via Black ([requirements/test.txt](../requirements/test.txt))
+- ✅ Linting enforced via ruff ([pyproject.toml](../pyproject.toml)) - max-complexity=15
+- ✅ Code formatting via ruff format ([pyproject.toml](../pyproject.toml))
 - ✅ One class per file convention ([event.py](../pyticketswitch/event.py) → Event, [performance.py](../pyticketswitch/performance.py) → Performance)
 
 **Testing**

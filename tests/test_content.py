@@ -2,7 +2,6 @@ from pyticketswitch.content import Content
 
 
 class TestContent:
-
     def test_from_api_data(self):
 
         data = {

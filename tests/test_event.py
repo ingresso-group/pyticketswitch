@@ -1,7 +1,8 @@
 import pytest
+from dateutil.tz import tzoffset
+
 from pyticketswitch import exceptions
 from pyticketswitch.event import Event
-from dateutil.tz import tzoffset
 
 
 @pytest.fixture
@@ -181,8 +182,6 @@ def data():
                                     "surcharge": 11.25,
                                     "quantity_options": {"valid_quantity_mask": 2046},
                                     "day_mask": 21,
-                                    "seatprice": 57.5,
-                                    "surcharge": 11.25,
                                 }
                             ],
                         }
@@ -195,7 +194,6 @@ def data():
 
 
 class TestEvent:
-
     BST = tzoffset("BST", 3600)
     DRC = tzoffset("DRC", 7200)
 

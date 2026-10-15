@@ -4,7 +4,6 @@ from pyticketswitch.trolley import Trolley
 
 
 class TestReservation:
-
     def test_from_api_data(self):
 
         data = {

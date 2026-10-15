@@ -2,11 +2,10 @@
 
 **Style**
 
-- Python 2.7/3.x compatible (uses six for compatibility)
+- Python 3.10+
 - Python conventions ([PEP 8](https://www.python.org/dev/peps/pep-0008/))
-- Flake8 linter ([setup.cfg](../setup.cfg)) - max-complexity=15, max-line-length=137
-- Black formatter for consistent code style
-- Pylint for additional code quality checks
+- Ruff linter and formatter ([pyproject.toml](../pyproject.toml)) - max-complexity=15
+- Pyright type checker (basic mode)
 
 **Naming conventions**:
 
@@ -31,7 +30,7 @@
   - Exceptions: [exceptions.py](../pyticketswitch/exceptions.py)
   - Utilities: [utils.py](../pyticketswitch/utils.py)
 
-- Package setup: [setup.py](../setup.py)
+- Package setup: [pyproject.toml](../pyproject.toml)
 
 **Tests**
 
@@ -46,7 +45,6 @@
 **Configuration**:
 
 - Style: [setup.cfg](../setup.cfg)
-- Tox: [tox.ini](../tox.ini)
 - Behave: [behave.ini](../behave.ini)
 
 ## Dependencies

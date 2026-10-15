@@ -1,13 +1,13 @@
 from decimal import Decimal
-from pyticketswitch.event import Event
-from pyticketswitch.performance import Performance
-from pyticketswitch.order import TicketOrder, Order
-from pyticketswitch.seat import Seat
+
 from pyticketswitch.commission import Commission
+from pyticketswitch.event import Event
+from pyticketswitch.order import Order, TicketOrder
+from pyticketswitch.performance import Performance
+from pyticketswitch.seat import Seat
 
 
 class TestTicketOrder:
-
     def test_from_api_data(self):
         data = {
             "discount_code": "ADULT",
@@ -148,7 +148,6 @@ class TestTicketOrder:
 
 
 class TestOrder:
-
     def test_from_api_data(self):
 
         data = {

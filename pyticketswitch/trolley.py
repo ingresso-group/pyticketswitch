@@ -1,6 +1,6 @@
 from pyticketswitch.bundle import Bundle
-from pyticketswitch.order import Order
 from pyticketswitch.mixins import JSONMixin
+from pyticketswitch.order import Order
 from pyticketswitch.purchase_result import PurchaseResult
 
 

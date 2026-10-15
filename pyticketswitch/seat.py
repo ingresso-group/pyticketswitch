@@ -44,7 +44,6 @@ class SeatBlock(JSONMixin, object):
 
         seats = []
         for seat_id in block:
-
             column = None
             delimiter = separator
 
