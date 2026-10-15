@@ -438,8 +438,14 @@ class Order(JSONMixin):
         return ", ".join(seat_text for seat_text in text_set.values())
 
     def total_including_send_cost(self):
+        if self.total_seatprice is None:
+            raise AssertionError("total_seatprice data missing")
+        if self.total_surcharge is None:
+            raise AssertionError("total_surcharge data missing")
         if self.send_method is None:
             raise AssertionError("send_method data missing")
+        if self.send_method.cost is None:
+            raise AssertionError("send_method cost data missing")
 
         return utils.add_prices(
             self.total_seatprice,
