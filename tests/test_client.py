@@ -1,6 +1,7 @@
 import decimal
 import pytest
 import json
+import logging
 import requests
 from datetime import datetime
 from mock import Mock
@@ -349,7 +350,9 @@ class TestClient:
         with pytest.raises(exceptions.InvalidResponseError):
             client.make_request("test.v1", {})
 
-    def test_make_purchase_redacts_card_data_from_debug_log(self, client, monkeypatch):
+    def test_make_purchase_redacts_card_data_from_debug_log(
+        self, client, monkeypatch, caplog
+    ):
         """A live PCI-DSS violation: make_purchase() must never write the
         real card number or CVV2 to the debug log, even though it still
         needs to send the real values to the API.
@@ -370,6 +373,7 @@ class TestClient:
         session.post = fake_post
         monkeypatch.setattr(client, "get_session", Mock(return_value=session))
 
+        caplog.set_level(logging.DEBUG, logger=client_module.logger.name)
         mock_debug = Mock()
         monkeypatch.setattr(client_module.logger, "debug", mock_debug)
 
@@ -391,6 +395,10 @@ class TestClient:
 
         # Nothing logged at debug level should contain the real card number
         # or CVV2, in any form.
+        assert any(
+            call.args and call.args[0] == "response: %s"
+            for call in mock_debug.call_args_list
+        ), "expected the response log to be emitted"
         assert mock_debug.call_args_list, "expected at least one debug log call"
         for call in mock_debug.call_args_list:
             logged_text = " ".join(str(arg) for arg in call.args) + " ".join(
@@ -412,7 +420,7 @@ class TestClient:
         assert logged_params["cv_two"] == "[REDACTED]"
 
     def test_make_request_redacts_sensitive_fields_from_response_log(
-        self, client, monkeypatch
+        self, client, monkeypatch, caplog
     ):
         """Defence in depth: even though the real ticketswitch API never
         echoes card_number/cv_two back in a response, make sure the
@@ -431,16 +439,51 @@ class TestClient:
         session.get = fake_get
         monkeypatch.setattr(client, "get_session", Mock(return_value=session))
 
+        caplog.set_level(logging.DEBUG, logger=client_module.logger.name)
         mock_debug = Mock()
         monkeypatch.setattr(client_module.logger, "debug", mock_debug)
 
         client.make_request("test.v1", {})
 
+        assert any(
+            call.args and call.args[0] == "response: %s"
+            for call in mock_debug.call_args_list
+        ), "expected the response log to be emitted"
         for call in mock_debug.call_args_list:
             logged_text = " ".join(str(arg) for arg in call.args)
             assert "4111 1111 1111 1111" not in logged_text
             assert "123" not in logged_text
             assert "456" not in logged_text
+
+    def test_make_request_malformed_response_does_not_log_body(
+        self, client, monkeypatch, caplog
+    ):
+        """A truncated JSON body fails to parse but can still contain card
+        data, so it must never be logged.
+        """
+        malformed_body = '{"card_number":"4111111111111111","cv_two":"459"'
+
+        class MalformedResponse(FakeResponseRaisesValueError):
+            @property
+            def content(self):
+                return malformed_body
+
+        fake_get = Mock(return_value=MalformedResponse(status_code=200))
+        session = Mock(spec=requests.Session)
+        session.get = fake_get
+        monkeypatch.setattr(client, "get_session", Mock(return_value=session))
+
+        caplog.set_level(logging.DEBUG, logger=client_module.logger.name)
+        mock_debug = Mock()
+        monkeypatch.setattr(client_module.logger, "debug", mock_debug)
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.make_request("test.v1", {})
+
+        for call in mock_debug.call_args_list:
+            logged_text = " ".join(str(arg) for arg in call.args)
+            assert "4111111111111111" not in logged_text
+            assert "459" not in logged_text
 
     def test_add_optional_kwargs_extra_info(self, client):
         params = {}

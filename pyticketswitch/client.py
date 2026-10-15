@@ -322,12 +322,13 @@ class Client(object):
         if not params.get("tsw_session_track_id"):
             params.update(self.get_tracking_params())
 
-        logger.debug(
-            "url: %s; endpoint: %s; params: %s",
-            self.url,
-            endpoint,
-            redact_sensitive_params(params),
-        )
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(
+                "url: %s; endpoint: %s; params: %s",
+                self.url,
+                endpoint,
+                redact_sensitive_params(params),
+            )
 
         raw_headers = self.get_headers(headers)
 
@@ -351,10 +352,14 @@ class Client(object):
         try:
             contents = response.json(parse_float=parse_float)
         except ValueError:
-            # unparseable response - fall back to logging the raw body, as
-            # there's no structured data we can redact from a non-JSON
-            # payload. This is not expected to occur for real API responses.
-            logger.debug(six.u(response.content))
+            # unparseable response - the body can't be reliably redacted (e.g.
+            # a truncated JSON payload may still contain card data), so never
+            # log it; only log safe metadata.
+            logger.debug(
+                "unparseable response: endpoint: %s; status code: %s",
+                endpoint,
+                response.status_code,
+            )
             raise exceptions.InvalidResponseError(
                 (
                     "Unable to parse json data from {} response with status "
@@ -365,7 +370,8 @@ class Client(object):
                 )
             )
 
-        logger.debug("response: %s", redact_sensitive_data(contents))
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("response: %s", redact_sensitive_data(contents))
 
         if "error_code" in contents:
 
