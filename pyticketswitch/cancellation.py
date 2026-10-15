@@ -38,7 +38,9 @@ class CancellationResult(JSONMixin):
         if self.trolley is None or not self.trolley.bundles:
             return False
         for bundle in self.trolley.bundles:
-            for order in bundle.orders or []:
+            if not bundle.orders:
+                return False
+            for order in bundle.orders:
                 if order.cancellation_status != "cancelled":
                     return False
 

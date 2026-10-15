@@ -16,7 +16,7 @@ class PyticketswitchError(Exception):
 class APIError(PyticketswitchError):
     def __init__(
         self,
-        msg: str,
+        msg: str | dict[str, Any],
         code: int | None = None,
         response: Response | None = None,
         *args: Any,

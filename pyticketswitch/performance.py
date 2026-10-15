@@ -20,7 +20,7 @@ class Performance(JSONMixin):
 
     Attributes:
         id (str): identifier for the performance.
-        event_id (str): identifier for the event.
+        event_id (str | None): identifier for the event.
         date_time (:obj:`datetime.datetime`): the localised date and time for
             the performance.
         date_description (str): a human readable description of the date of the
@@ -55,7 +55,7 @@ class Performance(JSONMixin):
     def __init__(
         self,
         id_: str,
-        event_id: str,
+        event_id: str | None,
         date_time: datetime.datetime | None = None,
         date_description: str | None = None,
         time_description: str | None = None,
