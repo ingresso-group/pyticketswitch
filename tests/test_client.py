@@ -407,17 +407,15 @@ class TestClient:
             assert real_card_number not in logged_text
             assert real_cv_two not in logged_text
 
-        # The params log call should show the card number masked to its
-        # last 4 characters, and the CVV2 fully redacted.
+        # The params log call should omit the card number and CVV2 entirely.
         params_log_call = next(
             call
             for call in mock_debug.call_args_list
             if call.args and call.args[0] == "url: %s; endpoint: %s; params: %s"
         )
         logged_params = params_log_call.args[3]
-        expected_mask = "*" * (len(real_card_number) - 4) + real_card_number[-4:]
-        assert logged_params["card_number"] == expected_mask
-        assert logged_params["cv_two"] == "[REDACTED]"
+        assert "card_number" not in logged_params
+        assert "cv_two" not in logged_params
 
     def test_make_request_redacts_sensitive_fields_from_response_log(
         self, client, monkeypatch, caplog
@@ -2442,30 +2440,15 @@ class TestClient:
 
 
 class TestRedactSensitiveParams:
-    def test_masks_card_number_keeping_last_four(self):
-        params = {"card_number": "4111111111111111", "other": "value"}
+    def test_drops_card_number_and_cv_two(self):
+        params = {"card_number": "4111111111111111", "cv_two": "123", "other": "value"}
 
         redacted = redact_sensitive_params(params)
 
-        assert redacted["card_number"] == "*" * 12 + "1111"
-        assert redacted["other"] == "value"
+        assert redacted == {"other": "value"}
         # the original dict passed to the real API call must be untouched
         assert params["card_number"] == "4111111111111111"
-
-    def test_fully_redacts_cv_two_never_partially(self):
-        params = {"cv_two": "123"}
-
-        redacted = redact_sensitive_params(params)
-
-        assert redacted["cv_two"] == "[REDACTED]"
         assert params["cv_two"] == "123"
-
-    def test_short_card_number_is_fully_masked(self):
-        params = {"card_number": "12"}
-
-        redacted = redact_sensitive_params(params)
-
-        assert redacted["card_number"] == "**"
 
     def test_leaves_non_sensitive_fields_untouched(self):
         params = {
@@ -2484,22 +2467,21 @@ class TestRedactSensitiveParams:
 
 
 class TestRedactSensitiveData:
-    def test_redacts_card_number_nested_in_dict(self):
-        data = {"nested": {"card_number": "4111111111111111"}}
+    def test_drops_card_number_nested_in_dict(self):
+        data = {"nested": {"card_number": "4111111111111111", "a": 1}}
 
         redacted = redact_sensitive_data(data)
 
-        assert redacted["nested"]["card_number"] == "*" * 12 + "1111"
+        assert redacted == {"nested": {"a": 1}}
         # the original response data must be untouched
         assert data["nested"]["card_number"] == "4111111111111111"
 
-    def test_redacts_cv_two_within_lists(self):
+    def test_drops_cv_two_within_lists(self):
         data = {"items": [{"cv_two": "999"}, {"other": "value"}]}
 
         redacted = redact_sensitive_data(data)
 
-        assert redacted["items"][0]["cv_two"] == "[REDACTED]"
-        assert redacted["items"][1]["other"] == "value"
+        assert redacted == {"items": [{}, {"other": "value"}]}
 
     def test_leaves_data_with_no_sensitive_fields_untouched(self):
         data = {"transaction_status": "purchased", "trolley_contents": {"a": 1}}

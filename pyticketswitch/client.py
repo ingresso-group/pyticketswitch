@@ -1,7 +1,6 @@
 import decimal
 import requests
 import logging
-import six
 import pyticketswitch
 from pyticketswitch import exceptions, utils
 from pyticketswitch.availability import AvailabilityMeta
@@ -27,53 +26,21 @@ DEFAULT_ROOT_URL = "https://api.ticketswitch.com"
 
 # Fields that carry PCI-DSS sensitive cardholder/authentication data.
 #
-# ``card_number`` is the full PAN (Primary Account Number) - PCI-DSS allows
-# storage/display of at most the first six and last four digits, so for
-# logging purposes we mask everything but the last 4 characters.
-#
-# ``cv_two`` is the card's CVV2/CV2 security code - PCI-DSS classifies this
-# as "Sensitive Authentication Data" which must *never* be stored, even in
-# encrypted/partial form, once authorisation has taken place. It is fully
-# redacted, never partially shown.
+# ``card_number`` is the full PAN (Primary Account Number) and ``cv_two`` is
+# the card's CVV2/CV2 security code - PCI-DSS classifies the latter as
+# "Sensitive Authentication Data" which must *never* be stored. Neither is
+# ever logged, not even partially: they are dropped from anything we log.
 #
 # See ``pyticketswitch.payment_methods.CardDetails.as_api_parameters`` for
 # where these field names originate - it is the only payment method that
 # carries raw card data (``RedirectionDetails``, ``StripeDetails`` and
 # ``CiderDetails`` only ever carry tokens/URLs, never a raw PAN or CVV2).
-CARD_NUMBER_FIELDS = frozenset({"card_number"})
-CVV_FIELDS = frozenset({"cv_two"})
-REDACTED_VALUE = "[REDACTED]"
-
-
-def _mask_card_number(value):
-    """Mask a card number for safe logging.
-
-    Keeps only the last 4 characters, replacing everything else with ``*``.
-    Never raises on odd input (e.g. ``None`` or non-string values).
-    """
-    if value is None:
-        return value
-
-    value = six.text_type(value)
-
-    if len(value) <= 4:
-        return "*" * len(value)
-
-    return "*" * (len(value) - 4) + value[-4:]
-
-
-def _redact_sensitive_value(key, value):
-    if key in CARD_NUMBER_FIELDS:
-        return _mask_card_number(value)
-    if key in CVV_FIELDS:
-        return REDACTED_VALUE
-    return value
+SENSITIVE_FIELDS = frozenset({"card_number", "cv_two"})
 
 
 def redact_sensitive_params(params):
-    """Return a copy of ``params`` safe for logging.
+    """Return a copy of ``params`` without the PCI-DSS sensitive fields.
 
-    PCI-DSS sensitive fields (the card number and CVV2) are masked/redacted.
     This must only ever be used to build a value for logging - the returned
     dict is a copy, the original ``params`` (used for the actual API call)
     is left completely untouched.
@@ -81,13 +48,11 @@ def redact_sensitive_params(params):
     if not isinstance(params, dict):
         return params
 
-    return {
-        key: _redact_sensitive_value(key, value) for key, value in params.items()
-    }
+    return {key: value for key, value in params.items() if key not in SENSITIVE_FIELDS}
 
 
 def redact_sensitive_data(data):
-    """Recursively return a copy of ``data`` safe for logging.
+    """Recursively return a copy of ``data`` without the sensitive fields.
 
     Used to sanitise API responses before they are logged. In practice the
     ticketswitch API never echoes the card number or CVV2 back in a
@@ -97,13 +62,11 @@ def redact_sensitive_data(data):
     undocumented field carried it.
     """
     if isinstance(data, dict):
-        redacted = {}
-        for key, value in data.items():
-            if key in CARD_NUMBER_FIELDS or key in CVV_FIELDS:
-                redacted[key] = _redact_sensitive_value(key, value)
-            else:
-                redacted[key] = redact_sensitive_data(value)
-        return redacted
+        return {
+            key: redact_sensitive_data(value)
+            for key, value in data.items()
+            if key not in SENSITIVE_FIELDS
+        }
 
     if isinstance(data, list):
         return [redact_sensitive_data(item) for item in data]
