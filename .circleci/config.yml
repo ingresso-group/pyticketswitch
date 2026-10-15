@@ -42,7 +42,22 @@ jobs:
           name: pytest plus coverage
           command: |
             . venv/bin/activate
-            coverage run -m pytest
+            coverage run -m pytest --junitxml=junit.xml -o junit_family=legacy
+      - when:
+          condition: << parameters.upload-coverage >>
+          steps:
+            - run:
+                name: Install Codecov CLI
+                when: always
+                command: |
+                  curl -fsSO https://cli.codecov.io/latest/linux/codecov
+                  chmod +x codecov
+            - run:
+                name: Upload test results to Codecov
+                when: always
+                # CODECOV_TOKEN must be set as a CircleCI environment variable
+                command: |
+                  ./codecov do-upload --report-type test_results --fail-on-error -t "$CODECOV_TOKEN" -f junit.xml
       - run:
           name: Report Python code coverage
           command: |
@@ -57,8 +72,6 @@ jobs:
                 name: Upload coverage to Codecov
                 # CODECOV_TOKEN must be set as a CircleCI environment variable
                 command: |
-                  curl -fsSO https://cli.codecov.io/latest/linux/codecov
-                  chmod +x codecov
                   ./codecov upload-process --fail-on-error -t "$CODECOV_TOKEN" -f coverage.xml
 
 workflows:

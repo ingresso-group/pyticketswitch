@@ -49,7 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Raised the minimum dependency versions to `requests>=2.31` and
   `python-dateutil>=2.8.2`.
 - `pyticketswitch.Client` is now an explicit re-export.
-- Coverage is now uploaded with the current Codecov CLI from a single CI job (the deprecated `codecov` PyPI uploader and package are gone).
+- Coverage is now uploaded with the current Codecov CLI and test results from a single CI job (the deprecated `codecov` PyPI uploader and package are gone).
 - CI now tests against a Python 3.10 / 3.12 / 3.14 matrix.
 
 ### Security
