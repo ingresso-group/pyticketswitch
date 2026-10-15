@@ -68,7 +68,7 @@ class Performance(JSONMixin):
         is_ghost: bool = False,
         name: str | None = None,
         running_time: int | None = None,
-        availability_details: AvailabilityDetails | None = None,
+        availability_details: list[AvailabilityDetails] | None = None,
         has_time: bool | None = None,
     ) -> None:
 

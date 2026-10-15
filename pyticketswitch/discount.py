@@ -7,7 +7,6 @@ from pyticketswitch.mixins import JSONMixin, SeatPricingMixin
 
 if TYPE_CHECKING:
     from pyticketswitch._typing import Number
-    from pyticketswitch.misc import DiscountSemanticType
 
 
 class Discount(SeatPricingMixin, JSONMixin):
@@ -39,18 +38,18 @@ class Discount(SeatPricingMixin, JSONMixin):
 
     def __init__(
         self,
-        code: str,
+        code: str | None,
         description: str | None = None,
         price_band_code: str | None = None,
         availability: int | None = None,
         is_offer: bool = False,
-        percentage_saving: Number = 0,
-        absolute_saving: Number = 0,
+        percentage_saving: Number | None = 0,
+        absolute_saving: Number | None = 0,
         gross_commission: Commission | None = None,
         user_commission: Commission | None = None,
-        disallowed_seat_nos: list[str] | None = None,
+        disallowed_seat_nos: list[int] | None = None,
         tax_component: Number | None = None,
-        semantic_type: DiscountSemanticType | None = None,
+        semantic_type: str | None = None,
         minimum_eligible_age: int | None = None,
         maximum_eligible_age: int | None = None,
         valid_quantities: list[int] | None = None,

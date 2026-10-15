@@ -554,8 +554,8 @@ class Client:
     def list_events(
         self,
         keywords: list[str] | None = None,
-        start_date: datetime.datetime | None = None,
-        end_date: datetime.datetime | None = None,
+        start_date: datetime.date | None = None,
+        end_date: datetime.date | None = None,
         country_code: str | None = None,
         city_code: str | None = None,
         latitude: Number | None = None,
@@ -578,9 +578,9 @@ class Client:
             keywords (list): list of keyword strings. For example:
                 ``keywords=['sadlers', 'nutcracker']``. Defaults to
                 :obj:`None`.
-            start_date (datetime.datetime): only show events that
+            start_date (datetime.date): only show events that
                 have a performance after this date. Defaults to :obj:`None`.
-            end_date (datetime.datetime): only show events that have
+            end_date (datetime.date): only show events that have
                 a performance before this date. Defaults to :obj:`None`.
             country_code (string): only show events in this country.
                 the country is specified by it's ISO 3166-1 country code.
@@ -802,8 +802,8 @@ class Client:
     def list_performances(
         self,
         event_id: str,
-        start_date: datetime.datetime | None = None,
-        end_date: datetime.datetime | None = None,
+        start_date: datetime.date | None = None,
+        end_date: datetime.date | None = None,
         page_length: int = 0,
         page: int = 0,
         **kwargs: Any,
@@ -814,9 +814,9 @@ class Client:
 
         Args:
             event_id (str): identifier for the event.
-            start_date (datetime.datetime):
+            start_date (datetime.date):
                 list performances only if they occur after this date.
-            end_date (datetime.datetime):
+            end_date (datetime.date):
                 list performances only if they occur before this date.
             page (int): the page of a paginated response.
             page_length (int): how many performances are

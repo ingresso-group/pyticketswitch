@@ -316,4 +316,4 @@ class TestEvent:
 class TestEventFromApiDataMissingEvent:
     def test_missing_event_key_raises_integrity_error(self):
         with pytest.raises(exceptions.IntegrityError):
-            Event.from_api_data({})
+            Event.from_events_by_id_api_data({})

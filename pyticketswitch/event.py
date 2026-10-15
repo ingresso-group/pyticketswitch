@@ -15,7 +15,6 @@ from pyticketswitch.ticket_type import TicketType
 
 if TYPE_CHECKING:
     from pyticketswitch._typing import Number
-    from pyticketswitch.cost_range import CostRangeDetails
 
 
 class Event(JSONMixin):
@@ -63,7 +62,7 @@ class Event(JSONMixin):
         no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             pricining summary from cached availability. Only present when
             requested.
-        cost_range_details (:class:`CostRangeDetails <pyticketswitch.cost_range.CostRangeDetails>`):
+        cost_range_details (list): list of :class:`TicketType <pyticketswitch.ticket_type.TicketType>`
             summary pricing information broken down by availability. This is
             cached data. Only present when requested.
         content (dict): dictionary of
@@ -146,7 +145,7 @@ class Event(JSONMixin):
         max_running_time: int | None = None,
         cost_range: CostRange | None = None,
         no_singles_cost_range: CostRange | None = None,
-        cost_range_details: CostRangeDetails | None = None,
+        cost_range_details: list[TicketType] | None = None,
         content: dict[str, Any] | None = None,
         event_info_html: str | None = None,
         event_info: str | None = None,
@@ -157,7 +156,7 @@ class Event(JSONMixin):
         media: dict[str, Any] | None = None,
         reviews: list[Review] | None = None,
         critic_review_percent: Number | None = None,
-        availability_details: AvailabilityDetails | None = None,
+        availability_details: list[AvailabilityDetails] | None = None,
         component_events: list[Event] | None = None,
         valid_quantities: list[int] | None = None,
         fields: dict[str, Any] | None = None,

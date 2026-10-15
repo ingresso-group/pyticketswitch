@@ -22,7 +22,7 @@ class SendMethod(JSONMixin):
         self_print_voucher_url (str): url for the client to download their
             voucher from
         final_comment (str): comment about dispatching tickets
-        send_cost_tax_component (int): tax of the send cost
+        send_cost_tax_component (float): tax of the send cost
         trans_fee_component (float): transaction fee added by repricing rule.
     """
 
@@ -32,11 +32,11 @@ class SendMethod(JSONMixin):
         cost: Number | None = None,
         description: str | None = None,
         typ: str | None = None,
-        permitted_countries: list[str] | None = None,
+        permitted_countries: list[Country] | None = None,
         can_generate_self_print: bool | None = False,
         self_print_voucher_url: str | None = None,
         final_comment: str | None = None,
-        send_cost_tax_component: int | None = None,
+        send_cost_tax_component: Number | None = None,
         trans_fee_component: Number | None = None,
     ) -> None:
         self.code = code
