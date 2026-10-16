@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+import datetime
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.utils import isostr_to_datetime
 
@@ -20,15 +25,15 @@ class Review(JSONMixin):
 
     def __init__(
         self,
-        body=None,
-        date_time=None,
-        star_rating=None,
-        lang=None,
-        title=None,
-        is_user=False,
-        author=None,
-        url=None,
-    ):
+        body: str | None = None,
+        date_time: datetime.datetime | None = None,
+        star_rating: int | None = None,
+        lang: str | None = None,
+        title: str | None = None,
+        is_user: bool = False,
+        author: str | None = None,
+        url: str | None = None,
+    ) -> None:
 
         self.body = body
         self.date_time = date_time
@@ -40,7 +45,7 @@ class Review(JSONMixin):
         self.url = url
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Review:
         """Creates a new **Review** object from ticketswitch API data.
 
         Args:
@@ -57,14 +62,14 @@ class Review(JSONMixin):
         review_date = isostr_to_datetime(data.get("review_iso8601_date_and_time"))
 
         kwargs = {
-            "body": data.get("review_body", None),
+            "body": data.get("review_body"),
             "date_time": review_date,
-            "star_rating": data.get("star_rating", None),
-            "lang": data.get("review_lang", None),
-            "title": data.get("review_title", None),
+            "star_rating": data.get("star_rating"),
+            "lang": data.get("review_lang"),
+            "title": data.get("review_title"),
             "is_user": data.get("is_user_review", False),
-            "author": data.get("review_author", None),
-            "url": data.get("review_original_url", None),
+            "author": data.get("review_author"),
+            "url": data.get("review_original_url"),
         }
 
         return cls(**kwargs)

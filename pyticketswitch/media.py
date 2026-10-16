@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -18,14 +22,14 @@ class Media(JSONMixin):
 
     def __init__(
         self,
-        caption=None,
-        caption_html=None,
-        name=None,
-        url=None,
-        secure=None,
-        width=0,
-        height=0,
-    ):
+        caption: str | None = None,
+        caption_html: str | None = None,
+        name: str | None = None,
+        url: str | None = None,
+        secure: bool | None = None,
+        width: int | None = 0,
+        height: int | None = 0,
+    ) -> None:
 
         self.caption = caption
         self.caption_html = caption_html
@@ -36,7 +40,7 @@ class Media(JSONMixin):
         self.height = height
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Media:
         """Creates a new Media object from API data from ticketswitch.
 
         Args:
@@ -49,16 +53,16 @@ class Media(JSONMixin):
             populated with the data from the api.
 
         """
-        url = data.get("secure_complete_url", None)
+        url = data.get("secure_complete_url")
         secure = True
         if not url:
-            url = data.get("insecure_complete_url", None)
+            url = data.get("insecure_complete_url")
             secure = False
 
         kwargs = {
-            "caption": data.get("caption", None),
-            "caption_html": data.get("caption_html", None),
-            "name": data.get("name", None),
+            "caption": data.get("caption"),
+            "caption_html": data.get("caption_html"),
+            "name": data.get("name"),
             "url": url,
             "secure": secure,
             "width": data.get("width"),

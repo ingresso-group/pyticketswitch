@@ -104,3 +104,7 @@ class TestMonth:
     def test_on_weekday_with_none_raises(self):
         with pytest.raises(AssertionError, match="weekday_bitmask data missing"):
             Month(1, 2020, weekday_bitmask=None).on_weekday(0)
+
+    def test_is_available_with_missing_dates_bitmask_raises(self):
+        with pytest.raises(AssertionError, match="dates_bitmask data missing"):
+            Month(1, 2020, dates_bitmask=None).is_available(1)

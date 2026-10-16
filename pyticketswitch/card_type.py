@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -10,9 +12,9 @@ class CardType(JSONMixin):
 
     """
 
-    def __init__(self, code=None, description=None):
+    def __init__(self, code: str | None = None, description: str | None = None) -> None:
         self.code = code
         self.description = description
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<CardType {self.code}: {self.description}>"

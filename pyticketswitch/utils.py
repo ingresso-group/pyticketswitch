@@ -1,14 +1,21 @@
+from __future__ import annotations
+
 import functools
 import warnings
+from collections.abc import Callable
 from datetime import date, datetime
 from decimal import Decimal
+from typing import Any, ParamSpec, TypeVar, overload
 
 from dateutil import parser
 
 from pyticketswitch.exceptions import InvalidParametersError
 
+P = ParamSpec("P")
+R = TypeVar("R")
 
-def date_range_str(start_date, end_date):
+
+def date_range_str(start_date: date | None, end_date: date | None) -> str:
     """Convert a set of dates to string readable by the API
 
     Args:
@@ -31,14 +38,14 @@ def date_range_str(start_date, end_date):
     if end_date and not isinstance(end_date, date):
         raise InvalidParametersError("end_date is not a datetime instance")
 
-    start_date = start_date.strftime("%Y%m%d") if start_date else ""
+    start = start_date.strftime("%Y%m%d") if start_date else ""
 
-    end_date = end_date.strftime("%Y%m%d") if end_date else ""
+    end = end_date.strftime("%Y%m%d") if end_date else ""
 
-    return f"{start_date}:{end_date}" if start_date or end_date else ""
+    return f"{start}:{end}" if start or end else ""
 
 
-def isostr_to_datetime(date_str):
+def isostr_to_datetime(date_str: str | None) -> datetime:
     """Convert an iso datetime string to a :py:class:`datetime.datetime` object.
 
     Args:
@@ -58,7 +65,7 @@ def isostr_to_datetime(date_str):
     return parser.parse(date_str)
 
 
-def yyyymmdd_to_date(date_str):
+def yyyymmdd_to_date(date_str: str) -> date:
     """Convert a YYYYMMDDD formated date to python :py:class:`datetime.date` object.
 
     Args:
@@ -73,12 +80,10 @@ def yyyymmdd_to_date(date_str):
     if not date_str:
         raise ValueError(f"{date_str} is not a valid datetime string")
 
-    date = datetime.strptime(date_str, "%Y%m%d")
-    if date:
-        return date.date()
+    return datetime.strptime(date_str, "%Y%m%d").date()
 
 
-def specific_dates_from_api_data(dates):
+def specific_dates_from_api_data(dates: dict[str, Any]) -> list[date]:
 
     MONTHS = {
         "jan": 1,
@@ -105,7 +110,7 @@ def specific_dates_from_api_data(dates):
     ]
 
 
-def bitmask_to_boolean_list(mask):
+def bitmask_to_boolean_list(mask: int) -> list[bool]:
     """Convert a bitmask to boolean list
 
     Args:
@@ -119,7 +124,7 @@ def bitmask_to_boolean_list(mask):
     return [bool(mask >> i & 1) for i in range(of_length)]
 
 
-def bitmask_to_numbered_list(mask):
+def bitmask_to_numbered_list(mask: int | None) -> list[int]:
     """Convert a bitmask to a numbered list
 
     Args:
@@ -135,7 +140,7 @@ def bitmask_to_numbered_list(mask):
     return [i + 1 for i in range(mask.bit_length() + 1) if bool(mask >> i & 1)]
 
 
-def get_price(data, key):
+def get_price(data: dict[str, Any], key: str) -> float | None:
     """Extracts a price as a float from some data
 
     Args:
@@ -155,7 +160,15 @@ def get_price(data, key):
     return price
 
 
-def add_prices(*prices):
+@overload
+def add_prices(*prices: float | Decimal) -> float | Decimal: ...
+
+
+@overload
+def add_prices(*prices: float | Decimal | str) -> float | Decimal | str: ...
+
+
+def add_prices(*prices: float | Decimal | str) -> float | Decimal | str:
     """Adds two or more prices together
 
     Args:
@@ -194,7 +207,7 @@ def add_prices(*prices):
     return int(combined)
 
 
-def filter_none_from_parameters(params):
+def filter_none_from_parameters(params: dict[str, Any]) -> dict[str, Any]:
     """Removes parameters whos value is :obj:None
 
     Args:
@@ -208,13 +221,13 @@ def filter_none_from_parameters(params):
     return {key: value for key, value in params.items() if value is not None}
 
 
-def deprecation_warning(message, stacklevel=2):
-    warnings.simplefilter("always", DeprecationWarning)  # turn off filter
-    warnings.warn(message, category=DeprecationWarning, stacklevel=stacklevel)
-    warnings.simplefilter("default", DeprecationWarning)  # reset filter
+def deprecation_warning(message: str, stacklevel: int = 2) -> None:
+    with warnings.catch_warnings():
+        warnings.simplefilter("always", DeprecationWarning)
+        warnings.warn(message, category=DeprecationWarning, stacklevel=stacklevel)
 
 
-def deprecated(func):
+def deprecated(func: Callable[P, R]) -> Callable[P, R]:
     """Mark a function as deprecated and raise a warning
 
     This decorator is used to mark functions as deprecated. It will result in
@@ -228,7 +241,7 @@ def deprecated(func):
     """
 
     @functools.wraps(func)
-    def wrapped_func(*args, **kwargs):
+    def wrapped_func(*args: P.args, **kwargs: P.kwargs) -> R:
         deprecation_warning(f"Call to deprecated function {func.__name__}")
         return func(*args, **kwargs)
 

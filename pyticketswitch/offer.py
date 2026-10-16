@@ -1,4 +1,11 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch.mixins import JSONMixin
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class Offer(JSONMixin):
@@ -18,13 +25,13 @@ class Offer(JSONMixin):
 
     def __init__(
         self,
-        seatprice=None,
-        surcharge=None,
-        original_seatprice=None,
-        original_surcharge=None,
-        absolute_saving=None,
-        percentage_saving=None,
-    ):
+        seatprice: Number | None = None,
+        surcharge: Number | None = None,
+        original_seatprice: Number | None = None,
+        original_surcharge: Number | None = None,
+        absolute_saving: Number | None = None,
+        percentage_saving: Number | None = None,
+    ) -> None:
 
         self.seatprice = seatprice
         self.surcharge = surcharge
@@ -34,7 +41,7 @@ class Offer(JSONMixin):
         self.percentage_saving = percentage_saving
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Offer:
         """Creates a new Offer object from API data from ticketswitch.
 
         Args:

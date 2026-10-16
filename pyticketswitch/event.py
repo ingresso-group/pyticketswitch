@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch.availability import AvailabilityDetails
 from pyticketswitch.content import Content
 from pyticketswitch.cost_range import CostRange
@@ -8,6 +12,9 @@ from pyticketswitch.media import Media
 from pyticketswitch.mixins import JSONMixin, PaginationMixin
 from pyticketswitch.review import Review
 from pyticketswitch.ticket_type import TicketType
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class Event(JSONMixin):
@@ -55,7 +62,7 @@ class Event(JSONMixin):
         no_singles_cost_range (:class:`CostRange <pyticketswitch.cost_range.CostRange>`):
             pricining summary from cached availability. Only present when
             requested.
-        cost_range_details (:class:`CostRangeDetails <pyticketswitch.cost_range.CostRangeDetails>`):
+        cost_range_details (list): list of :class:`TicketType <pyticketswitch.ticket_type.TicketType>`
             summary pricing information broken down by availability. This is
             cached data. Only present when requested.
         content (dict): dictionary of
@@ -109,60 +116,60 @@ class Event(JSONMixin):
 
     def __init__(
         self,
-        id_,
-        status=None,
-        event_type=None,
-        source=None,
-        source_code=None,
-        venue=None,
-        description=None,
-        postcode=None,
-        classes=None,
-        filters=None,
-        upsell_list=None,
-        city=None,
-        city_code=None,
-        country=None,
-        country_code=None,
-        latitude=None,
-        longitude=None,
-        needs_departure_date=False,
-        needs_duration=False,
-        addon_events=None,
-        upsell_events=None,
-        needs_performance=False,
-        has_performances=False,
-        is_seated=False,
-        show_performance_time=False,
-        min_running_time=None,
-        max_running_time=None,
-        cost_range=None,
-        no_singles_cost_range=None,
-        cost_range_details=None,
-        content=None,
-        event_info_html=None,
-        event_info=None,
-        venue_addr_html=None,
-        venue_addr=None,
-        venue_info=None,
-        venue_info_html=None,
-        media=None,
-        reviews=None,
-        critic_review_percent=None,
-        availability_details=None,
-        component_events=None,
-        valid_quantities=None,
-        fields=None,
-        raw=None,
-        is_add_on=False,
-        area_code=None,
-        venue_code=None,
-        venue_is_enforced=None,
-        lingo_code=None,
-        is_auto_quantity_add_on=False,
-        is_date_matched_add_on=False,
-        is_time_matched_add_on=False,
-    ):
+        id_: str,
+        status: str | None = None,
+        event_type: str | None = None,
+        source: str | None = None,
+        source_code: str | None = None,
+        venue: str | None = None,
+        description: str | None = None,
+        postcode: str | None = None,
+        classes: dict[str, Any] | None = None,
+        filters: list[str] | None = None,
+        upsell_list: list[str] | None = None,
+        city: str | None = None,
+        city_code: str | None = None,
+        country: str | None = None,
+        country_code: str | None = None,
+        latitude: Number | None = None,
+        longitude: Number | None = None,
+        needs_departure_date: bool = False,
+        needs_duration: bool = False,
+        addon_events: list[Event] | None = None,
+        upsell_events: list[Event] | None = None,
+        needs_performance: bool = False,
+        has_performances: bool = False,
+        is_seated: bool = False,
+        show_performance_time: bool = False,
+        min_running_time: int | None = None,
+        max_running_time: int | None = None,
+        cost_range: CostRange | None = None,
+        no_singles_cost_range: CostRange | None = None,
+        cost_range_details: list[TicketType] | None = None,
+        content: dict[str, Any] | None = None,
+        event_info_html: str | None = None,
+        event_info: str | None = None,
+        venue_addr_html: str | None = None,
+        venue_addr: str | None = None,
+        venue_info: str | None = None,
+        venue_info_html: str | None = None,
+        media: dict[str, Any] | None = None,
+        reviews: list[Review] | None = None,
+        critic_review_percent: Number | None = None,
+        availability_details: list[AvailabilityDetails] | None = None,
+        component_events: list[Event] | None = None,
+        valid_quantities: list[int] | None = None,
+        fields: dict[str, Any] | None = None,
+        raw: dict[str, Any] | None = None,
+        is_add_on: bool = False,
+        area_code: str | None = None,
+        venue_code: str | None = None,
+        venue_is_enforced: bool | None = None,
+        lingo_code: str | None = None,
+        is_auto_quantity_add_on: bool = False,
+        is_date_matched_add_on: bool = False,
+        is_time_matched_add_on: bool = False,
+    ) -> None:
 
         self.id = id_
         self.status = status
@@ -233,7 +240,7 @@ class Event(JSONMixin):
         self.lingo_code = lingo_code
 
     @classmethod
-    def class_dict_from_api_data(cls, data):
+    def class_dict_from_api_data(cls, data: dict[str, Any]) -> dict[str, Any]:
         """Creates a dict of Event data from a raw ticketswitch API call
 
         Args:
@@ -329,7 +336,7 @@ class Event(JSONMixin):
 
         return {
             "id_": id_,
-            "description": data.get("event_desc", None),
+            "description": data.get("event_desc"),
             "status": data.get("event_status"),
             "event_type": data.get("event_type"),
             "source_code": data.get("source_code"),
@@ -383,7 +390,7 @@ class Event(JSONMixin):
         }
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Event:
         """Creates a new Event object from API data from ticketswitch.
 
         Args:
@@ -401,7 +408,7 @@ class Event(JSONMixin):
         return cls(**kwargs)
 
     @classmethod
-    def from_events_by_id_api_data(cls, data):
+    def from_events_by_id_api_data(cls, data: dict[str, Any]) -> Event:
         """Creates a new Event object from API data from the events_by_id call.
 
         Args:
@@ -415,18 +422,16 @@ class Event(JSONMixin):
 
         """
 
-        kwargs = cls.class_dict_from_api_data(data.get("event"))
+        kwargs = cls.class_dict_from_api_data(data.get("event", {}))
 
-        if data.get("add_ons"):
-            addons = [
-                Event.from_api_data(raw_addon) for raw_addon in data.get("add_ons")
-            ]
+        raw_addons = data.get("add_ons")
+        if raw_addons:
+            addons = [Event.from_api_data(raw_addon) for raw_addon in raw_addons]
             kwargs.update(addon_events=addons)
 
-        if data.get("upsells"):
-            upsells = [
-                Event.from_api_data(raw_upsell) for raw_upsell in data.get("upsells")
-            ]
+        raw_upsells = data.get("upsells")
+        if raw_upsells:
+            upsells = [Event.from_api_data(raw_upsell) for raw_upsell in raw_upsells]
             kwargs.update(upsell_events=upsells)
 
         if data.get("venue_is_enforced") is not None:
@@ -437,7 +442,7 @@ class Event(JSONMixin):
 
         return cls(**kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Event {self.id}:{self.description!r}>"
 
 

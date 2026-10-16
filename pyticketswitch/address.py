@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -21,15 +25,15 @@ class Address(JSONMixin):
 
     def __init__(
         self,
-        lines=None,
-        country_code=None,
-        county=None,
-        email=None,
-        home_phone=None,
-        post_code=None,
-        town=None,
-        work_phone=None,
-    ):
+        lines: list[str] | None = None,
+        country_code: str | None = None,
+        county: str | None = None,
+        email: str | None = None,
+        home_phone: str | None = None,
+        post_code: str | None = None,
+        town: str | None = None,
+        work_phone: str | None = None,
+    ) -> None:
 
         self.lines = lines
         self.town = town
@@ -41,7 +45,7 @@ class Address(JSONMixin):
         self.work_phone = work_phone
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Address:
         """Creates a new Address object from API data from ticketswitch.
 
         Args:
@@ -54,6 +58,12 @@ class Address(JSONMixin):
             populated with the data from the api.
 
         """
+        lines = [
+            line
+            for line in (data.get("address_line_one"), data.get("address_line_two"))
+            if line is not None
+        ]
+
         kwargs = {
             "country_code": data.get("country_code"),
             "county": data.get("county"),
@@ -62,15 +72,12 @@ class Address(JSONMixin):
             "post_code": data.get("postcode"),
             "town": data.get("town"),
             "work_phone": data.get("work_phone"),
-            "lines": [
-                data.get("address_line_one"),
-                data.get("address_line_two"),
-            ],
+            "lines": lines,
         }
 
         return cls(**kwargs)
 
-    def as_api_billing_address_parameters(self):
+    def as_api_billing_address_parameters(self) -> dict[str, str | None]:
 
         params = {
             "billing_country_code": self.country_code,

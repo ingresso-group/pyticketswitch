@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch import utils
 from pyticketswitch.commission import Commission
 from pyticketswitch.event import Event
@@ -5,6 +9,9 @@ from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.performance import Performance
 from pyticketswitch.seat import Seat
 from pyticketswitch.send_method import SendMethod
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class TicketOrder(JSONMixin):
@@ -29,20 +36,20 @@ class TicketOrder(JSONMixin):
 
     def __init__(
         self,
-        code,
-        seats=None,
-        number_of_seats=None,
-        description=None,
-        seatprice=None,
-        surcharge=None,
-        total_seatprice=None,
-        total_surcharge=None,
-        raw_combined_tax_component=None,
-        raw_surcharge_tax_sub_component=None,
-        total_sale_combined=None,
-        raw_total_combined_tax_component=None,
-        raw_total_surcharge_tax_sub_component=None,
-    ):
+        code: str | None,
+        seats: list[Seat] | None = None,
+        number_of_seats: int | None = None,
+        description: str | None = None,
+        seatprice: Number | None = None,
+        surcharge: Number | None = None,
+        total_seatprice: Number | None = None,
+        total_surcharge: Number | None = None,
+        raw_combined_tax_component: Number | None = None,
+        raw_surcharge_tax_sub_component: Number | None = None,
+        total_sale_combined: Number | None = None,
+        raw_total_combined_tax_component: Number | None = None,
+        raw_total_surcharge_tax_sub_component: Number | None = None,
+    ) -> None:
         self.code = code
         self.seats = seats
         self.description = description
@@ -60,7 +67,7 @@ class TicketOrder(JSONMixin):
         )
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> TicketOrder:
         """Creates a new **TicketOrder** object from API data from ticketswitch.
 
         Args:
@@ -134,7 +141,7 @@ class TicketOrder(JSONMixin):
 
         return cls(**kwargs)
 
-    def combined_price(self):
+    def combined_price(self) -> Number:
         """Returns the combined seatprice and surcharge.
 
         This method assumes that we have both a seatprice and surcharge.
@@ -161,7 +168,7 @@ class TicketOrder(JSONMixin):
             raise AssertionError("surcharge data missing")
         return utils.add_prices(self.seatprice, self.surcharge)
 
-    def total_combined_price(self):
+    def total_combined_price(self) -> Number:
         """Returns the combined total seatprice and surcharge.
 
         This method assumes that we have both a seatprice and surcharge.
@@ -188,7 +195,7 @@ class TicketOrder(JSONMixin):
             raise AssertionError("surcharge data missing")
         return utils.add_prices(self.total_seatprice, self.total_surcharge)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<TicketOrder {self.code}>"
 
 
@@ -245,32 +252,32 @@ class Order(JSONMixin):
 
     def __init__(
         self,
-        item,
-        event=None,
-        cancellation_status=None,
-        cancellation_comment=None,
-        performance=None,
-        price_band_code=None,
-        price_band_description=None,
-        ticket_type_code=None,
-        ticket_type_description=None,
-        ticket_orders=None,
-        number_of_seats=None,
-        total_seatprice=None,
-        total_surcharge=None,
-        seat_request_status=None,
-        requested_seat_ids=None,
-        backend_purchase_reference=None,
-        backend_cancellation_reference=None,
-        send_method=None,
-        gross_commission=None,
-        user_commission=None,
-        external_management_url=None,
-        total_sale_combined=None,
-        total_sale_combined_tax_component=None,
-        total_sale_surcharge_tax_sub_component=None,
-        reserve_failure_comment=None,
-    ):
+        item: int | None,
+        event: Event | None = None,
+        cancellation_status: str | None = None,
+        cancellation_comment: str | None = None,
+        performance: Performance | None = None,
+        price_band_code: str | None = None,
+        price_band_description: str | None = None,
+        ticket_type_code: str | None = None,
+        ticket_type_description: str | None = None,
+        ticket_orders: list[TicketOrder] | None = None,
+        number_of_seats: int | None = None,
+        total_seatprice: Number | None = None,
+        total_surcharge: Number | None = None,
+        seat_request_status: str | None = None,
+        requested_seat_ids: list[str] | None = None,
+        backend_purchase_reference: str | None = None,
+        backend_cancellation_reference: str | None = None,
+        send_method: SendMethod | None = None,
+        gross_commission: Commission | None = None,
+        user_commission: Commission | None = None,
+        external_management_url: str | None = None,
+        total_sale_combined: Number | None = None,
+        total_sale_combined_tax_component: Number | None = None,
+        total_sale_surcharge_tax_sub_component: Number | None = None,
+        reserve_failure_comment: str | None = None,
+    ) -> None:
         self.item = item
         self.event = event
         self.cancellation_status = cancellation_status
@@ -300,7 +307,7 @@ class Order(JSONMixin):
         self.reserve_failure_comment = reserve_failure_comment
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Order:
         """Creates a new **Order** object from API data from ticketswitch.
 
         Args:
@@ -397,7 +404,7 @@ class Order(JSONMixin):
 
         return cls(**kwargs)
 
-    def get_seats(self):
+    def get_seats(self) -> list[Seat]:
         """Get all seats from all :class:`TicketOrder <pyticketswitch.order.TicketOrder>` children.
 
         Returns:
@@ -414,7 +421,7 @@ class Order(JSONMixin):
             for seat in ticket_order.seats
         ]
 
-    def get_seat_ids(self):
+    def get_seat_ids(self) -> list[str]:
         """Get all seat ids from all :class:`TicketOrders <pyticketswitch.order.TickerOrder>`
 
         Returns:
@@ -423,7 +430,7 @@ class Order(JSONMixin):
         """
         return [seat.id for seat in self.get_seats() if seat.id]
 
-    def unique_seat_text(self):
+    def unique_seat_text(self) -> str:
         """Get the unique seat text for all seats in an order
 
         Returns:
@@ -437,7 +444,7 @@ class Order(JSONMixin):
         }
         return ", ".join(seat_text for seat_text in text_set.values())
 
-    def total_including_send_cost(self):
+    def total_including_send_cost(self) -> Number:
         if self.total_seatprice is None:
             raise AssertionError("total_seatprice data missing")
         if self.total_surcharge is None:
@@ -453,5 +460,5 @@ class Order(JSONMixin):
             self.send_method.cost,
         )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Order {self.item}>"

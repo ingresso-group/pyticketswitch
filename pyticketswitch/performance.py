@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+import datetime
+from typing import Any
+
 from pyticketswitch import utils
 from pyticketswitch.availability import AvailabilityDetails
 from pyticketswitch.cost_range import CostRange
@@ -14,8 +19,8 @@ class Performance(JSONMixin):
               localised for the venue and not the user.
 
     Attributes:
-        id (str): identifier for the performance.
-        event_id (str): identifier for the event.
+        id (str | None): identifier for the performance.
+        event_id (str | None): identifier for the event.
         date_time (:obj:`datetime.datetime`): the localised date and time for
             the performance.
         date_description (str): a human readable description of the date of the
@@ -49,23 +54,23 @@ class Performance(JSONMixin):
 
     def __init__(
         self,
-        id_,
-        event_id,
-        date_time=None,
-        date_description=None,
-        time_description=None,
-        has_pool_seats=False,
-        is_limited=False,
-        cached_max_seats=None,
-        cached_max_seats_is_real=None,
-        cost_range=None,
-        no_singles_cost_range=None,
-        is_ghost=False,
-        name=None,
-        running_time=None,
-        availability_details=None,
-        has_time=None,
-    ):
+        id_: str | None,
+        event_id: str | None,
+        date_time: datetime.datetime | None = None,
+        date_description: str | None = None,
+        time_description: str | None = None,
+        has_pool_seats: bool = False,
+        is_limited: bool = False,
+        cached_max_seats: int | None = None,
+        cached_max_seats_is_real: bool | None = None,
+        cost_range: CostRange | None = None,
+        no_singles_cost_range: CostRange | None = None,
+        is_ghost: bool = False,
+        name: str | None = None,
+        running_time: int | None = None,
+        availability_details: list[AvailabilityDetails] | None = None,
+        has_time: bool | None = None,
+    ) -> None:
 
         self.id = id_
         self.event_id = event_id
@@ -85,7 +90,7 @@ class Performance(JSONMixin):
         self.has_time = has_time
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Performance:
         """Creates a new **Performance** object from API data from ticketswitch.
 
         Args:
@@ -145,7 +150,7 @@ class Performance(JSONMixin):
 
         return cls(**kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self.date_time:
             return f"<Performance {self.id}: {self.date_time.isoformat()}>"
         return f"<Performance {self.id}>"
@@ -166,13 +171,19 @@ class PerformanceMeta(PaginationMixin, CurrencyMeta):
         has_names: (bool): indicates that the related performances have names
     """
 
-    def __init__(self, auto_select=False, has_names=False, *args, **kwargs):
+    def __init__(
+        self,
+        auto_select: bool = False,
+        has_names: bool = False,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         self.auto_select = auto_select
         self.has_names = has_names
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> PerformanceMeta:
         """Creates a new **PerformanceMeta** object from API data from ticketswitch.
 
         Args:

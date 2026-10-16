@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -22,15 +26,15 @@ class User(JSONMixin):
 
     def __init__(
         self,
-        id_,
-        name=None,
-        country=None,
-        sub_user=None,
-        is_b2b=False,
-        statement_descriptor=None,
-        backend_group=None,
-        content_group=None,
-    ):
+        id_: str,
+        name: str | None = None,
+        country: str | None = None,
+        sub_user: str | None = None,
+        is_b2b: bool | None = False,
+        statement_descriptor: str | None = None,
+        backend_group: str | None = None,
+        content_group: str | None = None,
+    ) -> None:
 
         self.id = id_
         self.name = name
@@ -42,7 +46,7 @@ class User(JSONMixin):
         self.content_group = content_group
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> User:
         """Creates a new User object from API data from ticketswitch.
 
         Args:
@@ -56,6 +60,8 @@ class User(JSONMixin):
 
         """
         user_info = data.get("user_info")
+        if user_info is None:
+            raise AssertionError("user_info data missing")
         return cls(
             user_info.get("user_id"),
             name=user_info.get("real_name"),

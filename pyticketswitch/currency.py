@@ -1,4 +1,11 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any, TypeVar
+
 from pyticketswitch.mixins import JSONMixin
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class Currency(JSONMixin):
@@ -19,13 +26,13 @@ class Currency(JSONMixin):
 
     def __init__(
         self,
-        code,
-        factor=None,
-        places=None,
-        number=None,
-        pre_symbol=None,
-        post_symbol=None,
-    ):
+        code: str | None,
+        factor: int | None = None,
+        places: int | None = None,
+        number: int | None = None,
+        pre_symbol: str | None = None,
+        post_symbol: str | None = None,
+    ) -> None:
 
         self.factor = factor
         self.places = places
@@ -34,11 +41,11 @@ class Currency(JSONMixin):
         self.code = code
         self.number = number
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         """
         FIXME: do we need this anywhere other than tests?
         """
-        if not other:
+        if not isinstance(other, Currency):
             return False
 
         if not self.code == other.code:
@@ -58,11 +65,11 @@ class Currency(JSONMixin):
 
         return self.post_symbol == other.post_symbol
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self == other
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Currency:
         """Convert data from the API into a native object.
 
         Args:
@@ -83,7 +90,7 @@ class Currency(JSONMixin):
 
         return cls(data.get("currency_code"), **kwargs)
 
-    def price_as_string(self, price):
+    def price_as_string(self, price: Number) -> str:
         """Generates a human readble string for a price.
 
         Args:
@@ -108,8 +115,11 @@ class Currency(JSONMixin):
         post = self.post_symbol or ""
         return f"{pre}{price:.{self.places}f}{post}"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Currency {self.code}>"
+
+
+_CurrencyMetaT = TypeVar("_CurrencyMetaT", bound="CurrencyMeta")
 
 
 class CurrencyMeta(JSONMixin):
@@ -128,14 +138,19 @@ class CurrencyMeta(JSONMixin):
     """
 
     def __init__(
-        self, currencies, default_currency_code=None, desired_currency_code=None
-    ):
+        self,
+        currencies: dict[str, Currency],
+        default_currency_code: str | None = None,
+        desired_currency_code: str | None = None,
+    ) -> None:
         self.currencies = currencies
         self.default_currency_code = default_currency_code
         self.desired_currency_code = desired_currency_code
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(
+        cls: type[_CurrencyMetaT], data: dict[str, Any]
+    ) -> _CurrencyMetaT:
         """Convert data from the API into a native object.
 
         Args:
@@ -164,7 +179,7 @@ class CurrencyMeta(JSONMixin):
             desired_currency_code=desired_currency_code,
         )
 
-    def get_currency(self, code=None):
+    def get_currency(self, code: str | None = None) -> Currency | None:
         """Get the :class:`Currency <pyticketswitch.currency.Currency>` object for the given code.
 
         Args:
@@ -188,7 +203,7 @@ class CurrencyMeta(JSONMixin):
 
         return self.currencies.get(code)
 
-    def get_desired_currency(self):
+    def get_desired_currency(self) -> Currency | None:
         """Get the :class:`Currency <pyticketswitch.currency.Currency>` object for the desired currency.
 
         Returns:

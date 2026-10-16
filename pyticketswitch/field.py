@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -11,13 +15,13 @@ class Field(JSONMixin):
 
     """
 
-    def __init__(self, name, label, data):
+    def __init__(self, name: str | None, label: str | None, data: str | None) -> None:
         self.name = name
         self.label = label
         self.data = data
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Field:
         """Creates a new Field object from API data from ticketswitch.
 
         Args:

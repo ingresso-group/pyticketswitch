@@ -27,6 +27,13 @@ class TestAddress:
         assert address.home_phone == "020810101010101"
         assert address.work_phone == "020801010101010"
 
+    def test_from_api_data_omits_missing_address_lines(self):
+        address = Address.from_api_data({"address_line_one": "Metro Building"})
+        assert address.lines == ["Metro Building"]
+
+        address = Address.from_api_data({})
+        assert address.lines == []
+
     def test_as_api_billing_address_parameters(self):
 
         address = Address(

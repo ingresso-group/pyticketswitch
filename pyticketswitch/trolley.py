@@ -1,7 +1,15 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch.bundle import Bundle
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.order import Order
 from pyticketswitch.purchase_result import PurchaseResult
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
+    from pyticketswitch.event import Event
 
 
 class Trolley(JSONMixin):
@@ -23,7 +31,7 @@ class Trolley(JSONMixin):
         minutes_left (float): the number of minutes left before a reservation
             expires.
         order_count (int): the number of orders in the trolley.
-        purchase_result (:class:`PurchaseResult <pyticketswitch.callout.Callout>`):
+        purchase_result (:class:`PurchaseResult <pyticketswitch.purchase_result.PurchaseResult>`):
             the result of the purchase attempt when available.
         input_contained_unavailable_order (bool): indicates that the call used
             to create or modify this trolley object included at least one order
@@ -32,16 +40,16 @@ class Trolley(JSONMixin):
 
     def __init__(
         self,
-        token=None,
-        transaction_uuid=None,
-        transaction_id=None,
-        bundles=None,
-        discarded_orders=None,
-        minutes_left=None,
-        order_count=None,
-        purchase_result=None,
-        input_contained_unavailable_order=False,
-    ):
+        token: str | None = None,
+        transaction_uuid: str | None = None,
+        transaction_id: str | None = None,
+        bundles: list[Bundle] | None = None,
+        discarded_orders: list[Order] | None = None,
+        minutes_left: Number | None = None,
+        order_count: int | None = None,
+        purchase_result: PurchaseResult | None = None,
+        input_contained_unavailable_order: bool = False,
+    ) -> None:
         self.token = token
         self.transaction_uuid = transaction_uuid
         self.transaction_id = transaction_id
@@ -53,7 +61,7 @@ class Trolley(JSONMixin):
         self.input_contained_unavailable_order = input_contained_unavailable_order
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Trolley:
         """Creates a new Trolley object from API data from ticketswitch.
 
         Args:
@@ -106,7 +114,7 @@ class Trolley(JSONMixin):
 
         return cls(**kwargs)
 
-    def get_events(self):
+    def get_events(self) -> list[Event]:
         """Get the events in the trolley.
 
         Returns:
@@ -121,7 +129,7 @@ class Trolley(JSONMixin):
             if event and event.id
         ]
 
-    def get_event_ids(self):
+    def get_event_ids(self) -> set[str]:
         """Get the event ids of the events in the trolley.
 
         Returns:
@@ -130,7 +138,7 @@ class Trolley(JSONMixin):
         """
         return {event.id for event in self.get_events()}
 
-    def get_bundle(self, source_code):
+    def get_bundle(self, source_code: str) -> Bundle | None:
         """Find a bundle with a specific source code
 
         Args:
@@ -153,7 +161,7 @@ class Trolley(JSONMixin):
 
         return None
 
-    def get_item(self, item_number):
+    def get_item(self, item_number: int) -> Order | None:
         """Find an order with the given item number
 
         Args:
@@ -173,7 +181,7 @@ class Trolley(JSONMixin):
 
         return None
 
-    def get_orders(self):
+    def get_orders(self) -> list[Order]:
         """Get all orders in all bundles in a trolley
 
         Returns:
@@ -188,7 +196,7 @@ class Trolley(JSONMixin):
             order for bundle in self.bundles if bundle.orders for order in bundle.orders
         ]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         if self.transaction_id:
             return f"<Trolley id:{self.transaction_id}>"
         if self.transaction_uuid:
