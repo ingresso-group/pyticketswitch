@@ -234,6 +234,24 @@ You can specify both the page number and length as parameters to all calls::
     >>> 
 
 
+:meth:`list_orders_sold <pyticketswitch.client.Client.list_orders_sold>` takes
+the same ``page`` and ``page_length`` parameters, but the API does not return
+any paging information for it, so it returns just the list of orders and there
+is no meta data object to ask how many results are left. Keep asking for the
+next page until you get a page with fewer orders than ``page_length``::
+
+    >>> from pyticketswitch import Client
+    >>> client = Client(user='demo', password='demopass')
+    >>> page = 0
+    >>> while True:
+    ...     orders = client.list_orders_sold(page=page, page_length=100)
+    ...     for order in orders:
+    ...         print(order.transaction_id)
+    ...     if len(orders) < 100:
+    ...         break
+    ...     page += 1
+
+
 Requesting Seat Availability
 ============================
 
