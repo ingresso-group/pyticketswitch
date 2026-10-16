@@ -21,6 +21,7 @@ from pyticketswitch.client import (
 from pyticketswitch.customer import Customer
 from pyticketswitch.payment_methods import CardDetails, RedirectionDetails
 from pyticketswitch.reservation import Reservation
+from pyticketswitch.sold_order import SoldOrder
 from pyticketswitch.status import Status
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.user import User
@@ -2438,6 +2439,110 @@ class TestClient:
         assert cancellation_result.is_fully_cancelled()
         assert cancellation_result.cancelled_item_numbers == [1]
         assert "gbp" in meta.currencies
+
+
+class TestListOrdersSold:
+    @pytest.fixture
+    def orders_response(self):
+        with open("test_data/orders_sold.json") as file_handle:
+            return json.load(file_handle)
+
+    def test_list_orders_sold(self, client, monkeypatch, orders_response):
+        mock_make_request = Mock(return_value=orders_response)
+        monkeypatch.setattr(client, "make_request", mock_make_request)
+
+        sold_orders = client.list_orders_sold()
+
+        mock_make_request.assert_called_with("orders_sold.v1", {})
+        assert len(sold_orders) == 3
+        assert all(isinstance(order, SoldOrder) for order in sold_orders)
+        assert sold_orders[0].transaction_id == "U000-000T-0001-LDNX"
+
+    def test_list_orders_sold_with_no_orders(self, client, monkeypatch):
+        monkeypatch.setattr(client, "make_request", Mock(return_value={"orders": []}))
+
+        assert client.list_orders_sold() == []
+
+    def test_list_orders_sold_sends_parameters(
+        self, client, monkeypatch, orders_response
+    ):
+        mock_make_request = Mock(return_value=orders_response)
+        monkeypatch.setattr(client, "make_request", mock_make_request)
+
+        client.list_orders_sold(
+            earliest_purchase_time=datetime(2025, 11, 21, 9, 30),
+            latest_purchase_time=datetime(2025, 11, 22, 17, 0),
+            event_id_list=["1HCUW", "1FMY8"],
+            perf_id_list=["7AB-F"],
+            backend_system="gaylord_national",
+            supply_user="supplier",
+            trans_id="U000-000T-0001-LDNX",
+            transaction_uuid="U-00000001",
+            include_purchased=True,
+            include_failed=False,
+            exclude_refunds=True,
+            add_customer=True,
+            add_user_details=True,
+            page=2,
+            page_length=25,
+        )
+
+        mock_make_request.assert_called_with(
+            "orders_sold.v1",
+            {
+                "earliest_purchase_time": "2025-11-21T09:30:00",
+                "latest_purchase_time": "2025-11-22T17:00:00",
+                "event_id_list": "1HCUW,1FMY8",
+                "perf_id_list": "7AB-F",
+                "backend_system": "gaylord_national",
+                "supply_user": "supplier",
+                "trans_id": "U000-000T-0001-LDNX",
+                "transaction_uuid": "U-00000001",
+                "include_purchased": True,
+                "include_failed": False,
+                "exclude_refunds": True,
+                "add_customer": True,
+                "add_user_details": True,
+                "page_no": 2,
+                "page_len": 25,
+            },
+        )
+
+    def test_list_orders_sold_requires_purchased_or_failed(self, client, monkeypatch):
+        mock_make_request = Mock()
+        monkeypatch.setattr(client, "make_request", mock_make_request)
+
+        with pytest.raises(exceptions.InvalidParametersError):
+            client.list_orders_sold(include_purchased=False, include_failed=False)
+
+        mock_make_request.assert_not_called()
+
+    def test_list_orders_sold_requires_failed_when_purchased_excluded(
+        self, client, monkeypatch
+    ):
+        mock_make_request = Mock()
+        monkeypatch.setattr(client, "make_request", mock_make_request)
+
+        with pytest.raises(exceptions.InvalidParametersError):
+            client.list_orders_sold(include_purchased=False)
+
+        mock_make_request.assert_not_called()
+
+    def test_list_orders_sold_allows_one_excluded(self, client, monkeypatch):
+        mock_make_request = Mock(return_value={"orders": []})
+        monkeypatch.setattr(client, "make_request", mock_make_request)
+
+        client.list_orders_sold(include_purchased=False, include_failed=True)
+
+        mock_make_request.assert_called_with(
+            "orders_sold.v1", {"include_purchased": False, "include_failed": True}
+        )
+
+    def test_list_orders_sold_without_orders_key(self, client, monkeypatch):
+        monkeypatch.setattr(client, "make_request", Mock(return_value={}))
+
+        with pytest.raises(exceptions.InvalidResponseError):
+            client.list_orders_sold()
 
 
 class TestRedactSensitiveParams:
