@@ -1,9 +1,27 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from requests import Response
+
+    from pyticketswitch.currency import CurrencyMeta
+    from pyticketswitch.reservation import Reservation
+
+
 class PyticketswitchError(Exception):
     pass
 
 
 class APIError(PyticketswitchError):
-    def __init__(self, msg, code=None, response=None, *args, **kwargs):
+    def __init__(
+        self,
+        msg: Any,
+        code: int | None = None,
+        response: Response | None = None,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(msg, *args, **kwargs)
         self.msg = msg
         self.code = code
@@ -27,7 +45,7 @@ class InvalidGeoParameters(PyticketswitchError):
 
 
 class IntegrityError(PyticketswitchError):
-    def __init__(self, message, data, *args):
+    def __init__(self, message: Any, data: Any, *args: Any) -> None:
         super().__init__(message, *args)
         self.data = data
 
@@ -53,7 +71,14 @@ class CallbackGoneError(APIError):
 
 
 class OrderUnavailableError(PyticketswitchError):
-    def __init__(self, msg, reservation=None, meta=None, *args, **kwargs):
+    def __init__(
+        self,
+        msg: str,
+        reservation: Reservation | None = None,
+        meta: CurrencyMeta | None = None,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(msg, *args, **kwargs)
         self.reservation = reservation
         self.meta = meta

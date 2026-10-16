@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -25,16 +29,16 @@ class PurchaseResult(JSONMixin):
 
     def __init__(
         self,
-        success=False,
-        failed_3d_secure=False,
-        failed_avs=False,
-        failed_cv_two=False,
-        error=None,
-        failure_reason=None,
-        is_partial=False,
-        is_semi_credit=False,
-        internal_error_comment=None,
-    ):
+        success: bool | None = False,
+        failed_3d_secure: bool | None = False,
+        failed_avs: bool | None = False,
+        failed_cv_two: bool | None = False,
+        error: str | None = None,
+        failure_reason: str | None = None,
+        is_partial: bool | None = False,
+        is_semi_credit: bool | None = False,
+        internal_error_comment: str | None = None,
+    ) -> None:
 
         self.success = success
         self.failed_3d_secure = failed_3d_secure
@@ -47,7 +51,7 @@ class PurchaseResult(JSONMixin):
         self.is_semi_credit = is_semi_credit
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> PurchaseResult:
         """Creates a new PurchaseResults object from API data from ticketswitch.
 
         Args:

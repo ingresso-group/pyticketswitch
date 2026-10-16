@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -10,12 +14,12 @@ class Country(JSONMixin):
 
     """
 
-    def __init__(self, code, description=None):
+    def __init__(self, code: str | None, description: str | None = None) -> None:
         self.code = code
         self.description = description
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Country:
         """Creates a new Country object from API data from ticketswitch.
 
         Args:
@@ -36,5 +40,5 @@ class Country(JSONMixin):
 
         return cls(**kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Country {self.code}:{self.description!r}>"

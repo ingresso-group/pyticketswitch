@@ -1,7 +1,13 @@
+from __future__ import annotations
+
 from collections import OrderedDict
+from typing import TYPE_CHECKING, Any
 
 from pyticketswitch.debitor import Debitor
 from pyticketswitch.mixins import JSONMixin
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class Integration(JSONMixin):
@@ -16,7 +22,14 @@ class Integration(JSONMixin):
 
     """
 
-    def __init__(self, typ, amount=None, base_amount=None, currency=None, data=None):
+    def __init__(
+        self,
+        typ: str | None,
+        amount: Number | None = None,
+        base_amount: Number | None = None,
+        currency: str | None = None,
+        data: dict[str, Any] | None = None,
+    ) -> None:
         self.type = typ
         self.amount = amount
         self.base_amount = base_amount
@@ -24,7 +37,7 @@ class Integration(JSONMixin):
         self.data = data
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Integration:
         """Creates a new Integration object from API data from ticketswitch.
 
         Args:
@@ -78,17 +91,17 @@ class Callout(JSONMixin):
 
     def __init__(
         self,
-        code=None,
-        description=None,
-        total=None,
-        typ=None,
-        destination=None,
-        parameters=None,
-        integration_data=None,
-        debitor=None,
-        currency_code=None,
-        return_token=None,
-    ):
+        code: str | None = None,
+        description: str | None = None,
+        total: Number | None = None,
+        typ: str | None = None,
+        destination: str | None = None,
+        parameters: OrderedDict[str, Any] | None = None,
+        integration_data: dict[str, Any] | None = None,
+        debitor: Debitor | None = None,
+        currency_code: str | None = None,
+        return_token: str | None = None,
+    ) -> None:
 
         self.code = code
         self.description = description
@@ -102,7 +115,7 @@ class Callout(JSONMixin):
         self.return_token = return_token
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Callout:
         """Creates a new Callout object from API data from ticketswitch.
 
         Args:
@@ -152,5 +165,5 @@ class Callout(JSONMixin):
 
         return cls(**kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Callout {self.code}:{self.return_token}>"

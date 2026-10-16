@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch.mixins import JSONMixin
 
 
@@ -47,12 +51,12 @@ class Debitor(JSONMixin):
 
     def __init__(
         self,
-        typ=None,
-        name=None,
-        description=None,
-        integration_data=None,
-        aggregation_key=None,
-    ):
+        typ: str | None = None,
+        name: str | None = None,
+        description: str | None = None,
+        integration_data: dict[str, Any] | None = None,
+        aggregation_key: str | None = None,
+    ) -> None:
         self.type = typ
         self.name = name
         self.description = description
@@ -60,7 +64,7 @@ class Debitor(JSONMixin):
         self.aggregation_key = aggregation_key
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Debitor:
         kwargs = {
             "typ": data.get("debitor_type"),
             "name": data.get("debitor_name"),
@@ -71,5 +75,5 @@ class Debitor(JSONMixin):
 
         return cls(**kwargs)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Debitor {self.type}:{self.name}>"

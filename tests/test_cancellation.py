@@ -2,7 +2,9 @@ import json
 
 import pytest
 
+from pyticketswitch.bundle import Bundle
 from pyticketswitch.cancellation import CancellationResult
+from pyticketswitch.trolley import Trolley
 
 
 class TestCancellationResult:
@@ -44,3 +46,10 @@ class TestCancellationResult:
 
     def test_is_fully_cancelled_without_trolley(self):
         assert CancellationResult().is_fully_cancelled() is False
+
+    def test_is_fully_cancelled_with_bundle_missing_orders(self):
+        cancellation_result = CancellationResult(
+            trolley=Trolley(bundles=[Bundle("tex")])
+        )
+
+        assert cancellation_result.is_fully_cancelled() is False

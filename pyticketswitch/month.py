@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import datetime
+from typing import Any
 
 from pyticketswitch.cost_range import CostRange
 from pyticketswitch.misc import MONTH_NUMBERS
@@ -23,14 +26,14 @@ class Month(JSONMixin):
 
     def __init__(
         self,
-        month,
-        year,
-        description=None,
-        dates_bitmask=None,
-        weekday_bitmask=None,
-        cost_range=None,
-        no_singles_cost_range=None,
-    ):
+        month: int,
+        year: int,
+        description: str | None = None,
+        dates_bitmask: int | None = None,
+        weekday_bitmask: int | None = None,
+        cost_range: CostRange | None = None,
+        no_singles_cost_range: CostRange | None = None,
+    ) -> None:
 
         self.month = month
         self.year = year
@@ -41,7 +44,7 @@ class Month(JSONMixin):
         self.no_singles_cost_range = no_singles_cost_range
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Month:
 
         api_cost_range = data.get("cost_range", {})
         api_no_singles_cost_range = api_cost_range.get("no_singles_cost_range", {})
@@ -57,7 +60,7 @@ class Month(JSONMixin):
         kwargs = {
             "cost_range": cost_range,
             "no_singles_cost_range": no_singles_cost_range,
-            "month": MONTH_NUMBERS.get(data.get("month")),
+            "month": MONTH_NUMBERS.get(data.get("month", "")),
             "year": data.get("year"),
             "description": data.get("month_desc"),
             "dates_bitmask": data.get("month_dates_bitmask"),
@@ -66,7 +69,7 @@ class Month(JSONMixin):
 
         return cls(**kwargs)
 
-    def is_available(self, day):
+    def is_available(self, day: int) -> bool:
         """Indicates if the event has availability on a given day.
 
         the dates bitmask is a 32 bit int where the right most bit is the first
@@ -83,9 +86,12 @@ class Month(JSONMixin):
             :obj:`False`.
         """
 
+        if self._dates_bitmask is None:
+            raise AssertionError("dates_bitmask data missing")
+
         return bool(self._dates_bitmask >> (day - 1) & 1)
 
-    def on_weekday(self, day):
+    def on_weekday(self, day: int) -> bool:
         """Indicates if the event has availability on a given day of the week.
 
         Check if the month has shows available on a given day of the week,
@@ -116,14 +122,14 @@ class Month(JSONMixin):
         adjusted_day = day + 1 if day < 6 else 0
         return bool(self._weekday_bitmask >> adjusted_day & 1)
 
-    def start_date(self):
+    def start_date(self) -> datetime.date | None:
         num_list = bitmask_to_numbered_list(self._dates_bitmask)
         if not num_list:
             return
         first_day = num_list[0]
         return datetime.date(year=self.year, month=self.month, day=first_day)
 
-    def end_date(self):
+    def end_date(self) -> datetime.date | None:
         num_list = bitmask_to_numbered_list(self._dates_bitmask)
         if not num_list:
             return

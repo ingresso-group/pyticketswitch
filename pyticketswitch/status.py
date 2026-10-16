@@ -1,3 +1,8 @@
+from __future__ import annotations
+
+import datetime
+from typing import TYPE_CHECKING, Any, TypeVar
+
 from pyticketswitch.address import Address
 from pyticketswitch.callout import Callout
 from pyticketswitch.card_type import CardType
@@ -6,6 +11,12 @@ from pyticketswitch.customer import Customer
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.utils import isostr_to_datetime
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
+    from pyticketswitch.purchase_result import PurchaseResult
+
+_StatusT = TypeVar("_StatusT", bound="Status")
 
 
 class Status(JSONMixin):
@@ -59,26 +70,26 @@ class Status(JSONMixin):
 
     def __init__(
         self,
-        status=None,
-        reserved_at=None,
-        trolley=None,
-        purchased_at=None,
-        external_sale_page=None,
-        languages=None,
-        remote_site=None,
-        prefilled_address=None,
-        needs_payment_card=False,
-        needs_email_address=False,
-        needs_agent_reference=False,
-        can_edit_address=False,
-        allowed_countries=None,
-        minutes_left=None,
-        supports_billing_address=False,
-        accepted_cards=None,
-        pending_callout=None,
-        customer=None,
-        purchase_result=None,
-    ):
+        status: str | None = None,
+        reserved_at: datetime.datetime | None = None,
+        trolley: Trolley | None = None,
+        purchased_at: datetime.datetime | None = None,
+        external_sale_page: str | None = None,
+        languages: list[str] | None = None,
+        remote_site: str | None = None,
+        prefilled_address: Address | None = None,
+        needs_payment_card: bool | None = False,
+        needs_email_address: bool | None = False,
+        needs_agent_reference: bool | None = False,
+        can_edit_address: bool | None = False,
+        allowed_countries: list[Country] | None = None,
+        minutes_left: Number | None = None,
+        supports_billing_address: bool | None = False,
+        accepted_cards: list[CardType] | None = None,
+        pending_callout: Callout | None = None,
+        customer: Customer | None = None,
+        purchase_result: PurchaseResult | None = None,
+    ) -> None:
 
         self.status = status
         self.reserved_at = reserved_at
@@ -101,7 +112,7 @@ class Status(JSONMixin):
         self.purchase_result = purchase_result
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls: type[_StatusT], data: dict[str, Any]) -> _StatusT:
         """Creates a new Status object from API data from ticketswitch.
 
         Args:
@@ -160,7 +171,7 @@ class Status(JSONMixin):
                 Country(key, description=description)
                 for key, description in allowed_countries.items()
             ]
-            countries.sort(key=lambda x: x.code)
+            countries.sort(key=lambda x: x.code or "")
             kwargs.update(allowed_countries=countries)
 
         address = data.get("prefilled_address")

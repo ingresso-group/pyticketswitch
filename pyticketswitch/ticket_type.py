@@ -1,5 +1,12 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.price_band import PriceBand
+
+if TYPE_CHECKING:
+    from pyticketswitch.seat import Seat
 
 
 class TicketType(JSONMixin):
@@ -17,14 +24,19 @@ class TicketType(JSONMixin):
 
     """
 
-    def __init__(self, code=None, description=None, price_bands=None):
+    def __init__(
+        self,
+        code: str | None = None,
+        description: str | None = None,
+        price_bands: list[PriceBand] | None = None,
+    ) -> None:
 
         self.code = code
         self.description = description
         self.price_bands = price_bands
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> TicketType:
         """Creates a new PriceBand object from API data from ticketswitch.
 
         Args:
@@ -43,14 +55,14 @@ class TicketType(JSONMixin):
             price_bands.append(PriceBand.from_api_data(single_band))
 
         kwargs = {
-            "code": data.get("ticket_type_code", None),
-            "description": data.get("ticket_type_desc", None),
+            "code": data.get("ticket_type_code"),
+            "description": data.get("ticket_type_desc"),
             "price_bands": price_bands,
         }
 
         return cls(**kwargs)
 
-    def get_seats(self):
+    def get_seats(self) -> list[Seat]:
         """Get seats in the ticket type.
 
         Returns:
@@ -64,5 +76,5 @@ class TicketType(JSONMixin):
             seat for price_band in self.price_bands for seat in price_band.get_seats()
         ]
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<TicketType {self.code}: {self.description!r}>"

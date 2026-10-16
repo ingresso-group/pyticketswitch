@@ -1,7 +1,15 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 from pyticketswitch.debitor import Debitor
 from pyticketswitch.mixins import JSONMixin
 from pyticketswitch.order import Order
 from pyticketswitch.purchase_result import PurchaseResult
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
+    from pyticketswitch.event import Event
 
 
 class Bundle(JSONMixin):
@@ -34,21 +42,21 @@ class Bundle(JSONMixin):
 
     def __init__(
         self,
-        source_code,
-        orders=None,
-        description=None,
-        total_seatprice=None,
-        total_surcharge=None,
-        total_send_cost=None,
-        total=None,
-        currency_code=None,
-        debitor=None,
-        terms_and_conditions=None,
-        purchase_result=None,
-        send_cost_tax_component=None,
-        total_combined_tax_component=None,
-        total_surcharge_tax_sub_component=None,
-    ):
+        source_code: str | None,
+        orders: list[Order] | None = None,
+        description: str | None = None,
+        total_seatprice: Number | None = None,
+        total_surcharge: Number | None = None,
+        total_send_cost: Number | None = None,
+        total: Number | None = None,
+        currency_code: str | None = None,
+        debitor: Debitor | None = None,
+        terms_and_conditions: str | None = None,
+        purchase_result: PurchaseResult | None = None,
+        send_cost_tax_component: Number | None = None,
+        total_combined_tax_component: Number | None = None,
+        total_surcharge_tax_sub_component: Number | None = None,
+    ) -> None:
         self.source_code = source_code
         self.orders = orders
         self.description = description
@@ -65,7 +73,7 @@ class Bundle(JSONMixin):
         self.total_surcharge_tax_sub_component = total_surcharge_tax_sub_component
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Bundle:
         """Creates a new Bundle object from API data from ticketswitch.
 
         Args:
@@ -142,7 +150,7 @@ class Bundle(JSONMixin):
 
         return cls(**kwargs)
 
-    def get_events(self):
+    def get_events(self) -> list[Event]:
         """Get the events in the bundle.
 
         Returns:
@@ -152,7 +160,7 @@ class Bundle(JSONMixin):
             return []
         return [order.event for order in self.orders if order.event and order.event.id]
 
-    def get_event_ids(self):
+    def get_event_ids(self) -> set[str]:
         """Get the event ids of the events in the bundle.
 
         Returns:
@@ -161,15 +169,15 @@ class Bundle(JSONMixin):
         """
         return {event.id for event in self.get_events()}
 
-    def is_purchased(self):
+    def is_purchased(self) -> bool:
         """Check if this bundle was successfully purchased.
 
         Returns:
             bool: if the bundle is purchased or not.
         """
         if self.purchase_result:
-            return self.purchase_result.success
+            return bool(self.purchase_result.success)
         return False
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<Bundle {self.source_code}>"

@@ -19,10 +19,13 @@ from pyticketswitch.ticket_type import TicketType
         (TicketType("STALLS", description="Stalls"), "<TicketType STALLS: 'Stalls'>"),
         (TicketType("STALLS", description=None), "<TicketType STALLS: None>"),
         (
-            PriceBand("A", default_discount=None, description="Top"),
+            PriceBand("A", default_discount=Discount("X"), description="Top"),
             "<PriceBand A:'Top'>",
         ),
-        (PriceBand("A", default_discount=None, description=None), "<PriceBand A>"),
+        (
+            PriceBand("A", default_discount=Discount("X"), description=None),
+            "<PriceBand A>",
+        ),
     ],
 )
 def test_repr_shows_description(obj, expected):

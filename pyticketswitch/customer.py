@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import Any
+
 from pyticketswitch import utils
 from pyticketswitch.mixins import JSONMixin
 
@@ -48,37 +52,37 @@ class Customer(JSONMixin):
 
     def __init__(
         self,
-        first_name,
-        last_name,
-        address_lines,
-        country_code,
-        title=None,
-        initials=None,
-        suffix=None,
-        email=None,
-        post_code=None,
-        town=None,
-        county=None,
-        country=None,
-        phone=None,
-        home_phone=None,
-        work_phone=None,
-        agent_reference=None,
-        supplier_can_use_data=False,
-        user_can_use_data=False,
-        world_can_use_data=False,
-        first_name_latin=None,
-        last_name_latin=None,
-        address_lines_latin=None,
-        title_latin=None,
-        initials_latin=None,
-        suffix_latin=None,
-        post_code_latin=None,
-        town_latin=None,
-        county_latin=None,
-        country_latin=None,
-        **kwargs,
-    ):
+        first_name: str | None,
+        last_name: str | None,
+        address_lines: list[str] | None,
+        country_code: str | None,
+        title: str | None = None,
+        initials: str | None = None,
+        suffix: str | None = None,
+        email: str | None = None,
+        post_code: str | None = None,
+        town: str | None = None,
+        county: str | None = None,
+        country: str | None = None,
+        phone: str | None = None,
+        home_phone: str | None = None,
+        work_phone: str | None = None,
+        agent_reference: str | None = None,
+        supplier_can_use_data: bool | None = False,
+        user_can_use_data: bool | None = False,
+        world_can_use_data: bool | None = False,
+        first_name_latin: str | None = None,
+        last_name_latin: str | None = None,
+        address_lines_latin: list[str] | None = None,
+        title_latin: str | None = None,
+        initials_latin: str | None = None,
+        suffix_latin: str | None = None,
+        post_code_latin: str | None = None,
+        town_latin: str | None = None,
+        county_latin: str | None = None,
+        country_latin: str | None = None,
+        **kwargs: Any,
+    ) -> None:
 
         self.first_name = first_name
         self.first_name_latin = first_name_latin
@@ -119,7 +123,7 @@ class Customer(JSONMixin):
         self.kwargs = kwargs
 
     @classmethod
-    def from_api_data(cls, data):
+    def from_api_data(cls, data: dict[str, Any]) -> Customer:
         """Creates a new Customer object from API data from ticketswitch.
 
         Args:
@@ -190,7 +194,7 @@ class Customer(JSONMixin):
 
         return cls(**kwargs)
 
-    def as_api_parameters(self):
+    def as_api_parameters(self) -> dict[str, Any]:
         """Generates a dictionary of parameters to be passed back to the API.
 
         Returns:

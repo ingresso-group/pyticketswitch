@@ -1,17 +1,24 @@
+from __future__ import annotations
+
 import datetime
 import decimal
 import json
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from pyticketswitch import utils
+
+if TYPE_CHECKING:
+    from pyticketswitch._typing import Number
 
 
 class JSONMixin:
     """Adds json encoding functionality to objects."""
 
-    def __jsondict__(self, hide_none=True, hide_empty=True):
+    def __jsondict__(
+        self, hide_none: bool = True, hide_empty: bool = True
+    ) -> dict[str, Any]:
 
-        def sanitise(obj):
+        def sanitise(obj: Any) -> Any:
             if isinstance(obj, datetime.datetime):
                 return obj.isoformat()
 
@@ -42,7 +49,9 @@ class JSONMixin:
             if not (hide_empty and hasattr(obj, "__iter__") and not obj)
         }
 
-    def as_dict_for_json(self, hide_none=True, hide_empty=True):
+    def as_dict_for_json(
+        self, hide_none: bool = True, hide_empty: bool = True
+    ) -> dict[str, Any]:
         """Generate a json serialisable dictionary from the object
 
         Dates are changed to strings in ISO 8601 format.
@@ -68,7 +77,9 @@ class JSONMixin:
         """
         return self.__jsondict__(hide_none=hide_none, hide_empty=hide_empty)
 
-    def as_json(self, hide_none=True, hide_empty=True, **kwargs):
+    def as_json(
+        self, hide_none: bool = True, hide_empty: bool = True, **kwargs: Any
+    ) -> str:
         """Generate a json represetation of an object.
 
         Args:
@@ -105,14 +116,14 @@ class PaginationMixin:
 
     def __init__(
         self,
-        page_length=None,
-        page_number=None,
-        pages_remaining=None,
-        total_results=None,
-        results_remaining=None,
-        *args,
-        **kwargs,
-    ):
+        page_length: int | None = None,
+        page_number: int | None = None,
+        pages_remaining: int | None = None,
+        total_results: int | None = None,
+        results_remaining: int | None = None,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         self.page_length = page_length
         self.page_number = page_number
         self.pages_remaining = pages_remaining
@@ -121,8 +132,15 @@ class PaginationMixin:
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def from_api_data(cls, data, result_key=None, *args, **kwargs):
-        # cooperative mixin: from_api_data is provided by the next class in the MRO
+    def from_api_data(
+        cls,
+        data: dict[str, Any],
+        result_key: str | None = None,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Any:
+        # cooperative mixin: from_api_data is provided by the next class in the
+        # MRO, so the concrete return type is not known here
         inst = cast("Any", super()).from_api_data(data)
 
         if not result_key:
@@ -139,7 +157,7 @@ class PaginationMixin:
 
         return inst
 
-    def is_paginated(self):
+    def is_paginated(self) -> bool:
         """Indicates that the response is paginated
 
         Returns:
@@ -168,13 +186,13 @@ class SeatPricingMixin:
 
     def __init__(
         self,
-        seatprice=None,
-        surcharge=None,
-        non_offer_seatprice=None,
-        non_offer_surcharge=None,
-        *args,
-        **kwargs,
-    ):
+        seatprice: Number | None = None,
+        surcharge: Number | None = None,
+        non_offer_seatprice: Number | None = None,
+        non_offer_surcharge: Number | None = None,
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(*args, **kwargs)
         self.seatprice = seatprice
         self.surcharge = surcharge
@@ -182,7 +200,7 @@ class SeatPricingMixin:
         self.non_offer_surcharge = non_offer_surcharge
 
     @staticmethod
-    def kwargs_from_api_data(data):
+    def kwargs_from_api_data(data: dict[str, Any]) -> dict[str, Any]:
         return {
             "seatprice": data.get("sale_seatprice"),
             "surcharge": data.get("sale_surcharge"),
@@ -190,7 +208,7 @@ class SeatPricingMixin:
             "non_offer_surcharge": data.get("non_offer_sale_surcharge"),
         }
 
-    def combined_price(self):
+    def combined_price(self) -> Number:
         """Returns the combined seatprice and surcharge.
 
         This method assumes that we have both a seatprice and surcharge.
@@ -218,7 +236,7 @@ class SeatPricingMixin:
 
         return utils.add_prices(self.seatprice, self.surcharge)
 
-    def non_offer_combined_price(self):
+    def non_offer_combined_price(self) -> Number:
         """Returns the combined non offer seatprice and surcharge.
 
         This method assumes that we have both a seatprice and surcharge.

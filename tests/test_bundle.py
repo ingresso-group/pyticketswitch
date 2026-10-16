@@ -191,3 +191,18 @@ class TestBundle:
         bundle = Bundle("tests")
 
         assert repr(bundle) == "<Bundle tests>"
+
+
+class TestBundleIsPurchased:
+    def test_is_purchased_returns_bool_when_success_unknown(self):
+        bundle = Bundle("ext_test1")
+        bundle.purchase_result = PurchaseResult(
+            success=None,
+            failed_3d_secure=None,
+            failed_avs=None,
+            failed_cv_two=None,
+            is_partial=None,
+            is_semi_credit=None,
+        )
+
+        assert bundle.is_purchased() is False
