@@ -24,7 +24,9 @@ class SoldOrder(Order):
     - ``item``, ``number_of_seats``, ``price_band_code``, ``ticket_type_code``,
       ``ticket_type_description``, ``backend_purchase_reference``,
       ``total_seatprice`` and ``total_surcharge``. The prices are converted
-      from the strings the API returns to floats.
+      from the strings the API returns to floats. ``total_seatprice`` comes
+      from the API's ``total_seat_cost``, which is the sale seat price
+      excluding the surcharge, as ``total_sale_seatprice`` is elsewhere.
     - ``event``, with its description, country, venue and area.
     - ``performance``, with its time (without a time zone, as the API does not
       return one), name and event ID. Its ``id`` is :obj:`None`, as the API
