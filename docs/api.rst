@@ -52,6 +52,9 @@ The follow are the core business objects.
 .. autoclass:: pyticketswitch.status.Status
    :members:
    :inherited-members:
+.. autoclass:: pyticketswitch.sold_order.SoldOrder
+   :members:
+   :inherited-members:
 
 Bundles and Orders
 ------------------
