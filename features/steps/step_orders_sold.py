@@ -42,9 +42,7 @@ def when_i_list_the_orders_sold_purchased_from_tomorrow(context):
     context.orders = context.client.list_orders_sold(earliest_purchase_time=tomorrow)
 
 
-@when(
-    "I list the orders sold excluding purchased orders but not including failed ones"
-)
+@when("I list the orders sold excluding purchased orders but not including failed ones")
 def when_i_list_the_orders_sold_excluding_purchased(context):
     try:
         context.orders = context.client.list_orders_sold(include_purchased=False)
@@ -84,7 +82,8 @@ def then_each_page_has_one_order(context):
 
 @then("the two pages have different orders")
 def then_the_two_pages_have_different_orders(context):
-    first, second = (page[0].transaction_uuid for page in context.pages)
+    # one transaction can hold several orders, told apart by item number
+    first, second = ((page[0].transaction_uuid, page[0].item) for page in context.pages)
     assert_that(first, not_(equal_to(second)))
 
 
