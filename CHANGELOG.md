@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   details of the transaction the order was sold in, and fills in the event,
   performance, send method, commissions and customer with the existing library
   objects. The remaining fields the API returns are available as attributes.
+- `Client.list_orders_sold()` takes `add_self_print_voucher_urls` to have the
+  API return each order's self print voucher URL, available as
+  `SoldOrder.send_method.self_print_voucher_url`.
 - Type hints across the public API, and a `py.typed` marker so type checkers use
   them. JSON numbers are typed `float | Decimal` (`Decimal` when the client is
   created with `use_decimal=True`). Model attributes that the API may omit are

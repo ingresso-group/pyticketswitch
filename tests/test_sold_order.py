@@ -125,6 +125,20 @@ class TestSoldOrder:
         assert send_method.description == "E-ticket (printed or mobile)"
         assert send_method.type == "selfprint"
 
+    def test_voucher_url(self, orders_data):
+        sold_order = SoldOrder.from_api_data(orders_data[2])
+
+        assert sold_order.send_method.self_print_voucher_url == (
+            "https://example.ingresso.co.uk/tickets/web_self_print.buy/example-user/"
+            "00000000-0000-4000-8000-000000000003?crypto_block=TESTCRYPTOBLOCK0003"
+        )
+
+    def test_voucher_url_missing(self, orders_data):
+        assert (
+            SoldOrder.from_api_data(orders_data[0]).send_method.self_print_voucher_url
+            is None
+        )
+
     def test_send_method_type_for_failed_order(self, orders_data):
         data = {**orders_data[0], "actual_send_method": "failed"}
 
