@@ -1712,6 +1712,7 @@ class Client:
         exclude_refunds: bool | None = None,
         add_customer: bool | None = None,
         add_user_details: bool | None = None,
+        add_self_print_voucher_urls: bool | None = None,
         page: int = 0,
         page_length: int = 0,
     ) -> list[SoldOrder]:
@@ -1749,6 +1750,8 @@ class Client:
             add_customer (bool): include customer data in the results, for the
                 transactions where the calling user is allowed to see it.
             add_user_details (bool): include details of the purchase user.
+            add_self_print_voucher_urls (bool): include the self print voucher
+                URL of each order, as ``send_method.self_print_voucher_url``.
             page (int): the page of a paginated response, starting at zero.
             page_length (int): how many orders are returned per page.
 
@@ -1794,6 +1797,7 @@ class Client:
             "exclude_refunds": exclude_refunds,
             "add_customer": add_customer,
             "add_user_details": add_user_details,
+            "add_self_print_voucher_urls": add_self_print_voucher_urls,
         }
         params.update(utils.filter_none_from_parameters(optional_params))
 

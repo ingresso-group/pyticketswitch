@@ -2483,6 +2483,7 @@ class TestListOrdersSold:
             exclude_refunds=True,
             add_customer=True,
             add_user_details=True,
+            add_self_print_voucher_urls=True,
             page=2,
             page_length=25,
         )
@@ -2503,6 +2504,7 @@ class TestListOrdersSold:
                 "exclude_refunds": True,
                 "add_customer": True,
                 "add_user_details": True,
+                "add_self_print_voucher_urls": True,
                 "page_no": 2,
                 "page_len": 25,
             },

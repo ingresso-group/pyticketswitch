@@ -196,6 +196,7 @@
             "seat_cancellation_status": "none",
             "seat_id_list": [],
             "seat_refund_status": "none",
+            "self_print_voucher_url": "https://example.ingresso.co.uk/tickets/web_self_print.buy/example-user/00000000-0000-4000-8000-000000000003?crypto_block=TESTCRYPTOBLOCK0003",
             "send_code": "voucher",
             "send_desc": "Self print voucher",
             "supplier_can_use_customer_data": "no",

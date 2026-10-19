@@ -33,7 +33,9 @@ class SoldOrder(Order):
       does not return a performance ID.
     - ``send_method``. Its ``type`` is the send method actually used, so it can
       be ``"post"``, ``"collect"``, ``"selfprint"`` or ``"failed"``, and a
-      dynamic send method shows as the one it resolved to.
+      dynamic send method shows as the one it resolved to. Its
+      ``self_print_voucher_url`` is only set when the call was made with
+      ``add_self_print_voucher_urls``.
     - ``gross_commission`` and ``user_commission``, when the calling user can
       see them.
     - ``cancellation_status`` is ``"cancelled"`` when the API reports every
@@ -285,12 +287,18 @@ class SoldOrder(Order):
         send_method = None
         if any(
             data.get(key) is not None
-            for key in ("send_code", "send_desc", "actual_send_method")
+            for key in (
+                "send_code",
+                "send_desc",
+                "actual_send_method",
+                "self_print_voucher_url",
+            )
         ):
             send_method = SendMethod(
                 code=data.get("send_code"),
                 description=data.get("send_desc"),
                 typ=data.get("actual_send_method"),
+                self_print_voucher_url=data.get("self_print_voucher_url"),
             )
 
         kwargs: dict[str, Any] = {
