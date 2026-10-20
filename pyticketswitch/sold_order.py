@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Any
+from typing import Any, TypeVar
 
 from pyticketswitch.commission import Commission
 from pyticketswitch.customer import Customer
@@ -11,6 +11,8 @@ from pyticketswitch.performance import Performance
 from pyticketswitch.send_method import SendMethod
 from pyticketswitch.user import User
 from pyticketswitch.utils import get_price, isostr_to_datetime
+
+T = TypeVar("T", bound="SoldOrder")
 
 
 class SoldOrder(Order):
@@ -264,7 +266,7 @@ class SoldOrder(Order):
         )
 
     @classmethod
-    def from_api_data(cls, data: dict[str, Any]) -> SoldOrder:
+    def from_api_data(cls: type[T], data: dict[str, Any]) -> T:
         """Creates a new SoldOrder object from API data from ticketswitch.
 
         Args:
