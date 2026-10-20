@@ -1719,6 +1719,10 @@ class Client:
     ) -> list[SoldOrder]:
         """List the orders sold through the calling user
 
+        This is the seller's view: the orders the calling user purchased,
+        whoever supplied them. Use :meth:`list_orders_supplied` for the orders
+        other users purchased from the calling user's inventory.
+
         Wraps ``orders_sold.v1``
 
         Args:
@@ -1834,6 +1838,11 @@ class Client:
         page_length: int = 0,
     ) -> list[SuppliedOrder]:
         """List the orders supplied by the calling user
+
+        This is the supplier's view: the orders other users purchased from the
+        calling user's inventory, whoever sold them. Use
+        :meth:`list_orders_sold` for the orders the calling user purchased
+        themselves.
 
         Wraps ``orders_supplied.v1``
 

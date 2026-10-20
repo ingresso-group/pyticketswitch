@@ -14,7 +14,16 @@ from pyticketswitch.utils import get_price, isostr_to_datetime
 
 
 class SoldOrder(Order):
-    """An order that was sold, as returned by ``orders_sold.v1``.
+    """An order that was sold through the calling user, as returned by
+    ``orders_sold.v1``.
+
+    This is the seller's view of the orders: the sales made by the calling user,
+    optionally narrowed to the inventory of one supplier (``supply_user``). It
+    is the counterpart of
+    :class:`SuppliedOrder <pyticketswitch.supplied_order.SuppliedOrder>`, which
+    is the supplier's view of the same orders. It is meant for listing, reporting
+    on and reconciling sales, and is a lookup of past transactions rather than
+    something to build a purchase from.
 
     A :class:`SoldOrder` is an :class:`Order <pyticketswitch.order.Order>` with
     the details of the transaction it was sold in. The attributes that

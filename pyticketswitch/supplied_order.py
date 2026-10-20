@@ -4,10 +4,17 @@ from pyticketswitch.sold_order import SoldOrder
 
 
 class SuppliedOrder(SoldOrder):
-    """An order that was supplied, as returned by ``orders_supplied.v1``.
+    """An order for tickets that the calling user supplied, as returned by
+    ``orders_supplied.v1``.
 
-    The API returns the same data as for ``orders_sold.v1``, so this is a
+    This is the supplier's view of the orders: the sales made by other users
+    (the ``purchase_user``) of inventory that belongs to the calling user's
+    supplier codes. It is the counterpart of
+    :class:`SoldOrder <pyticketswitch.sold_order.SoldOrder>`, which is the
+    seller's view of the orders they sold.
+
+    The API returns the same data in both cases, so this is a
     :class:`SoldOrder <pyticketswitch.sold_order.SoldOrder>` and has all of its
-    attributes. The difference is the point of view: these are the orders the
-    calling user supplied, and ``purchase_user`` is the user that sold them.
+    attributes. In the core system ``orders_supplied`` is the ``orders_sold``
+    script run in the opposite mode.
     """
