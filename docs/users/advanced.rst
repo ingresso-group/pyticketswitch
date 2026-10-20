@@ -251,6 +251,10 @@ next page until you get a page with fewer orders than ``page_length``::
     ...         break
     ...     page += 1
 
+:meth:`list_orders_supplied <pyticketswitch.client.Client.list_orders_supplied>`
+works the same way for the orders the calling user supplied, and filters on
+``purchase_user`` instead of ``supply_user``.
+
 
 Requesting Seat Availability
 ============================
