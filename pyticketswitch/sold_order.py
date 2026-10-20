@@ -12,7 +12,7 @@ from pyticketswitch.send_method import SendMethod
 from pyticketswitch.user import User
 from pyticketswitch.utils import get_price, isostr_to_datetime
 
-T = TypeVar("T", bound="SoldOrder")
+_SoldOrderT = TypeVar("_SoldOrderT", bound="SoldOrder")
 
 
 class SoldOrder(Order):
@@ -266,7 +266,7 @@ class SoldOrder(Order):
         )
 
     @classmethod
-    def from_api_data(cls: type[T], data: dict[str, Any]) -> T:
+    def from_api_data(cls: type[_SoldOrderT], data: dict[str, Any]) -> _SoldOrderT:
         """Creates a new SoldOrder object from API data from ticketswitch.
 
         Args:
