@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-10-21
+
 ### Added
 
 - `Client.list_orders_sold()` wraps the `orders_sold.v1` endpoint and returns a
@@ -25,27 +27,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   them. JSON numbers are typed `float | Decimal` (`Decimal` when the client is
   created with `use_decimal=True`). Model attributes that the API may omit are
   `... | None`, so callers need to narrow them before use.
-
-### Changed
-
-- `PaymentMethod` is now the base class of `CardDetails`, `RedirectionDetails`,
-  `StripeDetails` and `CiderDetails`, which it always documented itself to be.
-- A few cases that previously failed with an incidental `AttributeError` or
-  `TypeError` on missing data now fail explicitly: `Month.is_available()` and
-  `User.from_api_data()` raise `AssertionError` ("... data missing"), and
-  `Event.from_api_data()` raises `IntegrityError` when the `event` data is
-  absent.
-- `Currency.__eq__` returns `False` when compared to a non-`Currency` object
-  instead of raising `AttributeError`, and `Bundle.is_purchased()` always
-  returns a `bool`.
-- The type hints follow the real behaviour where the docstrings did not:
-  `Client.make_request()` returns the parsed JSON `dict`, and
-  `Client.get_purchase()` returns the same `(status, callout, meta)` tuple as
-  `make_purchase()` (the docstrings and annotations previously said otherwise).
-- pyright now runs in `standard` mode and ruff enforces annotations (`ANN`)
-  in the library.
-
-## [3.0.0] - 2026-10-15
 
 ### Changed
 
@@ -89,6 +70,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `pyticketswitch.Client` is now an explicit re-export.
 - Coverage is now uploaded with the current Codecov CLI and test results from a single CI job (the deprecated `codecov` PyPI uploader and package are gone).
 - CI now tests against a Python 3.10 / 3.12 / 3.14 matrix.
+- `PaymentMethod` is now the base class of `CardDetails`, `RedirectionDetails`,
+  `StripeDetails` and `CiderDetails`, which it always documented itself to be.
+- A few cases that previously failed with an incidental `AttributeError` or
+  `TypeError` on missing data now fail explicitly: `Month.is_available()` and
+  `User.from_api_data()` raise `AssertionError` ("... data missing"), and
+  `Event.from_api_data()` raises `IntegrityError` when the `event` data is
+  absent.
+- `Currency.__eq__` returns `False` when compared to a non-`Currency` object
+  instead of raising `AttributeError`, and `Bundle.is_purchased()` always
+  returns a `bool`.
+- The type hints follow the real behaviour where the docstrings did not:
+  `Client.make_request()` returns the parsed JSON `dict`, and
+  `Client.get_purchase()` returns the same `(status, callout, meta)` tuple as
+  `make_purchase()` (the docstrings and annotations previously said otherwise).
+- pyright now runs in `standard` mode and ruff enforces annotations (`ANN`)
+  in the library.
 
 ### Security
 
