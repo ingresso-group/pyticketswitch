@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - `Client.list_orders_sold()` takes `add_self_print_voucher_urls` to have the
   API return each order's self print voucher URL, available as
   `SoldOrder.send_method.self_print_voucher_url`.
+- `Client.list_orders_supplied()` wraps the `orders_supplied.v1` endpoint and
+  returns a list of `SuppliedOrder` objects (a `SoldOrder` subclass), for the
+  orders the calling user supplied. It takes the same parameters as
+  `list_orders_sold()`, except that `purchase_user` replaces `supply_user`.
 - Type hints across the public API, and a `py.typed` marker so type checkers use
   them. JSON numbers are typed `float | Decimal` (`Decimal` when the client is
   created with `use_decimal=True`). Model attributes that the API may omit are

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Any
+from typing import Any, TypeVar
 
 from pyticketswitch.commission import Commission
 from pyticketswitch.customer import Customer
@@ -12,9 +12,20 @@ from pyticketswitch.send_method import SendMethod
 from pyticketswitch.user import User
 from pyticketswitch.utils import get_price, isostr_to_datetime
 
+_SoldOrderT = TypeVar("_SoldOrderT", bound="SoldOrder")
+
 
 class SoldOrder(Order):
-    """An order that was sold, as returned by ``orders_sold.v1``.
+    """An order that was sold through the calling user, as returned by
+    ``orders_sold.v1``.
+
+    This is the seller's view of the orders: the sales made by the calling user,
+    optionally narrowed to the inventory of one supplier (``supply_user``). It
+    is the counterpart of
+    :class:`SuppliedOrder <pyticketswitch.supplied_order.SuppliedOrder>`, which
+    is the supplier's view of the same orders. It is meant for listing, reporting
+    on and reconciling sales, and is a lookup of past transactions rather than
+    something to build a purchase from.
 
     A :class:`SoldOrder` is an :class:`Order <pyticketswitch.order.Order>` with
     the details of the transaction it was sold in. The attributes that
@@ -255,7 +266,7 @@ class SoldOrder(Order):
         )
 
     @classmethod
-    def from_api_data(cls, data: dict[str, Any]) -> SoldOrder:
+    def from_api_data(cls: type[_SoldOrderT], data: dict[str, Any]) -> _SoldOrderT:
         """Creates a new SoldOrder object from API data from ticketswitch.
 
         Args:

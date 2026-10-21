@@ -21,6 +21,7 @@ from pyticketswitch.reservation import Reservation
 from pyticketswitch.send_method import SendMethod
 from pyticketswitch.sold_order import SoldOrder
 from pyticketswitch.status import Status
+from pyticketswitch.supplied_order import SuppliedOrder
 from pyticketswitch.ticket_type import TicketType
 from pyticketswitch.trolley import Trolley
 from pyticketswitch.user import User
@@ -1718,6 +1719,10 @@ class Client:
     ) -> list[SoldOrder]:
         """List the orders sold through the calling user
 
+        This is the seller's view: the orders the calling user purchased,
+        whoever supplied them. Use :meth:`list_orders_supplied` for the orders
+        other users purchased from the calling user's inventory.
+
         Wraps ``orders_sold.v1``
 
         Args:
@@ -1812,6 +1817,127 @@ class Client:
             raise exceptions.InvalidResponseError("got no orders key in json response")
 
         return [SoldOrder.from_api_data(order) for order in response["orders"]]
+
+    def list_orders_supplied(
+        self,
+        earliest_purchase_time: datetime.datetime | None = None,
+        latest_purchase_time: datetime.datetime | None = None,
+        event_id_list: list[str] | None = None,
+        perf_id_list: list[str] | None = None,
+        backend_system: str | None = None,
+        purchase_user: str | None = None,
+        trans_id: str | None = None,
+        transaction_uuid: str | None = None,
+        include_purchased: bool | None = None,
+        include_failed: bool | None = None,
+        exclude_refunds: bool | None = None,
+        add_customer: bool | None = None,
+        add_user_details: bool | None = None,
+        add_self_print_voucher_urls: bool | None = None,
+        page: int = 0,
+        page_length: int = 0,
+    ) -> list[SuppliedOrder]:
+        """List the orders supplied by the calling user
+
+        This is the supplier's view: the orders other users purchased from the
+        calling user's inventory, whoever sold them. Use
+        :meth:`list_orders_sold` for the orders the calling user purchased
+        themselves.
+
+        Wraps ``orders_supplied.v1``
+
+        Args:
+            earliest_purchase_time (datetime.datetime): only return orders
+                purchased on or after this time. Defaults to :obj:`None`.
+            latest_purchase_time (datetime.datetime): only return orders
+                purchased on or before this time. Defaults to :obj:`None`.
+            event_id_list (list): restrict the results to these event IDs.
+                Defaults to :obj:`None`.
+            perf_id_list (list): restrict the results to these performance
+                IDs. Defaults to :obj:`None`.
+            backend_system (str): exact match on the backend system code.
+                Defaults to :obj:`None`.
+            purchase_user (str): restrict the results to orders purchased by
+                this user. Defaults to :obj:`None`.
+            trans_id (str): only return the order with this transaction ID.
+                Defaults to :obj:`None`.
+            transaction_uuid (str): only return the order with this
+                transaction UUID. Defaults to :obj:`None`.
+            include_purchased (bool): include successfully purchased
+                transactions. The API includes them unless this is
+                :obj:`False`.
+            include_failed (bool): include failed purchase transactions. The
+                API excludes them unless this is :obj:`True`. Combined with
+                the default for ``include_purchased`` this returns both
+                kinds, so set ``include_purchased=False`` to only get failed
+                purchases.
+            exclude_refunds (bool): exclude transactions that have been
+                refunded.
+            add_customer (bool): include customer data in the results, for the
+                transactions where the calling user is allowed to see it.
+            add_user_details (bool): include details of the purchase user.
+            add_self_print_voucher_urls (bool): include the self print voucher
+                URL of each order, as ``send_method.self_print_voucher_url``.
+            page (int): the page of a paginated response, starting at zero.
+            page_length (int): how many orders are returned per page.
+
+        Returns:
+            list: a list of :class:`SuppliedOrder
+            <pyticketswitch.supplied_order.SuppliedOrder>` objects.
+
+        Raises:
+            InvalidParametersError: when ``include_purchased`` is :obj:`False`
+                without ``include_failed`` being :obj:`True`. At least one
+                kind of order must be included.
+            InvalidResponseError: when the response is in an unexpected format
+
+        """
+        # the API includes purchased orders unless told otherwise, but does not
+        # include failed orders unless asked to
+        if include_purchased is False and not include_failed:
+            raise exceptions.InvalidParametersError(
+                "at least one of include_purchased or include_failed must be true"
+            )
+
+        params: dict[str, Any] = {}
+
+        if earliest_purchase_time:
+            params.update(earliest_purchase_time=earliest_purchase_time.isoformat())
+
+        if latest_purchase_time:
+            params.update(latest_purchase_time=latest_purchase_time.isoformat())
+
+        if event_id_list:
+            params.update(event_id_list=",".join(event_id_list))
+
+        if perf_id_list:
+            params.update(perf_id_list=",".join(perf_id_list))
+
+        optional_params = {
+            "backend_system": backend_system,
+            "purchase_user": purchase_user,
+            "trans_id": trans_id,
+            "transaction_uuid": transaction_uuid,
+            "include_purchased": include_purchased,
+            "include_failed": include_failed,
+            "exclude_refunds": exclude_refunds,
+            "add_customer": add_customer,
+            "add_user_details": add_user_details,
+            "add_self_print_voucher_urls": add_self_print_voucher_urls,
+        }
+        params.update(utils.filter_none_from_parameters(optional_params))
+
+        if page > 0:
+            params.update(page_no=page)
+        if page_length > 0:
+            params.update(page_len=page_length)
+
+        response = self.make_request("orders_supplied.v1", params)
+
+        if "orders" not in response:
+            raise exceptions.InvalidResponseError("got no orders key in json response")
+
+        return [SuppliedOrder.from_api_data(order) for order in response["orders"]]
 
     def make_purchase(
         self,
