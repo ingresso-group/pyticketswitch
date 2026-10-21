@@ -16,10 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   details of the transaction the order was sold in, and fills in the event,
   performance, send method, commissions and customer with the existing library
   objects. The remaining fields the API returns are available as attributes.
-- `Client.list_orders_sold()` and `Client.list_orders_supplied()` take
-  `add_self_print_voucher_urls` to have the API return each order's self print
-  voucher URL, available as `SoldOrder.send_method.self_print_voucher_url` (and
-  on `SuppliedOrder`, which is a `SoldOrder`).
 - `Client.list_orders_supplied()` wraps the `orders_supplied.v1` endpoint and
   returns a list of `SuppliedOrder` objects (a `SoldOrder` subclass), for the
   orders the calling user supplied. It takes the same parameters as
