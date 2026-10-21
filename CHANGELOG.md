@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [3.0.0] - 2026-10-21
+
 ### Added
 
 - `Client.list_orders_sold()` wraps the `orders_sold.v1` endpoint and returns a
@@ -14,9 +16,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   details of the transaction the order was sold in, and fills in the event,
   performance, send method, commissions and customer with the existing library
   objects. The remaining fields the API returns are available as attributes.
-- `Client.list_orders_sold()` takes `add_self_print_voucher_urls` to have the
-  API return each order's self print voucher URL, available as
-  `SoldOrder.send_method.self_print_voucher_url`.
 - `Client.list_orders_supplied()` wraps the `orders_supplied.v1` endpoint and
   returns a list of `SuppliedOrder` objects (a `SoldOrder` subclass), for the
   orders the calling user supplied. It takes the same parameters as
@@ -28,13 +27,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+- **Breaking:** dropped Python 2 support; Python 3.10+ is now required. The
+  `six` dependency has been removed.
+- Packaging metadata now lives in `pyproject.toml` and the package version is
+  read from `pyticketswitch.__version__`; `setup.py` is gone.
+- Raised the minimum dependency versions to `requests>=2.31` and
+  `python-dateutil>=2.8.2`.
+- `pyticketswitch.Client` is now an explicit re-export.
+- Incomplete API data now raises a clear error (`AssertionError`,
+  `IntegrityError`, `KeyError`) where it used to fail with an incidental
+  `AttributeError` or `TypeError`, e.g. in the availability and price
+  calculations and `Event.from_api_data()`.
+- `__repr__` of `Country`, `Discount`, `Event`, `PriceBand`, `SendMethod` and
+  `TicketType` now shows the description with `repr()` (e.g.
+  `<Country uk:'United Kingdom'>`) instead of the Python 2 style `b'...'` bytes
+  literal.
 - `PaymentMethod` is now the base class of `CardDetails`, `RedirectionDetails`,
   `StripeDetails` and `CiderDetails`, which it always documented itself to be.
-- A few cases that previously failed with an incidental `AttributeError` or
-  `TypeError` on missing data now fail explicitly: `Month.is_available()` and
-  `User.from_api_data()` raise `AssertionError` ("... data missing"), and
-  `Event.from_api_data()` raises `IntegrityError` when the `event` data is
-  absent.
 - `Currency.__eq__` returns `False` when compared to a non-`Currency` object
   instead of raising `AttributeError`, and `Bundle.is_purchased()` always
   returns a `bool`.
@@ -42,53 +51,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   `Client.make_request()` returns the parsed JSON `dict`, and
   `Client.get_purchase()` returns the same `(status, callout, meta)` tuple as
   `make_purchase()` (the docstrings and annotations previously said otherwise).
-- pyright now runs in `standard` mode and ruff enforces annotations (`ANN`)
-  in the library.
-
-## [3.0.0] - 2026-10-15
-
-### Changed
-
-- **Breaking:** dropped Python 2 support; Python 3.10+ is now required. The
-  `six` dependency has been removed.
-- Packaging metadata now lives in `pyproject.toml` (`setup.py` is gone) and
-  the package version is read from `pyticketswitch.__version__`, the single
-  source of truth.
-- Replaced flake8, black, pylint, isort and tox with ruff (lint and format)
-  and added pyright. Tool configuration now lives in `pyproject.toml`;
-  `setup.cfg`, `tox.ini`, `.pylintrc`, `.pyup.yml` and `.coveragerc` are gone.
-- Reworked the Makefile (`make help` lists the targets).
-- Added a pre-commit config (ruff) and Dependabot for pip dependencies.
-- Modernised the code for Python 3 (f-strings, `super()`, no `object` base
-  classes, `unittest.mock`) and enabled the ruff `UP`, `B`, `C4`, `SIM` and
-  `RUF` rules.
-- Fixed all pyright findings by handling missing (`None`) data explicitly
-  instead of crashing with an incidental `AttributeError`/`TypeError`:
-  - `AvailabilityDetails.is_available()` / `on_weekday()` and
-    `Month.on_weekday()` raise an `AssertionError` ("... data missing") when
-    the underlying calendar or weekday mask is missing, instead of an
-    incidental `TypeError`.
-  - `CancellationResult.is_fully_cancelled()` returns `False` without a trolley.
-  - `__repr__` of `Country`, `Discount`, `Event`, `SendMethod` and `TicketType`
-    no longer fails when `description` is `None`.
-  - `AvailabilityDetails.weekday_list` is now always defined (`None` by default).
-  - Price calculations (`AvailabilityDetails.combined_price()` /
-    `combined_full_price()`, `CostRange.get_min_combined_price()` /
-    `get_max_combined_price()`, `Order.total_including_send_cost()`) raise an
-    `AssertionError` ("... data missing") on missing data, consistent with the
-    existing `combined_price()` methods; `utils.add_prices()` raises a
-    `TypeError` with an explicit message for `None`.
-  - `utils.specific_dates_from_api_data()` raises `KeyError` for an unknown
-    month name (previously `TypeError`).
-- `__repr__` of `Country`, `Discount`, `Event`, `PriceBand`, `SendMethod` and
-  `TicketType` now shows the description with `repr()` (e.g.
-  `<Country uk:'United Kingdom'>`) instead of the Python 2 style `b'...'` bytes
-  literal.
-- Raised the minimum dependency versions to `requests>=2.31` and
-  `python-dateutil>=2.8.2`.
-- `pyticketswitch.Client` is now an explicit re-export.
-- Coverage is now uploaded with the current Codecov CLI and test results from a single CI job (the deprecated `codecov` PyPI uploader and package are gone).
-- CI now tests against a Python 3.10 / 3.12 / 3.14 matrix.
 
 ### Security
 
